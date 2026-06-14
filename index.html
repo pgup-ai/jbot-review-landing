@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>J-Bot Review: AI code review that never leaves your CI</title>
-<meta name="description" content="An agentic PR reviewer that runs inside your own GitHub Actions, on your own keys. Your code never leaves your infrastructure. Powered by OpenCode, with free models that can make review cost nothing." />
+<title>J-Bot Review: AI code review that runs in your CI</title>
+<meta name="description" content="An agentic PR reviewer that runs inside your own GitHub Actions, on your own keys. No third-party review service in the middle; the diff goes only to the model provider you choose. Powered by OpenCode, with free models that can make review cost nothing." />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0a0b0d" />
 
@@ -19,16 +19,16 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://www.pgupai.com/" />
 <meta property="og:site_name" content="J-Bot Review" />
-<meta property="og:title" content="J-Bot Review: AI code review that never leaves your CI" />
-<meta property="og:description" content="Agentic PR review inside your own GitHub Actions. Your keys, your runner, your code. Powered by OpenCode." />
+<meta property="og:title" content="J-Bot Review: AI code review that runs in your CI" />
+<meta property="og:description" content="Agentic PR review inside your own GitHub Actions. Your runner, your keys, your choice of model. Powered by OpenCode." />
 <meta property="og:image" content="https://www.pgupai.com/assets/og.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="J-Bot Review: AI code review that never leaves your CI" />
-<meta name="twitter:description" content="Agentic PR review inside your own GitHub Actions. Your keys, your runner, your code. Powered by OpenCode." />
+<meta name="twitter:title" content="J-Bot Review: AI code review that runs in your CI" />
+<meta name="twitter:description" content="Agentic PR review inside your own GitHub Actions. Your runner, your keys, your choice of model. Powered by OpenCode." />
 <meta name="twitter:image" content="https://www.pgupai.com/assets/og.png" />
 
 <style>
@@ -506,8 +506,8 @@
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <span class="brand-strip">Powered by <b>OpenCode</b></span>
-      <h1>Code review that never leaves your <span class="grad">CI</span>.</h1>
-      <p class="lede">An agentic PR reviewer that runs inside your own GitHub Actions, on your keys. Your code never leaves your infrastructure.</p>
+      <h1>Code review that runs in your <span class="grad">CI</span>.</h1>
+      <p class="lede">An agentic PR reviewer that runs in your own GitHub Actions, on your own keys. No review vendor in the middle.</p>
       <div class="hero-cta">
         <a class="btn btn-primary" href="#setup">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -543,7 +543,7 @@
         <span class="k">with</span>:
           <span class="k">opencode-api-key</span>: <span class="s">${{ secrets.OPENCODE_API_KEY }}</span>
           <span class="k">github-token</span>: <span class="s">${{ secrets.GITHUB_TOKEN }}</span>
-<span class="c"># your runner. your key. your code stays put.</span></pre>
+<span class="c"># your runner. your key. the model you choose.</span></pre>
       </div>
     </div>
   </div>
@@ -579,7 +579,7 @@
     <div class="section-head reveal">
       <p class="eyebrow">How it works</p>
       <h2>One file of setup. Zero servers to run.</h2>
-      <p>J-Bot Review ships as a Docker container action. GitHub pulls the image into your own runner, drives a read-only review over your checkout, and posts back. Nothing is sent to a vendor.</p>
+      <p>J-Bot Review ships as a Docker container action. GitHub pulls the image into your own runner, drives a read-only review over your checkout, and posts back. The diff goes only to the model provider you bring, never to a third-party review service.</p>
     </div>
 
     <div class="steps">
@@ -610,7 +610,7 @@
   <div class="wrap">
     <div class="section-head reveal">
       <h2>Enterprise-grade review. Zero <span style="white-space:nowrap">lock-in.</span></h2>
-      <p>Everything below runs on infrastructure you already own. No third-party servers, no data leaving your perimeter, no per-seat bill.</p>
+      <p>Everything below runs on infrastructure you already own, with the model provider you choose. No third-party review service, no per-seat bill.</p>
     </div>
 
     <div class="bento">
@@ -618,7 +618,7 @@
       <div class="cell c-byok reveal">
         <div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3"/></svg></div>
         <h3>Your keys, your runner</h3>
-        <p>You bring the provider API key as a repo secret. The review executes inside your GitHub Actions runner, never on a vendor's machine. The code stays where it already lives.</p>
+        <p>You bring the provider API key as a repo secret. The review runs inside your GitHub Actions runner and sends the diff only to the model provider you chose, on your own account, not a separate review vendor.</p>
       </div>
 
       <!-- FREE -->
@@ -634,7 +634,7 @@
       <div class="cell c-native reveal">
         <div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div>
         <h3>Native to GitHub CI</h3>
-        <p>A standard container action. No webhooks to a vendor, no SaaS account, no data exfiltration.</p>
+        <p>A standard container action running in your own CI. No third-party review service and no SaaS account to sign up for.</p>
       </div>
 
       <!-- FLEXIBILITY -->
@@ -682,14 +682,14 @@
     <div class="section-head reveal" style="max-width:720px">
       <p class="eyebrow">Ownership and cost</p>
       <h2>A reviewer you own, not a service you rent.</h2>
-      <p>Hosted AI reviewers upload your diff to their cloud and bill per seat. J-Bot Review keeps the entire loop on your side of the wire.</p>
+      <p>Hosted AI reviewers upload your diff to their own cloud and bill per seat. J-Bot Review runs on your runner and sends the diff only to the model provider you already trust.</p>
     </div>
 
     <div class="compare">
       <div class="col theirs reveal">
         <div class="col-head"><h3>Hosted SaaS reviewers</h3><span class="tag">rented</span></div>
         <ul>
-          <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Your code is uploaded to a vendor's servers to be reviewed.</li>
+          <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Your code is uploaded to the review vendor's own servers and model.</li>
           <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Per-seat pricing that scales with your team, not your usage.</li>
           <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Locked to the models the vendor chose for you.</li>
           <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Closed pipeline you cannot read, audit, or fork.</li>
@@ -699,7 +699,7 @@
       <div class="col ours reveal">
         <div class="col-head"><h3>J-Bot Review</h3><span class="tag">owned</span></div>
         <ul>
-          <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Runs in your runner. The diff never leaves your infrastructure.</li>
+          <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Runs in your runner. The diff goes only to the model provider you pick, on your key.</li>
           <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Free on OpenCode models, or about $0.01 per review on paid tiers.</li>
           <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Any provider, any model. Swap with one repo variable.</li>
           <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Open action you can pin, audit, and self-host anywhere.</li>
@@ -804,7 +804,7 @@
           </span>
           <span class="wm"><b>J-Bot</b> Review</span>
         </a>
-        <p>An agentic PR reviewer built on OpenCode. Your keys, your runner, your code.</p>
+        <p>An agentic PR reviewer built on OpenCode. Your runner, your keys, your choice of model.</p>
         <p class="by">A <strong>PGUP AI</strong> project.</p>
       </div>
 
