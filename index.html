@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>J-Bot Review: AI code review that runs in your CI</title>
-<meta name="description" content="An agentic PR reviewer that runs inside your own GitHub Actions, on your own keys. No third-party review service in the middle; the diff goes only to the model provider you choose. Powered by OpenCode, with free models that can make review cost nothing." />
+<meta name="description" content="An agentic PR reviewer that runs inside your own GitHub Actions, on your own keys. No third-party reviewer in the middle; the diff goes only to the model you choose. Powered by OpenCode, with free models that make review cost nothing." />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0a0b0d" />
 
@@ -579,7 +579,7 @@
     <div class="section-head reveal">
       <p class="eyebrow">How it works</p>
       <h2>One file of setup. Zero servers to run.</h2>
-      <p>J-Bot Review ships as a Docker container action. GitHub pulls the image into your own runner, drives a read-only review over your checkout, and posts back. The diff goes only to the model provider you bring, never to a third-party review service.</p>
+      <p>A Docker container action. GitHub runs it on your own runner, reviews your checkout read-only, and posts back. The diff goes only to the model you bring, never a third-party reviewer.</p>
     </div>
 
     <div class="steps">
@@ -610,7 +610,7 @@
   <div class="wrap">
     <div class="section-head reveal">
       <h2>Enterprise-grade review. Zero <span style="white-space:nowrap">lock-in.</span></h2>
-      <p>Everything below runs on infrastructure you already own, with the model provider you choose. No third-party review service, no per-seat bill.</p>
+      <p>Everything here runs on infrastructure you already own, with the model you choose. No third-party reviewer, no per-seat bill.</p>
     </div>
 
     <div class="bento">
@@ -618,7 +618,7 @@
       <div class="cell c-byok reveal">
         <div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3"/></svg></div>
         <h3>Your keys, your runner</h3>
-        <p>You bring the provider API key as a repo secret. The review runs inside your GitHub Actions runner and sends the diff only to the model provider you chose, on your own account, not a separate review vendor.</p>
+        <p>You bring the provider key as a repo secret. The review runs in your Actions runner, and the diff goes only to the model you chose, on your own account.</p>
       </div>
 
       <!-- FREE -->
@@ -634,7 +634,7 @@
       <div class="cell c-native reveal">
         <div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div>
         <h3>Native to GitHub CI</h3>
-        <p>A standard container action running in your own CI. No third-party review service and no SaaS account to sign up for.</p>
+        <p>A standard container action in your own CI. No SaaS account, no third-party reviewer.</p>
       </div>
 
       <!-- FLEXIBILITY -->
@@ -656,7 +656,7 @@
         <div class="depth-inner">
           <div>
             <h3>Depth, not drive-by comments</h3>
-            <p>Every run covers the complete base...head diff, sharded in parallel for speed. Blocking findings are adversarially re-checked before posting, so refuted ones are dropped and uncertain ones demoted.</p>
+            <p>Every run covers the full base...head diff, sharded for speed. A second model then verifies each blocking finding before posting, dropping false positives and demoting uncertain ones.</p>
           </div>
           <div class="verdicts" aria-hidden="true">
             <span class="verdict"><svg class="vi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>Needs changes before approval</span>
@@ -682,14 +682,14 @@
     <div class="section-head reveal" style="max-width:720px">
       <p class="eyebrow">Ownership and cost</p>
       <h2>A reviewer you own, not a service you rent.</h2>
-      <p>Hosted AI reviewers upload your diff to their own cloud and bill per seat. J-Bot Review runs on your runner and sends the diff only to the model provider you already trust.</p>
+      <p>Hosted reviewers upload your diff to their own cloud and bill per seat. J-Bot Review runs on your runner and sends the diff only to the model you already trust.</p>
     </div>
 
     <div class="compare">
       <div class="col theirs reveal">
         <div class="col-head"><h3>Hosted SaaS reviewers</h3><span class="tag">rented</span></div>
         <ul>
-          <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Your code is uploaded to the review vendor's own servers and model.</li>
+          <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Your code is uploaded to the reviewer's own servers and model.</li>
           <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Per-seat pricing that scales with your team, not your usage.</li>
           <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Locked to the models the vendor chose for you.</li>
           <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Closed pipeline you cannot read, audit, or fork.</li>
@@ -699,7 +699,7 @@
       <div class="col ours reveal">
         <div class="col-head"><h3>J-Bot Review</h3><span class="tag">owned</span></div>
         <ul>
-          <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Runs in your runner. The diff goes only to the model provider you pick, on your key.</li>
+          <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Runs in your runner. The diff goes only to the model you pick, on your key.</li>
           <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Free on OpenCode models, or about $0.01 per review on paid tiers.</li>
           <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Any provider, any model. Swap with one repo variable.</li>
           <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Open action you can pin, audit, and self-host anywhere.</li>
