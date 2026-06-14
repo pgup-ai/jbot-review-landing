@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>J-Bot Review: AI code review that never leaves your CI</title>
+<meta name="description" content="An agentic PR reviewer that runs inside your own GitHub Actions, on your own keys. Your code never leaves your infrastructure. Powered by OpenCode, with free models that can make review cost nothing." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0d" />
+
+<!-- Favicons -->
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="J-Bot Review: AI code review that never leaves your CI" />
+<meta property="og:description" content="Agentic PR review inside your own GitHub Actions. Your keys, your runner, your code. Powered by OpenCode." />
+<!-- For production, set these two to the absolute deployed URL -->
+<meta property="og:image" content="assets/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="J-Bot Review: AI code review that never leaves your CI" />
+<meta name="twitter:description" content="Agentic PR review inside your own GitHub Actions. Your keys, your runner, your code. Powered by OpenCode." />
+<meta name="twitter:image" content="assets/og.png" />
+
+<style>
+  /* ============================================================
+     Design tokens - single locked accent (signal green) on cool charcoal.
+     One radius scale, one accent, dual nothing: the page is dark, full stop.
+     ============================================================ */
+  :root {
+    --bg:           #0a0b0d;
+    --bg-2:         #0d0f12;
+    --surface:      #121419;
+    --surface-2:    #171a20;
+    --border:       rgba(255, 255, 255, 0.08);
+    --border-2:     rgba(255, 255, 255, 0.12);
+    --text:         #f3f5f7;
+    --text-muted:   #9aa1ac;
+    --text-faint:   #6b727d;
+
+    --accent:       #3fe08a;   /* signal green */
+    --accent-hover: #54e89a;
+    --accent-ink:   #04130b;   /* near-black text on the green CTA */
+    --accent-dim:   rgba(63, 224, 138, 0.12);
+    --accent-line:  rgba(63, 224, 138, 0.30);
+
+    --danger:       #ff6b6b;
+
+    --radius:       14px;
+    --radius-sm:    10px;
+    --radius-lg:    20px;
+
+    --maxw:         1180px;
+
+    --font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+            "Inter", "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Fira Code",
+            "Cascadia Code", Menlo, Consolas, monospace;
+
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* Ambient field: one faint top glow + a hairline grid. No mesh, no blobs. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(900px 520px at 50% -8%, rgba(63, 224, 138, 0.10), transparent 70%),
+      radial-gradient(1200px 700px at 88% 0%, rgba(63, 224, 138, 0.04), transparent 60%);
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  ::selection { background: var(--accent-dim); color: var(--text); }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: var(--maxw);
+    margin-inline: auto;
+    padding-inline: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---------- Typography ---------- */
+  h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -0.02em; line-height: 1.05; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 18px;
+  }
+  .section-head { max-width: 640px; margin-bottom: 56px; }
+  .section-head h2 { font-size: clamp(28px, 4vw, 42px); }
+  .section-head p { color: var(--text-muted); font-size: 18px; margin: 18px 0 0; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-size: 15px; font-weight: 540; white-space: nowrap;
+    padding: 12px 20px; border-radius: var(--radius-sm);
+    border: 1px solid transparent; cursor: pointer;
+    transition: transform 0.18s var(--ease), background 0.18s var(--ease),
+                border-color 0.18s var(--ease), color 0.18s var(--ease);
+  }
+  .btn:active { transform: translateY(1px) scale(0.99); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: var(--text); border-color: var(--border-2); }
+  .btn-ghost:hover { border-color: var(--accent-line); background: rgba(255,255,255,0.02); transform: translateY(-1px); }
+  .btn svg { width: 17px; height: 17px; }
+
+  /* ============================================================
+     Navigation - single line, <= 72px tall
+     ============================================================ */
+  header.nav {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+    background: rgba(10, 11, 13, 0.66);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s var(--ease), background 0.3s var(--ease);
+  }
+  header.nav.scrolled { border-bottom-color: var(--border); background: rgba(10, 11, 13, 0.86); }
+  .nav-inner { display: flex; align-items: center; gap: 28px; height: 68px; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -0.01em; font-size: 16px; }
+  .brand .mark {
+    width: 28px; height: 28px; border-radius: 8px;
+    flex: none; overflow: hidden; display: block;
+  }
+  .brand .mark svg, .brand .mark img { width: 100%; height: 100%; display: block; object-fit: cover; }
+  .brand .wm { font-weight: 600; letter-spacing: -0.01em; }
+  .brand .wm b { font-weight: 600; }
+
+  .nav-links { display: flex; align-items: center; gap: 26px; margin-left: 8px; }
+  .nav-links a { color: var(--text-muted); font-size: 14.5px; transition: color 0.15s var(--ease); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .nav-right .btn { padding: 9px 16px; font-size: 14px; }
+
+  .nav-toggle {
+    display: none; background: none; border: 1px solid var(--border-2);
+    border-radius: 9px; width: 40px; height: 38px; color: var(--text); cursor: pointer;
+    margin-left: auto;
+  }
+
+  /* ============================================================
+     Hero - asymmetric split: copy (left) + real code window (right)
+     ============================================================ */
+  .hero { padding: clamp(56px, 9vw, 104px) 0 64px; }
+  .hero-grid {
+    display: grid; grid-template-columns: 1.05fr 0.95fr;
+    gap: 56px; align-items: center;
+  }
+  .brand-strip {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.04em;
+    color: var(--text-muted);
+    padding: 6px 13px 6px 11px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--surface);
+    margin-bottom: 26px;
+  }
+  .brand-strip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+  .brand-strip b { color: var(--text); font-weight: 600; }
+
+  .hero h1 { font-size: clamp(38px, 6.0vw, 66px); letter-spacing: -0.035em; }
+  .hero h1 .grad { color: var(--accent); }
+  .hero .lede {
+    color: var(--text-muted); font-size: clamp(17px, 2vw, 20px);
+    max-width: 33ch; margin: 26px 0 34px;
+  }
+  .hero-cta { display: flex; flex-wrap: wrap; gap: 14px; }
+  .hero-note {
+    margin-top: 26px; font-size: 13.5px; color: var(--text-faint);
+    font-family: var(--mono); letter-spacing: 0.02em;
+  }
+  .hero-note span { color: var(--accent); }
+
+  /* ---------- Code window (reused) ---------- */
+  .window {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-2) 100%);
+    box-shadow: 0 30px 80px -30px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.02) inset;
+    overflow: hidden;
+    min-width: 0; max-width: 100%;
+  }
+  /* Let grid columns shrink so code windows scroll internally, not the page. */
+  .hero-grid > *, .config-grid > * { min-width: 0; }
+  .window-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 15px; border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.015);
+  }
+  .window-bar .tl { display: flex; gap: 7px; }
+  .window-bar .tl i { width: 11px; height: 11px; border-radius: 50%; background: #2a2e36; display: block; }
+  .window-bar .name {
+    font-family: var(--mono); font-size: 12px; color: var(--text-faint);
+    margin-left: 8px;
+  }
+  .window-bar .pill {
+    margin-left: auto; font-family: var(--mono); font-size: 11px;
+    color: var(--accent); border: 1px solid var(--accent-line);
+    padding: 3px 9px; border-radius: 999px;
+  }
+  pre.code {
+    margin: 0; padding: 20px 22px; overflow-x: auto;
+    font-family: var(--mono); font-size: 13px; line-height: 1.72;
+    color: #c7ccd4;
+    tab-size: 2;
+  }
+  .code .k { color: #7fd1ff; }     /* key */
+  .code .s { color: var(--accent); } /* string */
+  .code .c { color: #5b626d; font-style: italic; } /* comment */
+  .code .p { color: #e6b86b; }     /* punctuation/value emphasis */
+
+  /* ============================================================
+     Provider / model strip - model catalog, honest mono chips
+     ============================================================ */
+  .providers { padding: 26px 0 6px; border-top: 1px solid var(--border); }
+  .providers .label {
+    text-align: center; font-family: var(--mono); font-size: 12px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint);
+    margin-bottom: 22px;
+  }
+  .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 880px; margin-inline: auto; }
+  .chip {
+    font-family: var(--mono); font-size: 13px; color: var(--text-muted);
+    padding: 8px 14px; border-radius: 999px; border: 1px solid var(--border);
+    background: var(--surface); transition: color 0.16s var(--ease), border-color 0.16s var(--ease);
+  }
+  .chip:hover { color: var(--text); border-color: var(--border-2); }
+  .chip.free { color: var(--accent); border-color: var(--accent-line); background: var(--accent-dim); }
+
+  /* ============================================================
+     Sections
+     ============================================================ */
+  section.band { padding: clamp(72px, 11vw, 128px) 0; }
+  section.band.alt { background: linear-gradient(180deg, transparent, rgba(255,255,255,0.012) 50%, transparent); }
+
+  /* ---------- How it works (numbered process, distinct content per step) ---------- */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .step {
+    position: relative; border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--surface); padding: 28px 26px 26px; overflow: hidden;
+  }
+  .step .num {
+    font-family: var(--mono); font-size: 13px; color: var(--accent);
+    border: 1px solid var(--accent-line); border-radius: 8px;
+    width: 38px; height: 30px; display: grid; place-items: center; margin-bottom: 20px;
+  }
+  .step h3 { font-size: 19px; margin-bottom: 10px; }
+  .step p { color: var(--text-muted); font-size: 15px; margin: 0; }
+  .step .mini {
+    margin-top: 18px; font-family: var(--mono); font-size: 12px; line-height: 1.7;
+    color: var(--text-faint); border-top: 1px dashed var(--border); padding-top: 16px;
+  }
+  .step .mini .s { color: var(--accent); }
+  .step .mini .k { color: #7fd1ff; }
+
+  /* ---------- Bento feature grid (6 cells, varied sizes + visual variation) ---------- */
+  .bento {
+    display: grid; gap: 18px;
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: minmax(180px, auto);
+  }
+  .cell {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--surface); padding: 26px 26px;
+    display: flex; flex-direction: column;
+    transition: border-color 0.2s var(--ease), transform 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .cell:hover { border-color: var(--border-2); transform: translateY(-3px); }
+  .cell h3 { font-size: 19px; margin-bottom: 9px; letter-spacing: -0.01em; }
+  .cell p { color: var(--text-muted); font-size: 14.5px; margin: 0; }
+  .cell .ic {
+    width: 38px; height: 38px; border-radius: 10px; margin-bottom: 16px;
+    display: grid; place-items: center; flex: none;
+    background: var(--accent-dim); border: 1px solid var(--accent-line); color: var(--accent);
+  }
+  .cell .ic svg { width: 19px; height: 19px; }
+
+  .c-byok    { grid-column: span 3; }
+  .c-free    { grid-column: span 3; background:
+      linear-gradient(150deg, rgba(63,224,138,0.10), transparent 60%), var(--surface);
+      border-color: var(--accent-line); justify-content: space-between; }
+  .c-native  { grid-column: span 2; }
+  .c-flex    { grid-column: span 2; }
+  .c-guide   { grid-column: span 2; }
+  .c-depth   { grid-column: span 4; }
+  .c-verify  { grid-column: span 2; }
+
+  .freebig { font-size: clamp(48px, 7vw, 76px); font-weight: 600; letter-spacing: -0.04em; line-height: 1; color: var(--accent); }
+  .freebig small { display:block; font-size: 14px; color: var(--text-muted); font-weight: 400; letter-spacing: 0; margin-top: 14px; font-family: var(--font); }
+
+  .depth-inner { display: grid; grid-template-columns: 1fr 0.9fr; gap: 24px; align-items: center; height: 100%; }
+  .verdicts { display: flex; flex-direction: column; gap: 10px; }
+  .verdict {
+    display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 12.5px;
+    padding: 9px 12px; border-radius: 9px; border: 1px solid var(--border); background: var(--bg-2);
+    color: var(--text-muted);
+  }
+  .verdict.good { color: var(--accent); border-color: var(--accent-line); }
+  .verdict .vi { width: 14px; height: 14px; flex: none; }
+
+  @media (max-width: 880px) {
+    .depth-inner { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- Comparison (ownership & cost, no competitor names) ---------- */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .col {
+    border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+    background: var(--surface);
+  }
+  .col.theirs { opacity: 0.92; }
+  .col.ours { border-color: var(--accent-line); box-shadow: 0 0 0 1px var(--accent-line), 0 24px 60px -34px rgba(63,224,138,0.30); }
+  .col-head { padding: 22px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+  .col-head h3 { font-size: 17px; }
+  .col-head .tag { font-family: var(--mono); font-size: 11px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-faint); margin-left: auto; }
+  .col.ours .col-head .tag { color: var(--accent); border-color: var(--accent-line); }
+  .col ul { list-style: none; margin: 0; padding: 10px 24px 26px; }
+  .col li { display: flex; gap: 12px; align-items: flex-start; padding: 13px 0; border-bottom: 1px solid var(--border); font-size: 15px; }
+  .col li:last-child { border-bottom: none; }
+  .col li .m { flex: none; margin-top: 2px; width: 17px; height: 17px; }
+  .theirs li .m { color: var(--text-faint); }
+  .theirs li { color: var(--text-muted); }
+  .ours li .m { color: var(--accent); }
+
+  /* ---------- Config example ---------- */
+  .config-grid { display: grid; grid-template-columns: 0.86fr 1.14fr; gap: 48px; align-items: start; }
+  .config-copy h2 { font-size: clamp(28px, 4vw, 40px); }
+  .config-copy p { color: var(--text-muted); font-size: 17px; margin: 18px 0 0; }
+  .config-list { margin: 26px 0 0; padding: 0; list-style: none; }
+  .config-list li { display: flex; gap: 12px; align-items: flex-start; padding: 11px 0; color: var(--text-muted); font-size: 15px; }
+  .config-list li svg { flex: none; margin-top: 3px; width: 16px; height: 16px; color: var(--accent); }
+  .copybtn {
+    position: absolute; top: 11px; right: 12px; z-index: 2;
+    font-family: var(--mono); font-size: 11.5px; color: var(--text-muted);
+    background: var(--surface-2); border: 1px solid var(--border-2); border-radius: 8px;
+    padding: 6px 11px; cursor: pointer; transition: all 0.16s var(--ease);
+  }
+  .copybtn:hover { color: var(--text); border-color: var(--accent-line); }
+  .copybtn.ok { color: var(--accent); border-color: var(--accent-line); }
+  .window.has-copy { position: relative; }
+
+  /* ---------- Final CTA ---------- */
+  .cta-final {
+    text-align: center; border: 1px solid var(--border); border-radius: var(--radius-lg);
+    background:
+      radial-gradient(700px 300px at 50% 0%, rgba(63,224,138,0.10), transparent 70%),
+      var(--surface);
+    padding: clamp(48px, 7vw, 80px) 24px;
+  }
+  .cta-final h2 { font-size: clamp(30px, 4.6vw, 50px); letter-spacing: -0.03em; }
+  .cta-final p { color: var(--text-muted); font-size: 18px; max-width: 52ch; margin: 20px auto 34px; }
+  .cta-final .hero-cta { justify-content: center; }
+  .cta-oneliner {
+    margin: 34px auto 0; max-width: 560px; position: relative;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    border-top: 1px solid var(--border); padding: 56px 0 48px; margin-top: 8px;
+  }
+  .foot-grid { display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; }
+  .foot-brand { max-width: 320px; }
+  .foot-brand p { color: var(--text-muted); font-size: 14px; margin: 14px 0 0; }
+  .foot-brand .by { color: var(--text-faint); font-size: 13px; margin-top: 10px; }
+  .foot-brand .by strong { color: var(--text-muted); font-weight: 600; }
+  .foot-cols { display: flex; gap: 64px; flex-wrap: wrap; }
+  .foot-col h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-faint); margin: 0 0 16px; font-weight: 600; }
+  .foot-col a { display: block; color: var(--text-muted); font-size: 14.5px; padding: 5px 0; transition: color 0.15s var(--ease); }
+  .foot-col a:hover { color: var(--text); }
+  .foot-bottom { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; align-items: center; color: var(--text-faint); font-size: 13px; }
+  .foot-bottom .mono { font-family: var(--mono); }
+
+  /* ============================================================
+     Reveal-on-scroll (honored only when motion is allowed)
+     ============================================================ */
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .btn, .cell, .chip { transition: none; }
+  }
+
+  /* ============================================================
+     Responsive
+     ============================================================ */
+  @media (max-width: 960px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+    .hero .lede { max-width: 46ch; }
+    .config-grid { grid-template-columns: 1fr; gap: 32px; }
+    .bento { grid-template-columns: repeat(2, 1fr); }
+    .c-byok, .c-free, .c-native, .c-flex, .c-guide, .c-depth, .c-verify { grid-column: span 2; }
+  }
+  @media (max-width: 760px) {
+    .nav-links { display: none; }
+    .nav-right .btn.docs-link { display: none; }
+    .nav-toggle { display: grid; place-items: center; }
+    .nav-right { display: none; }
+    .nav-right.open {
+      display: flex; position: absolute; top: 68px; left: 0; right: 0;
+      flex-direction: column; align-items: stretch; gap: 10px;
+      background: var(--bg-2); border-bottom: 1px solid var(--border);
+      padding: 18px 24px 24px;
+    }
+    .nav-right.open .btn { justify-content: center; }
+    .nav-right.open .btn.docs-link { display: inline-flex; }
+    .steps { grid-template-columns: 1fr; }
+    .compare { grid-template-columns: 1fr; }
+    .bento { grid-template-columns: 1fr; }
+    .c-byok, .c-free, .c-native, .c-flex, .c-guide, .c-depth, .c-verify { grid-column: span 1; }
+    .foot-cols { gap: 40px; }
+  }
+  @media (max-width: 420px) {
+    .wrap { padding-inline: 18px; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ============================== NAV ============================== -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top" aria-label="J-Bot Review home">
+      <span class="mark" aria-hidden="true">
+        <img src="assets/logo.png" alt="" width="28" height="28" />
+      </span>
+      <span class="wm"><b>J-Bot</b> Review</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#compare">Why self-hosted</a>
+      <a href="#setup">Setup</a>
+    </nav>
+
+    <div class="nav-right" id="navRight">
+      <a class="btn btn-ghost docs-link" href="https://github.com/pgup-ai/jbot-review-action#readme">Docs</a>
+      <a class="btn btn-primary" href="#setup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Add to your repo
+      </a>
+    </div>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============================== HERO ============================== -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="brand-strip">Powered by <b>OpenCode</b></span>
+      <h1>Code review that never leaves your <span class="grad">CI</span>.</h1>
+      <p class="lede">An agentic PR reviewer that runs inside your own GitHub Actions, on your keys. Your code never leaves your infrastructure.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#setup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Add to your repo
+        </a>
+        <a class="btn btn-ghost" href="https://github.com/pgup-ai/jbot-review-action">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.34 1.12 2.91.86.09-.66.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.27 2.75 1.05A9.3 9.3 0 0 1 12 6.84c.85 0 1.71.12 2.51.34 1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.59.69.49A10.02 10.02 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
+          View on GitHub
+        </a>
+      </div>
+      <p class="hero-note">Default model: <span>opencode/deepseek-v4-flash-free</span> &nbsp;·&nbsp; cost: <span>$0</span></p>
+    </div>
+
+    <!-- Real, copyable workflow YAML: the authentic "hero asset" for a CI tool -->
+    <div class="hero-asset reveal">
+      <div class="window">
+        <div class="window-bar">
+          <span class="tl" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="name">.github/workflows/jbot-review.yml</span>
+          <span class="pill">drop-in</span>
+        </div>
+<pre class="code" aria-label="Example GitHub Actions workflow"><span class="k">on</span>:
+  <span class="k">pull_request</span>:
+    <span class="k">types</span>: [<span class="p">opened</span>, <span class="p">synchronize</span>]
+
+<span class="k">jobs</span>:
+  <span class="k">review</span>:
+    <span class="k">runs-on</span>: <span class="p">ubuntu-latest</span>
+    <span class="k">steps</span>:
+      - <span class="k">uses</span>: <span class="s">actions/checkout@v6</span>
+        <span class="k">with</span>: { <span class="k">fetch-depth</span>: <span class="p">0</span> }
+      - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
+        <span class="k">with</span>:
+          <span class="k">opencode-api-key</span>: <span class="s">${{ secrets.OPENCODE_API_KEY }}</span>
+          <span class="k">github-token</span>: <span class="s">${{ secrets.GITHUB_TOKEN }}</span>
+<span class="c"># your runner. your key. your code stays put.</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== PROVIDER / MODEL STRIP ====================== -->
+<section class="providers" aria-label="Supported providers">
+  <div class="wrap">
+    <p class="label">Bring any provider, or bring none</p>
+    <div class="chips">
+      <span class="chip free">opencode · free models</span>
+      <span class="chip">anthropic</span>
+      <span class="chip">openai</span>
+      <span class="chip">deepseek</span>
+      <span class="chip">xai</span>
+      <span class="chip">nvidia</span>
+      <span class="chip">openrouter</span>
+      <span class="chip">opencode-go</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== HOW IT WORKS ============================== -->
+<section class="band" id="how">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">How it works</p>
+      <h2>One file of setup. Zero servers to run.</h2>
+      <p>J-Bot Review ships as a Docker container action. GitHub pulls the image into your own runner, drives a read-only review over your checkout, and posts back. Nothing is sent to a vendor.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step reveal">
+        <div class="num">01</div>
+        <h3>Add the workflow</h3>
+        <p>Commit one YAML file to <code>.github/workflows</code> and add a single API key as a repo secret.</p>
+        <div class="mini"><span class="k">secrets</span>:<br>&nbsp;&nbsp;<span class="s">OPENCODE_API_KEY</span></div>
+      </div>
+      <div class="step reveal">
+        <div class="num">02</div>
+        <h3>It runs in your CI</h3>
+        <p>On each PR, Actions starts <code>opencode serve</code> in the container and drives a read-only <code>plan</code> agent across the full diff.</p>
+        <div class="mini">read-only · <span class="s">no writes</span> · your runner</div>
+      </div>
+      <div class="step reveal">
+        <div class="num">03</div>
+        <h3>Reviews land on the PR</h3>
+        <p>Diff-anchored inline comments, a deterministic verdict, and resolved threads tracked across pushes.</p>
+        <div class="mini"><span class="s">Good to go</span> from jbot-review</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== FEATURES (BENTO) ============================== -->
+<section class="band alt" id="features">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>Enterprise-grade review. Zero <span style="white-space:nowrap">lock-in.</span></h2>
+      <p>Everything below runs on infrastructure you already own. No third-party servers, no data leaving your perimeter, no per-seat bill.</p>
+    </div>
+
+    <div class="bento">
+      <!-- BYOK -->
+      <div class="cell c-byok reveal">
+        <div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3"/></svg></div>
+        <h3>Your keys, your runner</h3>
+        <p>You bring the provider API key as a repo secret. The review executes inside your GitHub Actions runner, never on a vendor's machine. The code stays where it already lives.</p>
+      </div>
+
+      <!-- FREE -->
+      <div class="cell c-free reveal">
+        <div>
+          <h3>Reviews that can cost nothing</h3>
+          <p>The default is OpenCode's free <code>deepseek-v4-flash-free</code> tier. Real review, zero per-review spend.</p>
+        </div>
+        <div class="freebig">$0<small>or about $0.01/review on paid tiers</small></div>
+      </div>
+
+      <!-- NATIVE CI -->
+      <div class="cell c-native reveal">
+        <div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div>
+        <h3>Native to GitHub CI</h3>
+        <p>A standard container action. No webhooks to a vendor, no SaaS account, no data exfiltration.</p>
+      </div>
+
+      <!-- FLEXIBILITY -->
+      <div class="cell c-flex reveal">
+        <div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg></div>
+        <h3>Any model you want</h3>
+        <p>Eight providers and every model on models.dev. Switch with one repo variable, no YAML edits.</p>
+      </div>
+
+      <!-- GUIDELINES -->
+      <div class="cell c-guide reveal">
+        <div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+        <h3>Reads your house rules</h3>
+        <p>It discovers <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>.coderabbit.yaml</code>, <code>greptile.json</code>, and Cursor rules, then reviews against them.</p>
+      </div>
+
+      <!-- DEPTH -->
+      <div class="cell c-depth reveal">
+        <div class="depth-inner">
+          <div>
+            <h3>Depth, not drive-by comments</h3>
+            <p>Every run covers the complete base...head diff, sharded in parallel for speed. Blocking findings are adversarially re-checked before posting, so refuted ones are dropped and uncertain ones demoted.</p>
+          </div>
+          <div class="verdicts" aria-hidden="true">
+            <span class="verdict"><svg class="vi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>Needs changes before approval</span>
+            <span class="verdict"><svg class="vi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12h8"/></svg>Mergeable with comments</span>
+            <span class="verdict good"><svg class="vi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Good to go from jbot-review</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VERIFY / DOCS -->
+      <div class="cell c-verify reveal">
+        <div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg></div>
+        <h3>Checks current docs</h3>
+        <p>When a PR touches an external API or SDK, Context7 verifies the change against live documentation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== COMPARISON ============================== -->
+<section class="band" id="compare">
+  <div class="wrap">
+    <div class="section-head reveal" style="max-width:720px">
+      <p class="eyebrow">Ownership and cost</p>
+      <h2>A reviewer you own, not a service you rent.</h2>
+      <p>Hosted AI reviewers upload your diff to their cloud and bill per seat. J-Bot Review keeps the entire loop on your side of the wire.</p>
+    </div>
+
+    <div class="compare">
+      <div class="col theirs reveal">
+        <div class="col-head"><h3>Hosted SaaS reviewers</h3><span class="tag">rented</span></div>
+        <ul>
+          <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Your code is uploaded to a vendor's servers to be reviewed.</li>
+          <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Per-seat pricing that scales with your team, not your usage.</li>
+          <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Locked to the models the vendor chose for you.</li>
+          <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Closed pipeline you cannot read, audit, or fork.</li>
+        </ul>
+      </div>
+
+      <div class="col ours reveal">
+        <div class="col-head"><h3>J-Bot Review</h3><span class="tag">owned</span></div>
+        <ul>
+          <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Runs in your runner. The diff never leaves your infrastructure.</li>
+          <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Free on OpenCode models, or about $0.01 per review on paid tiers.</li>
+          <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Any provider, any model. Swap with one repo variable.</li>
+          <li><svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Open action you can pin, audit, and self-host anywhere.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== SETUP / CONFIG ============================== -->
+<section class="band alt" id="setup">
+  <div class="wrap config-grid">
+    <div class="config-copy reveal">
+      <h2>Trivial to add. Hard to outgrow.</h2>
+      <p>Copy this into <code>.github/workflows/jbot-review.yml</code>, add your key, open a PR. That is the whole install.</p>
+      <ul class="config-list">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>One file, one secret, no external account.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Least-privilege by default: contents read, pull-requests write.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Tune recall and cost later with shards, passes, and verification.</li>
+      </ul>
+      <div class="hero-cta" style="margin-top:32px">
+        <a class="btn btn-primary" href="https://github.com/pgup-ai/jbot-review-action">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.34 1.12 2.91.86.09-.66.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.27 2.75 1.05A9.3 9.3 0 0 1 12 6.84c.85 0 1.71.12 2.51.34 1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.59.69.49A10.02 10.02 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
+          Get the action
+        </a>
+        <a class="btn btn-ghost" href="https://github.com/pgup-ai/jbot-review-action#readme">Read the docs</a>
+      </div>
+    </div>
+
+    <div class="window has-copy reveal">
+      <div class="window-bar">
+        <span class="tl" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="name">.github/workflows/jbot-review.yml</span>
+      </div>
+      <button class="copybtn" id="copyBtn" data-target="fullConfig">Copy</button>
+<pre class="code" id="fullConfig"><span class="k">name</span>: <span class="s">J-Bot Code Review</span>
+<span class="k">on</span>:
+  <span class="k">pull_request</span>:
+    <span class="k">types</span>: [<span class="p">opened</span>, <span class="p">reopened</span>, <span class="p">ready_for_review</span>, <span class="p">synchronize</span>]
+
+<span class="k">concurrency</span>:
+  <span class="k">group</span>: <span class="s">jbot-review-${{ github.event.pull_request.number }}</span>
+  <span class="k">cancel-in-progress</span>: <span class="p">true</span>
+
+<span class="k">permissions</span>:
+  <span class="k">contents</span>: <span class="p">read</span>
+  <span class="k">packages</span>: <span class="p">read</span>
+  <span class="k">pull-requests</span>: <span class="p">write</span>
+  <span class="k">checks</span>: <span class="p">read</span>
+
+<span class="k">jobs</span>:
+  <span class="k">review</span>:
+    <span class="k">if</span>: <span class="s">github.event.pull_request.draft == false</span>
+    <span class="k">runs-on</span>: <span class="p">ubuntu-latest</span>
+    <span class="k">steps</span>:
+      - <span class="k">uses</span>: <span class="s">actions/checkout@v6</span>
+        <span class="k">with</span>:
+          <span class="k">fetch-depth</span>: <span class="p">0</span>
+      - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
+        <span class="k">with</span>:
+          <span class="c"># defaults to opencode + a free model; override anytime</span>
+          <span class="k">provider</span>: <span class="s">${{ vars.JBOT_REVIEW_PROVIDER || 'opencode' }}</span>
+          <span class="k">model</span>: <span class="s">${{ vars.JBOT_REVIEW_MODEL || '' }}</span>
+          <span class="k">opencode-api-key</span>: <span class="s">${{ secrets.OPENCODE_API_KEY }}</span>
+          <span class="k">github-token</span>: <span class="s">${{ secrets.GITHUB_TOKEN }}</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== FINAL CTA ============================== -->
+<section class="band" style="padding-top:0">
+  <div class="wrap">
+    <div class="cta-final reveal">
+      <h2>Put it on your next pull request.</h2>
+      <p>One YAML file, one secret, and an agentic reviewer is reading every PR. On your runner, on your keys, for free.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="https://github.com/pgup-ai/jbot-review-action">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Add to your repo
+        </a>
+        <a class="btn btn-ghost" href="https://github.com/pgup-ai/jbot-review-action#readme">Self-host the App</a>
+      </div>
+      <div class="cta-oneliner window has-copy">
+        <button class="copybtn" id="copyBtn2" data-target="oneliner">Copy</button>
+<pre class="code" id="oneliner" style="font-size:12.5px"><span class="c"># add the step to any pull_request workflow</span>
+- <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================== FOOTER ============================== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="#top" aria-label="J-Bot Review home">
+          <span class="mark" aria-hidden="true">
+            <img src="assets/logo.png" alt="" width="28" height="28" />
+          </span>
+          <span class="wm"><b>J-Bot</b> Review</span>
+        </a>
+        <p>An agentic PR reviewer built on OpenCode. Your keys, your runner, your code.</p>
+        <p class="by">A <strong>PGUP AI</strong> project.</p>
+      </div>
+
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Product</h4>
+          <a href="#how">How it works</a>
+          <a href="#features">Features</a>
+          <a href="#compare">Why self-hosted</a>
+          <a href="#setup">Setup</a>
+        </div>
+        <div class="foot-col">
+          <h4>Resources</h4>
+          <a href="https://github.com/pgup-ai/jbot-review-action#readme">Documentation</a>
+          <a href="https://github.com/pgup-ai/jbot-review-action">Action repo</a>
+          <a href="https://models.dev/">Models and providers</a>
+          <a href="https://opencode.ai/">OpenCode</a>
+        </div>
+        <div class="foot-col">
+          <h4>Deploy</h4>
+          <a href="https://github.com/pgup-ai/jbot-review-action#readme">In-repo workflow</a>
+          <a href="https://github.com/pgup-ai/jbot-review-action#readme">Hosted GitHub App</a>
+          <a href="https://github.com/pgup-ai/jbot-review-action#readme">Self-host guides</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot-bottom">
+      <span>&copy; <span id="year">2026</span> PGUP AI &middot; J-Bot Review. Open source.</span>
+      <span class="mono">Powered by OpenCode · runs on your infrastructure</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // --- Nav: shadow on scroll + mobile toggle ---
+  (function () {
+    var nav = document.getElementById('nav');
+    var onScroll = function () {
+      if (window.scrollY > 8) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    var toggle = document.getElementById('navToggle');
+    var navRight = document.getElementById('navRight');
+    toggle.addEventListener('click', function () {
+      var open = navRight.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    navRight.addEventListener('click', function (e) {
+      if (e.target.closest('a')) {
+        navRight.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
+
+  // --- Copy-to-clipboard for code windows ---
+  (function () {
+    function wire(btn) {
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        var pre = document.getElementById(btn.dataset.target);
+        if (!pre) return;
+        var text = pre.innerText.replace(/ /g, ' ');
+        navigator.clipboard.writeText(text).then(function () {
+          var prev = btn.textContent;
+          btn.textContent = 'Copied';
+          btn.classList.add('ok');
+          setTimeout(function () { btn.textContent = prev; btn.classList.remove('ok'); }, 1600);
+        });
+      });
+    }
+    wire(document.getElementById('copyBtn'));
+    wire(document.getElementById('copyBtn2'));
+  })();
+
+  // --- Reveal on scroll (respects reduced-motion via CSS fallback) ---
+  (function () {
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var els = document.querySelectorAll('.reveal');
+    if (reduce || !('IntersectionObserver' in window)) {
+      els.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    els.forEach(function (el) { io.observe(el); });
+  })();
+
+  // --- Current year ---
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
