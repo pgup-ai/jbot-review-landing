@@ -374,7 +374,9 @@
      setup / final CTA). Borders are contained to the content column,
      matching the design canvas.
      ============================================================ */
-  .sect-inner { border-top: 1px solid var(--hairline); padding: 54px 0; }
+  /* padding-block only: .sect-inner shares its div with .wrap, whose
+     padding-inline must survive (a padding shorthand here would zero it). */
+  .sect-inner { border-top: 1px solid var(--hairline); padding-block: 54px; }
   .sect-head { margin-bottom: 38px; }
   .sect-head.center { text-align: center; }
   .sect-head .h2 { max-width: 640px; }
@@ -450,7 +452,7 @@
   .setup-grid .code-card pre { padding: 18px 20px; font-size: 12.5px; line-height: 1.7; }
 
   /* ---------- Final CTA ---------- */
-  .cta-sect .sect-inner { padding: 70px 0; text-align: center; }
+  .cta-sect .sect-inner { padding-block: 70px; text-align: center; }
   .cta-sect .h2 { font-family: var(--display); font-weight: 700; font-size: clamp(32px, 6vw, 46px); letter-spacing: -0.025em; line-height: 1.05; }
   .cta-sect .sub { font-size: 17px; color: rgba(233, 236, 232, 0.62); max-width: 520px; margin: 20px auto 0; }
   .cta-pill {
