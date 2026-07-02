@@ -954,16 +954,43 @@
       setup: "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, synchronize, reopened] }\npermissions:\n  contents: read\n  pull-requests: write\njobs:\n  review:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v6\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          provider: ${{ vars.JBOT_PROVIDER || 'opencode' }}\n          opencode-api-key: ${{ secrets.OPENCODE_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}",
       cta: "- uses: pgup-ai/jbot-review-action@v0"
     };
+    // Fallback for non-secure contexts (file://, http://) where the async
+    // Clipboard API is unavailable, and as a retry when writeText rejects
+    // (e.g. permission denied / document not focused).
+    function legacyCopy(text) {
+      return new Promise(function (resolve, reject) {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+          document.body.appendChild(ta);
+          ta.select();
+          var ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          ok ? resolve() : reject(new Error('execCommand copy failed'));
+        } catch (e) { reject(e); }
+      });
+    }
+    function copyText(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).catch(function () { return legacyCopy(text); });
+      }
+      return legacyCopy(text);
+    }
     document.querySelectorAll('button[data-copy]').forEach(function (btn) {
       var timer;
+      var label = btn.textContent;
+      function flash(msg) {
+        btn.textContent = msg;
+        clearTimeout(timer);
+        timer = setTimeout(function () { btn.textContent = label; }, 1600);
+      }
       btn.addEventListener('click', function () {
         var text = TEXTS[btn.dataset.copy];
-        if (!text || !navigator.clipboard) return;
-        navigator.clipboard.writeText(text).then(function () {
-          btn.textContent = 'Copied ✓';
-          clearTimeout(timer);
-          timer = setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
-        });
+        if (!text) return;
+        copyText(text).then(function () { flash('Copied ✓'); })
+                      .catch(function () { flash('Copy failed'); });
       });
     });
   })();
