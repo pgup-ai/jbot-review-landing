@@ -189,14 +189,6 @@
   .nav-links a { transition: color 0.15s var(--ease); }
   .nav-links a:hover { color: var(--text); }
   .nav-actions { display: flex; align-items: center; gap: 12px; }
-  .star-pill {
-    display: flex; align-items: center; gap: 8px;
-    color: rgba(233, 236, 232, 0.82); font-size: 13px; font-family: var(--mono);
-    border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px; padding: 7px 11px;
-    transition: border-color 0.16s var(--ease), color 0.16s var(--ease);
-  }
-  .star-pill:hover { border-color: rgba(94, 227, 154, 0.5); color: var(--text); }
-  .star-pill b { color: var(--accent); font-weight: 600; }
   .btn-nav { font-size: 13px; border-radius: 8px; padding: 8px 14px; }
 
   .nav-toggle {
@@ -337,7 +329,7 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   }
   .review-card pre.diff { margin: 0; font-family: var(--mono); font-size: 12.5px; line-height: 1.7; overflow-x: auto; }
-  .diff .row { padding: 2px 18px; }
+  .diff .row { display: block; padding: 2px 18px; }
   .diff .ctx { color: var(--code-comment); }
   .diff .del { background: rgba(248, 81, 73, 0.09); color: var(--danger-soft); }
   .diff .add { background: rgba(63, 185, 80, 0.09); color: var(--diff-add-text); }
@@ -513,7 +505,7 @@
     html { scroll-behavior: auto; }
     .hero-pill .dot { animation: none; }
     .reveal { opacity: 1; transform: none; transition: none; }
-    .btn, .chip, .feat, .copybtn, .copybtn-solid, .star-pill { transition: none; }
+    .btn, .chip, .feat, .copybtn, .copybtn-solid { transition: none; }
   }
 
   /* ============================================================
@@ -536,7 +528,7 @@
     }
     .nav-right.open .nav-links { flex-direction: column; gap: 14px; font-size: 15px; }
     .nav-right.open .nav-actions { flex-direction: column; align-items: stretch; }
-    .nav-right.open .btn-nav, .nav-right.open .star-pill { justify-content: center; }
+    .nav-right.open .btn-nav { justify-content: center; }
     .wall-grid, .compare-grid { grid-template-columns: 1fr; }
   }
   @media (max-width: 640px) {
@@ -571,10 +563,6 @@
         <a href="#compare">Own vs. rent</a>
       </nav>
       <div class="nav-actions">
-        <a class="star-pill" href="https://github.com/pgup-ai/jbot-review-action" target="_blank" rel="noopener noreferrer" aria-label="Star J-Bot Review on GitHub">
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-          <b>Star</b>
-        </a>
         <a class="btn btn-primary btn-nav" href="#setup">Add to your repo</a>
       </div>
     </div>
@@ -702,7 +690,7 @@
         <span class="meta">bot · reviewed 2 files · 40s ago</span>
       </div>
       <div class="review-file">src/auth/session.ts</div>
-<pre class="diff" aria-label="Reviewed diff"><div class="row ctx">@@ -41,7 +41,9 @@ export async function createSession(</div><div class="row del"><span class="m">-</span>  const token = jwt.sign(payload, SECRET)</div><div class="row add"><span class="m">+</span>  const token = jwt.sign(payload, SECRET, {</div><div class="row add"><span class="m">+</span>    algorithm: req.headers['x-alg'] || 'HS256'</div><div class="row add"><span class="m">+</span>  })</div></pre>
+<pre class="diff" aria-label="Reviewed diff"><span class="row ctx">@@ -41,7 +41,9 @@ export async function createSession(</span><span class="row del"><span class="m">-</span>  const token = jwt.sign(payload, SECRET)</span><span class="row add"><span class="m">+</span>  const token = jwt.sign(payload, SECRET, {</span><span class="row add"><span class="m">+</span>    algorithm: req.headers['x-alg'] || 'HS256'</span><span class="row add"><span class="m">+</span>  })</span></pre>
       <div class="review-comment">
         <div class="tags">
           <span class="badge-blocking">● Blocking</span>
