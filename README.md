@@ -33,6 +33,8 @@ python3 -m http.server 8000   # then open http://localhost:8000
 Live at **https://www.pgupai.com**, hosted on Vercel (project `pgup-ai-landing`).
 Pushes to `main` auto-deploy; `vercel.json` marks it static with no build step.
 Social-card tags use absolute `https://www.pgupai.com/...` URLs.
+When `assets/og.png` changes, also bump the query version in the `og:image` and
+`twitter:image` URLs so social crawlers do not reuse a cached card.
 
 Any static host works too (Netlify, Cloudflare Pages, GitHub Pages, S3): publish
 the directory as-is. On a new domain, update the absolute URLs in `index.html`
