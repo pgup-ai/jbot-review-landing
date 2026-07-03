@@ -36,6 +36,8 @@ Social-card tags use absolute `https://www.pgupai.com/...` URLs.
 When `assets/og.png` changes, copy it to a new dated filename and point the
 `og:image` and `twitter:image` URLs at that new file so social crawlers do not
 reuse a cached card.
+If X/Twitter has already cached the root URL, use `/x` as a fresh share URL;
+it carries the same metadata and redirects humans back to `/`.
 
 Any static host works too (Netlify, Cloudflare Pages, GitHub Pages, S3): publish
 the directory as-is. On a new domain, update the absolute URLs in `index.html`
