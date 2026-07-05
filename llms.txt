@@ -25,8 +25,8 @@ Key facts:
 - [Guide: PR review with a CLI subscription you already pay for](https://www.pgupai.com/guides/cli-subscription-code-review): per-CLI provider values, secrets, and credential sources
 - [Guide: Codex code review in GitHub Actions](https://www.pgupai.com/guides/codex-code-review-github-actions): reuse a ChatGPT Plus/Pro seat via codex login
 - [Guide: Claude code review in GitHub Actions](https://www.pgupai.com/guides/claude-code-review-github-actions): setup with your Anthropic API key
-- [Compare: open-source CodeRabbit alternative](https://www.pgupai.com/compare/coderabbit-alternative): honest side-by-side, pricing checked July 2026
-- [Compare: open-source Greptile alternative](https://www.pgupai.com/compare/greptile-alternative): honest side-by-side, pricing checked July 2026
+- [Compare: open-source CodeRabbit alternative](https://www.pgupai.com/compare/coderabbit-alternative): side-by-side comparison, pricing checked July 2026
+- [Compare: open-source Greptile alternative](https://www.pgupai.com/compare/greptile-alternative): side-by-side comparison, pricing checked July 2026
 
 ## Optional
 

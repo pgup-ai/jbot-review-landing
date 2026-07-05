@@ -207,7 +207,7 @@
 
   <p class="lede"><b>Yes — the coding-agent seat you already pay for can review your pull requests.</b> If you subscribe to <b>Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, or Command Code</b>, J-Bot Review — an open-source (MIT) GitHub Action — runs that CLI inside your own GitHub Actions and posts diff-anchored, verified review comments on every PR. One workflow file, one repo secret, <b>$0 added</b> by J-Bot.</p>
 
-  <p>Hosted AI reviewers (CodeRabbit, Greptile, and similar) charge roughly $40 per seat per month and run your code through their own servers. None of them can reuse a CLI subscription. Reusing the seat you already pay for is the entire point of this guide — and as far as we know, J-Bot Review is the only PR reviewer that does it.</p>
+  <p>Hosted AI reviewers (CodeRabbit, Greptile, and similar) charge roughly $40 per seat per month and run your code through their own servers. None of them can reuse a CLI subscription; as far as we know, J-Bot Review is the only PR reviewer that can.</p>
 
   <h2 id="base-workflow">The base workflow (one file)</h2>
   <p>Commit this as <code>.github/workflows/jbot-review.yml</code>. The <code>provider</code> line and one secret change per CLI — the table below has every combination.</p>
