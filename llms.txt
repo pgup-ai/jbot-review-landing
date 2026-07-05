@@ -13,7 +13,7 @@ Key facts:
 - House rules: discovers and reviews against AGENTS.md, REVIEW.md, .coderabbit.yaml, greptile.json, and Cursor rules
 - Docs freshness: when a PR touches an external API or SDK, changes are checked against current documentation via Context7
 - Pricing: the action adds no charge of its own; you pay only your model provider (or nothing, using OpenCode Zen free models), plus normal CI minutes
-- Permissions: least-privilege by default — `contents: read`, `pull-requests: write`
+- Permissions: least-privilege by default — `contents: read`; write scopes only for PR comments and reactions (`pull-requests`, `issues`), plus `checks: read` in the example workflows
 - Maker: PGUP AI (https://github.com/pgup-ai)
 
 ## Docs

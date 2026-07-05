@@ -110,7 +110,7 @@
           "name": "Does my code get uploaded to a third-party service?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. J-Bot runs on your GitHub Actions runner and reviews your checkout read-only. The diff is sent only to the model provider you configure, on your own key. There is no J-Bot server and no third-party reviewer in the loop."
+            "text": "There is no J-Bot server and no hosted reviewer in the loop, and the checkout never leaves your runner. What does leave is the diff, sent only to the model provider you configure, on your own key."
           }
         },
         {
@@ -1047,7 +1047,7 @@
       </details>
       <details class="faq-item">
         <summary>Does my code get uploaded to a third-party service?<span class="faq-mark" aria-hidden="true">+</span></summary>
-        <div class="faq-a"><p>No. J-Bot runs on your GitHub Actions runner and reviews your checkout read-only. The diff is sent only to the model provider you configure, on your own key. There is no J-Bot server and no third-party reviewer in the loop.</p></div>
+        <div class="faq-a"><p>There is no J-Bot server and no hosted reviewer in the loop, and the checkout never leaves your runner. What does leave is the diff, sent only to the model provider you configure, on your own key.</p></div>
       </details>
       <details class="faq-item">
         <summary>How is J-Bot Review different from CodeRabbit or Greptile?<span class="faq-mark" aria-hidden="true">+</span></summary>

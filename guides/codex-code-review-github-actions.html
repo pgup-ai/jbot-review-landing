@@ -80,7 +80,7 @@
         {
           "@type": "Question",
           "name": "Can Codex modify my code from CI?",
-          "acceptedAnswer": { "@type": "Answer", "text": "No. The backend runs read-only (codex exec --sandbox read-only), the workflow uses least-privilege permissions (contents: read, pull-requests: write), and on pull_request events GitHub strips secrets from fork PRs so outside contributors cannot use your seat." }
+          "acceptedAnswer": { "@type": "Answer", "text": "No. The backend runs read-only (codex exec --sandbox read-only), the workflow's only write scopes are PR comments and reactions (contents stays read-only), and on pull_request events GitHub strips secrets from fork PRs so outside contributors cannot use your seat." }
         },
         {
           "@type": "Question",
@@ -281,7 +281,7 @@
   </details>
   <details class="faq-item">
     <summary>Can Codex modify my code from CI?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>No. The backend runs read-only (<code>codex exec --sandbox read-only</code>), the workflow uses least-privilege permissions (<code>contents: read</code>, <code>pull-requests: write</code>), and on <code>pull_request</code> events GitHub strips secrets from fork PRs so outside contributors cannot use your seat.</p></div>
+    <div class="faq-a"><p>No. The backend runs read-only (<code>codex exec --sandbox read-only</code>), the workflow's only write scopes are PR comments and reactions (<code>contents</code> stays read-only), and on <code>pull_request</code> events GitHub strips secrets from fork PRs so outside contributors cannot use your seat.</p></div>
   </details>
   <details class="faq-item">
     <summary>What does Codex code review cost per PR?<span class="faq-mark" aria-hidden="true">+</span></summary>
