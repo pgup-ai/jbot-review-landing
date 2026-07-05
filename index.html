@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>J-Bot Review: open-source AI code review in your CI</title>
-<meta name="description" content="Open-source agentic PR reviewer that runs inside your own GitHub Actions, using OpenCode gateways or CLI subscriptions including Codex, Claude, Cursor, Devin, Cline, Command Code, and Kilo." />
+<meta name="description" content="Open-source agentic PR reviewer that runs inside your own GitHub Actions, using OpenCode gateways for Claude, OpenAI, Gemini, DeepSeek and more — or CLI subscriptions including Codex, Cursor, Devin, Cline, Command Code, and Kilo." />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0a0b0a" />
 
@@ -20,7 +20,7 @@
 <meta property="og:url" content="https://www.pgupai.com/" />
 <meta property="og:site_name" content="J-Bot Review" />
 <meta property="og:title" content="J-Bot Review: open-source AI code review in your CI" />
-<meta property="og:description" content="Open-source agentic PR review inside GitHub Actions. Bring OpenCode gateways or CLI subscriptions including Codex, Claude, Cursor, Devin, Cline, Command Code, and Kilo." />
+<meta property="og:description" content="Open-source agentic PR review inside GitHub Actions. Bring an OpenCode gateway (Claude, OpenAI, Gemini and more) or a CLI subscription: Codex, Cursor, Devin, Cline, Command Code, Kilo." />
 <meta property="og:image" content="https://www.pgupai.com/assets/og-20260704.png" />
 <meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-20260704.png" />
 <meta property="og:image:type" content="image/png" />
@@ -30,7 +30,7 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="J-Bot Review: open-source AI code review in your CI" />
-<meta name="twitter:description" content="Open-source agentic PR review inside GitHub Actions. Bring OpenCode gateways or CLI subscriptions including Codex, Claude, Cursor, Devin, Cline, Command Code, and Kilo." />
+<meta name="twitter:description" content="Open-source agentic PR review inside GitHub Actions. Bring an OpenCode gateway (Claude, OpenAI, Gemini and more) or a CLI subscription: Codex, Cursor, Devin, Cline, Command Code, Kilo." />
 <meta name="twitter:image" content="https://www.pgupai.com/assets/og-20260704.png" />
 
 <!-- Structured data: Organization + WebSite + SoftwareApplication + FAQPage.
@@ -59,7 +59,7 @@
       "@id": "https://www.pgupai.com/#app",
       "name": "J-Bot Review",
       "alternateName": "jbot-review-action",
-      "description": "Open-source agentic PR reviewer that runs inside your own GitHub Actions, using OpenCode gateways or CLI subscriptions including Codex, Claude, Cursor, Devin, Cline, Command Code, and Kilo.",
+      "description": "Open-source agentic PR reviewer that runs inside your own GitHub Actions, using OpenCode gateways for Claude, OpenAI, Gemini, DeepSeek and more — or CLI subscriptions including Codex, Cursor, Devin, Cline, Command Code, and Kilo.",
       "url": "https://www.pgupai.com/",
       "image": "https://www.pgupai.com/assets/icon-512.png",
       "applicationCategory": "DeveloperApplication",
@@ -72,7 +72,7 @@
       "softwareHelp": { "@type": "CreativeWork", "url": "https://github.com/pgup-ai/jbot-review-action#readme" },
       "featureList": [
         "Runs inside your own GitHub Actions, on your runner and your keys",
-        "Bring your own model: 28+ backends via OpenCode gateways or CLI subscriptions (Codex, Claude, Cursor, Devin, Cline, Kilo, Command Code)",
+        "Bring your own model: 28+ backends via OpenCode gateways or CLI subscriptions (Codex, Cursor, Devin, Cline, Kilo, Command Code)",
         "Diff-anchored review comments, verified by a second model before posting",
         "Reads house rules: AGENTS.md, REVIEW.md, .coderabbit.yaml, greptile.json, Cursor rules",
         "Checks changes against current documentation via Context7",
@@ -91,7 +91,7 @@
           "name": "Can I use my Claude, Codex, or Cursor subscription for automated code review?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. J-Bot Review drives CLI coding-agent backends — Codex, Claude, Cursor, Devin, Cline, Kilo, and Command Code — inside your own GitHub Actions, so a subscription seat you already pay for can review every pull request. No separate reviewer subscription is needed."
+            "text": "Yes for Codex (a ChatGPT Plus/Pro seat), Cursor, Devin, Cline, Kilo, and Command Code: J-Bot Review drives those coding-agent CLIs inside your own GitHub Actions, so a seat you already pay for reviews every pull request. Claude runs through your own Anthropic API key or an OpenCode gateway instead — a Claude Pro/Max seat is not a supported CI credential today. See the CLI subscription guide for per-CLI setup."
           }
         },
         {
@@ -123,7 +123,7 @@
           "name": "Which models and providers does J-Bot Review support?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "28+ backends. OpenCode gateways cover OpenCode Zen free models plus Claude, OpenAI, Gemini, DeepSeek, Grok, Qwen, Kimi, MiniMax, OpenRouter, Fireworks, Cohere, Together, and more. CLI subscription backends cover Codex, Claude, Cursor, Devin, Cline, Kilo, and Command Code. Switch backends with one repo variable."
+            "text": "28+ backends. OpenCode gateways cover OpenCode Zen free models plus Claude, OpenAI, Gemini, DeepSeek, Grok, Qwen, Kimi, MiniMax, OpenRouter, Fireworks, Cohere, Together, and more. CLI subscription backends cover Codex, Cursor, Devin, Cline, Kilo, and Command Code. Switch backends with one repo variable."
           }
         },
         {
@@ -912,7 +912,7 @@
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.5 20 7l-3.5 3.5"></path><path d="M20 7H8.5a4 4 0 0 0-4 4"></path><path d="M7.5 20.5 4 17l3.5-3.5"></path><path d="M4 17h11.5a4 4 0 0 0 4-4"></path></svg>
         </div>
         <h3>Any model you want</h3>
-        <p>OpenCode gateways and CLI backends including Codex, Claude, Cursor and more. Switch with one repo variable.</p>
+        <p>OpenCode gateways including Claude, plus CLI backends like Codex and Cursor. Switch with one repo variable.</p>
       </div>
       <div class="card feat reveal">
         <div class="feat-ic" aria-hidden="true">
@@ -1020,7 +1020,7 @@
     <div class="faq-list reveal">
       <details class="faq-item" open>
         <summary>Can I use my Claude, Codex, or Cursor subscription for automated code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
-        <div class="faq-a"><p>Yes. J-Bot Review drives CLI coding-agent backends — Codex, Claude, Cursor, Devin, Cline, Kilo, and Command Code — inside your own GitHub Actions, so a subscription seat you already pay for can review every pull request. No separate reviewer subscription is needed.</p></div>
+        <div class="faq-a"><p>Yes for Codex (a ChatGPT Plus/Pro seat), Cursor, Devin, Cline, Kilo, and Command Code: J-Bot Review drives those coding-agent CLIs inside your own GitHub Actions, so a seat you already pay for reviews every pull request. Claude runs through your own Anthropic API key or an OpenCode gateway instead — a Claude Pro/Max seat is not a supported CI credential today. See the <a href="/guides/cli-subscription-code-review">CLI subscription guide</a> for per-CLI setup.</p></div>
       </details>
       <details class="faq-item">
         <summary>Is J-Bot Review free?<span class="faq-mark" aria-hidden="true">+</span></summary>
@@ -1036,7 +1036,7 @@
       </details>
       <details class="faq-item">
         <summary>Which models and providers does J-Bot Review support?<span class="faq-mark" aria-hidden="true">+</span></summary>
-        <div class="faq-a"><p>28+ backends. OpenCode gateways cover OpenCode Zen free models plus Claude, OpenAI, Gemini, DeepSeek, Grok, Qwen, Kimi, MiniMax, OpenRouter, Fireworks, Cohere, Together, and more. CLI subscription backends cover Codex, Claude, Cursor, Devin, Cline, Kilo, and Command Code. Switch backends with one repo variable.</p></div>
+        <div class="faq-a"><p>28+ backends. OpenCode gateways cover OpenCode Zen free models plus Claude, OpenAI, Gemini, DeepSeek, Grok, Qwen, Kimi, MiniMax, OpenRouter, Fireworks, Cohere, Together, and more. CLI subscription backends cover Codex, Cursor, Devin, Cline, Kilo, and Command Code. Switch backends with one repo variable.</p></div>
       </details>
       <details class="faq-item">
         <summary>Does it work with private repositories?<span class="faq-mark" aria-hidden="true">+</span></summary>
@@ -1090,6 +1090,7 @@
         <div class="foot-col">
           <h4>Resources</h4>
           <nav aria-label="Resources">
+            <a href="/guides/cli-subscription-code-review">Guides</a>
             <a href="https://github.com/pgup-ai/jbot-review-action#readme" target="_blank" rel="noopener noreferrer">Documentation</a>
             <a href="https://github.com/pgup-ai/jbot-review-action" target="_blank" rel="noopener noreferrer">Action repo</a>
             <a href="https://opencode.ai/" target="_blank" rel="noopener noreferrer">OpenCode</a>

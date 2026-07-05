@@ -17,6 +17,7 @@ vercel.json     # static config: no build step
 robots.txt      # crawl policy: all bots welcome, AI crawlers explicitly; points at sitemap
 sitemap.xml     # single-URL sitemap (submit in Google Search Console)
 llms.txt        # fact sheet for AI assistants (llmstxt.org convention)
+guides/         # guide pages (self-contained HTML; clean URLs via vercel.json)
 assets/
   logo.png      # J-Bot gradient mark (transparent, 512x512)
   favicon-16.png, favicon-32.png, apple-touch-icon.png, icon-512.png

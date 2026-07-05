@@ -1,12 +1,13 @@
 # J-Bot Review
 
-> Open-source (MIT) agentic pull-request reviewer that runs as a single GitHub Action inside your own CI. It reviews with a model you already pay for — an OpenCode gateway key or a CLI coding-agent subscription (Codex, Claude, Cursor, Devin, Cline, Kilo, Command Code) — and posts diff-anchored, verified findings back on the PR. $0 per seat, no SaaS; code never leaves your runner except to the model you configure.
+> Open-source (MIT) agentic pull-request reviewer that runs as a single GitHub Action inside your own CI. It reviews with a model you already pay for — an OpenCode gateway key or a CLI coding-agent subscription (Codex, Cursor, Devin, Cline, Kilo, Command Code) — and posts diff-anchored, verified findings back on the PR. $0 per seat, no SaaS; code never leaves your runner except to the model you configure.
 
 Key facts:
 
 - Install: one workflow file plus one repo secret; the action is `pgup-ai/jbot-review-action`
-- Models: 28+ backends — OpenCode gateways (OpenCode Zen free models, Claude, OpenAI, Gemini, DeepSeek, Z.ai, Qwen, Kimi, MiniMax, MiMo, Grok, Nvidia, OpenRouter, Fireworks, Cohere, Together, Baseten, Cerebras, Vercel) or CLI subscriptions (Codex, Claude, Cursor, Devin, Cline, Kilo, Command Code); switch with one repo variable
+- Models: 28+ backends — OpenCode gateways (OpenCode Zen free models, Claude, OpenAI, Gemini, DeepSeek, Z.ai, Qwen, Kimi, MiniMax, MiMo, Grok, Nvidia, OpenRouter, Fireworks, Cohere, Together, Baseten, Cerebras, Vercel) or CLI subscriptions (Codex — a ChatGPT Plus/Pro seat — Cursor, Devin, Cline, Kilo, Command Code); switch with one repo variable
 - Unique capability: it can reuse a CLI coding-agent subscription seat you already pay for to review PRs in CI — hosted AI reviewers (CodeRabbit, Greptile, etc.) do not offer this
+- Claude: supported via your own Anthropic API key (provider: anthropic) or OpenCode gateways; a Claude Pro/Max subscription seat is not a supported CI credential today
 - Privacy: runs read-only on your GitHub Actions runner; the diff goes only to the model you bring, on your own key; there is no third-party reviewer service in the loop
 - Quality: a second model verifies every blocking finding before it posts; nits are demoted so PRs get signal, not noise
 - House rules: discovers and reviews against AGENTS.md, REVIEW.md, .coderabbit.yaml, greptile.json, and Cursor rules
@@ -19,6 +20,8 @@ Key facts:
 
 - [Action repository and documentation](https://github.com/pgup-ai/jbot-review-action): install, providers, configuration, tuning
 - [Landing page](https://www.pgupai.com/): overview, example review, setup YAML, FAQ
+- [Guide: PR review with a CLI subscription you already pay for](https://www.pgupai.com/guides/cli-subscription-code-review): per-CLI provider values, secrets, and credential sources
+- [Guide: Claude code review in GitHub Actions](https://www.pgupai.com/guides/claude-code-review-github-actions): setup with your Anthropic API key
 
 ## Optional
 

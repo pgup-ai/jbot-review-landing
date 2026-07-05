@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Code review with the CLI subscription you already pay for | J-Bot Review</title>
+<meta name="description" content="Reuse a coding-CLI seat you already pay for — Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, or Command Code — to review every GitHub pull request. One workflow file, one secret, $0 added." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/guides/cli-subscription-code-review" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/guides/cli-subscription-code-review" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="Code review with the CLI subscription you already pay for" />
+<meta property="og:description" content="Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, or Command Code — one workflow file turns the seat you already pay for into a PR reviewer in your own CI." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-20260704.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Code review with the CLI subscription you already pay for" />
+<meta name="twitter:description" content="Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, or Command Code — one workflow file turns the seat you already pay for into a PR reviewer in your own CI." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-20260704.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/guides/cli-subscription-code-review#article",
+      "headline": "Automated PR review with a CLI subscription you already pay for",
+      "description": "How to reuse a Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, or Command Code subscription to review GitHub pull requests with J-Bot Review, an open-source GitHub Action.",
+      "url": "https://www.pgupai.com/guides/cli-subscription-code-review",
+      "image": "https://www.pgupai.com/assets/og-20260704.png",
+      "datePublished": "2026-07-04",
+      "dateModified": "2026-07-04",
+      "author": { "@type": "Organization", "name": "PGUP AI", "url": "https://www.pgupai.com/" },
+      "publisher": { "@type": "Organization", "name": "PGUP AI", "url": "https://www.pgupai.com/" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "J-Bot Review", "item": "https://www.pgupai.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://www.pgupai.com/guides/cli-subscription-code-review" },
+        { "@type": "ListItem", "position": 3, "name": "CLI subscription code review" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.pgupai.com/guides/cli-subscription-code-review#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Which CLI subscriptions can review my pull requests?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Codex (a ChatGPT Plus or Pro seat, via codex login), Cursor, Devin, Cline (subscription or pay-as-you-go), Kilo, and Command Code. Each maps to a provider value and one repo secret in the J-Bot Review action. Claude is supported through your own Anthropic API key or an OpenCode gateway instead — a Claude Pro/Max seat is not a supported CI credential today." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does J-Bot Review add any cost on top of my subscription?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. The action is MIT-licensed open source and adds no per-seat or per-review charge. Reviews run on your own GitHub Actions runner against the seat you already pay for, so the only added cost is normal CI minutes." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my code sent anywhere new?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No new party is involved. The action reads your checkout read-only on your runner, and the diff goes only to the CLI's own backend under your account — the same vendor your editor already sends code to. There is no third-party reviewer service in the loop." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can the verification pass run on a different provider than the main review?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Set aux-provider and aux-model to run auxiliary sessions (finding verification, guideline compliance) on a second backend — for example, review on your CLI seat and verify on a free OpenCode Zen model. CLI backends and OpenCode-backed providers use separate credentials, so pass both keys." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  /* Tokens mirrored from the landing page (index.html) */
+  :root {
+    --bg: #0a0b0a; --surface: #0e100e; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --blue: #7aa2ff;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --border-code: rgba(255,255,255,0.09); --accent-border: rgba(94,227,154,0.16);
+    --code-text: #c8cdc7; --code-comment: #5a5f5a;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 740px; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  .lede b, article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  h3 { font-size: 16px; font-weight: 600; margin: 26px 0 8px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+  code { font-family: var(--mono); font-size: 12.5px; color: var(--code-text); background: var(--surface); border: 1px solid var(--border-code); border-radius: 5px; padding: 1px 6px; }
+  pre code { background: none; border: none; padding: 0; font-size: inherit; }
+
+  .code-card { background: var(--surface); border: 1px solid var(--border-code); border-radius: 12px; overflow: hidden; margin: 18px 0; }
+  .code-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--hairline); }
+  .code-head .file { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+  .copybtn { display: inline-flex; align-items: center; gap: 7px; background: rgba(94,227,154,0.08); border: 1px solid rgba(94,227,154,0.25); color: var(--accent); font-family: var(--mono); font-size: 12px; border-radius: 7px; padding: 5px 11px; cursor: pointer; transition: background 0.16s var(--ease); }
+  .copybtn:hover { background: rgba(94,227,154,0.15); }
+  pre { margin: 0; padding: 16px 18px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.7; color: var(--code-text); }
+  .k { color: var(--blue); }
+  .s { color: var(--accent); }
+  .c { color: var(--code-comment); }
+
+  .callout { border: 1px solid var(--accent-border); background: rgba(94,227,154,0.04); border-radius: 12px; padding: 16px 18px; margin: 20px 0; }
+  .callout p { margin: 0; font-size: 14.5px; }
+  .callout .tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 6px; }
+
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 13.5px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tr:last-child td { border-bottom: none; }
+  td code { white-space: nowrap; }
+
+  .faq-item { border-bottom: 1px solid var(--hairline); }
+  .faq-item:first-of-type { border-top: 1px solid var(--hairline); }
+  .faq-item summary { display: flex; align-items: baseline; justify-content: space-between; gap: 22px; list-style: none; cursor: pointer; padding: 17px 2px; font-weight: 600; font-size: 15.5px; color: var(--text); line-height: 1.45; transition: color 0.15s var(--ease); }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary:hover { color: var(--accent-hover); }
+  .faq-mark { font-family: var(--mono); font-size: 15px; color: var(--text-4); flex: none; transition: transform 0.2s var(--ease), color 0.2s var(--ease); }
+  .faq-item[open] .faq-mark { transform: rotate(45deg); color: var(--accent); }
+  .faq-a { padding: 0 2px 20px; font-size: 14.5px; color: var(--text-2); }
+  .faq-a p { margin: 0; }
+
+  .related { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 20px 0 0; }
+  .rel-card { display: block; border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 18px; color: var(--text); transition: border-color 0.16s var(--ease); }
+  .rel-card:hover { border-color: rgba(94,227,154,0.35); color: var(--text); }
+  .rel-card .k2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 7px; }
+  .rel-card p { margin: 6px 0 0; font-size: 13px; color: var(--text-3); }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .faq-mark { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/#how">How it works</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<article>
+  <p class="crumbs"><a href="/">Home</a> / Guides / CLI subscriptions</p>
+  <h1>Automated PR review with a CLI subscription you already pay for</h1>
+  <p class="updated">Updated July 4, 2026 · applies to pgup-ai/jbot-review-action v0</p>
+
+  <p class="lede"><b>Yes — the coding-agent seat you already pay for can review your pull requests.</b> If you subscribe to <b>Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, or Command Code</b>, J-Bot Review — an open-source (MIT) GitHub Action — runs that CLI inside your own GitHub Actions and posts diff-anchored, verified review comments on every PR. One workflow file, one repo secret, <b>$0 added</b> by J-Bot.</p>
+
+  <p>Hosted AI reviewers (CodeRabbit, Greptile, and similar) charge roughly $40 per seat per month and run your code through their own servers. None of them can reuse a CLI subscription. Reusing the seat you already pay for is the entire point of this guide — and as far as we know, J-Bot Review is the only PR reviewer that does it.</p>
+
+  <h2 id="base-workflow">The base workflow (one file)</h2>
+  <p>Commit this as <code>.github/workflows/jbot-review.yml</code>. The <code>provider</code> line and one secret change per CLI — the table below has every combination.</p>
+
+  <div class="code-card">
+    <div class="code-head"><span class="file">.github/workflows/jbot-review.yml</span><button type="button" class="copybtn" data-copy="base" aria-live="polite">Copy</button></div>
+<pre><span class="k">name</span>: J-Bot Code Review
+<span class="k">on</span>:
+  <span class="k">pull_request</span>: { types: [opened, reopened, ready_for_review, synchronize] }
+
+<span class="k">concurrency</span>:
+  <span class="k">group</span>: jbot-review-${{ github.event.pull_request.number }}
+  <span class="k">cancel-in-progress</span>: true
+
+<span class="k">permissions</span>:
+  <span class="k">contents</span>: read
+  <span class="k">pull-requests</span>: write
+  <span class="k">issues</span>: write        <span class="c"># PR reactions use the issues API</span>
+  <span class="k">checks</span>: read
+
+<span class="k">jobs</span>:
+  <span class="k">review</span>:
+    <span class="k">if</span>: github.event.pull_request.draft == false
+    <span class="k">runs-on</span>: ubuntu-latest
+    <span class="k">steps</span>:
+      - <span class="k">uses</span>: actions/checkout@v6
+        <span class="k">with</span>: { fetch-depth: 0 }
+      - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
+        <span class="k">with</span>:
+          <span class="k">provider</span>: codex                              <span class="c"># ← pick yours from the table</span>
+          <span class="k">codex-auth</span>: ${{ secrets.CODEX_AUTH_JSON }}  <span class="c"># ← and its matching secret</span>
+          <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
+  </div>
+
+  <h2 id="per-cli">Per-CLI setup: provider, secret, and where the credential comes from</h2>
+  <p>Each subscription maps to a <code>provider</code> value plus one action input, fed from a repository secret (<em>Settings → Secrets and variables → Actions</em>). The credential is the same one your local CLI login already created.</p>
+
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>CLI seat</th><th>provider:</th><th>Action input</th><th>Credential source</th></tr></thead>
+    <tbody>
+      <tr><td>Codex (ChatGPT Plus/Pro)</td><td><code>codex</code></td><td><code>codex-auth</code></td><td>contents of <code>~/.codex/auth.json</code> after <code>codex login</code></td></tr>
+      <tr><td>Cursor</td><td><code>cursor</code></td><td><code>cursor-api-key</code></td><td>API key from your Cursor account</td></tr>
+      <tr><td>Cline — subscription</td><td><code>cline-pass</code></td><td><code>cline-auth</code></td><td>contents of <code>~/.cline/data/settings/providers.json</code> after <code>cline auth</code></td></tr>
+      <tr><td>Cline — pay-as-you-go</td><td><code>cline</code></td><td><code>cline-auth</code></td><td>same file as above</td></tr>
+      <tr><td>Devin</td><td><code>devin</code></td><td><code>devin-windsurf-api-key</code></td><td>Devin/Windsurf API key</td></tr>
+      <tr><td>Command Code</td><td><code>commandcode</code></td><td><code>commandcode-access-key</code></td><td>CommandCode CLI access key</td></tr>
+      <tr><td>Kilo</td><td><code>kilo</code></td><td><code>kilo-auth</code></td><td>contents of <code>~/.local/share/kilo/auth.json</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Notes that save you a debugging session</h3>
+  <ul>
+    <li><b>Codex</b> runs read-only (<code>codex exec --sandbox read-only</code>). The secret is the whole <code>auth.json</code> file content, not a key inside it.</li>
+    <li><b>Cursor</b> authenticates straight from <code>CURSOR_API_KEY</code> and runs in read-only plan mode (<code>cursor-agent --mode plan</code>).</li>
+    <li><b>Cline</b> has two billing modes as separate providers sharing one secret. Pin models as <code>cline/&lt;type&gt;/&lt;model&gt;</code> or <code>cline-pass/&lt;model&gt;</code>, or omit <code>model</code> for each mode's default.</li>
+    <li><b>Kilo</b> defaults to its free gateway model — a $0 way to trial the whole pipeline.</li>
+    <li>These are credentials on <em>your</em> account: store them as repo <b>secrets</b> (never variables), and check your plan's terms for CI/automation use.</li>
+    <li>On <code>pull_request</code> events GitHub strips secrets from fork PRs, so outside contributors can't exfiltrate your seat.</li>
+  </ul>
+
+  <div class="callout">
+    <span class="tag">What about Claude?</span>
+    <p>Claude models are fully supported — through your own <b>Anthropic API key</b> (<code>provider: anthropic</code>) or an OpenCode gateway. A Claude Pro/Max <em>subscription seat</em> is not a supported CI credential today. Setup: <a href="/guides/claude-code-review-github-actions">Claude code review in GitHub Actions →</a></p>
+  </div>
+
+  <h2 id="what-you-get">What you get on every PR</h2>
+  <ul>
+    <li><b>Diff-anchored findings</b> across the full base…head diff, posted as normal review comments with a verdict.</li>
+    <li><b>Verified before posting:</b> a second session adversarially re-checks every blocking finding; refuted ones are dropped, uncertain ones demoted to advisory. Nits are demoted so the PR gets signal, not noise.</li>
+    <li><b>Your house rules:</b> it discovers <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>.coderabbit.yaml</code>, <code>greptile.json</code>, and Cursor rules, and reviews against them.</li>
+    <li><b>Current-docs checks:</b> when a PR touches an external API or SDK, Context7 verifies the change against live documentation.</li>
+    <li><b>Read-only:</b> the runner checkout is never written to; least-privilege permissions are the default.</li>
+  </ul>
+
+  <h2 id="cost-privacy">Cost &amp; privacy</h2>
+  <ul>
+    <li><b>$0 added by J-Bot</b> — MIT-licensed action, no reviewer SaaS account, no per-seat bill. You pay normal CI minutes.</li>
+    <li><b>No new data recipient:</b> the diff goes only to the CLI's own backend under your account — the same vendor your editor already sends code to.</li>
+    <li><b>Tunable spend:</b> defaults are one review pass with verification on; raise <code>review-passes</code> for recall or set <code>min-severity</code> to trim output. Doc-only PRs skip the model entirely.</li>
+  </ul>
+
+  <h2 id="faq">FAQ</h2>
+  <details class="faq-item" open>
+    <summary>Which CLI subscriptions can review my pull requests?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Codex (a ChatGPT Plus or Pro seat, via <code>codex login</code>), Cursor, Devin, Cline (subscription or pay-as-you-go), Kilo, and Command Code. Each maps to a <code>provider</code> value and one repo secret in the J-Bot Review action. Claude is supported through your own Anthropic API key or an OpenCode gateway instead — a Claude Pro/Max seat is not a supported CI credential today.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Does J-Bot Review add any cost on top of my subscription?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>No. The action is MIT-licensed open source and adds no per-seat or per-review charge. Reviews run on your own GitHub Actions runner against the seat you already pay for, so the only added cost is normal CI minutes.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Is my code sent anywhere new?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>No new party is involved. The action reads your checkout read-only on your runner, and the diff goes only to the CLI's own backend under your account — the same vendor your editor already sends code to. There is no third-party reviewer service in the loop.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Can the verification pass run on a different provider than the main review?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Yes. Set <code>aux-provider</code> and <code>aux-model</code> to run auxiliary sessions (finding verification, guideline compliance) on a second backend — for example, review on your CLI seat and verify on a free OpenCode Zen model. CLI backends and OpenCode-backed providers use separate credentials, so pass both keys.</p></div>
+  </details>
+
+  <h2>Related</h2>
+  <div class="related">
+    <a class="rel-card" href="/guides/claude-code-review-github-actions"><span class="k2">Guide</span>Claude code review in GitHub Actions<p>Your Anthropic key, your runner — setup in three steps.</p></a>
+    <a class="rel-card" href="https://github.com/pgup-ai/jbot-review-action#readme" target="_blank" rel="noopener noreferrer"><span class="k2">Docs</span>Action reference<p>Every input, provider id, and tuning knob.</p></a>
+    <a class="rel-card" href="/#compare"><span class="k2">Compare</span>Own vs. rent<p>How this stacks up against hosted SaaS reviewers.</p></a>
+  </div>
+</article>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/#faq">FAQ</a> · <a href="https://github.com/pgup-ai/jbot-review-action" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var TEXTS = {
+    base: "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, reopened, ready_for_review, synchronize] }\n\nconcurrency:\n  group: jbot-review-${{ github.event.pull_request.number }}\n  cancel-in-progress: true\n\npermissions:\n  contents: read\n  pull-requests: write\n  issues: write\n  checks: read\n\njobs:\n  review:\n    if: github.event.pull_request.draft == false\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v6\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          provider: codex\n          codex-auth: ${{ secrets.CODEX_AUTH_JSON }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}"
+  };
+  function legacyCopy(text) {
+    return new Promise(function (resolve, reject) {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.setAttribute('readonly', '');
+        ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+        document.body.appendChild(ta); ta.select();
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        ok ? resolve() : reject(new Error('execCommand copy failed'));
+      } catch (e) { reject(e); }
+    });
+  }
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).catch(function () { return legacyCopy(text); });
+    }
+    return legacyCopy(text);
+  }
+  document.querySelectorAll('button[data-copy]').forEach(function (btn) {
+    var timer, label = btn.textContent;
+    btn.addEventListener('click', function () {
+      var text = TEXTS[btn.dataset.copy];
+      if (!text) return;
+      copyText(text).then(function () { btn.textContent = 'Copied ✓'; })
+        .catch(function () { btn.textContent = 'Copy failed'; });
+      clearTimeout(timer);
+      timer = setTimeout(function () { btn.textContent = label; }, 1600);
+    });
+  });
+})();
+</script>
+</body>
+</html>
