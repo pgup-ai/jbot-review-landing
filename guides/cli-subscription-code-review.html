@@ -254,7 +254,7 @@
       <tr><td>Cline — subscription</td><td><code>cline-pass</code></td><td><code>cline-auth</code></td><td>contents of <code>~/.cline/data/settings/providers.json</code> after <code>cline auth</code></td></tr>
       <tr><td>Cline — pay-as-you-go</td><td><code>cline</code></td><td><code>cline-auth</code></td><td>same file as above</td></tr>
       <tr><td>Devin</td><td><code>devin</code></td><td><code>devin-windsurf-api-key</code></td><td><code>windsurf_api_key</code> value from <code>~/.local/share/devin/credentials.toml</code> after <code>devin auth login</code></td></tr>
-      <tr><td>Command Code</td><td><code>commandcode</code></td><td><code>commandcode-access-key</code></td><td>access key (<code>user_…</code>) — also inside <code>~/.commandcode/auth.json</code></td></tr>
+      <tr><td>Command Code</td><td><code>commandcode</code></td><td><code>commandcode-access-key</code></td><td><code>apiKey</code> value (<code>user_…</code>) from <code>~/.commandcode/auth.json</code></td></tr>
       <tr><td>Kilo</td><td><code>kilo</code></td><td><code>kilo-auth</code></td><td>contents of <code>~/.local/share/kilo/auth.json</code> after <code>kilo auth login</code></td></tr>
     </tbody>
   </table>
@@ -265,7 +265,7 @@
     <li><b>Codex</b> runs read-only (<code>codex exec --sandbox read-only</code>). The secret is the whole <code>auth.json</code> file content, not a key inside it. Full setup: <a href="/guides/codex-code-review-github-actions">Codex code review in GitHub Actions</a>.</li>
     <li><b>Cursor</b> authenticates straight from <code>CURSOR_API_KEY</code> and runs in read-only plan mode (<code>cursor-agent --mode plan</code>).</li>
     <li><b>Cline</b> has two billing modes as separate providers sharing one secret. Pin models as <code>cline/&lt;type&gt;/&lt;model&gt;</code> or <code>cline-pass/&lt;model&gt;</code>, or omit <code>model</code> for each mode's default.</li>
-    <li><b>Devin</b> wants the <code>windsurf_api_key</code> <em>value</em> (<code>devin-session-token$…</code>) copied out of <code>credentials.toml</code> — not the whole file, unlike Codex, Cline, and Kilo.</li>
+    <li><b>Devin</b> and <b>Command Code</b> want a key <em>value</em> copied out of the credential file — <code>windsurf_api_key</code> (<code>devin-session-token$…</code>) and <code>apiKey</code> (<code>user_…</code>) respectively — not the whole file, unlike Codex, Cline, and Kilo.</li>
     <li><b>Kilo</b> defaults to its free gateway model — a $0 way to trial the whole pipeline.</li>
     <li>These are credentials on <em>your</em> account: store them as repo <b>secrets</b> (never variables), and check your plan's terms for CI/automation use.</li>
     <li>On <code>pull_request</code> events GitHub strips secrets from fork PRs, so outside contributors can't exfiltrate your seat.</li>
