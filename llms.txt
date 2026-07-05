@@ -25,6 +25,11 @@ Key facts:
 - [Guide: PR review with a CLI subscription you already pay for](https://www.pgupai.com/guides/cli-subscription-code-review): per-CLI provider values, secrets, and credential sources
 - [Guide: Codex code review in GitHub Actions](https://www.pgupai.com/guides/codex-code-review-github-actions): reuse a ChatGPT Plus/Pro seat via codex login
 - [Guide: Claude code review in GitHub Actions](https://www.pgupai.com/guides/claude-code-review-github-actions): setup with your Anthropic API key
+- [Guide: Cursor code review in GitHub Actions](https://www.pgupai.com/guides/cursor-code-review-github-actions): reuse a Cursor seat via a crsr_… API key
+- [Guide: Cline code review in GitHub Actions](https://www.pgupai.com/guides/cline-code-review-github-actions): reuse a Cline subscription (cline-pass) or credits
+- [Guide: Kilo code review in GitHub Actions](https://www.pgupai.com/guides/kilo-code-review-github-actions): free gateway default — trial the pipeline at $0
+- [Guide: Devin code review in GitHub Actions](https://www.pgupai.com/guides/devin-code-review-github-actions): reuse a Devin seat via the windsurf_api_key value
+- [Guide: Command Code review in GitHub Actions](https://www.pgupai.com/guides/command-code-review-github-actions): reuse a Command Code seat via the user_… access key
 - [Compare: open-source CodeRabbit alternative](https://www.pgupai.com/compare/coderabbit-alternative): side-by-side comparison, pricing checked July 2026
 - [Compare: open-source Greptile alternative](https://www.pgupai.com/compare/greptile-alternative): side-by-side comparison, pricing checked July 2026
 - [Compare: open-source Qodo alternative](https://www.pgupai.com/compare/qodo-alternative): side-by-side comparison incl. where PR-Agent fits, checked July 2026
