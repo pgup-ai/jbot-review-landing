@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Open-source Qodo alternative: J-Bot Review ($0/seat, your CI)</title>
+<meta name="description" content="Qodo vs J-Bot Review: a $30/mo credit-metered platform vs a $0/seat open-source action in your own GitHub Actions. Side-by-side table, where PR-Agent fits, and when each is the better choice. Checked July 2026." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/compare/qodo-alternative" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/compare/qodo-alternative" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="Open-source Qodo alternative: J-Bot Review" />
+<meta property="og:description" content="Credit-metered platform vs a $0/seat MIT action in your own CI — side by side, with where PR-Agent fits and when each is the better choice. Checked July 2026." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-compare-qodo-20260704.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-compare-qodo-20260704.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Open-source Qodo alternative: J-Bot Review" />
+<meta name="twitter:description" content="Credit-metered platform vs a $0/seat MIT action in your own CI — side by side, with where PR-Agent fits and when each is the better choice. Checked July 2026." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-compare-qodo-20260704.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/compare/qodo-alternative#article",
+      "headline": "Open-source Qodo alternative: J-Bot Review",
+      "description": "Qodo (hosted platform, credit-metered) and J-Bot Review (open-source GitHub Action in your own CI), side by side: verified pricing, where the open-source PR-Agent fits, and when each tool is the better fit.",
+      "url": "https://www.pgupai.com/compare/qodo-alternative",
+      "image": "https://www.pgupai.com/assets/og-compare-qodo-20260704.png",
+      "datePublished": "2026-07-04",
+      "dateModified": "2026-07-04",
+      "author": { "@type": "Organization", "name": "PGUP AI", "url": "https://www.pgupai.com/" },
+      "publisher": { "@type": "Organization", "name": "PGUP AI", "url": "https://www.pgupai.com/" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "J-Bot Review", "item": "https://www.pgupai.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Compare" },
+        { "@type": "ListItem", "position": 3, "name": "Qodo alternative" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.pgupai.com/compare/qodo-alternative#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does J-Bot Review's pricing compare to Qodo's?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Qodo's Pro Team plan is $30/month plus credit-based usage at $0.012 per credit, pooled across the team; there is a 14-day unlimited trial but, per their own FAQ, no permanent free tier (qualified open-source projects can apply for free access). As of July 2026. J-Bot Review is an MIT-licensed action with no per-seat fee and no credits — you pay only the model you bring, which can be $0 with OpenCode Zen free models or a coding-CLI seat you already pay for, plus normal CI minutes." }
+        },
+        {
+          "@type": "Question",
+          "name": "Isn't PR-Agent already the open-source Qodo alternative?",
+          "acceptedAnswer": { "@type": "Answer", "text": "PR-Agent (Apache-2.0, roughly 12k GitHub stars) is Qodo's open-source ancestor and a solid self-host option — you run it yourself and bring provider API keys; its own README notes it is not the Qodo free tier. J-Bot Review differs in four ways: it ships as a single ready-made GitHub Action, it can reuse coding-CLI subscription seats (Codex via ChatGPT Plus/Pro, Cursor, Devin, Cline, Kilo, Command Code) instead of API keys only, every blocking finding is adversarially verified by a second session before posting, and it reads other reviewers' config files (.coderabbit.yaml, greptile.json, AGENTS.md, REVIEW.md, Cursor rules)." }
+        },
+        {
+          "@type": "Question",
+          "name": "When is Qodo the better choice?",
+          "acceptedAnswer": { "@type": "Answer", "text": "If you want one vendor across the whole workflow — IDE integration, pre-PR review skills, a hosted rules system, and agentic PR review in a managed platform with enterprise contracts — Qodo covers more surface than a CI-only reviewer. J-Bot Review is the fit when you want the reviewer inside your own GitHub Actions, on your own keys or CLI seats, at $0 per seat, with the model your choice." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  /* Tokens mirrored from the landing page (index.html) */
+  :root {
+    --bg: #0a0b0a; --surface: #0e100e; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --border-code: rgba(255,255,255,0.09); --accent-border: rgba(94,227,154,0.16);
+    --code-text: #c8cdc7;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 760px; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  .lede b, article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+  code { font-family: var(--mono); font-size: 12.5px; color: var(--code-text); background: var(--surface); border: 1px solid var(--border-code); border-radius: 5px; padding: 1px 6px; }
+
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--text-3); font-size: 12.5px; font-family: var(--mono); white-space: nowrap; }
+  .src-note { font-family: var(--mono); font-size: 11.5px; color: var(--text-4); margin: 8px 0 0; }
+
+  .callout { border: 1px solid var(--accent-border); background: rgba(94,227,154,0.04); border-radius: 12px; padding: 16px 18px; margin: 20px 0; }
+  .callout p { margin: 0; font-size: 14.5px; }
+  .callout .tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 6px; }
+
+  .faq-item { border-bottom: 1px solid var(--hairline); }
+  .faq-item:first-of-type { border-top: 1px solid var(--hairline); }
+  .faq-item summary { display: flex; align-items: baseline; justify-content: space-between; gap: 22px; list-style: none; cursor: pointer; padding: 17px 2px; font-weight: 600; font-size: 15.5px; color: var(--text); line-height: 1.45; transition: color 0.15s var(--ease); }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary:hover { color: var(--accent-hover); }
+  .faq-mark { font-family: var(--mono); font-size: 15px; color: var(--text-4); flex: none; transition: transform 0.2s var(--ease), color 0.2s var(--ease); }
+  .faq-item[open] .faq-mark { transform: rotate(45deg); color: var(--accent); }
+  .faq-a { padding: 0 2px 20px; font-size: 14.5px; color: var(--text-2); }
+  .faq-a p { margin: 0; }
+
+  .related { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 20px 0 0; }
+  .rel-card { display: block; border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 18px; color: var(--text); transition: border-color 0.16s var(--ease); }
+  .rel-card:hover { border-color: rgba(94,227,154,0.35); color: var(--text); }
+  .rel-card .k2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 7px; }
+  .rel-card p { margin: 6px 0 0; font-size: 13px; color: var(--text-3); }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .faq-mark { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides">Guides</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<article>
+  <p class="crumbs"><a href="/">Home</a> / Compare / Qodo</p>
+  <h1>Open-source Qodo alternative: J-Bot Review</h1>
+  <p class="updated">Updated July 4, 2026 · pricing and features checked against qodo.ai on this date</p>
+
+  <p class="lede"><b>J-Bot Review is an open-source (MIT) alternative to Qodo's agentic PR review that runs inside your own GitHub Actions instead of a hosted platform.</b> It reviews with a model you already pay for, posts diff-anchored findings that a second model verifies before they land, and adds <b>$0 per seat with no credit metering</b>. Qodo is a platform play — IDE integrations, pre-PR skills, a rules system, and PR review — at $30/month plus credit-based usage. And unlike most hosted reviewers, Qodo has real open-source lineage: PR-Agent, which gets its own section below.</p>
+
+  <h2 id="table">Side by side</h2>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th></th><th>Qodo</th><th>J-Bot Review</th></tr></thead>
+    <tbody>
+      <tr><td>price</td><td>Pro Team $30/mo plus usage at $0.012/credit, pooled across the team; 14-day unlimited trial; no permanent free tier (their FAQ); free for qualified open-source projects; Enterprise on annual contracts</td><td>$0 per seat, MIT license, no credits — you pay only your model provider (or $0 with OpenCode Zen free models / a CLI seat you already pay for) plus CI minutes</td></tr>
+      <tr><td>where it runs</td><td>Hosted platform with Git and IDE integrations</td><td>Your GitHub Actions runner, as a container action</td></tr>
+      <tr><td>code path</td><td>Your code is processed by their platform and the models it operates</td><td>Read-only checkout on your runner; the diff goes only to the model you configure, on your own key</td></tr>
+      <tr><td>model choice</td><td>Platform: vendor-managed. Self-hosted PR-Agent: your own API keys</td><td>28+ backends: OpenCode gateways (Claude, OpenAI, Gemini, DeepSeek…) or CLI seats (Codex, Cursor, Devin, Cline, Kilo, Command Code)</td></tr>
+      <tr><td>review volume</td><td>Credit-metered ($0.012/credit, pooled)</td><td>No J-Bot cap — bounded by your model plan/quota and CI</td></tr>
+      <tr><td>rules</td><td>Hosted rules system; pre-PR review skills</td><td>Reads <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>.coderabbit.yaml</code>, <code>greptile.json</code>, Cursor rules from your repo</td></tr>
+      <tr><td>beyond review</td><td>IDE integration, pre-PR skills, unified platform across the workflow</td><td>Focused on PR review: verified findings, house-rules pass, live-docs checks (Context7), <code>/jbot</code> re-review command</td></tr>
+      <tr><td>open source</td><td>Lineage, yes: PR-Agent (Apache-2.0, ~12k stars) is self-hostable — but its README says it is not the Qodo free tier; the platform itself is proprietary</td><td>The shipped product is the open-source artifact (MIT), on the <a href="https://github.com/marketplace/actions/j-bot-code-review" target="_blank" rel="noopener noreferrer">GitHub Marketplace</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="src-note">Numbers from <a href="https://www.qodo.ai/pricing/" target="_blank" rel="noopener noreferrer">qodo.ai/pricing</a> and the <a href="https://github.com/qodo-ai/pr-agent" target="_blank" rel="noopener noreferrer">pr-agent repo</a>, checked 2026-07-04 — verify current pricing there.</p>
+
+  <h2 id="pr-agent">Where PR-Agent fits</h2>
+  <p>Qodo's ancestor project, <a href="https://github.com/qodo-ai/pr-agent" target="_blank" rel="noopener noreferrer">PR-Agent</a>, is Apache-2.0, has roughly 12k stars, and remains a solid self-host option: you run it yourself and bring provider API keys. If you're choosing between open-source reviewers, the differences that matter are that J-Bot Review ships as a single ready-made GitHub Action, can reuse <a href="/guides/cli-subscription-code-review">coding-CLI subscription seats</a> instead of API keys only, adversarially verifies every blocking finding before it posts, and reads the config files other reviewers left behind.</p>
+
+  <h2 id="when-qodo">When Qodo is the better choice</h2>
+  <ul>
+    <li>You want <b>one vendor across the whole workflow</b> — IDE integration, pre-PR review skills, hosted rules, and PR review in a single managed platform.</li>
+    <li>You want <b>enterprise contracts and vendor support</b>, with a 14-day unlimited trial to evaluate first.</li>
+    <li>You're a <b>qualified open-source project</b> — their OSS program grants free access to the platform.</li>
+  </ul>
+
+  <h2 id="when-jbot">When J-Bot Review is the better choice</h2>
+  <ul>
+    <li><b>Your code can't go through a hosted platform.</b> The review runs on your runner; only the diff reaches the model you chose, on your own account.</li>
+    <li><b>Credit metering doesn't fit.</b> No credits, no per-seat fee — cost is whatever your model plan costs, and can be $0 on free models or an existing CLI seat.</li>
+    <li><b>You want to pick the model</b> and switch it with one repo variable as the frontier moves.</li>
+    <li><b>You want the product itself open.</b> The action you run is the MIT-licensed artifact — read, pin, fork.</li>
+  </ul>
+
+  <div class="callout">
+    <span class="tag">Migration note</span>
+    <p>J-Bot doesn't parse Qodo's config format — port your review guidance into <code>AGENTS.md</code> or <code>REVIEW.md</code> and it's picked up automatically. Add <a href="/#setup">one workflow file and one secret</a>, run both reviewers side by side on a few PRs, and keep whichever posts the findings you trust.</p>
+  </div>
+
+  <h2 id="faq">FAQ</h2>
+  <details class="faq-item" open>
+    <summary>How does J-Bot Review's pricing compare to Qodo's?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Qodo's Pro Team plan is $30/month plus credit-based usage at $0.012 per credit, pooled across the team; there is a 14-day unlimited trial but, per their own FAQ, no permanent free tier (qualified open-source projects can apply for free access). As of July 2026. J-Bot Review is an MIT-licensed action with no per-seat fee and no credits — you pay only the model you bring, which can be $0 with OpenCode Zen free models or a coding-CLI seat you already pay for, plus normal CI minutes.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Isn't PR-Agent already the open-source Qodo alternative?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>PR-Agent (Apache-2.0, roughly 12k GitHub stars) is Qodo's open-source ancestor and a solid self-host option — you run it yourself and bring provider API keys; its own README notes it is not the Qodo free tier. J-Bot Review differs in four ways: it ships as a single ready-made GitHub Action, it can reuse coding-CLI subscription seats (Codex via ChatGPT Plus/Pro, Cursor, Devin, Cline, Kilo, Command Code) instead of API keys only, every blocking finding is adversarially verified by a second session before posting, and it reads other reviewers' config files (<code>.coderabbit.yaml</code>, <code>greptile.json</code>, <code>AGENTS.md</code>, <code>REVIEW.md</code>, Cursor rules).</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>When is Qodo the better choice?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>If you want one vendor across the whole workflow — IDE integration, pre-PR review skills, a hosted rules system, and agentic PR review in a managed platform with enterprise contracts — Qodo covers more surface than a CI-only reviewer. J-Bot Review is the fit when you want the reviewer inside your own GitHub Actions, on your own keys or CLI seats, at $0 per seat, with the model your choice.</p></div>
+  </details>
+
+  <h2>Related</h2>
+  <div class="related">
+    <a class="rel-card" href="/compare/cubic-alternative"><span class="k2">Compare</span>Cubic alternative<p>The same side-by-side, for Cubic.</p></a>
+    <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Guide</span>Review PRs with a CLI subscription<p>Codex, Cursor, Devin, Cline, Kilo, Command Code — reuse the seat you pay for.</p></a>
+    <a class="rel-card" href="/#proof"><span class="k2">Example</span>See a real review<p>A verified blocking finding, on a real diff.</p></a>
+  </div>
+</article>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="https://github.com/pgup-ai/jbot-review-action" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

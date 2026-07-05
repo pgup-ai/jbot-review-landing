@@ -27,6 +27,8 @@ Key facts:
 - [Guide: Claude code review in GitHub Actions](https://www.pgupai.com/guides/claude-code-review-github-actions): setup with your Anthropic API key
 - [Compare: open-source CodeRabbit alternative](https://www.pgupai.com/compare/coderabbit-alternative): side-by-side comparison, pricing checked July 2026
 - [Compare: open-source Greptile alternative](https://www.pgupai.com/compare/greptile-alternative): side-by-side comparison, pricing checked July 2026
+- [Compare: open-source Qodo alternative](https://www.pgupai.com/compare/qodo-alternative): side-by-side comparison incl. where PR-Agent fits, checked July 2026
+- [Compare: open-source Cubic alternative](https://www.pgupai.com/compare/cubic-alternative): side-by-side comparison from Cubic's docs, checked July 2026
 
 ## Optional
 
