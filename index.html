@@ -1017,7 +1017,7 @@
         <span class="k">with</span>: { fetch-depth: 0 }
       - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
         <span class="k">with</span>:
-          <span class="k">provider</span>: ${{ vars.JBOT_PROVIDER || 'opencode' }}
+          <span class="k">provider</span>: ${{ vars.JBOT_REVIEW_PROVIDER || 'opencode' }}
           <span class="k">opencode-api-key</span>: ${{ secrets.OPENCODE_API_KEY }}
           <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
       </div>
@@ -1151,7 +1151,7 @@
   (function () {
     var TEXTS = {
       hero: "on: { pull_request: { types: [opened, synchronize] } }\n\njobs:\n  review:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v6\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          opencode-api-key: ${{ secrets.OPENCODE_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}",
-      setup: "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, synchronize, reopened] }\npermissions:\n  contents: read\n  pull-requests: write\njobs:\n  review:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v6\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          provider: ${{ vars.JBOT_PROVIDER || 'opencode' }}\n          opencode-api-key: ${{ secrets.OPENCODE_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}",
+      setup: "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, synchronize, reopened] }\npermissions:\n  contents: read\n  pull-requests: write\njobs:\n  review:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v6\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          provider: ${{ vars.JBOT_REVIEW_PROVIDER || 'opencode' }}\n          opencode-api-key: ${{ secrets.OPENCODE_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}",
       cta: "- uses: pgup-ai/jbot-review-action@v0"
     };
     // Fallback for non-secure contexts (file://, http://) where the async
