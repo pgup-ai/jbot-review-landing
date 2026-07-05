@@ -14,6 +14,9 @@ A single, self-contained static page. No build step, no dependencies.
 ```
 index.html      # the whole page (inline CSS + minimal vanilla JS)
 vercel.json     # static config: no build step
+robots.txt      # crawl policy: all bots welcome, AI crawlers explicitly; points at sitemap
+sitemap.xml     # single-URL sitemap (submit in Google Search Console)
+llms.txt        # fact sheet for AI assistants (llmstxt.org convention)
 assets/
   logo.png      # J-Bot gradient mark (transparent, 512x512)
   favicon-16.png, favicon-32.png, apple-touch-icon.png, icon-512.png
@@ -42,6 +45,15 @@ it carries the same metadata and redirects humans back to `/`.
 Any static host works too (Netlify, Cloudflare Pages, GitHub Pages, S3): publish
 the directory as-is. On a new domain, update the absolute URLs in `index.html`
 (`og:image`, `twitter:image`, `og:url`, canonical).
+
+## SEO / GEO
+
+- `index.html` carries JSON-LD in `<head>` (Organization, WebSite,
+  SoftwareApplication, FAQPage). The FAQPage answers duplicate the visible
+  `#faq` section — when editing an answer, change both places.
+- Bump `<lastmod>` in `sitemap.xml` when the page meaningfully changes.
+- `llms.txt` is the canonical fact sheet AI assistants read; keep its claims
+  in sync with the page (providers, pricing, capabilities).
 
 ## Design notes
 

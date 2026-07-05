@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- /x is excluded on purpose: it is a social-share redirect whose canonical is / -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.pgupai.com/</loc>
+    <lastmod>2026-07-04</lastmod>
+  </url>
+</urlset>

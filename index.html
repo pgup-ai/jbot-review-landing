@@ -33,6 +33,113 @@
 <meta name="twitter:description" content="Open-source agentic PR review inside GitHub Actions. Bring OpenCode gateways or CLI subscriptions including Codex, Claude, Cursor, Devin, Cline, Command Code, and Kilo." />
 <meta name="twitter:image" content="https://www.pgupai.com/assets/og-20260704.png" />
 
+<!-- Structured data: Organization + WebSite + SoftwareApplication + FAQPage.
+     FAQ answers here must stay in sync with the visible #faq section below. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.pgupai.com/#org",
+      "name": "PGUP AI",
+      "url": "https://www.pgupai.com/",
+      "logo": { "@type": "ImageObject", "url": "https://www.pgupai.com/assets/icon-512.png" },
+      "sameAs": ["https://github.com/pgup-ai"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.pgupai.com/#website",
+      "url": "https://www.pgupai.com/",
+      "name": "J-Bot Review",
+      "publisher": { "@id": "https://www.pgupai.com/#org" }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://www.pgupai.com/#app",
+      "name": "J-Bot Review",
+      "alternateName": "jbot-review-action",
+      "description": "Open-source agentic PR reviewer that runs inside your own GitHub Actions, using OpenCode gateways or CLI subscriptions including Codex, Claude, Cursor, Devin, Cline, Command Code, and Kilo.",
+      "url": "https://www.pgupai.com/",
+      "image": "https://www.pgupai.com/assets/icon-512.png",
+      "applicationCategory": "DeveloperApplication",
+      "applicationSubCategory": "Code review",
+      "operatingSystem": "Linux (GitHub Actions)",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "isAccessibleForFree": true,
+      "license": "https://opensource.org/licenses/MIT",
+      "installUrl": "https://github.com/pgup-ai/jbot-review-action",
+      "softwareHelp": { "@type": "CreativeWork", "url": "https://github.com/pgup-ai/jbot-review-action#readme" },
+      "featureList": [
+        "Runs inside your own GitHub Actions, on your runner and your keys",
+        "Bring your own model: 28+ backends via OpenCode gateways or CLI subscriptions (Codex, Claude, Cursor, Devin, Cline, Kilo, Command Code)",
+        "Diff-anchored review comments, verified by a second model before posting",
+        "Reads house rules: AGENTS.md, REVIEW.md, .coderabbit.yaml, greptile.json, Cursor rules",
+        "Checks changes against current documentation via Context7",
+        "Least-privilege permissions: contents read, pull-requests write"
+      ],
+      "author": { "@id": "https://www.pgupai.com/#org" },
+      "publisher": { "@id": "https://www.pgupai.com/#org" },
+      "sameAs": ["https://github.com/pgup-ai/jbot-review-action"]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.pgupai.com/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I use my Claude, Codex, or Cursor subscription for automated code review?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. J-Bot Review drives CLI coding-agent backends — Codex, Claude, Cursor, Devin, Cline, Kilo, and Command Code — inside your own GitHub Actions, so a subscription seat you already pay for can review every pull request. No separate reviewer subscription is needed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is J-Bot Review free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The action itself is MIT-licensed open source and adds no per-seat or per-review charge. You pay only for the model you bring — with OpenCode Zen free models or a CLI seat you already pay for, J-Bot adds $0 on top of your normal CI minutes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does my code get uploaded to a third-party service?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. J-Bot runs on your GitHub Actions runner and reviews your checkout read-only. The diff is sent only to the model provider you configure, on your own key. There is no J-Bot server and no third-party reviewer in the loop."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How is J-Bot Review different from CodeRabbit or Greptile?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hosted reviewers run your code through their own servers and charge per seat (about $40 per month). J-Bot Review is an open-source GitHub Action that runs in your CI with any model you choose, at $0 per seat. It also reads existing .coderabbit.yaml and greptile.json rule files, so switching keeps your house rules."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which models and providers does J-Bot Review support?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "28+ backends. OpenCode gateways cover OpenCode Zen free models plus Claude, OpenAI, Gemini, DeepSeek, Grok, Qwen, Kimi, MiniMax, OpenRouter, Fireworks, Cohere, Together, and more. CLI subscription backends cover Codex, Claude, Cursor, Devin, Cline, Kilo, and Command Code. Switch backends with one repo variable."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work with private repositories?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. It is a standard container action: if your repository runs GitHub Actions, it can run J-Bot Review. Default permissions are least-privilege — contents: read, pull-requests: write — and your code never leaves the runner except to the model you configured."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
 <!-- Fonts: Space Grotesk (display) · IBM Plex Sans (body) · IBM Plex Mono (code/labels) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -109,7 +216,7 @@
     padding-inline: 28px;
   }
 
-  #how, #proof, #features, #compare, #setup { scroll-margin-top: 84px; }
+  #how, #proof, #features, #compare, #setup, #faq { scroll-margin-top: 84px; }
 
   /* ---------- Shared type ---------- */
   h1, h2, h3 { margin: 0; }
@@ -453,6 +560,32 @@
   .setup-checks .v { color: var(--accent); flex: none; }
   .setup-grid .code-card pre { padding: 18px 20px; font-size: 12.5px; line-height: 1.7; }
 
+  /* ---------- FAQ ---------- */
+  #faq .sect-head { margin-bottom: 26px; }
+  .faq-list { max-width: 830px; }
+  .faq-item { border-bottom: 1px solid var(--hairline); }
+  .faq-item:first-child { border-top: 1px solid var(--hairline); }
+  .faq-item summary {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 22px;
+    list-style: none; cursor: pointer; padding: 19px 2px;
+    font-weight: 600; font-size: 16px; line-height: 1.45;
+    transition: color 0.15s var(--ease);
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary:hover { color: var(--accent-hover); }
+  .faq-mark {
+    font-family: var(--mono); font-size: 15px; color: var(--text-4);
+    flex: none; transition: transform 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .faq-item[open] .faq-mark { transform: rotate(45deg); color: var(--accent); }
+  .faq-a { padding: 0 2px 22px; color: var(--text-2); font-size: 14.5px; line-height: 1.65; max-width: 720px; }
+  .faq-a p { margin: 0; }
+  .faq-a code {
+    font-family: var(--mono); font-size: 12.5px; color: var(--code-text);
+    background: var(--surface); border: 1px solid var(--border-code);
+    border-radius: 5px; padding: 1px 6px; white-space: nowrap;
+  }
+
   /* ---------- Final CTA ---------- */
   .cta-sect .sect-inner { padding-block: 70px; text-align: center; }
   .cta-sect .h2 { font-family: var(--display); font-weight: 700; font-size: clamp(32px, 6vw, 46px); letter-spacing: -0.025em; line-height: 1.05; }
@@ -509,6 +642,7 @@
     html { scroll-behavior: auto; }
     .hero-pill .dot { animation: none; }
     .reveal { opacity: 1; transform: none; transition: none; }
+    .faq-mark { transition: none; }
     .btn, .chip, .feat, .copybtn, .copybtn-solid { transition: none; }
   }
 
@@ -876,6 +1010,42 @@
   </div>
 </section>
 
+<!-- ============================== FAQ ============================== -->
+<section id="faq">
+  <div class="wrap sect-inner">
+    <div class="sect-head reveal">
+      <p class="eyebrow">FAQ</p>
+      <h2 class="h2">Questions, answered.</h2>
+    </div>
+    <div class="faq-list reveal">
+      <details class="faq-item" open>
+        <summary>Can I use my Claude, Codex, or Cursor subscription for automated code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
+        <div class="faq-a"><p>Yes. J-Bot Review drives CLI coding-agent backends — Codex, Claude, Cursor, Devin, Cline, Kilo, and Command Code — inside your own GitHub Actions, so a subscription seat you already pay for can review every pull request. No separate reviewer subscription is needed.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary>Is J-Bot Review free?<span class="faq-mark" aria-hidden="true">+</span></summary>
+        <div class="faq-a"><p>The action itself is MIT-licensed open source and adds no per-seat or per-review charge. You pay only for the model you bring — with OpenCode Zen free models or a CLI seat you already pay for, J-Bot adds $0 on top of your normal CI minutes.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary>Does my code get uploaded to a third-party service?<span class="faq-mark" aria-hidden="true">+</span></summary>
+        <div class="faq-a"><p>No. J-Bot runs on your GitHub Actions runner and reviews your checkout read-only. The diff is sent only to the model provider you configure, on your own key. There is no J-Bot server and no third-party reviewer in the loop.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary>How is J-Bot Review different from CodeRabbit or Greptile?<span class="faq-mark" aria-hidden="true">+</span></summary>
+        <div class="faq-a"><p>Hosted reviewers run your code through their own servers and charge per seat (about $40 per month). J-Bot Review is an open-source GitHub Action that runs in your CI with any model you choose, at $0 per seat. It also reads existing <code>.coderabbit.yaml</code> and <code>greptile.json</code> rule files, so switching keeps your house rules.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary>Which models and providers does J-Bot Review support?<span class="faq-mark" aria-hidden="true">+</span></summary>
+        <div class="faq-a"><p>28+ backends. OpenCode gateways cover OpenCode Zen free models plus Claude, OpenAI, Gemini, DeepSeek, Grok, Qwen, Kimi, MiniMax, OpenRouter, Fireworks, Cohere, Together, and more. CLI subscription backends cover Codex, Claude, Cursor, Devin, Cline, Kilo, and Command Code. Switch backends with one repo variable.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary>Does it work with private repositories?<span class="faq-mark" aria-hidden="true">+</span></summary>
+        <div class="faq-a"><p>Yes. It is a standard container action: if your repository runs GitHub Actions, it can run J-Bot Review. Default permissions are least-privilege — <code>contents: read</code>, <code>pull-requests: write</code> — and your code never leaves the runner except to the model you configured.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
 <!-- ============================== FINAL CTA ============================== -->
 <section class="cta-sect">
   <div class="wrap sect-inner">
@@ -914,6 +1084,7 @@
             <a href="#how">How it works</a>
             <a href="#features">Features</a>
             <a href="#compare">Own vs. rent</a>
+            <a href="#faq">FAQ</a>
           </nav>
         </div>
         <div class="foot-col">
