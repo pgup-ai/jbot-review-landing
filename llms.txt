@@ -19,6 +19,7 @@ Key facts:
 ## Docs
 
 - [Action repository and documentation](https://github.com/pgup-ai/jbot-review-action): install, providers, configuration, tuning
+- [GitHub Actions Marketplace listing](https://github.com/marketplace/actions/j-bot-code-review): official listing (v0.2.0+)
 - [Landing page](https://www.pgupai.com/): overview, example review, setup YAML, FAQ
 - [All guides](https://www.pgupai.com/guides): index of setup guides
 - [Guide: PR review with a CLI subscription you already pay for](https://www.pgupai.com/guides/cli-subscription-code-review): per-CLI provider values, secrets, and credential sources
