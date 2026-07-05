@@ -205,11 +205,11 @@
   <h1>Cursor code review in GitHub Actions</h1>
   <p class="updated">Updated July 4, 2026 · applies to pgup-ai/jbot-review-action v0</p>
 
-  <p class="lede"><b>The Cursor seat you already pay for can review your pull requests.</b> J-Bot Review — an open-source (MIT) GitHub Action — drives the Cursor CLI inside your own GitHub Actions: create one API key in your Cursor dashboard, save it as one repo secret, commit one workflow file. Every PR gets diff-anchored, verified findings, in <b>read-only plan mode, with $0 added</b> by J-Bot.</p>
+  <p class="lede"><b>Your Cursor subscription can double as a PR reviewer.</b> J-Bot Review is an MIT-licensed GitHub Action that runs the Cursor CLI inside your own CI. Setup is one API key from the Cursor dashboard and one workflow file; after that, every pull request gets verified, diff-anchored findings. Cursor stays in <b>read-only plan mode</b> the whole time, and J-Bot adds <b>nothing to the bill</b>.</p>
 
   <div class="callout">
-    <span class="tag">This is the seat-reuse path</span>
-    <p>Hosted AI reviewers charge per seat and can't touch your Cursor subscription. This setup reuses it. Same idea for <b>Codex (ChatGPT Plus/Pro), Devin, Cline, Kilo, and Command Code</b> seats: <a href="/guides/cli-subscription-code-review">CLI subscription code review →</a></p>
+    <span class="tag">Other seats work too</span>
+    <p>Cursor isn't special-cased here. <b>Codex (ChatGPT Plus/Pro), Devin, Cline, Kilo, and Command Code</b> wire up the same way, and the <a href="/guides/cli-subscription-code-review">CLI subscription guide</a> has the full table of providers, secrets, and where each credential lives.</p>
   </div>
 
   <h2 id="setup">Setup in three steps</h2>
@@ -249,20 +249,20 @@
           <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
   </div>
 
-  <h2 id="what-cursor-reviews">What Cursor reviews, exactly</h2>
+  <h2 id="what-cursor-reviews">What the review covers</h2>
   <ul>
-    <li><b>The full diff</b> — base…head, not just the latest push — with read-only access to your checkout for context (<code>cursor-agent --mode plan</code>).</li>
-    <li><b>Your house rules:</b> the reviewer discovers <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>.coderabbit.yaml</code>, <code>greptile.json</code>, and Cursor rules — the same rules files your editor already uses.</li>
-    <li><b>Current docs:</b> when a PR touches an external API or SDK, Context7 checks the change against live documentation.</li>
-    <li><b>Verified output:</b> every blocking finding is re-checked in a dedicated session before posting — refuted findings are dropped, uncertain ones demoted to advisory.</li>
+    <li><b>Your Cursor rules come along.</b> The reviewer picks up the same rules files your editor already uses, plus <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>.coderabbit.yaml</code>, and <code>greptile.json</code>.</li>
+    <li><b>The whole diff,</b> base…head, with read-only checkout access for context (<code>cursor-agent --mode plan</code>).</li>
+    <li>PRs that touch an external API or SDK get a Context7 check against current docs.</li>
+    <li>Blocking findings are re-litigated in a second session before anything posts. What can't be defended gets dropped or demoted to advisory.</li>
   </ul>
 
   <h2 id="cost-privacy">Cost &amp; privacy</h2>
   <ul>
-    <li><b>$0 beyond the seat.</b> Reviews run against your Cursor account — models are managed by the plan you already pay for — plus normal CI minutes. J-Bot adds no charge.</li>
-    <li><b>No new data recipient:</b> the diff goes to Cursor's backend under your own account — the vendor your editor already talks to. No third-party reviewer service sees your code.</li>
-    <li><b>Credential hygiene:</b> keep <code>CURSOR_API_KEY</code> in GitHub Actions <b>secrets</b> (never variables), and check your plan's terms for CI/automation use. On <code>pull_request</code> events GitHub strips secrets from fork PRs.</li>
-    <li><b>Doc-only PRs</b> are skipped without a model call.</li>
+    <li>Reviews bill to the Cursor plan you already have. J-Bot charges nothing; CI minutes are the only extra.</li>
+    <li>The diff goes to Cursor's backend and nowhere else — the same vendor your editor talks to all day. There's no reviewer service in the middle.</li>
+    <li><code>CURSOR_API_KEY</code> belongs in Actions secrets, not variables. GitHub strips secrets from fork PRs, so outside contributors can't spend your seat. Worth a skim of your plan's terms on CI use, too.</li>
+    <li>Doc-only PRs skip the model call entirely.</li>
   </ul>
 
   <h2 id="faq">FAQ</h2>

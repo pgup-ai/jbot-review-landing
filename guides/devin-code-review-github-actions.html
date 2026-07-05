@@ -205,11 +205,11 @@
   <h1>Devin code review in GitHub Actions</h1>
   <p class="updated">Updated July 4, 2026 · applies to pgup-ai/jbot-review-action v0</p>
 
-  <p class="lede"><b>The Devin seat you already pay for can review your pull requests.</b> J-Bot Review — an open-source (MIT) GitHub Action — drives the Devin CLI backend inside your own GitHub Actions: run <code>devin auth login</code> once, copy one key value into a repo secret, commit one workflow file. Every PR gets diff-anchored, verified findings, with <b>$0 added</b> by J-Bot.</p>
+  <p class="lede"><b>A Devin seat can moonlight as your PR reviewer.</b> J-Bot Review, an MIT-licensed GitHub Action, drives the Devin CLI backend inside your own CI. The setup has exactly one trap — the secret is a key <em>value</em> copied out of a file, not the file itself — and this guide walks straight through it. J-Bot adds <b>nothing to your Devin bill</b>.</p>
 
   <div class="callout">
-    <span class="tag">This is the seat-reuse path</span>
-    <p>Hosted AI reviewers charge per seat and can't touch your Devin subscription. This setup reuses it. Same idea for <b>Codex (ChatGPT Plus/Pro), Cursor, Cline, Kilo, and Command Code</b> seats: <a href="/guides/cli-subscription-code-review">CLI subscription code review →</a></p>
+    <span class="tag">One of six seats</span>
+    <p>Devin is one of six subscriptions this works with — <b>Codex (ChatGPT Plus/Pro), Cursor, Cline, Kilo, and Command Code</b> follow the same one-secret pattern. Full table in the <a href="/guides/cli-subscription-code-review">CLI subscription guide</a>.</p>
   </div>
 
   <h2 id="setup">Setup in three steps</h2>
@@ -249,20 +249,20 @@
           <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
   </div>
 
-  <h2 id="what-devin-reviews">What Devin reviews, exactly</h2>
+  <h2 id="what-devin-reviews">What Devin posts back</h2>
   <ul>
-    <li><b>The full diff</b> — base…head, not just the latest push — with read-only access to your checkout for context.</li>
-    <li><b>Your house rules:</b> the reviewer discovers <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>.coderabbit.yaml</code>, <code>greptile.json</code>, and Cursor rules, and reviews against them.</li>
-    <li><b>Current docs:</b> when a PR touches an external API or SDK, Context7 checks the change against live documentation.</li>
-    <li><b>Verified output:</b> every blocking finding is re-checked in a dedicated session before posting — refuted findings are dropped, uncertain ones demoted to advisory.</li>
+    <li>Diff-anchored review comments over the whole base…head range, plus a verdict at the end.</li>
+    <li>Every blocking finding has to survive a second-session check before it appears. The rest get demoted or dropped rather than dumped on the PR.</li>
+    <li>Repo rules shape the review: <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>.coderabbit.yaml</code>, <code>greptile.json</code>, Cursor rules.</li>
+    <li>External API or SDK changes get a Context7 pass against current docs.</li>
   </ul>
 
   <h2 id="cost-privacy">Cost &amp; privacy</h2>
   <ul>
-    <li><b>$0 beyond the seat.</b> Reviews run against your Devin account — models are managed by the plan you already pay for — plus normal CI minutes. J-Bot adds no charge. A one-off <code>/jbot --provider=devin</code> comment also works as a stronger sign-off pass on top of a cheaper default reviewer.</li>
-    <li><b>No new data recipient:</b> the diff goes to Devin's backend under your own account. No third-party reviewer service sees your code.</li>
-    <li><b>Credential hygiene:</b> the <code>windsurf_api_key</code> is a password-equivalent. Keep it in GitHub Actions <b>secrets</b> (never variables), and check your plan's terms for CI use. Fork PRs get secrets stripped by GitHub.</li>
-    <li><b>Doc-only PRs</b> are skipped without a model call.</li>
+    <li>Reviews draw on the Devin plan you already pay for, plus CI minutes. A nice pattern: run a cheaper default reviewer and use a one-off <code>/jbot --provider=devin</code> comment as the stronger sign-off pass.</li>
+    <li>The diff reaches Devin's backend on your account and no one else's servers.</li>
+    <li>The <code>windsurf_api_key</code> is a password-equivalent, so Actions secrets only. Fork PRs never receive it, and your plan's terms on CI use are worth a look.</li>
+    <li>Doc-only PRs don't spend a model call.</li>
   </ul>
 
   <h2 id="faq">FAQ</h2>

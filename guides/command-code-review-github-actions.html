@@ -75,7 +75,7 @@
         {
           "@type": "Question",
           "name": "Where does the COMMANDCODE_ACCESS_KEY secret come from?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Your Command Code access key looks like user_… — after a local login it also lives as the apiKey value inside ~/.commandcode/auth.json. Copy the key value (not the whole file) into a repository secret named COMMANDCODE_ACCESS_KEY. Treat it like a password: secrets, never variables." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Your Command Code access key looks like user_… — after a local login it also lives as the apiKey value inside ~/.commandcode/auth.json. Copy the key value (not the whole file) into a repository secret named COMMANDCODE_ACCESS_KEY. Keep it in Actions secrets — repo variables aren't encrypted." }
         },
         {
           "@type": "Question",
@@ -205,11 +205,11 @@
   <h1>Command Code review in GitHub Actions</h1>
   <p class="updated">Updated July 4, 2026 · applies to pgup-ai/jbot-review-action v0</p>
 
-  <p class="lede"><b>The Command Code seat you already pay for can review your pull requests.</b> J-Bot Review — an open-source (MIT) GitHub Action — drives the Command Code CLI inside your own GitHub Actions: copy your access key into one repo secret, commit one workflow file. Every PR gets diff-anchored, verified findings, with <b>$0 added</b> by J-Bot.</p>
+  <p class="lede"><b>Command Code might be the fastest of the CLI seats to wire up:</b> the <code>user_…</code> access key you already have goes into one repo secret, one workflow file gets committed, and that's the install. From there, J-Bot Review — an MIT-licensed GitHub Action — has Command Code reviewing every PR on your runner, at <b>no cost beyond your existing plan</b>.</p>
 
   <div class="callout">
-    <span class="tag">This is the seat-reuse path</span>
-    <p>Hosted AI reviewers charge per seat and can't touch your Command Code subscription. This setup reuses it. Same idea for <b>Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, and Kilo</b> seats: <a href="/guides/cli-subscription-code-review">CLI subscription code review →</a></p>
+    <span class="tag">Five sibling setups</span>
+    <p><b>Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, and Kilo</b> plug in the same way: one provider value, one secret. The <a href="/guides/cli-subscription-code-review">CLI subscription guide</a> compares all six side by side.</p>
   </div>
 
   <h2 id="setup">Setup in three steps</h2>
@@ -249,20 +249,20 @@
           <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
   </div>
 
-  <h2 id="what-commandcode-reviews">What Command Code reviews, exactly</h2>
+  <h2 id="what-commandcode-reviews">What shows up on the PR</h2>
   <ul>
-    <li><b>The full diff</b> — base…head, not just the latest push — with read-only access to your checkout for context.</li>
-    <li><b>Your house rules:</b> the reviewer discovers <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>.coderabbit.yaml</code>, <code>greptile.json</code>, and Cursor rules, and reviews against them.</li>
-    <li><b>Current docs:</b> when a PR touches an external API or SDK, Context7 checks the change against live documentation.</li>
-    <li><b>Verified output:</b> every blocking finding is re-checked in a dedicated session before posting — refuted findings are dropped, uncertain ones demoted to advisory.</li>
+    <li>Verified, diff-anchored findings across the full base…head diff, closed out with a verdict.</li>
+    <li>No wall of unvetted nits: blocking findings are re-checked in a second session before they post, and the marginal ones arrive as advisory.</li>
+    <li>Your repo's rules files apply — <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>.coderabbit.yaml</code>, <code>greptile.json</code>, Cursor rules.</li>
+    <li>Changes to external APIs and SDKs are verified against live docs via Context7.</li>
   </ul>
 
   <h2 id="cost-privacy">Cost &amp; privacy</h2>
   <ul>
-    <li><b>$0 beyond the seat.</b> Reviews run against your Command Code account — models are managed by the plan you already pay for — plus normal CI minutes. J-Bot adds no charge.</li>
-    <li><b>No new data recipient:</b> the diff goes to Command Code's backend under your own account. No third-party reviewer service sees your code.</li>
-    <li><b>Credential hygiene:</b> the access key is a password-equivalent — the secret is the key value, not the whole <code>auth.json</code>. Keep it in GitHub Actions <b>secrets</b> (never variables). Fork PRs get secrets stripped by GitHub.</li>
-    <li><b>Doc-only PRs</b> are skipped without a model call.</li>
+    <li>Reviews run on the Command Code plan you already pay for, plus CI minutes. Nothing else.</li>
+    <li>Your diff goes to Command Code's backend on your account; there's no reviewer service in between.</li>
+    <li>The secret is the key value, not the whole <code>auth.json</code> — and it's a password-equivalent, so Actions secrets only. GitHub locks fork PRs out of secrets automatically.</li>
+    <li>Doc-only PRs skip the model call.</li>
   </ul>
 
   <h2 id="faq">FAQ</h2>
@@ -272,7 +272,7 @@
   </details>
   <details class="faq-item">
     <summary>Where does the COMMANDCODE_ACCESS_KEY secret come from?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Your Command Code access key looks like <code>user_…</code> — after a local login it also lives as the <code>apiKey</code> value inside <code>~/.commandcode/auth.json</code>. Copy the key value (not the whole file) into a repository secret named <code>COMMANDCODE_ACCESS_KEY</code>. Treat it like a password: secrets, never variables.</p></div>
+    <div class="faq-a"><p>Your Command Code access key looks like <code>user_…</code> — after a local login it also lives as the <code>apiKey</code> value inside <code>~/.commandcode/auth.json</code>. Copy the key value (not the whole file) into a repository secret named <code>COMMANDCODE_ACCESS_KEY</code>. Keep it in Actions secrets — repo variables aren't encrypted.</p></div>
   </details>
   <details class="faq-item">
     <summary>What does Command Code review cost per PR?<span class="faq-mark" aria-hidden="true">+</span></summary>

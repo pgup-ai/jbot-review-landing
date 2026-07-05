@@ -75,7 +75,7 @@
         {
           "@type": "Question",
           "name": "Where does the KILO_AUTH_CONTENT secret come from?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Run kilo auth login on your machine, then copy the whole contents of ~/.local/share/kilo/auth.json into a repository secret named KILO_AUTH_CONTENT. The secret is the entire file, not a key inside it. Treat it like a password: secrets, never variables." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Run kilo auth login on your machine, then copy the whole contents of ~/.local/share/kilo/auth.json into a repository secret named KILO_AUTH_CONTENT. The secret is the entire file, not a key inside it, and it's a credential like any other: Actions secrets only, never variables." }
         },
         {
           "@type": "Question",
@@ -205,7 +205,7 @@
   <h1>Kilo code review in GitHub Actions</h1>
   <p class="updated">Updated July 4, 2026 · applies to pgup-ai/jbot-review-action v0</p>
 
-  <p class="lede"><b>Kilo is the cheapest way to trial agentic PR review end to end.</b> J-Bot Review — an open-source (MIT) GitHub Action — drives the Kilo CLI inside your own GitHub Actions, and the Kilo backend <b>defaults to its free gateway model</b> (<code>kilo/kilo-auto/free</code>). One <code>kilo auth login</code>, one repo secret, one workflow file — and the only cost is CI minutes.</p>
+  <p class="lede"><b>Kilo is the cheapest way to trial agentic PR review end to end.</b> J-Bot Review is an MIT-licensed GitHub Action, and its Kilo backend <b>defaults to a free gateway model</b> (<code>kilo/kilo-auto/free</code>). So after one <code>kilo auth login</code>, one repo secret, and one workflow file, the only cost left is CI minutes.</p>
 
   <div class="callout">
     <span class="tag">Trial cheap, upgrade in place</span>
@@ -249,20 +249,20 @@
           <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
   </div>
 
-  <h2 id="what-kilo-reviews">What Kilo reviews, exactly</h2>
+  <h2 id="what-kilo-reviews">What you get for $0</h2>
   <ul>
-    <li><b>The full diff</b> — base…head, not just the latest push — with read-only access to your checkout for context.</li>
-    <li><b>Your house rules:</b> the reviewer discovers <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>.coderabbit.yaml</code>, <code>greptile.json</code>, and Cursor rules, and reviews against them.</li>
-    <li><b>Current docs:</b> when a PR touches an external API or SDK, Context7 checks the change against live documentation.</li>
-    <li><b>Verified output:</b> every blocking finding is re-checked in a dedicated session before posting — refuted findings are dropped, uncertain ones demoted to advisory.</li>
+    <li>The same review the paid backends run: full base…head diff, read-only checkout access for context.</li>
+    <li>The verification pass still happens — blocking findings get re-checked before posting, nits get demoted. Free model doesn't mean unfiltered output.</li>
+    <li>Repo rules files are honored: <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>.coderabbit.yaml</code>, <code>greptile.json</code>, Cursor rules.</li>
+    <li>Context7 doc checks fire when a PR touches an external API or SDK.</li>
   </ul>
 
   <h2 id="cost-privacy">Cost &amp; privacy</h2>
   <ul>
-    <li><b>$0 on the default model.</b> The free gateway default means a review run costs nothing beyond CI minutes; pin a stronger model your Kilo account can access whenever you're ready.</li>
-    <li><b>No new data recipient:</b> the diff goes to the Kilo gateway under your own account. No third-party reviewer service sees your code.</li>
-    <li><b>Credential hygiene:</b> the whole <code>auth.json</code> is a password-equivalent. Keep it in GitHub Actions <b>secrets</b> (never variables). Fork PRs get secrets stripped by GitHub.</li>
-    <li><b>Doc-only PRs</b> are skipped without a model call.</li>
+    <li>On the free default model, a review run costs nothing beyond CI minutes. Pin something stronger from your Kilo account whenever the free tier stops being enough.</li>
+    <li>Diffs go to the Kilo gateway on your account, and that's it — no reviewer service sits in between.</li>
+    <li>The <code>auth.json</code> secret is the whole credential file. Actions secrets only, and GitHub keeps secrets away from fork PRs.</li>
+    <li>Doc-only PRs skip the model call.</li>
   </ul>
 
   <h2 id="faq">FAQ</h2>
@@ -272,7 +272,7 @@
   </details>
   <details class="faq-item">
     <summary>Where does the KILO_AUTH_CONTENT secret come from?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Run <code>kilo auth login</code> on your machine, then copy the whole contents of <code>~/.local/share/kilo/auth.json</code> into a repository secret named <code>KILO_AUTH_CONTENT</code>. The secret is the entire file, not a key inside it. Treat it like a password: secrets, never variables.</p></div>
+    <div class="faq-a"><p>Run <code>kilo auth login</code> on your machine, then copy the whole contents of <code>~/.local/share/kilo/auth.json</code> into a repository secret named <code>KILO_AUTH_CONTENT</code>. The secret is the entire file, not a key inside it, and it's a credential like any other: Actions secrets only, never variables.</p></div>
   </details>
   <details class="faq-item">
     <summary>Which models does Kilo use for reviews?<span class="faq-mark" aria-hidden="true">+</span></summary>

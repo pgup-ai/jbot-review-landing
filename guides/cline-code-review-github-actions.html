@@ -75,7 +75,7 @@
         {
           "@type": "Question",
           "name": "Where does the CLINE_AUTH_JSON secret come from?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Run cline auth on your machine, then copy the entire contents of ~/.cline/data/settings/providers.json into a repository secret named CLINE_AUTH_JSON. The secret is the whole file, not a key inside it, and both billing modes share it. Only the auth token is used. Treat it like a password: secrets, never variables." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Run cline auth on your machine, then copy the entire contents of ~/.cline/data/settings/providers.json into a repository secret named CLINE_AUTH_JSON. The secret is the whole file, not a key inside it, and both billing modes share it. Only the auth token is used, but it's a password-equivalent all the same — Actions secrets only." }
         },
         {
           "@type": "Question",
@@ -205,11 +205,11 @@
   <h1>Cline code review in GitHub Actions</h1>
   <p class="updated">Updated July 4, 2026 · applies to pgup-ai/jbot-review-action v0</p>
 
-  <p class="lede"><b>Your Cline plan can review your pull requests.</b> J-Bot Review — an open-source (MIT) GitHub Action — drives the Cline CLI inside your own GitHub Actions: run <code>cline auth</code> once locally, save the credential as one repo secret, commit one workflow file. Works on <b>either billing mode</b> — subscription (<code>cline-pass</code>) or pay-as-you-go credits (<code>cline</code>) — with reviews running read-only and <b>$0 added</b> by J-Bot.</p>
+  <p class="lede"><b>Cline can review your pull requests on whichever billing mode you're already on.</b> Subscription? Use <code>cline-pass</code>. Pay-as-you-go credits? Plain <code>cline</code>. Either way, J-Bot Review (an MIT-licensed GitHub Action) runs the Cline CLI read-only inside your own CI: <code>cline auth</code> once, one secret, one workflow file, and J-Bot adds <b>nothing to the bill</b>.</p>
 
   <div class="callout">
-    <span class="tag">This is the seat-reuse path</span>
-    <p>Hosted AI reviewers charge per seat and can't touch your Cline subscription. This setup reuses it. Same idea for <b>Codex (ChatGPT Plus/Pro), Cursor, Devin, Kilo, and Command Code</b> seats: <a href="/guides/cli-subscription-code-review">CLI subscription code review →</a></p>
+    <span class="tag">Same trick, other seats</span>
+    <p>The pattern isn't Cline-specific. <b>Codex (ChatGPT Plus/Pro), Cursor, Devin, Kilo, and Command Code</b> each take one secret and one provider value — the <a href="/guides/cli-subscription-code-review">CLI subscription guide</a> has the whole table.</p>
   </div>
 
   <h2 id="setup">Setup in three steps</h2>
@@ -249,20 +249,20 @@
           <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
   </div>
 
-  <h2 id="what-cline-reviews">What Cline reviews, exactly</h2>
+  <h2 id="what-cline-reviews">What lands on the PR</h2>
   <ul>
-    <li><b>The full diff</b> — base…head, not just the latest push — with read-only access to your checkout for context (<code>cline --plan --auto-approve false</code>).</li>
-    <li><b>Your house rules:</b> the reviewer discovers <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>.coderabbit.yaml</code>, <code>greptile.json</code>, and Cursor rules, and reviews against them.</li>
-    <li><b>Current docs:</b> when a PR touches an external API or SDK, Context7 checks the change against live documentation.</li>
-    <li><b>Verified output:</b> every blocking finding is re-checked in a dedicated session before posting — refuted findings are dropped, uncertain ones demoted to advisory.</li>
+    <li>Diff-anchored comments across the full base…head range, closed out with a verdict. Cline itself runs <code>--plan --auto-approve false</code>, so it can read the checkout but never write to it.</li>
+    <li>Blocking findings go through a verification session first. The ones that don't survive get dropped; borderline ones post as advisory.</li>
+    <li>House rules are read from the repo: <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>.coderabbit.yaml</code>, <code>greptile.json</code>, Cursor rules.</li>
+    <li>Context7 pulls current docs whenever the PR touches an external API or SDK.</li>
   </ul>
 
   <h2 id="cost-privacy">Cost &amp; privacy</h2>
   <ul>
-    <li><b>$0 beyond your Cline plan.</b> <code>cline-pass</code> bills through your subscription; <code>cline</code> spends pay-as-you-go credits. Plus normal CI minutes — J-Bot adds no charge.</li>
-    <li><b>Model pinning:</b> use <code>cline-pass/&lt;model&gt;</code> (e.g. <code>cline-pass/glm-5.2</code>) or <code>cline/&lt;type&gt;/&lt;model&gt;</code> (e.g. <code>cline/deepseek/deepseek-v4-flash</code>), or omit <code>model</code> for each mode's default.</li>
-    <li><b>Credential hygiene:</b> the whole <code>providers.json</code> is a password-equivalent; only the auth token is used. Keep it in GitHub Actions <b>secrets</b>, and check your plan's terms for CI use. Fork PRs get secrets stripped by GitHub.</li>
-    <li><b>Doc-only PRs</b> are skipped without a model call.</li>
+    <li>Billing stays inside your Cline plan (<code>cline-pass</code>) or credit balance (<code>cline</code>). CI minutes aside, J-Bot adds nothing.</li>
+    <li>Model pinning follows Cline's id scheme: <code>cline-pass/glm-5.2</code>, <code>cline/deepseek/deepseek-v4-flash</code>, or leave <code>model</code> unset for each mode's default.</li>
+    <li>The <code>providers.json</code> secret is only read for its auth token, but it's still a credential. Actions secrets only, and fork PRs never see it — GitHub strips secrets there. Check your plan's terms for CI use.</li>
+    <li>PRs that only touch docs don't spend a model call.</li>
   </ul>
 
   <h2 id="faq">FAQ</h2>
@@ -272,7 +272,7 @@
   </details>
   <details class="faq-item">
     <summary>Where does the CLINE_AUTH_JSON secret come from?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Run <code>cline auth</code> on your machine, then copy the entire contents of <code>~/.cline/data/settings/providers.json</code> into a repository secret named <code>CLINE_AUTH_JSON</code>. The secret is the whole file, not a key inside it, and both billing modes share it. Only the auth token is used. Treat it like a password: secrets, never variables.</p></div>
+    <div class="faq-a"><p>Run <code>cline auth</code> on your machine, then copy the entire contents of <code>~/.cline/data/settings/providers.json</code> into a repository secret named <code>CLINE_AUTH_JSON</code>. The secret is the whole file, not a key inside it, and both billing modes share it. Only the auth token is used, but it's a password-equivalent all the same — Actions secrets only.</p></div>
   </details>
   <details class="faq-item">
     <summary>What is the difference between provider: cline and cline-pass?<span class="faq-mark" aria-hidden="true">+</span></summary>
