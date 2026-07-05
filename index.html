@@ -563,6 +563,13 @@
   .setup-checks .v { color: var(--accent); flex: none; }
   .setup-grid .code-card pre { padding: 18px 20px; font-size: 12.5px; line-height: 1.7; }
 
+  .compare-more {
+    text-align: center; margin: 28px 0 0;
+    font-family: var(--mono); font-size: 13px; color: var(--text-4);
+  }
+  .compare-more a { color: var(--text-2); transition: color 0.15s var(--ease); }
+  .compare-more a:hover { color: var(--accent); }
+
   /* ---------- FAQ ---------- */
   #faq .sect-head { margin-bottom: 26px; }
   .faq-list { max-width: 830px; }
@@ -583,6 +590,8 @@
   .faq-item[open] .faq-mark { transform: rotate(45deg); color: var(--accent); }
   .faq-a { padding: 0 2px 22px; color: var(--text-2); font-size: 14.5px; line-height: 1.65; max-width: 720px; }
   .faq-a p { margin: 0; }
+  .faq-a a { color: var(--accent); }
+  .faq-a a:hover { color: var(--accent-hover); }
   .faq-a code {
     font-family: var(--mono); font-size: 12.5px; color: var(--code-text);
     background: var(--surface); border: 1px solid var(--border-code);
@@ -968,6 +977,7 @@
         <div class="compare-row"><span class="v" aria-hidden="true">✓</span>Open action you can pin, audit, and self-host anywhere.</div>
       </div>
     </div>
+    <p class="compare-more reveal">Full comparisons: <a href="/compare/coderabbit-alternative">CodeRabbit</a> · <a href="/compare/greptile-alternative">Greptile</a> · <a href="/compare/qodo-alternative">Qodo</a> · <a href="/compare/cubic-alternative">Cubic</a></p>
   </div>
 </section>
 
