@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Open-source Greptile alternative: J-Bot Review ($0/seat, your CI)</title>
+<meta name="description" content="Greptile vs J-Bot Review, compared honestly: a $30/seat/mo hosted service with credit-based reviews vs a $0/seat open-source action in your own GitHub Actions. Table, trade-offs, and when each is the better choice. Pricing checked July 2026." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/compare/greptile-alternative" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/compare/greptile-alternative" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="Open-source Greptile alternative: J-Bot Review" />
+<meta property="og:description" content="Hosted per-seat service with credit-based reviews vs a $0/seat MIT action in your own CI — an honest comparison with verified pricing and when each is the better choice." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-compare-greptile-20260704.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-compare-greptile-20260704.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Open-source Greptile alternative: J-Bot Review" />
+<meta name="twitter:description" content="Hosted per-seat service with credit-based reviews vs a $0/seat MIT action in your own CI — an honest comparison with verified pricing and when each is the better choice." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-compare-greptile-20260704.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/compare/greptile-alternative#article",
+      "headline": "Open-source Greptile alternative: J-Bot Review",
+      "description": "An honest comparison of Greptile (hosted, per-seat with credits) and J-Bot Review (open-source GitHub Action in your own CI): verified pricing, codebase context, where your code goes, and when each tool is the better fit.",
+      "url": "https://www.pgupai.com/compare/greptile-alternative",
+      "image": "https://www.pgupai.com/assets/og-compare-greptile-20260704.png",
+      "datePublished": "2026-07-04",
+      "dateModified": "2026-07-04",
+      "author": { "@type": "Organization", "name": "PGUP AI", "url": "https://www.pgupai.com/" },
+      "publisher": { "@type": "Organization", "name": "PGUP AI", "url": "https://www.pgupai.com/" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "J-Bot Review", "item": "https://www.pgupai.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Compare" },
+        { "@type": "ListItem", "position": 3, "name": "Greptile alternative" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.pgupai.com/compare/greptile-alternative#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does J-Bot Review's pricing compare to Greptile's credits?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Greptile Pro is $30/seat/month with 50 review credits included per seat and $1 per additional credit; deeper TREX reviews cost 3 credits, as of July 2026. J-Bot Review is an MIT-licensed action with no per-seat fee and no credit system — you pay only the model you bring (which can be $0 with OpenCode Zen free models or a coding-CLI seat you already pay for) plus normal CI minutes." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does J-Bot Review understand my codebase like Greptile's index does?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Differently. Greptile pre-indexes your repositories on its servers and brings that graph into reviews. J-Bot Review checks out your repo read-only on your runner and lets the reviewing agent explore the actual code at review time, plus your house rules and current API docs via Context7. Both go beyond the raw diff; Greptile's context is precomputed, J-Bot's is fetched live from the checkout." }
+        },
+        {
+          "@type": "Question",
+          "name": "When is Greptile the better choice?",
+          "acceptedAnswer": { "@type": "Answer", "text": "If you want a managed service with precomputed full-codebase context, custom rules in a hosted product, a free tier for a single developer, free coverage for qualifying open-source projects, or enterprise self-hosting with SSO and support — Greptile is a strong hosted option. J-Bot Review is the fit when you want the reviewer inside your own CI, on your own keys, at $0 per seat, with any model." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  /* Tokens mirrored from the landing page (index.html) */
+  :root {
+    --bg: #0a0b0a; --surface: #0e100e; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --border-code: rgba(255,255,255,0.09); --accent-border: rgba(94,227,154,0.16);
+    --code-text: #c8cdc7;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 760px; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  .lede b, article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+  code { font-family: var(--mono); font-size: 12.5px; color: var(--code-text); background: var(--surface); border: 1px solid var(--border-code); border-radius: 5px; padding: 1px 6px; }
+
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--text-3); font-size: 12.5px; font-family: var(--mono); white-space: nowrap; }
+  .src-note { font-family: var(--mono); font-size: 11.5px; color: var(--text-4); margin: 8px 0 0; }
+
+  .callout { border: 1px solid var(--accent-border); background: rgba(94,227,154,0.04); border-radius: 12px; padding: 16px 18px; margin: 20px 0; }
+  .callout p { margin: 0; font-size: 14.5px; }
+  .callout .tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 6px; }
+
+  .faq-item { border-bottom: 1px solid var(--hairline); }
+  .faq-item:first-of-type { border-top: 1px solid var(--hairline); }
+  .faq-item summary { display: flex; align-items: baseline; justify-content: space-between; gap: 22px; list-style: none; cursor: pointer; padding: 17px 2px; font-weight: 600; font-size: 15.5px; color: var(--text); line-height: 1.45; transition: color 0.15s var(--ease); }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary:hover { color: var(--accent-hover); }
+  .faq-mark { font-family: var(--mono); font-size: 15px; color: var(--text-4); flex: none; transition: transform 0.2s var(--ease), color 0.2s var(--ease); }
+  .faq-item[open] .faq-mark { transform: rotate(45deg); color: var(--accent); }
+  .faq-a { padding: 0 2px 20px; font-size: 14.5px; color: var(--text-2); }
+  .faq-a p { margin: 0; }
+
+  .related { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 20px 0 0; }
+  .rel-card { display: block; border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 18px; color: var(--text); transition: border-color 0.16s var(--ease); }
+  .rel-card:hover { border-color: rgba(94,227,154,0.35); color: var(--text); }
+  .rel-card .k2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 7px; }
+  .rel-card p { margin: 6px 0 0; font-size: 13px; color: var(--text-3); }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .faq-mark { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides">Guides</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<article>
+  <p class="crumbs"><a href="/">Home</a> / Compare / Greptile</p>
+  <h1>Open-source Greptile alternative: J-Bot Review</h1>
+  <p class="updated">Updated July 4, 2026 · pricing and features checked against greptile.com on this date</p>
+
+  <p class="lede"><b>J-Bot Review is an open-source (MIT) alternative to Greptile that runs inside your own GitHub Actions instead of a vendor's cloud.</b> It reviews with a model you already pay for, posts diff-anchored findings that a second model verifies before they land, and adds <b>$0 per seat with no credit system</b>. Greptile is a hosted reviewer at $30/seat/month whose signature strength is precomputed full-codebase context. Here's the honest comparison.</p>
+
+  <h2 id="table">Side by side</h2>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th></th><th>Greptile (Pro)</th><th>J-Bot Review</th></tr></thead>
+    <tbody>
+      <tr><td>price</td><td>$30/seat/mo, 50 credits per seat included, $1 per extra credit (1 credit = standard review, 3 = TREX deep review); free Starter tier for 1 developer</td><td>$0 per seat, MIT license, no credits — you pay only your model provider (or $0 with OpenCode Zen free models / a CLI seat you already pay for) plus CI minutes</td></tr>
+      <tr><td>where it runs</td><td>Greptile's cloud (self-host on Enterprise)</td><td>Your GitHub Actions runner, as a container action</td></tr>
+      <tr><td>code path</td><td>Your repositories are indexed and processed on their servers</td><td>Read-only checkout on your runner; the diff goes only to the model you configure, on your own key</td></tr>
+      <tr><td>codebase context</td><td>Precomputed full-repo index brought into each review</td><td>Live exploration of the checkout at review time, plus house rules and current API docs via Context7</td></tr>
+      <tr><td>model choice</td><td>Managed by the vendor</td><td>28+ backends: OpenCode gateways (Claude, OpenAI, Gemini, DeepSeek…) or CLI seats (Codex, Cursor, Devin, Cline, Kilo, Command Code)</td></tr>
+      <tr><td>review volume</td><td>Credit-metered (50/seat/mo included, then $1/credit)</td><td>No J-Bot cap — bounded by your model plan/quota and CI</td></tr>
+      <tr><td>config files</td><td><code>greptile.json</code>, custom rules in the product</td><td>Reads <code>greptile.json</code>, <code>.coderabbit.yaml</code>, <code>AGENTS.md</code>, <code>REVIEW.md</code>, Cursor rules</td></tr>
+      <tr><td>programs</td><td>Free for qualifying OSS (MIT/Apache, non-commercial); 50% off early startups</td><td>Free for everyone — the action itself never bills</td></tr>
+      <tr><td>self-host</td><td>Enterprise plan (custom pricing, SSO/SAML)</td><td>Default mode — always on your infrastructure; fork/pin/audit freely</td></tr>
+      <tr><td>source</td><td>Proprietary</td><td>Open source (MIT), on the <a href="https://github.com/marketplace/actions/j-bot-code-review" target="_blank" rel="noopener noreferrer">GitHub Marketplace</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="src-note">Numbers from <a href="https://www.greptile.com/pricing" target="_blank" rel="noopener noreferrer">greptile.com/pricing</a>, checked 2026-07-04 — verify current pricing there.</p>
+
+  <h2 id="when-greptile">When Greptile is the better choice</h2>
+  <ul>
+    <li>You want <b>precomputed whole-codebase context</b> in every review without running anything yourself.</li>
+    <li>You're a <b>solo dev or qualifying OSS project</b> — the free Starter tier and the open-source program are genuinely generous.</li>
+    <li>You want a <b>managed product with support</b>, hosted custom rules, and an enterprise path with SSO/SAML and vendor-run self-hosting.</li>
+  </ul>
+
+  <h2 id="when-jbot">When J-Bot Review is the better choice</h2>
+  <ul>
+    <li><b>Your code can't be indexed on someone else's servers.</b> The review runs on your runner; only the diff reaches the model you chose, on your own account.</li>
+    <li><b>Per-seat + credit pricing doesn't fit.</b> No seats, no credits — heavy PR volume costs whatever your model plan costs, and can be $0 on free models or an existing CLI seat.</li>
+    <li><b>You want to pick the model</b> and switch it with one repo variable as the frontier moves.</li>
+    <li><b>You want to audit your reviewer.</b> MIT-licensed action you can read, pin, and fork.</li>
+  </ul>
+
+  <div class="callout">
+    <span class="tag">Migration is one file</span>
+    <p>J-Bot Review reads your existing <code>greptile.json</code>, so your tuned rules keep working. Add <a href="/#setup">one workflow file and one secret</a>, run both reviewers side by side on a few PRs, and keep whichever posts the findings you trust.</p>
+  </div>
+
+  <h2 id="faq">FAQ</h2>
+  <details class="faq-item" open>
+    <summary>How does J-Bot Review's pricing compare to Greptile's credits?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Greptile Pro is $30/seat/month with 50 review credits included per seat and $1 per additional credit; deeper TREX reviews cost 3 credits, as of July 2026. J-Bot Review is an MIT-licensed action with no per-seat fee and no credit system — you pay only the model you bring (which can be $0 with OpenCode Zen free models or a coding-CLI seat you already pay for) plus normal CI minutes.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Does J-Bot Review understand my codebase like Greptile's index does?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Differently. Greptile pre-indexes your repositories on its servers and brings that graph into reviews. J-Bot Review checks out your repo read-only on your runner and lets the reviewing agent explore the actual code at review time, plus your house rules and current API docs via Context7. Both go beyond the raw diff; Greptile's context is precomputed, J-Bot's is fetched live from the checkout.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>When is Greptile the better choice?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>If you want a managed service with precomputed full-codebase context, custom rules in a hosted product, a free tier for a single developer, free coverage for qualifying open-source projects, or enterprise self-hosting with SSO and support — Greptile is a strong hosted option. J-Bot Review is the fit when you want the reviewer inside your own CI, on your own keys, at $0 per seat, with any model.</p></div>
+  </details>
+
+  <h2>Related</h2>
+  <div class="related">
+    <a class="rel-card" href="/compare/coderabbit-alternative"><span class="k2">Compare</span>CodeRabbit alternative<p>The same honest comparison, for CodeRabbit.</p></a>
+    <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Guide</span>Review PRs with a CLI subscription<p>Codex, Cursor, Devin, Cline, Kilo, Command Code — reuse the seat you pay for.</p></a>
+    <a class="rel-card" href="/#proof"><span class="k2">Example</span>See a real review<p>A verified blocking finding, on a real diff.</p></a>
+  </div>
+</article>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="https://github.com/pgup-ai/jbot-review-action" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
