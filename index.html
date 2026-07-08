@@ -110,7 +110,15 @@
           "name": "Does my code get uploaded to a third-party service?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "There is no J-Bot server and no hosted reviewer in the loop, and the checkout never leaves your runner. What does leave is the diff, sent only to the model provider you configure, on your own key."
+            "text": "Run as the Action, there is no J-Bot server and no hosted reviewer in the loop, and the checkout never leaves your runner. What does leave is the diff, sent only to the model provider you configure, on your own key."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there a hosted or GitHub App version of J-Bot Review?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Currently in private beta. The GitHub App runs the same reviewer from a dashboard instead of a workflow file: add your own model keys (encrypted at rest), set models, a severity gate, and triggers, and see review history and usage per key. Reviews execute on ephemeral GitHub Actions runners. The Action remains the no-server option and is not being replaced."
           }
         },
         {
@@ -219,7 +227,7 @@
     padding-inline: 28px;
   }
 
-  #how, #proof, #features, #compare, #setup, #faq { scroll-margin-top: 84px; }
+  #how, #proof, #features, #compare, #github-app, #setup, #faq { scroll-margin-top: 84px; }
 
   /* ---------- Shared type ---------- */
   h1, h2, h3 { margin: 0; }
@@ -570,6 +578,62 @@
   .compare-more a { color: var(--text-2); transition: color 0.15s var(--ease); }
   .compare-more a:hover { color: var(--accent); }
 
+  /* ---------- GitHub App teaser ---------- */
+  .app-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 40px; align-items: center; }
+  .app-grid > * { min-width: 0; }
+  .app-copy .h2 { font-size: clamp(27px, 4.2vw, 34px); margin-bottom: 16px; }
+  .app-copy p { font-size: 15px; line-height: 1.6; color: rgba(233, 236, 232, 0.6); margin: 0 0 22px; }
+  .app-checks { display: flex; flex-direction: column; gap: 12px; }
+  .app-checks div { display: flex; gap: 11px; font-size: 14px; line-height: 1.5; color: rgba(233, 236, 232, 0.68); }
+  .app-checks .v { color: var(--accent); flex: none; }
+  .app-checks code {
+    font-family: var(--mono); font-size: 12.5px; color: var(--code-text);
+    background: var(--surface); border: 1px solid var(--border-code);
+    border-radius: 5px; padding: 1px 6px; white-space: nowrap;
+  }
+  .app-copy .app-status { margin: 22px 0 0; font-family: var(--mono); font-size: 12px; color: var(--text-4); }
+
+  /* Dashboard mockup: schematic panes — real labels, skeleton values */
+  .mock-body { display: grid; grid-template-columns: 1fr 1fr; }
+  .mock-pane { padding: 16px 20px 20px; min-width: 0; }
+  .mock-pane + .mock-pane { border-left: 1px solid var(--hairline); }
+  .mock-title {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--text-4); margin: 0 0 10px;
+  }
+  .mock-title.gap { margin-top: 18px; }
+  .mock-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 6px 0; font-size: 13px; color: var(--text-2);
+  }
+  .mock-pill { width: 104px; height: 10px; border-radius: 5px; background: rgba(255, 255, 255, 0.08); flex: none; }
+  .mock-select {
+    font-family: var(--mono); font-size: 11.5px; color: var(--code-text);
+    border: 1px solid var(--border-code); border-radius: 6px; padding: 2px 8px; background: var(--bg);
+  }
+  .mock-toggle { position: relative; width: 30px; height: 17px; border-radius: 100px; background: rgba(255, 255, 255, 0.12); flex: none; }
+  .mock-toggle::after {
+    content: ""; position: absolute; top: 2.5px; left: 3px;
+    width: 12px; height: 12px; border-radius: 50%; background: rgba(233, 236, 232, 0.6);
+  }
+  .mock-toggle.on { background: rgba(94, 227, 154, 0.32); }
+  .mock-toggle.on::after { left: auto; right: 3px; background: var(--accent); }
+  .mock-job { padding: 10px 0 12px; }
+  .mock-job + .mock-job { border-top: 1px solid var(--hairline); }
+  .mock-job-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .mock-bar { height: 10px; border-radius: 5px; background: rgba(255, 255, 255, 0.1); }
+  .mock-bar.w60 { width: 60%; } .mock-bar.w45 { width: 45%; } .mock-bar.w52 { width: 52%; }
+  .mock-chip { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11px; flex: none; }
+  .mock-chip i { width: 6px; height: 6px; border-radius: 50%; }
+  .mock-chip.ok { color: var(--accent); } .mock-chip.ok i { background: var(--accent); }
+  .mock-chip.run { color: var(--blue); } .mock-chip.run i { background: var(--blue); }
+  .mock-chip.bad { color: var(--danger-soft); } .mock-chip.bad i { background: var(--danger); }
+  .mock-meta { font-family: var(--mono); font-size: 11px; color: var(--text-4); margin: 7px 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mock-retry {
+    display: inline-flex; margin-top: 9px; font-family: var(--mono); font-size: 11px; color: var(--accent);
+    border: 1px solid rgba(94, 227, 154, 0.25); border-radius: 6px; padding: 2px 8px;
+  }
+
   /* ---------- FAQ ---------- */
   #faq .sect-head { margin-bottom: 26px; }
   .faq-list { max-width: 830px; }
@@ -668,6 +732,7 @@
   @media (max-width: 980px) {
     .grid3 { grid-template-columns: repeat(2, 1fr); }
     .setup-grid { grid-template-columns: 1fr; gap: 32px; }
+    .app-grid { grid-template-columns: 1fr; gap: 32px; }
   }
   @media (max-width: 860px) {
     .nav-links, .nav-actions { display: none; }
@@ -687,6 +752,8 @@
   }
   @media (max-width: 640px) {
     .grid3 { grid-template-columns: 1fr; }
+    .mock-body { grid-template-columns: 1fr; }
+    .mock-pane + .mock-pane { border-left: none; border-top: 1px solid var(--hairline); }
     .hero { padding-top: 56px; }
     /* Desktop headings use hard breaks; let text flow on small screens. */
     .hero h1 br, .h2 br { display: none; }
@@ -985,6 +1052,62 @@
   </div>
 </section>
 
+<!-- ============================== GITHUB APP (private beta) ============================== -->
+<section id="github-app">
+  <div class="wrap sect-inner">
+    <div class="app-grid">
+      <div class="app-copy reveal">
+        <p class="eyebrow">GitHub App</p>
+        <h2 class="h2">The same reviewer, <br>managed for you.</h2>
+        <p>The Action stays the no-server way to run J-Bot Review. The GitHub App runs the same reviewer from a dashboard instead: install it on a repo, add your own model keys — encrypted at rest, shown as last-4 only — and pull requests get reviewed with no workflow file to maintain. Reviews execute on ephemeral GitHub Actions runners, on the keys you bring.</p>
+        <div class="app-checks">
+          <div><span class="v" aria-hidden="true">✓</span><span>Dashboard config: primary + verification model, a severity gate, PR triggers — or comment <code>@jbot review</code></span></div>
+          <div><span class="v" aria-hidden="true">✓</span><span>Review history per run — duration, cost, tokens — with retry from the dashboard</span></div>
+          <div><span class="v" aria-hidden="true">✓</span><span>Usage and quota meters per key</span></div>
+        </div>
+        <p class="app-status">Currently in private beta.</p>
+      </div>
+
+      <div class="code-card reveal" role="img" aria-label="Schematic preview of the J-Bot Review dashboard: review configuration on the left, review history on the right">
+        <div class="code-head">
+          <div class="file">
+            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span>J-Bot dashboard — preview</span>
+          </div>
+        </div>
+        <div class="mock-body">
+          <div class="mock-pane">
+            <p class="mock-title">Review config</p>
+            <div class="mock-row"><span>Primary model</span><span class="mock-pill"></span></div>
+            <div class="mock-row"><span>Aux model (verification)</span><span class="mock-pill"></span></div>
+            <div class="mock-row"><span>PR gate threshold</span><span class="mock-select">high ▾</span></div>
+            <p class="mock-title gap">Triggers</p>
+            <div class="mock-row"><span>PR opened</span><span class="mock-toggle on"></span></div>
+            <div class="mock-row"><span>New commits pushed</span><span class="mock-toggle on"></span></div>
+            <div class="mock-row"><span>Review draft PRs</span><span class="mock-toggle"></span></div>
+          </div>
+          <div class="mock-pane">
+            <p class="mock-title">Review history</p>
+            <div class="mock-job">
+              <div class="mock-job-top"><span class="mock-bar w60"></span><span class="mock-chip ok"><i></i>Success</span></div>
+              <p class="mock-meta">org/api · #142 · 164.8s · $0.0421 · 143.9k/6.2k tok</p>
+            </div>
+            <div class="mock-job">
+              <div class="mock-job-top"><span class="mock-bar w45"></span><span class="mock-chip run"><i></i>Running</span></div>
+              <p class="mock-meta">org/web · #87 · Started 12s ago</p>
+            </div>
+            <div class="mock-job">
+              <div class="mock-job-top"><span class="mock-bar w52"></span><span class="mock-chip bad"><i></i>Failed</span></div>
+              <p class="mock-meta">org/api · #139 · 9.6s · $0.0011</p>
+              <span class="mock-retry">↻ Retry</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============================== SETUP ============================== -->
 <section id="setup">
   <div class="wrap sect-inner">
@@ -1047,7 +1170,11 @@
       </details>
       <details class="faq-item">
         <summary>Does my code get uploaded to a third-party service?<span class="faq-mark" aria-hidden="true">+</span></summary>
-        <div class="faq-a"><p>There is no J-Bot server and no hosted reviewer in the loop, and the checkout never leaves your runner. What does leave is the diff, sent only to the model provider you configure, on your own key.</p></div>
+        <div class="faq-a"><p>Run as the Action, there is no J-Bot server and no hosted reviewer in the loop, and the checkout never leaves your runner. What does leave is the diff, sent only to the model provider you configure, on your own key.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary>Is there a hosted or GitHub App version of J-Bot Review?<span class="faq-mark" aria-hidden="true">+</span></summary>
+        <div class="faq-a"><p>Currently in private beta. The GitHub App runs the same reviewer from a dashboard instead of a workflow file: add your own model keys (encrypted at rest), set models, a severity gate, and triggers, and see review history and usage per key. Reviews execute on ephemeral GitHub Actions runners. The Action remains the no-server option and is not being replaced.</p></div>
       </details>
       <details class="faq-item">
         <summary>How is J-Bot Review different from CodeRabbit or Greptile?<span class="faq-mark" aria-hidden="true">+</span></summary>
