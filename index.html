@@ -570,7 +570,7 @@
   .setup-grid, .app-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 40px; align-items: center; }
   .setup-grid > *, .app-grid > * { min-width: 0; }
   .setup-copy .h2, .app-copy .h2 { font-size: clamp(27px, 4.2vw, 34px); margin-bottom: 16px; }
-  .setup-copy p, .app-copy p { font-size: 15px; line-height: 1.6; color: rgba(233, 236, 232, 0.6); margin: 0 0 22px; }
+  .setup-copy p:not(.eyebrow), .app-copy p:not(.eyebrow) { font-size: 15px; line-height: 1.6; color: rgba(233, 236, 232, 0.6); margin: 0 0 22px; }
   .setup-checks, .app-checks { display: flex; flex-direction: column; gap: 12px; }
   .setup-checks div, .app-checks div { display: flex; gap: 11px; font-size: 14px; line-height: 1.5; color: rgba(233, 236, 232, 0.68); }
   .setup-checks .v, .app-checks .v { color: var(--accent); flex: none; }
