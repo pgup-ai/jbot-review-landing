@@ -118,7 +118,7 @@
           "name": "Is there a hosted or GitHub App version of J-Bot Review?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Currently in private beta. The GitHub App runs the same reviewer from a dashboard instead of a workflow file: add your own model keys (encrypted at rest), set models, a severity gate, and triggers, and see review history and usage per key. Reviews execute on ephemeral GitHub Actions runners. The Action remains the no-server option and is not being replaced."
+            "text": "Currently in private beta. The GitHub App runs the same reviewer from a dashboard instead of a workflow file: add your own model keys (encrypted at rest), configure models, a severity gate, and triggers, and see review history and per-key usage meters. Reviews execute on ephemeral GitHub Actions runners. The Action remains the no-server option and is not being replaced."
           }
         },
         {
@@ -561,14 +561,14 @@
   .compare-row .x { color: var(--danger); flex: none; }
   .compare-row .v { color: var(--accent); flex: none; }
 
-  /* ---------- Setup ---------- */
-  .setup-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 40px; align-items: center; }
-  .setup-grid > * { min-width: 0; }
-  .setup-copy .h2 { font-size: clamp(27px, 4.2vw, 34px); margin-bottom: 16px; }
-  .setup-copy p { font-size: 15px; line-height: 1.6; color: rgba(233, 236, 232, 0.6); margin: 0 0 22px; }
-  .setup-checks { display: flex; flex-direction: column; gap: 12px; }
-  .setup-checks div { display: flex; gap: 11px; font-size: 14px; line-height: 1.5; color: rgba(233, 236, 232, 0.68); }
-  .setup-checks .v { color: var(--accent); flex: none; }
+  /* ---------- Setup + GitHub App teaser (shared split layout) ---------- */
+  .setup-grid, .app-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 40px; align-items: center; }
+  .setup-grid > *, .app-grid > * { min-width: 0; }
+  .setup-copy .h2, .app-copy .h2 { font-size: clamp(27px, 4.2vw, 34px); margin-bottom: 16px; }
+  .setup-copy p, .app-copy p { font-size: 15px; line-height: 1.6; color: rgba(233, 236, 232, 0.6); margin: 0 0 22px; }
+  .setup-checks, .app-checks { display: flex; flex-direction: column; gap: 12px; }
+  .setup-checks div, .app-checks div { display: flex; gap: 11px; font-size: 14px; line-height: 1.5; color: rgba(233, 236, 232, 0.68); }
+  .setup-checks .v, .app-checks .v { color: var(--accent); flex: none; }
   .setup-grid .code-card pre { padding: 18px 20px; font-size: 12.5px; line-height: 1.7; }
 
   .compare-more {
@@ -578,22 +578,7 @@
   .compare-more a { color: var(--text-2); transition: color 0.15s var(--ease); }
   .compare-more a:hover { color: var(--accent); }
 
-  /* ---------- GitHub App teaser ---------- */
-  .app-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 40px; align-items: center; }
-  .app-grid > * { min-width: 0; }
-  .app-copy .h2 { font-size: clamp(27px, 4.2vw, 34px); margin-bottom: 16px; }
-  .app-copy p { font-size: 15px; line-height: 1.6; color: rgba(233, 236, 232, 0.6); margin: 0 0 22px; }
-  .app-checks { display: flex; flex-direction: column; gap: 12px; }
-  .app-checks div { display: flex; gap: 11px; font-size: 14px; line-height: 1.5; color: rgba(233, 236, 232, 0.68); }
-  .app-checks .v { color: var(--accent); flex: none; }
-  .app-checks code {
-    font-family: var(--mono); font-size: 12.5px; color: var(--code-text);
-    background: var(--surface); border: 1px solid var(--border-code);
-    border-radius: 5px; padding: 1px 6px; white-space: nowrap;
-  }
-  .app-copy .app-status { margin: 22px 0 0; font-family: var(--mono); font-size: 12px; color: var(--text-4); }
-
-  /* Dashboard mockup: schematic panes — real labels, skeleton values */
+  /* ---------- GitHub App teaser: dashboard mockup (real labels, skeleton values) ---------- */
   .mock-body { display: grid; grid-template-columns: 1fr 1fr; }
   .mock-pane { padding: 16px 20px 20px; min-width: 0; }
   .mock-pane + .mock-pane { border-left: 1px solid var(--hairline); }
@@ -656,7 +641,7 @@
   .faq-a p { margin: 0; }
   .faq-a a { color: var(--accent); }
   .faq-a a:hover { color: var(--accent-hover); }
-  .faq-a code {
+  .faq-a code, .app-checks code {
     font-family: var(--mono); font-size: 12.5px; color: var(--code-text);
     background: var(--surface); border: 1px solid var(--border-code);
     border-radius: 5px; padding: 1px 6px; white-space: nowrap;
@@ -731,8 +716,7 @@
      ============================================================ */
   @media (max-width: 980px) {
     .grid3 { grid-template-columns: repeat(2, 1fr); }
-    .setup-grid { grid-template-columns: 1fr; gap: 32px; }
-    .app-grid { grid-template-columns: 1fr; gap: 32px; }
+    .setup-grid, .app-grid { grid-template-columns: 1fr; gap: 32px; }
   }
   @media (max-width: 860px) {
     .nav-links, .nav-actions { display: none; }
@@ -1057,18 +1041,17 @@
   <div class="wrap sect-inner">
     <div class="app-grid">
       <div class="app-copy reveal">
-        <p class="eyebrow">GitHub App</p>
+        <p class="eyebrow">GitHub App · private beta</p>
         <h2 class="h2">The same reviewer, <br>managed for you.</h2>
-        <p>The Action stays the no-server way to run J-Bot Review. The GitHub App runs the same reviewer from a dashboard instead: install it on a repo, add your own model keys — encrypted at rest, shown as last-4 only — and pull requests get reviewed with no workflow file to maintain. Reviews execute on ephemeral GitHub Actions runners, on the keys you bring.</p>
+        <p>The Action stays the no-server way to run J-Bot Review. The GitHub App runs the same reviewer from a dashboard instead: install it on a repo, add your own model keys — encrypted at rest, shown as last-4 only — and pull requests get reviewed with no workflow file to maintain. Reviews execute on ephemeral GitHub Actions runners.</p>
         <div class="app-checks">
           <div><span class="v" aria-hidden="true">✓</span><span>Dashboard config: primary + verification model, a severity gate, PR triggers — or comment <code>@jbot review</code></span></div>
-          <div><span class="v" aria-hidden="true">✓</span><span>Review history per run — duration, cost, tokens — with retry from the dashboard</span></div>
+          <div><span class="v" aria-hidden="true">✓</span><span>Per-run review history — duration, cost, tokens — with retry</span></div>
           <div><span class="v" aria-hidden="true">✓</span><span>Usage and quota meters per key</span></div>
         </div>
-        <p class="app-status">Currently in private beta.</p>
       </div>
 
-      <div class="code-card reveal" role="img" aria-label="Schematic preview of the J-Bot Review dashboard: review configuration on the left, review history on the right">
+      <div class="code-card reveal" role="img" aria-label="Schematic preview of the J-Bot Review dashboard: review configuration and review history panes">
         <div class="code-head">
           <div class="file">
             <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -1174,7 +1157,7 @@
       </details>
       <details class="faq-item">
         <summary>Is there a hosted or GitHub App version of J-Bot Review?<span class="faq-mark" aria-hidden="true">+</span></summary>
-        <div class="faq-a"><p>Currently in private beta. The GitHub App runs the same reviewer from a dashboard instead of a workflow file: add your own model keys (encrypted at rest), set models, a severity gate, and triggers, and see review history and usage per key. Reviews execute on ephemeral GitHub Actions runners. The Action remains the no-server option and is not being replaced.</p></div>
+        <div class="faq-a"><p>Currently in private beta. The GitHub App runs the same reviewer from a dashboard instead of a workflow file: add your own model keys (encrypted at rest), configure models, a severity gate, and triggers, and see review history and per-key usage meters. Reviews execute on ephemeral GitHub Actions runners. The Action remains the no-server option and is not being replaced.</p></div>
       </details>
       <details class="faq-item">
         <summary>How is J-Bot Review different from CodeRabbit or Greptile?<span class="faq-mark" aria-hidden="true">+</span></summary>
