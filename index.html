@@ -717,8 +717,7 @@
   @media (max-width: 980px) {
     .grid3 { grid-template-columns: repeat(2, 1fr); }
     .setup-grid, .app-grid { grid-template-columns: 1fr; gap: 32px; }
-  }
-  @media (max-width: 860px) {
+    /* Nav collapses here: seven links need ~950px for one row */
     .nav-links, .nav-actions { display: none; }
     .nav-toggle { display: grid; place-items: center; }
     .nav-right.open .nav-links,
@@ -732,6 +731,8 @@
     .nav-right.open .nav-links { flex-direction: column; gap: 14px; font-size: 15px; }
     .nav-right.open .nav-actions { flex-direction: column; align-items: stretch; }
     .nav-right.open .btn-nav { justify-content: center; }
+  }
+  @media (max-width: 860px) {
     .wall-grid, .compare-grid { grid-template-columns: 1fr; }
   }
   @media (max-width: 640px) {
@@ -766,6 +767,7 @@
         <a href="#proof">See a review</a>
         <a href="#features">Features</a>
         <a href="#compare">Own vs. rent</a>
+        <a href="#github-app">GitHub App</a>
         <a href="#faq">FAQ</a>
         <a href="/guides">Guides</a>
       </nav>
