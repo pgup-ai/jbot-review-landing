@@ -308,6 +308,11 @@
   .nav-links { display: flex; gap: 26px; font-size: 13.5px; color: rgba(233, 236, 232, 0.62); }
   .nav-links a { transition: color 0.15s var(--ease); }
   .nav-links a:hover { color: var(--text); }
+  .nav-tag {
+    margin-left: 2px; vertical-align: middle;
+    font-family: var(--mono); font-size: 9.5px;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-4);
+  }
   .nav-actions { display: flex; align-items: center; gap: 12px; }
   .btn-nav { font-size: 13px; border-radius: 8px; padding: 8px 14px; }
 
@@ -714,10 +719,8 @@
   /* ============================================================
      Responsive (authored here; the design canvas is desktop-only)
      ============================================================ */
-  @media (max-width: 980px) {
-    .grid3 { grid-template-columns: repeat(2, 1fr); }
-    .setup-grid, .app-grid { grid-template-columns: 1fr; gap: 32px; }
-    /* Nav collapses here: seven links need ~950px for one row */
+  /* Nav collapses at 1000: seven links plus the App "beta" tag need ~980px for one row */
+  @media (max-width: 1000px) {
     .nav-links, .nav-actions { display: none; }
     .nav-toggle { display: grid; place-items: center; }
     .nav-right.open .nav-links,
@@ -731,6 +734,10 @@
     .nav-right.open .nav-links { flex-direction: column; gap: 14px; font-size: 15px; }
     .nav-right.open .nav-actions { flex-direction: column; align-items: stretch; }
     .nav-right.open .btn-nav { justify-content: center; }
+  }
+  @media (max-width: 980px) {
+    .grid3 { grid-template-columns: repeat(2, 1fr); }
+    .setup-grid, .app-grid { grid-template-columns: 1fr; gap: 32px; }
   }
   @media (max-width: 860px) {
     .wall-grid, .compare-grid { grid-template-columns: 1fr; }
@@ -767,7 +774,7 @@
         <a href="#proof">See a review</a>
         <a href="#features">Features</a>
         <a href="#compare">Own vs. rent</a>
-        <a href="#github-app">GitHub App</a>
+        <a href="#github-app">GitHub App <span class="nav-tag">beta</span></a>
         <a href="#faq">FAQ</a>
         <a href="/guides">Guides</a>
       </nav>
