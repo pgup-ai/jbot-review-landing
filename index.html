@@ -873,7 +873,7 @@
   <span class="k">review</span>:
     <span class="k">runs-on</span>: ubuntu-latest
     <span class="k">steps</span>:
-      - <span class="k">uses</span>: actions/checkout@v6
+      - <span class="k">uses</span>: actions/checkout@v7
         <span class="k">with</span>: { fetch-depth: 0 }
       - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
         <span class="k">with</span>:
@@ -1185,7 +1185,7 @@
   <span class="k">review</span>:
     <span class="k">runs-on</span>: ubuntu-latest
     <span class="k">steps</span>:
-      - <span class="k">uses</span>: actions/checkout@v6
+      - <span class="k">uses</span>: actions/checkout@v7
         <span class="k">with</span>: { fetch-depth: 0 }
       - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
         <span class="k">with</span>:
@@ -1334,8 +1334,8 @@
   // display-only alignment and a comment line that must not be copied.
   (function () {
     var TEXTS = {
-      hero: "on: { pull_request: { types: [opened, synchronize] } }\n\njobs:\n  review:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v6\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          opencode-api-key: ${{ secrets.OPENCODE_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}",
-      setup: "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, synchronize, reopened] }\npermissions:\n  contents: read\n  pull-requests: write\njobs:\n  review:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v6\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          provider: ${{ vars.JBOT_REVIEW_PROVIDER || 'opencode' }}\n          opencode-api-key: ${{ secrets.OPENCODE_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}",
+      hero: "on: { pull_request: { types: [opened, synchronize] } }\n\njobs:\n  review:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v7\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          opencode-api-key: ${{ secrets.OPENCODE_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}",
+      setup: "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, synchronize, reopened] }\npermissions:\n  contents: read\n  pull-requests: write\njobs:\n  review:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v7\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          provider: ${{ vars.JBOT_REVIEW_PROVIDER || 'opencode' }}\n          opencode-api-key: ${{ secrets.OPENCODE_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}",
       cta: "- uses: pgup-ai/jbot-review-action@v0"
     };
     // Fallback for non-secure contexts (file://, http://) where the async
