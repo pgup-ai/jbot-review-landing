@@ -197,7 +197,7 @@
       <tr><td>price</td><td>Pro Team $30/mo plus usage at $0.012/credit, pooled across the team; 14-day unlimited trial; no permanent free tier (their FAQ); free for qualified open-source projects; Enterprise on annual contracts</td><td>$0 per seat, MIT license, no credits — you pay only your model provider (or $0 with OpenCode Zen free models / a CLI seat you already pay for) plus CI minutes</td></tr>
       <tr><td>where it runs</td><td>Hosted platform with Git and IDE integrations</td><td>Your GitHub Actions runner, as a container action</td></tr>
       <tr><td>code path</td><td>Your code is processed by their platform and the models it operates</td><td>Read-only checkout on your runner; the diff goes only to the model you configure, on your own key</td></tr>
-      <tr><td>model choice</td><td>Platform: vendor-managed. Self-hosted PR-Agent: your own API keys</td><td>28+ backends: OpenCode gateways (Claude, OpenAI, Gemini, DeepSeek…) or CLI seats (Codex, Cursor, Devin, Cline, Kilo, Command Code)</td></tr>
+      <tr><td>model choice</td><td>Platform: vendor-managed. Self-hosted PR-Agent: your own API keys</td><td>29+ backends: OpenCode gateways (Claude, OpenAI, Gemini, DeepSeek…) or CLI seats (Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build)</td></tr>
       <tr><td>review volume</td><td>Credit-metered ($0.012/credit, pooled)</td><td>No J-Bot cap — bounded by your model plan/quota and CI</td></tr>
       <tr><td>rules</td><td>Hosted rules system; pre-PR review skills</td><td>Reads <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>.coderabbit.yaml</code>, <code>greptile.json</code>, Cursor rules from your repo</td></tr>
       <tr><td>beyond review</td><td>IDE integration, pre-PR skills, unified platform across the workflow</td><td>Focused on PR review: verified findings, house-rules pass, live-docs checks (Context7), <code>/jbot</code> re-review command</td></tr>
@@ -247,7 +247,7 @@
   <h2>Related</h2>
   <div class="related">
     <a class="rel-card" href="/compare/cubic-alternative"><span class="k2">Compare</span>Cubic alternative<p>The same side-by-side, for Cubic.</p></a>
-    <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Guide</span>Review PRs with a CLI subscription<p>Codex, Cursor, Devin, Cline, Kilo, Command Code — reuse the seat you pay for.</p></a>
+    <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Guide</span>Review PRs with a CLI subscription<p>Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build — reuse the seat you pay for.</p></a>
     <a class="rel-card" href="/#proof"><span class="k2">Example</span>See a real review<p>A verified blocking finding, on a real diff.</p></a>
   </div>
 </article>

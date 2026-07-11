@@ -208,13 +208,13 @@
   <p class="lede"><b>A Devin seat can moonlight as your PR reviewer.</b> J-Bot Review, an MIT-licensed GitHub Action, drives the Devin CLI backend inside your own CI. The setup has exactly one trap — the secret is a key <em>value</em> copied out of a file, not the file itself — and this guide walks straight through it. J-Bot adds <b>nothing to your Devin bill</b>.</p>
 
   <div class="callout">
-    <span class="tag">One of six seats</span>
-    <p>Devin is one of six subscriptions this works with — <b>Codex (ChatGPT Plus/Pro), Cursor, Cline, Kilo, and Command Code</b> follow the same one-secret pattern. Full table in the <a href="/guides/cli-subscription-code-review">CLI subscription guide</a>.</p>
+    <span class="tag">One of seven seats</span>
+    <p>Devin is one of seven subscriptions this works with — <b>Codex (ChatGPT Plus/Pro), Cursor, Cline, Kilo, Command Code, and Grok Build</b> follow the same one-secret pattern. Full table in the <a href="/guides/cli-subscription-code-review">CLI subscription guide</a>.</p>
   </div>
 
   <h2 id="setup">Setup in three steps</h2>
   <ol>
-    <li><b>Copy the key value.</b> Run <code>devin auth login</code> locally, then open <code>~/.local/share/devin/credentials.toml</code> and copy the <code>windsurf_api_key</code> value (it looks like <code>devin-session-token$…</code>) into the repository secret <code>DEVIN_WINDSURF_API_KEY</code> (<em>Settings → Secrets and variables → Actions</em>). <b>The key value only — not the whole file</b>, unlike the Codex, Cline, and Kilo backends.</li>
+    <li><b>Copy the key value.</b> Run <code>devin auth login</code> locally, then open <code>~/.local/share/devin/credentials.toml</code> and copy the <code>windsurf_api_key</code> value (it looks like <code>devin-session-token$…</code>) into the repository secret <code>DEVIN_WINDSURF_API_KEY</code> (<em>Settings → Secrets and variables → Actions</em>). <b>The key value only — not the whole file</b>, unlike the Codex, Cline, Kilo, and Grok Build backends.</li>
     <li><b>Commit the workflow.</b> Add the file below as <code>.github/workflows/jbot-review.yml</code>.</li>
     <li><b>Open a pull request.</b> Devin reviews the full base…head diff on your runner and posts review comments with a verdict; blocking findings are adversarially verified first, nits demoted.</li>
   </ol>
@@ -281,7 +281,7 @@
 
   <h2>Related</h2>
   <div class="related">
-    <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Guide</span>Review PRs with a CLI subscription<p>Codex, Cursor, Cline, Kilo, Command Code — the full per-CLI setup table.</p></a>
+    <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Guide</span>Review PRs with a CLI subscription<p>Codex, Cursor, Cline, Kilo, Command Code, Grok Build — the full per-CLI setup table.</p></a>
     <a class="rel-card" href="/guides/codex-code-review-github-actions"><span class="k2">Guide</span>Codex code review in GitHub Actions<p>Your ChatGPT Plus/Pro seat, step by step.</p></a>
     <a class="rel-card" href="https://github.com/pgup-ai/jbot-review-action#readme" target="_blank" rel="noopener noreferrer"><span class="k2">Docs</span>Action reference<p>Every input, provider id, and tuning knob.</p></a>
   </div>

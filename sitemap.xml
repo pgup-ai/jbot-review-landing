@@ -3,58 +3,62 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.pgupai.com/</loc>
-    <lastmod>2026-07-07</lastmod>
+    <lastmod>2026-07-10</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-10</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/cli-subscription-code-review</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-10</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/codex-code-review-github-actions</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-10</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/claude-code-review-github-actions</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-10</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/cursor-code-review-github-actions</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-10</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/cline-code-review-github-actions</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-10</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/kilo-code-review-github-actions</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-10</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/devin-code-review-github-actions</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-10</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/command-code-review-github-actions</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-10</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/grok-code-review-github-actions</loc>
+    <lastmod>2026-07-10</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/compare/coderabbit-alternative</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-10</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/compare/greptile-alternative</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-10</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/compare/qodo-alternative</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-10</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/compare/cubic-alternative</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-10</lastmod>
   </url>
 </urlset>
