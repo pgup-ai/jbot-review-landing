@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Code review with the CLI subscription you already pay for | J-Bot Review</title>
-<meta name="description" content="Reuse a coding-CLI seat you already pay for — Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, or Command Code — to review every GitHub pull request. One workflow file, one secret, $0 added." />
+<meta name="description" content="Reuse a coding-CLI seat you already pay for — Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, Command Code, or Grok Build — to review every GitHub pull request. One workflow file, one secret, $0 added." />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0a0b0a" />
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
@@ -16,7 +16,7 @@
 <meta property="og:url" content="https://www.pgupai.com/guides/cli-subscription-code-review" />
 <meta property="og:site_name" content="J-Bot Review" />
 <meta property="og:title" content="Code review with the CLI subscription you already pay for" />
-<meta property="og:description" content="Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, or Command Code — one workflow file turns the seat you already pay for into a PR reviewer in your own CI." />
+<meta property="og:description" content="Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, Command Code, or Grok Build — one workflow file turns the seat you already pay for into a PR reviewer in your own CI." />
 <meta property="og:image" content="https://www.pgupai.com/assets/og-guide-cli-subscription-20260704.png" />
 <meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-guide-cli-subscription-20260704.png" />
 <meta property="og:image:type" content="image/png" />
@@ -24,7 +24,7 @@
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Code review with the CLI subscription you already pay for" />
-<meta name="twitter:description" content="Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, or Command Code — one workflow file turns the seat you already pay for into a PR reviewer in your own CI." />
+<meta name="twitter:description" content="Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, Command Code, or Grok Build — one workflow file turns the seat you already pay for into a PR reviewer in your own CI." />
 <meta name="twitter:image" content="https://www.pgupai.com/assets/og-guide-cli-subscription-20260704.png" />
 
 <script type="application/ld+json">
@@ -35,11 +35,11 @@
       "@type": "TechArticle",
       "@id": "https://www.pgupai.com/guides/cli-subscription-code-review#article",
       "headline": "Automated PR review with a CLI subscription you already pay for",
-      "description": "How to reuse a Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, or Command Code subscription to review GitHub pull requests with J-Bot Review, an open-source GitHub Action.",
+      "description": "How to reuse a Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, Command Code, or Grok Build subscription to review GitHub pull requests with J-Bot Review, an open-source GitHub Action.",
       "url": "https://www.pgupai.com/guides/cli-subscription-code-review",
       "image": "https://www.pgupai.com/assets/og-guide-cli-subscription-20260704.png",
       "datePublished": "2026-07-04",
-      "dateModified": "2026-07-04",
+      "dateModified": "2026-07-10",
       "author": { "@type": "Organization", "name": "PGUP AI", "url": "https://www.pgupai.com/" },
       "publisher": { "@type": "Organization", "name": "PGUP AI", "url": "https://www.pgupai.com/" }
     },
@@ -58,7 +58,7 @@
         {
           "@type": "Question",
           "name": "Which CLI subscriptions can review my pull requests?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Codex (a ChatGPT Plus or Pro seat, via codex login), Cursor, Devin, Cline (subscription or pay-as-you-go), Kilo, and Command Code. Each maps to a provider value and one repo secret in the J-Bot Review action. Claude is supported through your own Anthropic API key or an OpenCode gateway instead — a Claude Pro/Max seat is not a supported CI credential today." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Codex (a ChatGPT Plus or Pro seat, via codex login), Cursor, Devin, Cline (subscription or pay-as-you-go), Kilo, Command Code, and Grok Build (grok login account auth, with an xAI API key as fallback). Each maps to a provider value and one repo secret in the J-Bot Review action. Claude is supported through your own Anthropic API key or an OpenCode gateway instead — a Claude Pro/Max seat is not a supported CI credential today." }
         },
         {
           "@type": "Question",
@@ -203,9 +203,9 @@
 <article>
   <p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / CLI subscriptions</p>
   <h1>Automated PR review with a CLI subscription you already pay for</h1>
-  <p class="updated">Updated July 4, 2026 · applies to pgup-ai/jbot-review-action v0</p>
+  <p class="updated">Updated July 10, 2026 · applies to pgup-ai/jbot-review-action v0</p>
 
-  <p class="lede"><b>Yes — the coding-agent seat you already pay for can review your pull requests.</b> If you subscribe to <b>Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, or Command Code</b>, J-Bot Review — an open-source (MIT) GitHub Action — runs that CLI inside your own GitHub Actions and posts diff-anchored, verified review comments on every PR. One workflow file, one repo secret, <b>$0 added</b> by J-Bot.</p>
+  <p class="lede"><b>Yes — the coding-agent seat you already pay for can review your pull requests.</b> If you subscribe to <b>Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, Command Code, or Grok Build</b>, J-Bot Review — an open-source (MIT) GitHub Action — runs that CLI inside your own GitHub Actions and posts diff-anchored, verified review comments on every PR. One workflow file, one repo secret, <b>$0 added</b> by J-Bot.</p>
 
   <p>Hosted AI reviewers (CodeRabbit, Greptile, and similar) charge roughly $40 per seat per month and run your code through their own servers. None of them can reuse a CLI subscription; as far as we know, J-Bot Review is the only PR reviewer that can.</p>
 
@@ -233,7 +233,7 @@
     <span class="k">if</span>: github.event.pull_request.draft == false
     <span class="k">runs-on</span>: ubuntu-latest
     <span class="k">steps</span>:
-      - <span class="k">uses</span>: actions/checkout@v6
+      - <span class="k">uses</span>: actions/checkout@v7
         <span class="k">with</span>: { fetch-depth: 0 }
       - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
         <span class="k">with</span>:
@@ -256,6 +256,7 @@
       <tr><td><a href="/guides/devin-code-review-github-actions">Devin</a></td><td><code>devin</code></td><td><code>devin-windsurf-api-key</code></td><td><code>windsurf_api_key</code> value from <code>~/.local/share/devin/credentials.toml</code> after <code>devin auth login</code></td></tr>
       <tr><td><a href="/guides/command-code-review-github-actions">Command Code</a></td><td><code>commandcode</code></td><td><code>commandcode-access-key</code></td><td><code>apiKey</code> value (<code>user_…</code>) from <code>~/.commandcode/auth.json</code></td></tr>
       <tr><td><a href="/guides/kilo-code-review-github-actions">Kilo</a></td><td><code>kilo</code></td><td><code>kilo-auth</code></td><td>contents of <code>~/.local/share/kilo/auth.json</code> after <code>kilo auth login</code></td></tr>
+      <tr><td><a href="/guides/grok-code-review-github-actions">Grok Build</a></td><td><code>grok</code></td><td><code>grok-auth</code></td><td>contents of <code>~/.grok/auth.json</code> after <code>grok login --device-auth</code> (or <code>xai-api-key</code> as fallback)</td></tr>
     </tbody>
   </table>
   </div>
@@ -265,8 +266,9 @@
     <li><b>Codex</b> runs read-only (<code>codex exec --sandbox read-only</code>). The secret is the whole <code>auth.json</code> file content, not a key inside it. Full setup: <a href="/guides/codex-code-review-github-actions">Codex code review in GitHub Actions</a>.</li>
     <li><b>Cursor</b> authenticates straight from <code>CURSOR_API_KEY</code> and runs in read-only plan mode (<code>cursor-agent --mode plan</code>).</li>
     <li><b>Cline</b> has two billing modes as separate providers sharing one secret. Pin models as <code>cline/&lt;type&gt;/&lt;model&gt;</code> or <code>cline-pass/&lt;model&gt;</code>, or omit <code>model</code> for each mode's default.</li>
-    <li><b>Devin</b> and <b>Command Code</b> want a key <em>value</em> copied out of the credential file — <code>windsurf_api_key</code> (<code>devin-session-token$…</code>) and <code>apiKey</code> (<code>user_…</code>) respectively — not the whole file, unlike Codex, Cline, and Kilo.</li>
+    <li><b>Devin</b> and <b>Command Code</b> want a key <em>value</em> copied out of the credential file — <code>windsurf_api_key</code> (<code>devin-session-token$…</code>) and <code>apiKey</code> (<code>user_…</code>) respectively — not the whole file, unlike Codex, Cline, Kilo, and Grok Build.</li>
     <li><b>Kilo</b> defaults to its free gateway model — a $0 way to trial the whole pipeline.</li>
+    <li><b>Grok Build</b> prefers account auth: the <code>xai-api-key</code> fallback is used only when <code>grok-auth</code> is absent, so an expired login fails loudly instead of silently billing your API key. <code>provider: grok</code> is deliberately separate from <code>provider: xai</code>, which keeps calling the xAI API directly.</li>
     <li>These are credentials on <em>your</em> account: store them as repo <b>secrets</b> (never variables), and check your plan's terms for CI/automation use.</li>
     <li>On <code>pull_request</code> events GitHub strips secrets from fork PRs, so outside contributors can't exfiltrate your seat.</li>
   </ul>
@@ -295,7 +297,7 @@
   <h2 id="faq">FAQ</h2>
   <details class="faq-item" open>
     <summary>Which CLI subscriptions can review my pull requests?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Codex (a ChatGPT Plus or Pro seat, via <code>codex login</code>), Cursor, Devin, Cline (subscription or pay-as-you-go), Kilo, and Command Code. Each maps to a <code>provider</code> value and one repo secret in the J-Bot Review action. Claude is supported through your own Anthropic API key or an OpenCode gateway instead — a Claude Pro/Max seat is not a supported CI credential today.</p></div>
+    <div class="faq-a"><p>Codex (a ChatGPT Plus or Pro seat, via <code>codex login</code>), Cursor, Devin, Cline (subscription or pay-as-you-go), Kilo, Command Code, and Grok Build (<code>grok login</code> account auth, with an xAI API key as fallback). Each maps to a <code>provider</code> value and one repo secret in the J-Bot Review action. Claude is supported through your own Anthropic API key or an OpenCode gateway instead — a Claude Pro/Max seat is not a supported CI credential today.</p></div>
   </details>
   <details class="faq-item">
     <summary>Does J-Bot Review add any cost on top of my subscription?<span class="faq-mark" aria-hidden="true">+</span></summary>
@@ -329,7 +331,7 @@
 <script>
 (function () {
   var TEXTS = {
-    base: "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, reopened, ready_for_review, synchronize] }\n\nconcurrency:\n  group: jbot-review-${{ github.event.pull_request.number }}\n  cancel-in-progress: true\n\npermissions:\n  contents: read\n  pull-requests: write\n  issues: write\n  checks: read\n\njobs:\n  review:\n    if: github.event.pull_request.draft == false\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v6\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          provider: codex\n          codex-auth: ${{ secrets.CODEX_AUTH_JSON }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}"
+    base: "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, reopened, ready_for_review, synchronize] }\n\nconcurrency:\n  group: jbot-review-${{ github.event.pull_request.number }}\n  cancel-in-progress: true\n\npermissions:\n  contents: read\n  pull-requests: write\n  issues: write\n  checks: read\n\njobs:\n  review:\n    if: github.event.pull_request.draft == false\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v7\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          provider: codex\n          codex-auth: ${{ secrets.CODEX_AUTH_JSON }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}"
   };
   function legacyCopy(text) {
     return new Promise(function (resolve, reject) {

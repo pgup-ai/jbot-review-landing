@@ -214,7 +214,7 @@
 
   <div class="callout">
     <span class="tag">This is the seat-reuse path</span>
-    <p>Hosted AI reviewers charge ~$40 per seat per month and can't touch your ChatGPT subscription. This setup reuses it. Same idea for <b>Cursor, Devin, Cline, Kilo, and Command Code</b> seats: <a href="/guides/cli-subscription-code-review">CLI subscription code review →</a></p>
+    <p>Hosted AI reviewers charge ~$40 per seat per month and can't touch your ChatGPT subscription. This setup reuses it. Same idea for <b>Cursor, Devin, Cline, Kilo, Command Code, and Grok Build</b> seats: <a href="/guides/cli-subscription-code-review">CLI subscription code review →</a></p>
   </div>
 
   <h2 id="setup">Setup in three steps</h2>
@@ -245,7 +245,7 @@
     <span class="k">if</span>: github.event.pull_request.draft == false
     <span class="k">runs-on</span>: ubuntu-latest
     <span class="k">steps</span>:
-      - <span class="k">uses</span>: actions/checkout@v6
+      - <span class="k">uses</span>: actions/checkout@v7
         <span class="k">with</span>: { fetch-depth: 0 }
       - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
         <span class="k">with</span>:
@@ -290,7 +290,7 @@
 
   <h2>Related</h2>
   <div class="related">
-    <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Guide</span>Review PRs with a CLI subscription<p>Cursor, Devin, Cline, Kilo, Command Code — the full per-CLI setup table.</p></a>
+    <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Guide</span>Review PRs with a CLI subscription<p>Cursor, Devin, Cline, Kilo, Command Code, Grok Build — the full per-CLI setup table.</p></a>
     <a class="rel-card" href="/guides/claude-code-review-github-actions"><span class="k2">Guide</span>Claude code review in GitHub Actions<p>Your Anthropic key, your runner — setup in three steps.</p></a>
     <a class="rel-card" href="https://github.com/pgup-ai/jbot-review-action#readme" target="_blank" rel="noopener noreferrer"><span class="k2">Docs</span>Action reference<p>Every input, provider id, and tuning knob.</p></a>
   </div>
@@ -307,7 +307,7 @@
 <script>
 (function () {
   var TEXTS = {
-    codex: "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, reopened, ready_for_review, synchronize] }\n\nconcurrency:\n  group: jbot-review-${{ github.event.pull_request.number }}\n  cancel-in-progress: true\n\npermissions:\n  contents: read\n  pull-requests: write\n  issues: write\n  checks: read\n\njobs:\n  review:\n    if: github.event.pull_request.draft == false\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v6\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          provider: codex\n          codex-auth: ${{ secrets.CODEX_AUTH_JSON }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}"
+    codex: "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, reopened, ready_for_review, synchronize] }\n\nconcurrency:\n  group: jbot-review-${{ github.event.pull_request.number }}\n  cancel-in-progress: true\n\npermissions:\n  contents: read\n  pull-requests: write\n  issues: write\n  checks: read\n\njobs:\n  review:\n    if: github.event.pull_request.draft == false\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v7\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          provider: codex\n          codex-auth: ${{ secrets.CODEX_AUTH_JSON }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}"
   };
   function legacyCopy(text) {
     return new Promise(function (resolve, reject) {

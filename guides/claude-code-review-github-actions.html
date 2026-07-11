@@ -70,7 +70,7 @@
         {
           "@type": "Question",
           "name": "Can I use my Claude Pro or Max subscription instead of an API key?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Not today — a Claude Pro/Max subscription seat is not a supported CI credential in J-Bot Review, so Claude runs on your own Anthropic API key (pay-per-token) or through an OpenCode gateway. If you want to reuse a subscription you already pay for, Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, and Command Code seats are supported." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Not today — a Claude Pro/Max subscription seat is not a supported CI credential in J-Bot Review, so Claude runs on your own Anthropic API key (pay-per-token) or through an OpenCode gateway. If you want to reuse a subscription you already pay for, Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, Command Code, and Grok Build seats are supported." }
         },
         {
           "@type": "Question",
@@ -214,7 +214,7 @@
 
   <div class="callout">
     <span class="tag">Using a Claude Pro/Max subscription?</span>
-    <p>A Claude <em>subscription seat</em> is not a supported CI credential today — Claude runs on your Anthropic API key, per-token. If you want to reuse a subscription you already pay for, <b>Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, and Command Code</b> seats are supported: <a href="/guides/cli-subscription-code-review">CLI subscription code review →</a></p>
+    <p>A Claude <em>subscription seat</em> is not a supported CI credential today — Claude runs on your Anthropic API key, per-token. If you want to reuse a subscription you already pay for, <b>Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, Command Code, and Grok Build</b> seats are supported: <a href="/guides/cli-subscription-code-review">CLI subscription code review →</a></p>
   </div>
 
   <h2 id="setup">Setup in three steps</h2>
@@ -245,7 +245,7 @@
     <span class="k">if</span>: github.event.pull_request.draft == false
     <span class="k">runs-on</span>: ubuntu-latest
     <span class="k">steps</span>:
-      - <span class="k">uses</span>: actions/checkout@v6
+      - <span class="k">uses</span>: actions/checkout@v7
         <span class="k">with</span>: { fetch-depth: 0 }
       - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
         <span class="k">with</span>:
@@ -274,7 +274,7 @@
   <h2 id="faq">FAQ</h2>
   <details class="faq-item" open>
     <summary>Can I use my Claude Pro or Max subscription instead of an API key?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Not today — a Claude Pro/Max subscription seat is not a supported CI credential in J-Bot Review, so Claude runs on your own Anthropic API key (pay-per-token) or through an OpenCode gateway. If you want to reuse a subscription you already pay for, <a href="/guides/cli-subscription-code-review">Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, and Command Code seats are supported</a>.</p></div>
+    <div class="faq-a"><p>Not today — a Claude Pro/Max subscription seat is not a supported CI credential in J-Bot Review, so Claude runs on your own Anthropic API key (pay-per-token) or through an OpenCode gateway. If you want to reuse a subscription you already pay for, <a href="/guides/cli-subscription-code-review">Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, Command Code, and Grok Build seats are supported</a>.</p></div>
   </details>
   <details class="faq-item">
     <summary>Which Claude models can review my PRs?<span class="faq-mark" aria-hidden="true">+</span></summary>
@@ -291,7 +291,7 @@
 
   <h2>Related</h2>
   <div class="related">
-    <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Guide</span>Review PRs with a CLI subscription<p>Codex, Cursor, Devin, Cline, Kilo, Command Code — reuse the seat you pay for.</p></a>
+    <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Guide</span>Review PRs with a CLI subscription<p>Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build — reuse the seat you pay for.</p></a>
     <a class="rel-card" href="https://github.com/pgup-ai/jbot-review-action#readme" target="_blank" rel="noopener noreferrer"><span class="k2">Docs</span>Action reference<p>Every input, provider id, and tuning knob.</p></a>
     <a class="rel-card" href="/guides/codex-code-review-github-actions"><span class="k2">Guide</span>Codex code review in GitHub Actions<p>Prefer the seat-reuse path? Your ChatGPT Plus/Pro subscription works today.</p></a>
   </div>
@@ -308,7 +308,7 @@
 <script>
 (function () {
   var TEXTS = {
-    claude: "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, reopened, ready_for_review, synchronize] }\n\nconcurrency:\n  group: jbot-review-${{ github.event.pull_request.number }}\n  cancel-in-progress: true\n\npermissions:\n  contents: read\n  pull-requests: write\n  issues: write\n  checks: read\n\njobs:\n  review:\n    if: github.event.pull_request.draft == false\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v6\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          provider: anthropic\n          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}"
+    claude: "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, reopened, ready_for_review, synchronize] }\n\nconcurrency:\n  group: jbot-review-${{ github.event.pull_request.number }}\n  cancel-in-progress: true\n\npermissions:\n  contents: read\n  pull-requests: write\n  issues: write\n  checks: read\n\njobs:\n  review:\n    if: github.event.pull_request.draft == false\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v7\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          provider: anthropic\n          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}"
   };
   function legacyCopy(text) {
     return new Promise(function (resolve, reject) {
