@@ -372,9 +372,9 @@
   .trust .l { font-size: 12px; color: var(--text-3); font-family: var(--mono); margin-top: 2px; }
 
   /* ============================================================
-     Code panels (workflow drop-in + setup)
+     Workflow drop-in
      ============================================================ */
-  .drop { margin: 22px 0 30px; }
+  .drop { margin: 22px 0 30px; scroll-margin-top: 84px; }
   .code-card {
     background: var(--surface);
     border: 1px solid var(--border-code);
@@ -601,15 +601,14 @@
   .compare-row .x { color: var(--danger); flex: none; }
   .compare-row .v { color: var(--accent); flex: none; }
 
-  /* ---------- Setup + GitHub App teaser (shared split layout) ---------- */
-  .setup-grid, .app-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 40px; align-items: center; }
-  .setup-grid > *, .app-grid > * { min-width: 0; }
-  .setup-copy .h2, .app-copy .h2 { font-size: clamp(27px, 4.2vw, 34px); margin-bottom: 16px; }
-  .setup-copy p:not(.eyebrow), .app-copy p:not(.eyebrow) { font-size: 15px; line-height: 1.6; color: rgba(233, 236, 232, 0.6); margin: 0 0 22px; }
-  .setup-checks, .app-checks { display: flex; flex-direction: column; gap: 12px; }
-  .setup-checks div, .app-checks div { display: flex; gap: 11px; font-size: 14px; line-height: 1.5; color: rgba(233, 236, 232, 0.68); }
-  .setup-checks .v, .app-checks .v { color: var(--accent); flex: none; }
-  .setup-grid .code-card pre { padding: 18px 20px; font-size: 12.5px; line-height: 1.7; }
+  /* ---------- GitHub App teaser ---------- */
+  .app-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 40px; align-items: center; }
+  .app-grid > * { min-width: 0; }
+  .app-copy .h2 { font-size: clamp(27px, 4.2vw, 34px); margin-bottom: 16px; }
+  .app-copy p:not(.eyebrow) { font-size: 15px; line-height: 1.6; color: rgba(233, 236, 232, 0.6); margin: 0 0 22px; }
+  .app-checks { display: flex; flex-direction: column; gap: 12px; }
+  .app-checks div { display: flex; gap: 11px; font-size: 14px; line-height: 1.5; color: rgba(233, 236, 232, 0.68); }
+  .app-checks .v { color: var(--accent); flex: none; }
 
   .compare-more {
     text-align: center; margin: 28px 0 0;
@@ -772,7 +771,7 @@
   }
   @media (max-width: 980px) {
     .grid3 { grid-template-columns: repeat(2, 1fr); }
-    .setup-grid, .app-grid { grid-template-columns: 1fr; gap: 32px; }
+    .app-grid { grid-template-columns: 1fr; gap: 32px; }
   }
   @media (max-width: 860px) {
     .wall-grid, .compare-grid { grid-template-columns: 1fr; }
@@ -858,7 +857,7 @@
 </section>
 
 <!-- ============================== WORKFLOW DROP-IN ============================== -->
-<section class="drop">
+<section class="drop" id="setup">
   <div class="wrap">
     <div class="code-card shadow reveal">
       <div class="code-head">
@@ -868,7 +867,13 @@
         </div>
         <button type="button" class="copybtn" data-copy="hero" aria-live="polite">Copy</button>
       </div>
-<pre aria-label="Example GitHub Actions workflow"><span class="k">on</span>: { <span class="k">pull_request</span>: { <span class="k">types</span>: [opened, synchronize] } }
+<pre aria-label="Full workflow example"><span class="k">name</span>: J-Bot Code Review
+<span class="k">on</span>:
+  <span class="k">pull_request</span>: { types: [opened, synchronize, reopened] }
+
+<span class="k">permissions</span>:
+  <span class="k">contents</span>: read
+  <span class="k">pull-requests</span>: write
 
 <span class="k">jobs</span>:
   <span class="k">review</span>:
@@ -878,9 +883,9 @@
         <span class="k">with</span>: { fetch-depth: 0 }
       - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
         <span class="k">with</span>:
+          <span class="k">provider</span>: ${{ vars.JBOT_REVIEW_PROVIDER || 'opencode' }}
           <span class="k">opencode-api-key</span>: ${{ secrets.OPENCODE_API_KEY }}
-          <span class="k">github-token</span>:     ${{ secrets.GITHUB_TOKEN }}
-<span class="c"># your runner · your key · your review · $0 added by J-Bot</span></pre>
+          <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
     </div>
   </div>
 </section>
@@ -998,8 +1003,8 @@
       <div class="card step reveal">
         <div class="num">02</div>
         <h3>It runs in your CI</h3>
-        <p>On each PR, Actions starts your selected backend in the container and drives a read-only review across the full diff.</p>
-        <div class="tag">read-only · no writes · your runner</div>
+        <p>On each PR, Actions starts your selected backend in the container and reviews the full diff with least-privilege permissions.</p>
+        <div class="tag">contents: read · pull-requests: write</div>
       </div>
       <div class="card step reveal">
         <div class="num">03</div>
@@ -1044,8 +1049,8 @@
         <div class="feat-ic" aria-hidden="true">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.5 20 7l-3.5 3.5"></path><path d="M20 7H8.5a4 4 0 0 0-4 4"></path><path d="M7.5 20.5 4 17l3.5-3.5"></path><path d="M4 17h11.5a4 4 0 0 0 4-4"></path></svg>
         </div>
-        <h3>Any model you want</h3>
-        <p>OpenCode gateways including Claude, plus CLI backends like Codex and Cursor. Switch with one repo variable.</p>
+        <h3>Tune depth and cost</h3>
+        <p>Start with the defaults, then adjust shards, review passes, and finding verification as your repositories grow.</p>
       </div>
       <div class="card feat reveal">
         <div class="feat-ic" aria-hidden="true">
@@ -1150,50 +1155,6 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================== SETUP ============================== -->
-<section id="setup">
-  <div class="wrap sect-inner">
-    <div class="setup-grid">
-      <div class="setup-copy reveal">
-        <p class="eyebrow">Setup</p>
-        <h2 class="h2">Trivial to add. <br>Hard to outgrow.</h2>
-        <p>Copy the file, add one secret, open a PR. That's the whole install — tune recall and cost later.</p>
-        <div class="setup-checks">
-          <div><span class="v" aria-hidden="true">✓</span>One file, one secret — no reviewer SaaS account.</div>
-          <div><span class="v" aria-hidden="true">✓</span>Least-privilege by default: contents read, pull-requests write.</div>
-          <div><span class="v" aria-hidden="true">✓</span>Tune recall and cost later with shards, passes, and verification.</div>
-        </div>
-      </div>
-
-      <div class="code-card reveal">
-        <div class="code-head">
-          <span class="file">jbot-review.yml</span>
-          <button type="button" class="copybtn" data-copy="setup" aria-live="polite">Copy</button>
-        </div>
-<pre aria-label="Full workflow example"><span class="k">name</span>: J-Bot Code Review
-<span class="k">on</span>:
-  <span class="k">pull_request</span>: { types: [opened, synchronize, reopened] }
-
-<span class="k">permissions</span>:
-  <span class="k">contents</span>: read
-  <span class="k">pull-requests</span>: write
-
-<span class="k">jobs</span>:
-  <span class="k">review</span>:
-    <span class="k">runs-on</span>: ubuntu-latest
-    <span class="k">steps</span>:
-      - <span class="k">uses</span>: actions/checkout@v7
-        <span class="k">with</span>: { fetch-depth: 0 }
-      - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
-        <span class="k">with</span>:
-          <span class="k">provider</span>: ${{ vars.JBOT_REVIEW_PROVIDER || 'opencode' }}
-          <span class="k">opencode-api-key</span>: ${{ secrets.OPENCODE_API_KEY }}
-          <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
       </div>
     </div>
   </div>
@@ -1331,13 +1292,10 @@
     });
   })();
 
-  // --- Copy buttons (hero YAML / setup YAML / CTA snippet) ---
-  // Copies spec'd strings, not innerText: the rendered blocks include
-  // display-only alignment and a comment line that must not be copied.
+  // --- Copy buttons (workflow YAML / CTA snippet) ---
   (function () {
     var TEXTS = {
-      hero: "on: { pull_request: { types: [opened, synchronize] } }\n\njobs:\n  review:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v7\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          opencode-api-key: ${{ secrets.OPENCODE_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}",
-      setup: "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, synchronize, reopened] }\npermissions:\n  contents: read\n  pull-requests: write\njobs:\n  review:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v7\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          provider: ${{ vars.JBOT_REVIEW_PROVIDER || 'opencode' }}\n          opencode-api-key: ${{ secrets.OPENCODE_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}",
+      hero: "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, synchronize, reopened] }\n\npermissions:\n  contents: read\n  pull-requests: write\n\njobs:\n  review:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v7\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          provider: ${{ vars.JBOT_REVIEW_PROVIDER || 'opencode' }}\n          opencode-api-key: ${{ secrets.OPENCODE_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}",
       cta: "- uses: pgup-ai/jbot-review-action@v0"
     };
     // Fallback for non-secure contexts (file://, http://) where the async
