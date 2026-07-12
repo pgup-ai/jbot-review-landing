@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>J-Bot Review: open-source AI code review in your CI</title>
-<meta name="description" content="Open-source agentic PR reviewer that runs inside your own GitHub Actions, using OpenCode gateways for Claude, OpenAI, Gemini, DeepSeek and more — or CLI subscriptions including Codex, Cursor, Devin, Cline, Command Code, Kilo, and Grok Build." />
+<meta name="description" content="Open-source agentic PR reviewer that runs inside your own GitHub Actions, using OpenCode gateways for Claude, OpenAI, Gemini, DeepSeek and more — or CLI subscriptions including Codex, Cursor, Devin, Cline, Command Code, Kilo, Grok Build, and Qoder." />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0a0b0a" />
 
@@ -20,7 +20,7 @@
 <meta property="og:url" content="https://www.pgupai.com/" />
 <meta property="og:site_name" content="J-Bot Review" />
 <meta property="og:title" content="J-Bot Review: open-source AI code review in your CI" />
-<meta property="og:description" content="Open-source agentic PR review inside GitHub Actions. Bring an OpenCode gateway (Claude, OpenAI, Gemini and more) or a CLI subscription: Codex, Cursor, Devin, Cline, Command Code, Kilo, Grok Build." />
+<meta property="og:description" content="Open-source agentic PR review inside GitHub Actions. Bring an OpenCode gateway (Claude, OpenAI, Gemini and more) or a CLI subscription: Codex, Cursor, Devin, Cline, Command Code, Kilo, Grok Build, Qoder." />
 <meta property="og:image" content="https://www.pgupai.com/assets/og-20260704.png" />
 <meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-20260704.png" />
 <meta property="og:image:type" content="image/png" />
@@ -30,7 +30,7 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="J-Bot Review: open-source AI code review in your CI" />
-<meta name="twitter:description" content="Open-source agentic PR review inside GitHub Actions. Bring an OpenCode gateway (Claude, OpenAI, Gemini and more) or a CLI subscription: Codex, Cursor, Devin, Cline, Command Code, Kilo, Grok Build." />
+<meta name="twitter:description" content="Open-source agentic PR review inside GitHub Actions. Bring an OpenCode gateway (Claude, OpenAI, Gemini and more) or a CLI subscription: Codex, Cursor, Devin, Cline, Command Code, Kilo, Grok Build, Qoder." />
 <meta name="twitter:image" content="https://www.pgupai.com/assets/og-20260704.png" />
 
 <!-- Structured data: Organization + WebSite + SoftwareApplication + FAQPage.
@@ -59,7 +59,7 @@
       "@id": "https://www.pgupai.com/#app",
       "name": "J-Bot Review",
       "alternateName": "jbot-review-action",
-      "description": "Open-source agentic PR reviewer that runs inside your own GitHub Actions, using OpenCode gateways for Claude, OpenAI, Gemini, DeepSeek and more — or CLI subscriptions including Codex, Cursor, Devin, Cline, Command Code, Kilo, and Grok Build.",
+      "description": "Open-source agentic PR reviewer that runs inside your own GitHub Actions, using OpenCode gateways for Claude, OpenAI, Gemini, DeepSeek and more — or CLI subscriptions including Codex, Cursor, Devin, Cline, Command Code, Kilo, Grok Build, and Qoder.",
       "url": "https://www.pgupai.com/",
       "image": "https://www.pgupai.com/assets/icon-512.png",
       "applicationCategory": "DeveloperApplication",
@@ -72,7 +72,7 @@
       "softwareHelp": { "@type": "CreativeWork", "url": "https://github.com/pgup-ai/jbot-review-action#readme" },
       "featureList": [
         "Runs inside your own GitHub Actions, on your runner and your keys",
-        "Bring your own model: 29+ backends via OpenCode gateways or CLI subscriptions (Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build)",
+        "Bring your own model: 29+ backends via OpenCode gateways or CLI subscriptions (Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder)",
         "Diff-anchored review comments, verified by a second model before posting",
         "Reads house rules: AGENTS.md, REVIEW.md, .coderabbit.yaml, greptile.json, Cursor rules",
         "Checks changes against current documentation via Context7",
@@ -94,7 +94,7 @@
           "name": "Can I use my Claude, Codex, or Cursor subscription for automated code review?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes for Codex (a ChatGPT Plus/Pro seat), Cursor, Devin, Cline, Kilo, Command Code, and Grok Build: J-Bot Review drives those coding-agent CLIs inside your own GitHub Actions, so a seat you already pay for reviews every pull request. Claude runs through your own Anthropic API key or an OpenCode gateway instead — a Claude Pro/Max seat is not a supported CI credential today. See the CLI subscription guide for per-CLI setup."
+            "text": "Yes for Codex (a ChatGPT Plus/Pro seat), Cursor, Devin, Cline, Kilo, Command Code, Grok Build, and Qoder: J-Bot Review drives those coding-agent CLIs inside your own GitHub Actions, so a seat you already pay for reviews every pull request. Claude runs through your own Anthropic API key or an OpenCode gateway instead — a Claude Pro/Max seat is not a supported CI credential today. See the CLI subscription guide for per-CLI setup."
           }
         },
         {
@@ -134,7 +134,7 @@
           "name": "Which models and providers does J-Bot Review support?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "29+ backends. OpenCode gateways cover OpenCode Zen free models plus Claude, OpenAI, Gemini, DeepSeek, Grok, Qwen, Kimi, MiniMax, OpenRouter, Fireworks, Cohere, Together, and more. CLI subscription backends cover Codex, Cursor, Devin, Cline, Kilo, Command Code, and Grok Build. Switch backends with one repo variable."
+            "text": "29+ backends. OpenCode gateways cover OpenCode Zen free models plus Claude, OpenAI, Gemini, DeepSeek, Grok, Qwen, Kimi, MiniMax, OpenRouter, Fireworks, Cohere, Together, and more. CLI subscription backends cover Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build, and Qoder. Switch backends with one repo variable."
           }
         },
         {
@@ -430,6 +430,7 @@
   }
   .wall-card--gw .chip:hover { border-color: rgba(94, 227, 154, 0.35); color: var(--text); }
   .wall-card--cli .chip:hover { border-color: rgba(122, 162, 255, 0.4); color: var(--text); }
+  .wall-card--cli .chip:hover .chip-ic--qoder { filter: brightness(1.5); }
   /* Logos are monochrome on purpose: fill inherits text color, and every
      viewBox is cropped to the mark's ink bounds so a uniform 12px height
      renders all marks optically equal. */
@@ -926,6 +927,7 @@
           <span class="chip"><svg class="chip-ic" viewBox="0 0 100 100" aria-hidden="true"><use href="#p-kilo"/></svg>Kilo</span>
           <span class="chip"><svg class="chip-ic" viewBox="2 1 20 22" aria-hidden="true"><path d="M6.469 8.776L16.512 23h-4.464L2.005 8.776H6.47zm-.004 7.9l2.233 3.164L6.467 23H2l4.465-6.324zM22 2.582V23h-3.659V7.764L22 2.582zM22 1l-9.952 14.095-2.233-3.163L17.533 1H22z"></path></svg>Grok Build</span>
           <span class="chip"><svg class="chip-ic" viewBox="0 0 445.04 445.04" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M226.665 18.1979h-8.29c-51.986 0-89.145.0387-117.384 3.8353-27.7149 3.7262-44.0975 10.7695-56.1429 22.8149-12.0454 12.0454-19.0887 28.428-22.8149 56.1429-3.7967 28.239-3.8353 65.398-3.8353 117.384v8.29c0 51.986.0386 89.144 3.8353 117.383 3.7262 27.716 10.7695 44.098 22.8149 56.144 12.0454 12.045 28.4279 19.088 56.1429 22.815 28.239 3.796 65.398 3.835 117.384 3.835h8.29c51.986 0 89.144-.039 117.383-3.835 27.716-3.727 44.098-10.77 56.143-22.815 12.046-12.046 19.089-28.428 22.815-56.144 3.797-28.239 3.836-65.397 3.836-117.383v-8.29c0-51.986-.039-89.145-3.836-117.384-3.726-27.7149-10.769-44.0975-22.815-56.1429-12.045-12.0454-28.427-19.0887-56.143-22.8149-28.239-3.7966-65.397-3.8353-117.383-3.8353zM31.9803 31.9803C0 63.9605 0 115.432 0 218.375v8.29c0 102.943 0 154.414 31.9803 186.394C63.9605 445.04 115.432 445.04 218.375 445.04h8.29c102.943 0 154.414 0 186.394-31.981 31.981-31.98 31.981-83.451 31.981-186.394v-8.29c0-102.943 0-154.4145-31.981-186.3947C381.079 0 329.608 0 226.665 0h-8.29C115.432 0 63.9605 0 31.9803 31.9803z"></path><path d="M306.202 85.5845c-29.365 0-53.252 23.8875-53.252 53.2525v22.823h-60.86v-22.823c0-29.365-23.888-53.2525-53.253-53.2525s-53.2525 23.8875-53.2525 53.2525 23.8875 53.253 53.2525 53.253h22.823v60.86h-22.823c-29.365 0-53.2525 23.887-53.2525 53.252 0 29.366 23.8875 53.253 53.2525 53.253s53.253-23.887 53.253-53.253V283.38h60.86v22.822c0 29.366 23.887 53.253 53.252 53.253 29.365 0 53.253-23.887 53.253-53.253 0-29.365-23.888-53.252-53.253-53.252H283.38v-60.86h22.822c29.365 0 53.253-23.888 53.253-53.253s-23.888-53.2525-53.253-53.2525zM283.38 161.66v-22.823c0-12.628 10.194-22.822 22.822-22.822 12.629 0 22.823 10.194 22.823 22.822 0 12.629-10.194 22.823-22.823 22.823H283.38zm-144.543 0c-12.628 0-22.822-10.194-22.822-22.823 0-12.628 10.194-22.822 22.822-22.822 12.629 0 22.823 10.194 22.823 22.822v22.823h-22.823zM192.09 252.95v-60.86h60.86v60.86h-60.86zm114.112 76.075c-12.628 0-22.822-10.194-22.822-22.823V283.38h22.822c12.629 0 22.823 10.194 22.823 22.822 0 12.629-10.194 22.823-22.823 22.823zm-167.365 0c-12.628 0-22.822-10.194-22.822-22.823 0-12.628 10.194-22.822 22.822-22.822h22.823v22.822c0 12.629-10.194 22.823-22.823 22.823z"></path></svg>Command Code</span>
+          <span class="chip"><img class="chip-ic chip-ic--qoder" src="assets/qoder.svg" alt="" width="12" height="12" />Qoder</span>
         </div>
       </div>
     </div>
@@ -1207,7 +1209,7 @@
     <div class="faq-list reveal">
       <details class="faq-item" open>
         <summary>Can I use my Claude, Codex, or Cursor subscription for automated code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
-        <div class="faq-a"><p>Yes for Codex (a ChatGPT Plus/Pro seat), Cursor, Devin, Cline, Kilo, Command Code, and Grok Build: J-Bot Review drives those coding-agent CLIs inside your own GitHub Actions, so a seat you already pay for reviews every pull request. Claude runs through your own Anthropic API key or an OpenCode gateway instead — a Claude Pro/Max seat is not a supported CI credential today. See the <a href="/guides/cli-subscription-code-review">CLI subscription guide</a> for per-CLI setup.</p></div>
+        <div class="faq-a"><p>Yes for Codex (a ChatGPT Plus/Pro seat), Cursor, Devin, Cline, Kilo, Command Code, Grok Build, and Qoder: J-Bot Review drives those coding-agent CLIs inside your own GitHub Actions, so a seat you already pay for reviews every pull request. Claude runs through your own Anthropic API key or an OpenCode gateway instead — a Claude Pro/Max seat is not a supported CI credential today. See the <a href="/guides/cli-subscription-code-review">CLI subscription guide</a> for per-CLI setup.</p></div>
       </details>
       <details class="faq-item">
         <summary>Is J-Bot Review free?<span class="faq-mark" aria-hidden="true">+</span></summary>
@@ -1227,7 +1229,7 @@
       </details>
       <details class="faq-item">
         <summary>Which models and providers does J-Bot Review support?<span class="faq-mark" aria-hidden="true">+</span></summary>
-        <div class="faq-a"><p>29+ backends. OpenCode gateways cover OpenCode Zen free models plus Claude, OpenAI, Gemini, DeepSeek, Grok, Qwen, Kimi, MiniMax, OpenRouter, Fireworks, Cohere, Together, and more. CLI subscription backends cover Codex, Cursor, Devin, Cline, Kilo, Command Code, and Grok Build. Switch backends with one repo variable.</p></div>
+        <div class="faq-a"><p>29+ backends. OpenCode gateways cover OpenCode Zen free models plus Claude, OpenAI, Gemini, DeepSeek, Grok, Qwen, Kimi, MiniMax, OpenRouter, Fireworks, Cohere, Together, and more. CLI subscription backends cover Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build, and Qoder. Switch backends with one repo variable.</p></div>
       </details>
       <details class="faq-item">
         <summary>Does it work with private repositories?<span class="faq-mark" aria-hidden="true">+</span></summary>
