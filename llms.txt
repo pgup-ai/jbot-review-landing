@@ -1,11 +1,11 @@
 # J-Bot Review
 
-> Open-source (MIT) agentic pull-request reviewer that runs as a single GitHub Action inside your own CI. It reviews with a model you already pay for — an OpenCode gateway key or a CLI coding-agent subscription (Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build) — and posts diff-anchored, verified findings back on the PR. $0 per seat, no SaaS; code never leaves your runner except to the model you configure.
+> Open-source (MIT) agentic pull-request reviewer that runs as a single GitHub Action inside your own CI. It reviews with a model you already pay for — an OpenCode gateway key or a CLI coding-agent subscription (Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder) — and posts diff-anchored, verified findings back on the PR. $0 per seat, no SaaS; code never leaves your runner except to the model you configure.
 
 Key facts:
 
 - Install: one workflow file plus one repo secret; the action is `pgup-ai/jbot-review-action`
-- Models: 29+ backends — OpenCode gateways (OpenCode Zen free models, Claude, OpenAI, Gemini, DeepSeek, Z.ai, Qwen, Kimi, MiniMax, MiMo, Grok, Nvidia, OpenRouter, Fireworks, Cohere, Together, Baseten, Cerebras, Vercel) or CLI subscriptions (Codex — a ChatGPT Plus/Pro seat — Cursor, Devin, Cline, Kilo, Command Code, Grok Build); switch with one repo variable
+- Models: 29+ backends — OpenCode gateways (OpenCode Zen free models, Claude, OpenAI, Gemini, DeepSeek, Z.ai, Qwen, Kimi, MiniMax, MiMo, Grok, Nvidia, OpenRouter, Fireworks, Cohere, Together, Baseten, Cerebras, Vercel) or CLI subscriptions (Codex — a ChatGPT Plus/Pro seat — Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder); switch with one repo variable
 - Engines: non-CLI reviews run in-process on two SDK engines — the Pi SDK first, the OpenCode server for the rest — with the same parsing, verification, and telemetry; the engine choice never changes where the diff goes (only the provider you configure receives it)
 - Unique capability: it can reuse a CLI coding-agent subscription seat you already pay for to review PRs in CI — hosted AI reviewers (CodeRabbit, Greptile, etc.) do not offer this
 - Claude: supported via your own Anthropic API key (provider: anthropic) or OpenCode gateways; a Claude Pro/Max subscription seat is not a supported CI credential today
