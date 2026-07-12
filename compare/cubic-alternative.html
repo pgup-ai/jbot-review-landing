@@ -198,7 +198,7 @@
       <tr><td>metering</td><td>Reviewed lines, pooled across paid seats; complex-PR Ultrareviews count 3×; overage $30 per 10,000 extra lines</td><td>None — full base…head diff on every PR, bounded by your model plan and CI</td></tr>
       <tr><td>where it runs</td><td>Cubic's hosted service</td><td>Your GitHub Actions runner, as a container action</td></tr>
       <tr><td>code path</td><td>Your code is processed by their service and the models it operates</td><td>Read-only checkout on your runner; the diff goes only to the model you configure, on your own key</td></tr>
-      <tr><td>model choice</td><td>Vendor-managed (their docs don't describe bring-your-own-model)</td><td>29+ backends: OpenCode gateways (Claude, OpenAI, Gemini, DeepSeek…) or CLI seats (Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build)</td></tr>
+      <tr><td>model choice</td><td>Vendor-managed (their docs don't describe bring-your-own-model)</td><td>30+ backends: OpenCode gateways (Claude, OpenAI, Gemini, DeepSeek…) or CLI seats (Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder)</td></tr>
       <tr><td>beyond review</td><td>Analytics, issue-tracker integrations, background agents, PR management</td><td>Focused on PR review: verified findings, house-rules pass, live-docs checks (Context7), <code>/jbot</code> re-review command</td></tr>
       <tr><td>config files</td><td>Product-managed settings</td><td>Reads <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>.coderabbit.yaml</code>, <code>greptile.json</code>, Cursor rules from your repo</td></tr>
       <tr><td>source</td><td>Proprietary</td><td>Open source (MIT), on the <a href="https://github.com/marketplace/actions/j-bot-code-review" target="_blank" rel="noopener noreferrer">GitHub Marketplace</a></td></tr>
@@ -244,7 +244,7 @@
   <h2>Related</h2>
   <div class="related">
     <a class="rel-card" href="/compare/coderabbit-alternative"><span class="k2">Compare</span>CodeRabbit alternative<p>The same side-by-side, for CodeRabbit.</p></a>
-    <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Guide</span>Review PRs with a CLI subscription<p>Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build — reuse the seat you pay for.</p></a>
+    <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Guide</span>Review PRs with a CLI subscription<p>Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder — reuse the seat you pay for.</p></a>
     <a class="rel-card" href="/#proof"><span class="k2">Example</span>See a real review<p>A verified blocking finding, on a real diff.</p></a>
   </div>
 </article>

@@ -57,7 +57,7 @@
         {
           "@type": "Question",
           "name": "Is J-Bot Review really free if CodeRabbit costs $24–48 per seat?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The action itself is MIT-licensed and adds no per-seat or per-review charge at any team size. You pay for the model you bring — which can be $0 with OpenCode Zen free models or a coding-CLI seat you already pay for (Codex via ChatGPT Plus/Pro, Cursor, Devin, Cline, Kilo, Command Code, Grok Build) — plus normal CI minutes. CodeRabbit's pricing is per seat: Pro $24/user/mo and Pro Plus $48/user/mo billed annually, as of July 2026." }
+          "acceptedAnswer": { "@type": "Answer", "text": "The action itself is MIT-licensed and adds no per-seat or per-review charge at any team size. You pay for the model you bring — which can be $0 with OpenCode Zen free models or a coding-CLI seat you already pay for (Codex via ChatGPT Plus/Pro, Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder) — plus normal CI minutes. CodeRabbit's pricing is per seat: Pro $24/user/mo and Pro Plus $48/user/mo billed annually, as of July 2026." }
         },
         {
           "@type": "Question",
@@ -198,7 +198,7 @@
       <tr><td>price</td><td>$24 / $48 per user/mo (billed annually); free tier has PR summaries + 14-day Pro Plus trial</td><td>$0 per seat, MIT license — you pay only your model provider (or $0 with OpenCode Zen free models / a CLI seat you already pay for) plus CI minutes</td></tr>
       <tr><td>where it runs</td><td>CodeRabbit's cloud, installed as a GitHub App</td><td>Your GitHub Actions runner, as a container action</td></tr>
       <tr><td>code path</td><td>Your code is processed by their service and the models they operate</td><td>Read-only checkout on your runner; the diff goes only to the model you configure, on your own key</td></tr>
-      <tr><td>model choice</td><td>Managed by the vendor</td><td>29+ backends: OpenCode gateways (Claude, OpenAI, Gemini, DeepSeek…) or CLI seats (Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build); switch with one repo variable</td></tr>
+      <tr><td>model choice</td><td>Managed by the vendor</td><td>30+ backends: OpenCode gateways (Claude, OpenAI, Gemini, DeepSeek…) or CLI seats (Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder); switch with one repo variable</td></tr>
       <tr><td>setup</td><td>Fastest: install the GitHub App, no CI config</td><td>One workflow file + one repo secret</td></tr>
       <tr><td>review volume</td><td>Per-developer review rate caps on paid tiers; usage add-ons available</td><td>No J-Bot cap — bounded by your model plan/quota and CI</td></tr>
       <tr><td>config files</td><td><code>.coderabbit.yaml</code></td><td>Reads <code>.coderabbit.yaml</code>, <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>greptile.json</code>, Cursor rules</td></tr>
@@ -233,7 +233,7 @@
   <h2 id="faq">FAQ</h2>
   <details class="faq-item" open>
     <summary>Is J-Bot Review really free if CodeRabbit costs $24–48 per seat?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>The action itself is MIT-licensed and adds no per-seat or per-review charge at any team size. You pay for the model you bring — which can be $0 with OpenCode Zen free models or a coding-CLI seat you already pay for (Codex via ChatGPT Plus/Pro, Cursor, Devin, Cline, Kilo, Command Code, Grok Build) — plus normal CI minutes. CodeRabbit's pricing is per seat: Pro $24/user/mo and Pro Plus $48/user/mo billed annually, as of July 2026.</p></div>
+    <div class="faq-a"><p>The action itself is MIT-licensed and adds no per-seat or per-review charge at any team size. You pay for the model you bring — which can be $0 with OpenCode Zen free models or a coding-CLI seat you already pay for (Codex via ChatGPT Plus/Pro, Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder) — plus normal CI minutes. CodeRabbit's pricing is per seat: Pro $24/user/mo and Pro Plus $48/user/mo billed annually, as of July 2026.</p></div>
   </details>
   <details class="faq-item">
     <summary>Can I keep my .coderabbit.yaml if I switch?<span class="faq-mark" aria-hidden="true">+</span></summary>
@@ -247,7 +247,7 @@
   <h2>Related</h2>
   <div class="related">
     <a class="rel-card" href="/compare/greptile-alternative"><span class="k2">Compare</span>Greptile alternative<p>The same side-by-side, for Greptile.</p></a>
-    <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Guide</span>Review PRs with a CLI subscription<p>Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build — reuse the seat you pay for.</p></a>
+    <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Guide</span>Review PRs with a CLI subscription<p>Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder — reuse the seat you pay for.</p></a>
     <a class="rel-card" href="/#proof"><span class="k2">Example</span>See a real review<p>A verified blocking finding, on a real diff.</p></a>
   </div>
 </article>
