@@ -151,11 +151,6 @@
 }
 </script>
 
-<!-- Fonts: Space Grotesk (display) · IBM Plex Sans (body) · IBM Plex Mono (code/labels) -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-
 <style>
   /* ============================================================
      Design tokens - dark, code-forward, one green accent.
@@ -189,9 +184,11 @@
 
     --maxw:          1180px;
 
-    --sans:    'IBM Plex Sans', system-ui, -apple-system, sans-serif;
-    --mono:    'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-    --display: 'Space Grotesk', var(--sans);
+    /* System fonts keep the first render on the critical path free of font
+       downloads and prevent late font swaps from moving the hero. */
+    --sans:    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono:    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --display: var(--sans);
 
     --ease: cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -407,7 +404,7 @@
   .wall { padding: 26px 0 60px; text-align: center; }
   .wall-label {
     font-family: var(--mono); font-size: 12px; font-weight: 400; letter-spacing: 0.06em;
-    text-transform: uppercase; color: var(--text-4); margin: 0 0 22px;
+    text-transform: uppercase; color: rgba(233, 236, 232, 0.62); margin: 0 0 22px;
   }
   .wall-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; text-align: left; }
   .wall-card {
@@ -440,6 +437,7 @@
   /* Z.ai's solid Z reads heavy at 12px; Gemini's thin star reads light — nudge both toward parity */
   .chip-ic--zai { height: 10.5px; }
   .chip-ic--gem { height: 13.5px; }
+  .chip-ic--qoder { width: 12px; height: 12px; }
   .chip .ftag {
     font-style: normal; font-size: 9.5px; color: var(--accent);
     border: 1px solid rgba(94, 227, 154, 0.35); border-radius: 4px; padding: 1px 5px;
@@ -523,7 +521,7 @@
   .review-verdict .tally { font-family: var(--mono); font-size: 12px; color: var(--text-4); }
   .proof-caption {
     text-align: center; font-family: var(--mono); font-size: 12px;
-    color: rgba(233, 236, 232, 0.38); margin: 16px 0 0;
+    color: rgba(233, 236, 232, 0.6); margin: 16px 0 0;
   }
   .proof-live { text-align: center; margin: 12px 0 0; font-family: var(--mono); font-size: 12.5px; }
   .proof-live a { color: var(--accent); transition: color 0.15s var(--ease); }
@@ -716,24 +714,24 @@
   .foot-brand { max-width: 300px; }
   .foot-brand .brand img { width: 24px; height: 24px; }
   .foot-brand .brand .wm { font-size: 14.5px; }
-  .foot-brand p { font-size: 13px; line-height: 1.55; color: rgba(233, 236, 232, 0.48); margin: 12px 0 0; }
+  .foot-brand p { font-size: 13px; line-height: 1.55; color: rgba(233, 236, 232, 0.62); margin: 12px 0 0; }
   .foot-brand p b { color: rgba(233, 236, 232, 0.7); }
   .foot-social { display: flex; gap: 16px; margin-top: 16px; }
   .foot-social a { color: var(--text-3); display: inline-flex; transition: color 0.15s var(--ease); }
   .foot-social a:hover { color: var(--text); }
   .foot-social svg { width: 18px; height: 18px; }
   .foot-cols { display: flex; gap: 28px 56px; flex-wrap: wrap; }
-  .foot-col h4 {
+  .foot-col h3 {
     font-family: var(--mono); font-size: 11px; font-weight: 400;
     text-transform: uppercase; letter-spacing: 0.06em;
-    color: rgba(233, 236, 232, 0.4); margin: 0 0 12px;
+    color: rgba(233, 236, 232, 0.62); margin: 0 0 12px;
   }
   .foot-col nav { display: flex; flex-direction: column; gap: 9px; font-size: 13.5px; }
   .foot-col a { color: rgba(233, 236, 232, 0.6); transition: color 0.15s var(--ease); }
   .foot-col a:hover { color: var(--text); }
   .foot-bottom {
     width: 100%; border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 18px;
-    font-size: 12px; color: rgba(233, 236, 232, 0.38); font-family: var(--mono);
+    font-size: 12px; color: rgba(233, 236, 232, 0.6); font-family: var(--mono);
   }
 
   /* ============================================================
@@ -798,7 +796,7 @@
 <header class="nav">
   <div class="wrap nav-inner">
     <a class="brand" href="#top" aria-label="J-Bot Review home">
-      <img src="assets/logo.png" alt="" width="26" height="26" />
+      <img src="assets/logo-64.png" alt="" width="26" height="26" />
       <span class="wm">J-Bot <span>Review</span></span>
     </a>
 
@@ -961,7 +959,7 @@
 
     <div class="review-card reveal">
       <div class="review-head">
-        <img src="assets/logo.png" alt="" width="22" height="22" />
+        <img src="assets/logo-64.png" alt="" width="22" height="22" />
         <span class="who">jbot-review</span>
         <span class="meta">bot · reviewed 2 files · 40s ago</span>
       </div>
@@ -1225,7 +1223,7 @@
     <div class="foot-inner">
       <div class="foot-brand">
         <a class="brand" href="#top" aria-label="J-Bot Review home">
-          <img src="assets/logo.png" alt="" width="24" height="24" />
+          <img src="assets/logo-64.png" alt="" width="24" height="24" />
           <span class="wm">J-Bot <span>Review</span></span>
         </a>
         <p>An agentic PR reviewer for your own runner and your choice of model. A <b>PGUP AI</b> project.</p>
@@ -1241,7 +1239,7 @@
 
       <div class="foot-cols">
         <div class="foot-col">
-          <h4>Product</h4>
+          <h3>Product</h3>
           <nav aria-label="Product">
             <a href="#how">How it works</a>
             <a href="#features">Features</a>
@@ -1250,7 +1248,7 @@
           </nav>
         </div>
         <div class="foot-col">
-          <h4>Compare</h4>
+          <h3>Compare</h3>
           <nav aria-label="Compare">
             <a href="/compare/coderabbit-alternative">vs. CodeRabbit</a>
             <a href="/compare/greptile-alternative">vs. Greptile</a>
@@ -1259,7 +1257,7 @@
           </nav>
         </div>
         <div class="foot-col">
-          <h4>Resources</h4>
+          <h3>Resources</h3>
           <nav aria-label="Resources">
             <a href="/guides">Guides</a>
             <a href="https://github.com/pgup-ai/jbot-review-action#readme" target="_blank" rel="noopener noreferrer">Documentation</a>
