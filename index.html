@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>J-Bot Review: open-source AI code review in your CI</title>
-<meta name="description" content="Open-source agentic PR reviewer that runs inside your own GitHub Actions, using OpenCode gateways for Claude, OpenAI, Gemini, DeepSeek and more — or CLI subscriptions including Codex, Cursor, Devin, Cline, Command Code, Kilo, Grok Build, and Qoder." />
+<meta name="description" content="Open-source AI code review inside your own GitHub Actions. Bring Claude, GPT, Gemini, or a supported CLI seat. $0/seat, no SaaS, MIT licensed." />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0a0b0a" />
 
@@ -20,7 +20,7 @@
 <meta property="og:url" content="https://www.pgupai.com/" />
 <meta property="og:site_name" content="J-Bot Review" />
 <meta property="og:title" content="J-Bot Review: open-source AI code review in your CI" />
-<meta property="og:description" content="Open-source agentic PR review inside GitHub Actions. Bring an OpenCode gateway (Claude, OpenAI, Gemini and more) or a CLI subscription: Codex, Cursor, Devin, Cline, Command Code, Kilo, Grok Build, Qoder." />
+<meta property="og:description" content="Open-source AI code review inside your own GitHub Actions. Bring Claude, GPT, Gemini, or a supported CLI seat. $0/seat, no SaaS, MIT licensed." />
 <meta property="og:image" content="https://www.pgupai.com/assets/og-20260704.png" />
 <meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-20260704.png" />
 <meta property="og:image:type" content="image/png" />
@@ -30,7 +30,7 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="J-Bot Review: open-source AI code review in your CI" />
-<meta name="twitter:description" content="Open-source agentic PR review inside GitHub Actions. Bring an OpenCode gateway (Claude, OpenAI, Gemini and more) or a CLI subscription: Codex, Cursor, Devin, Cline, Command Code, Kilo, Grok Build, Qoder." />
+<meta name="twitter:description" content="Open-source AI code review inside your own GitHub Actions. Bring Claude, GPT, Gemini, or a supported CLI seat. $0/seat, no SaaS, MIT licensed." />
 <meta name="twitter:image" content="https://www.pgupai.com/assets/og-20260704.png" />
 
 <!-- Structured data: Organization + WebSite + SoftwareApplication + FAQPage.
@@ -59,7 +59,7 @@
       "@id": "https://www.pgupai.com/#app",
       "name": "J-Bot Review",
       "alternateName": "jbot-review-action",
-      "description": "Open-source agentic PR reviewer that runs inside your own GitHub Actions, using OpenCode gateways for Claude, OpenAI, Gemini, DeepSeek and more — or CLI subscriptions including Codex, Cursor, Devin, Cline, Command Code, Kilo, Grok Build, and Qoder.",
+      "description": "Open-source AI code review inside your own GitHub Actions. Bring Claude, GPT, Gemini, or a supported CLI seat. $0/seat, no SaaS, MIT licensed.",
       "url": "https://www.pgupai.com/",
       "image": "https://www.pgupai.com/assets/icon-512.png",
       "applicationCategory": "DeveloperApplication",
@@ -103,6 +103,38 @@
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "The action itself is MIT-licensed open source and adds no per-seat or per-review charge. You pay only for the model you bring — with OpenCode Zen free models or a CLI seat you already pay for, J-Bot adds $0 on top of your normal CI minutes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is J-Bot Review production-ready? What does v0.2.0 mean?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It is ready to run on real pull requests, with one caveat: it is still a pre-1.0 project. v0.2.0 was the first public Marketplace release, and the @v0 tag receives ongoing v0 updates. J-Bot posts comment reviews and merge guidance; it does not approve, merge, or replace your branch protections. Keep human review in the loop while you tune it for your repositories."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does an average J-Bot Review cost?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "J-Bot itself costs $0. The model cost depends on the provider, model, diff size, and review settings, so there is no honest one-number average. A run can add $0 when you use an OpenCode Zen free model or a supported CLI seat you already pay for; API-backed runs are billed at your provider's rates. When a backend exposes usage, the Action logs its token and cost totals after the review."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does J-Bot Review support monorepos and very large diffs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. J-Bot reads repository-level guidance plus directory-scoped files such as AGENTS.md and REVIEW.md, so packages in a monorepo can carry their own rules. For large diffs, set review-shards: 0 to split changed files across up to four parallel review sessions. Results are merged, and a failed main shard aborts the review instead of posting partial coverage as complete. Provider context and concurrency limits still apply."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does J-Bot Review support GitLab or Bitbucket?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not today. The packaged integration is GitHub-only because it runs in GitHub Actions and posts through GitHub's pull-request review APIs. GitLab merge requests and Bitbucket pull requests are not supported yet."
           }
         },
         {
@@ -355,7 +387,7 @@
     max-width: 600px; margin: 24px auto 0;
   }
   .hero-cta { display: flex; flex-wrap: wrap; gap: 13px; justify-content: center; margin-top: 34px; }
-  /* Verifiable credential: links to the live Marketplace listing (as of v0.2.0) */
+  /* Verifiable credential: links to the live Marketplace listing */
   .hero-cred {
     display: inline-flex; align-items: center; gap: 8px; margin-top: 22px;
     font-family: var(--mono); font-size: 12.5px; color: var(--text-3);
@@ -844,7 +876,7 @@
 
     <a class="hero-cred" href="https://github.com/marketplace/actions/j-bot-code-review" target="_blank" rel="noopener noreferrer">
       <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-      <span>On the GitHub Marketplace · <b>v0.2.0</b></span>
+      <span>On GitHub Marketplace · <b>MIT licensed</b></span>
     </a>
 
     <div class="trust">
@@ -1175,6 +1207,22 @@
       <details class="faq-item">
         <summary>Is J-Bot Review free?<span class="faq-mark" aria-hidden="true">+</span></summary>
         <div class="faq-a"><p>The action itself is MIT-licensed open source and adds no per-seat or per-review charge. You pay only for the model you bring — with OpenCode Zen free models or a CLI seat you already pay for, J-Bot adds $0 on top of your normal CI minutes.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary>Is J-Bot Review production-ready? What does v0.2.0 mean?<span class="faq-mark" aria-hidden="true">+</span></summary>
+        <div class="faq-a"><p>It is ready to run on real pull requests, with one caveat: it is still a pre-1.0 project. <code>v0.2.0</code> was the first public Marketplace release, and the <code>@v0</code> tag receives ongoing v0 updates. J-Bot posts comment reviews and merge guidance; it does not approve, merge, or replace your branch protections. Keep human review in the loop while you tune it for your repositories.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary>What does an average J-Bot Review cost?<span class="faq-mark" aria-hidden="true">+</span></summary>
+        <div class="faq-a"><p>J-Bot itself costs $0. The model cost depends on the provider, model, diff size, and review settings, so there is no honest one-number average. A run can add $0 when you use an OpenCode Zen free model or a supported CLI seat you already pay for; API-backed runs are billed at your provider's rates. When a backend exposes usage, the Action logs its token and cost totals after the review.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary>Does J-Bot Review support monorepos and very large diffs?<span class="faq-mark" aria-hidden="true">+</span></summary>
+        <div class="faq-a"><p>Yes. J-Bot reads repository-level guidance plus directory-scoped files such as <code>AGENTS.md</code> and <code>REVIEW.md</code>, so packages in a monorepo can carry their own rules. For large diffs, set <code>review-shards: 0</code> to split changed files across up to four parallel review sessions. Results are merged, and a failed main shard aborts the review instead of posting partial coverage as complete. Provider context and concurrency limits still apply.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary>Does J-Bot Review support GitLab or Bitbucket?<span class="faq-mark" aria-hidden="true">+</span></summary>
+        <div class="faq-a"><p>Not today. The packaged integration is GitHub-only because it runs in GitHub Actions and posts through GitHub's pull-request review APIs. GitLab merge requests and Bitbucket pull requests are not supported yet.</p></div>
       </details>
       <details class="faq-item">
         <summary>Does my code get uploaded to a third-party service?<span class="faq-mark" aria-hidden="true">+</span></summary>
