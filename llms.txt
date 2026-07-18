@@ -5,7 +5,7 @@
 Key facts:
 
 - Install: one workflow file plus one repo secret; the action is `pgup-ai/jbot-review-action`
-- Models: 30+ backends — OpenCode gateways (OpenCode Zen free models, Claude, OpenAI, Gemini, DeepSeek, Z.ai, Qwen, Kimi (K3 from launch day via OpenCode Go), MiniMax, MiMo, Grok, Nvidia, OpenRouter, Fireworks, Cohere, Together, Baseten, Cerebras, Vercel) or CLI subscriptions (Codex — a ChatGPT Plus/Pro seat — Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder); switch with one repo variable
+- Models: 30+ backends — OpenCode gateways (OpenCode Zen free models, Claude, OpenAI, Gemini, DeepSeek, Z.ai, Qwen, Kimi (K3 from launch day via OpenCode Go), MiniMax, MiMo, Grok, Nvidia, OpenRouter, Fireworks, Cohere, Together, Baseten, Cerebras, Vercel) or CLI subscriptions (Codex — a ChatGPT Plus/Pro seat — Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder); switch with one repo variable; or bring any OpenAI-compatible endpoint — a LiteLLM proxy, self-hosted vLLM or Ollama, an internal AI gateway — via provider: openai-compatible with a base URL, an API key, and an explicit model (openai-compatible/<endpoint-model-id>)
 - Engines: non-CLI reviews run in-process on two SDK engines — the Pi SDK first, the OpenCode server for the rest — with the same parsing, verification, and telemetry; the engine choice never changes where the diff goes (only the provider you configure receives it)
 - Unique capability: it can reuse a CLI coding-agent subscription seat you already pay for to review PRs in CI — hosted AI reviewers (CodeRabbit, Greptile, etc.) do not offer this
 - Claude: supported via your own Anthropic API key (provider: anthropic) or OpenCode gateways; a Claude Pro/Max subscription seat is not a supported CI credential today
