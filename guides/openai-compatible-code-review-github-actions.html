@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OpenAI-compatible code review in GitHub Actions | J-Bot Review</title>
+<meta name="description" content="Point J-Bot Review at any OpenAI-compatible endpoint — a LiteLLM proxy, self-hosted vLLM or Ollama, or a hosted API with no CLI. provider: openai-compatible, a base URL, a key, an explicit model." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/guides/openai-compatible-code-review-github-actions" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/guides/openai-compatible-code-review-github-actions" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="Use any OpenAI-compatible API for code review in GitHub Actions" />
+<meta property="og:description" content="No CLI, no problem: a base URL, an API key, and an explicit model turn any OpenAI-compatible endpoint — LiteLLM, vLLM, Ollama, hosted APIs — into a PR reviewer in your own CI." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-guide-openai-compatible-20260718.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-guide-openai-compatible-20260718.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Use any OpenAI-compatible API for code review in GitHub Actions" />
+<meta name="twitter:description" content="No CLI, no problem: a base URL, an API key, and an explicit model turn any OpenAI-compatible endpoint — LiteLLM, vLLM, Ollama, hosted APIs — into a PR reviewer in your own CI." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-guide-openai-compatible-20260718.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/guides/openai-compatible-code-review-github-actions#article",
+      "headline": "Use any OpenAI-compatible API for code review in GitHub Actions",
+      "description": "How to run J-Bot Review against any OpenAI-compatible endpoint — a LiteLLM proxy, a self-hosted vLLM or Ollama server, or a hosted API with no CLI — with provider: openai-compatible, a base URL, an API key, and an explicit model.",
+      "url": "https://www.pgupai.com/guides/openai-compatible-code-review-github-actions",
+      "image": "https://www.pgupai.com/assets/og-guide-openai-compatible-20260718.png",
+      "datePublished": "2026-07-18",
+      "dateModified": "2026-07-18",
+      "author": { "@type": "Organization", "name": "PGUP AI", "url": "https://www.pgupai.com/" },
+      "publisher": { "@type": "Organization", "name": "PGUP AI", "url": "https://www.pgupai.com/" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "J-Bot Review", "item": "https://www.pgupai.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://www.pgupai.com/guides" },
+        { "@type": "ListItem", "position": 3, "name": "OpenAI-compatible code review in GitHub Actions", "item": "https://www.pgupai.com/guides/openai-compatible-code-review-github-actions" }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "@id": "https://www.pgupai.com/guides/openai-compatible-code-review-github-actions#howto",
+      "name": "Set up PR review against any OpenAI-compatible endpoint",
+      "description": "Three steps: save the endpoint's base URL and API key in your repository, commit one workflow file with provider: openai-compatible and an explicit model, open a pull request.",
+      "totalTime": "PT10M",
+      "step": [
+        { "@type": "HowToStep", "position": 1, "name": "Save the endpoint settings", "text": "Store the endpoint's base URL as the repository variable JBOT_OPENAI_COMPATIBLE_BASE_URL and its API key as the secret JBOT_OPENAI_COMPATIBLE_API_KEY (Settings → Secrets and variables → Actions)." },
+        { "@type": "HowToStep", "position": 2, "name": "Commit the workflow", "text": "Add .github/workflows/jbot-review.yml with provider: openai-compatible and model: openai-compatible/<endpoint-model-id> using the pgup-ai/jbot-review-action@v0 action. The model is required — J-Bot never guesses one for a generic endpoint." },
+        { "@type": "HowToStep", "position": 3, "name": "Open a pull request", "text": "The review session runs on your GitHub Actions runner, sends the diff only to the endpoint you configured, and posts diff-anchored findings; blocking findings are verified by a second session before they post." }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.pgupai.com/guides/openai-compatible-code-review-github-actions#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need a CLI for the provider I want to use?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No — that is the point of this path. J-Bot's CLI backends exist to reuse coding-agent subscriptions (Codex, Cursor, Devin and friends). provider: openai-compatible covers everything else: if the service publishes an OpenAI-compatible base URL and an API key, it can review pull requests with no CLI installed anywhere." }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does the model need tool calling?",
+          "acceptedAnswer": { "@type": "Answer", "text": "J-Bot runs an agentic review, not a one-shot prompt: the session lists files, reads context around the diff, greps for callers, and files findings through OpenAI-style tool calls. An endpoint that only does plain chat completions — or a model served without a tool-call parser — cannot drive that loop. Check the endpoint's function-calling documentation for the specific model you plan to pin." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can the review reach an endpoint inside our VPN?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Only if the runner can. GitHub-hosted runners have no route into a private network, so an internal LiteLLM proxy or vLLM box needs one of: a self-hosted runner on the same network, a tunnel such as Tailscale or cloudflared joined during the job, or the endpoint exposed behind authentication. The base URL must be absolute http(s) — J-Bot validates it before the session starts." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there a default model for openai-compatible?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. A generic endpoint has no safe provider-wide default, so model is required, in the form openai-compatible/<endpoint-model-id>, where the id is exactly what the endpoint serves — check its /v1/models list. The credentials are namespaced too: JBOT_OPENAI_COMPATIBLE_API_KEY and JBOT_OPENAI_COMPATIBLE_BASE_URL never fall back to OPENAI_API_KEY or OPENAI_BASE_URL." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  /* Tokens mirrored from the landing page (index.html) */
+  :root {
+    --bg: #0a0b0a; --surface: #0e100e; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --blue: #7aa2ff;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --border-code: rgba(255,255,255,0.09); --accent-border: rgba(94,227,154,0.16);
+    --code-text: #c8cdc7; --code-comment: #5a5f5a;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 740px; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  .lede b, article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  h3 { font-family: var(--display); font-weight: 600; font-size: 17px; letter-spacing: -0.01em; margin: 26px 0 8px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+  ol li::marker { font-family: var(--mono); color: var(--accent); }
+  code { font-family: var(--mono); font-size: 12.5px; color: var(--code-text); background: var(--surface); border: 1px solid var(--border-code); border-radius: 5px; padding: 1px 6px; }
+  pre code { background: none; border: none; padding: 0; font-size: inherit; }
+
+  .code-card { background: var(--surface); border: 1px solid var(--border-code); border-radius: 12px; overflow: hidden; margin: 18px 0; }
+  .code-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--hairline); }
+  .code-head .file { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+  .copybtn { display: inline-flex; align-items: center; gap: 7px; background: rgba(94,227,154,0.08); border: 1px solid rgba(94,227,154,0.25); color: var(--accent); font-family: var(--mono); font-size: 12px; border-radius: 7px; padding: 5px 11px; cursor: pointer; transition: background 0.16s var(--ease); }
+  .copybtn:hover { background: rgba(94,227,154,0.15); }
+  pre { margin: 0; padding: 16px 18px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.7; color: var(--code-text); }
+  .k { color: var(--blue); }
+  .s { color: var(--accent); }
+  .c { color: var(--code-comment); }
+
+  .callout { border: 1px solid var(--accent-border); background: rgba(94,227,154,0.04); border-radius: 12px; padding: 16px 18px; margin: 20px 0; }
+  .callout p { margin: 0; font-size: 14.5px; }
+  .callout .tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 6px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th { text-align: left; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); font-weight: 500; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--hairline); }
+  td { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; }
+  td:first-child { color: var(--text); font-weight: 600; white-space: nowrap; }
+  .tbl-wrap { overflow-x: auto; }
+
+  .faq-item { border-bottom: 1px solid var(--hairline); }
+  .faq-item:first-of-type { border-top: 1px solid var(--hairline); }
+  .faq-item summary { display: flex; align-items: baseline; justify-content: space-between; gap: 22px; list-style: none; cursor: pointer; padding: 17px 2px; font-weight: 600; font-size: 15.5px; color: var(--text); line-height: 1.45; transition: color 0.15s var(--ease); }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary:hover { color: var(--accent-hover); }
+  .faq-mark { font-family: var(--mono); font-size: 15px; color: var(--text-4); flex: none; transition: transform 0.2s var(--ease), color 0.2s var(--ease); }
+  .faq-item[open] .faq-mark { transform: rotate(45deg); color: var(--accent); }
+  .faq-a { padding: 0 2px 20px; font-size: 14.5px; color: var(--text-2); }
+  .faq-a p { margin: 0; }
+
+  .related { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 20px 0 0; }
+  .rel-card { display: block; border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 18px; color: var(--text); transition: border-color 0.16s var(--ease); }
+  .rel-card:hover { border-color: rgba(94,227,154,0.35); color: var(--text); }
+  .rel-card .k2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 7px; }
+  .rel-card p { margin: 6px 0 0; font-size: 13px; color: var(--text-3); }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .faq-mark { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides/cli-subscription-code-review">CLI subscriptions</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<article>
+  <p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / OpenAI-compatible</p>
+  <h1>Use any OpenAI-compatible API for code review in GitHub Actions</h1>
+  <p class="updated">Updated July 18, 2026 · applies to pgup-ai/jbot-review-action v0</p>
+
+  <p class="lede"><b>If it speaks the OpenAI chat-completions protocol, it can review your pull requests.</b> <code>provider: openai-compatible</code> points J-Bot Review — an open-source (MIT) GitHub Action — at an endpoint you name instead of one it knows: a LiteLLM proxy your platform team already runs, a vLLM or Ollama server on your own hardware, or a hosted API that never shipped a CLI. Three inputs — a base URL, an API key, and an explicit model — and J-Bot adds <b>$0</b> of its own.</p>
+
+  <div class="callout">
+    <span class="tag">The one hard requirement</span>
+    <p>J-Bot reviews agentically — the session lists files, reads context, greps callers, and files findings through OpenAI-style <b>tool calls</b>. Plain chat completion isn't enough: the endpoint must pass the <code>tools</code> parameter through, and the model you pin must know how to use it. Every endpoint on this page is discussed against that bar.</p>
+  </div>
+
+  <h2 id="setup">Setup in three steps</h2>
+  <ol>
+    <li><b>Save the endpoint settings.</b> In <em>Settings → Secrets and variables → Actions</em>, store the base URL as the repository variable <code>JBOT_OPENAI_COMPATIBLE_BASE_URL</code> (absolute <code>http(s)://</code>, including any version path like <code>/v1</code>) and the key as the secret <code>JBOT_OPENAI_COMPATIBLE_API_KEY</code>.</li>
+    <li><b>Commit the workflow.</b> Add the file below as <code>.github/workflows/jbot-review.yml</code>. The model is required and exact — J-Bot never guesses one for a generic endpoint.</li>
+    <li><b>Open a pull request.</b> The session reads the full base…head diff on your runner and posts diff-anchored findings; blocking findings are verified by a second session before they post, nits demoted.</li>
+  </ol>
+
+  <div class="code-card">
+    <div class="code-head"><span class="file">.github/workflows/jbot-review.yml</span><button type="button" class="copybtn" data-copy="byo" aria-live="polite">Copy</button></div>
+<pre><span class="k">name</span>: J-Bot Code Review
+<span class="k">on</span>:
+  <span class="k">pull_request</span>: { types: [opened, reopened, ready_for_review, synchronize] }
+
+<span class="k">concurrency</span>:
+  <span class="k">group</span>: jbot-review-${{ github.event.pull_request.number }}
+  <span class="k">cancel-in-progress</span>: true
+
+<span class="k">permissions</span>:
+  <span class="k">contents</span>: read
+  <span class="k">pull-requests</span>: write
+  <span class="k">issues</span>: write        <span class="c"># PR reactions use the issues API</span>
+  <span class="k">checks</span>: read
+
+<span class="k">jobs</span>:
+  <span class="k">review</span>:
+    <span class="k">if</span>: github.event.pull_request.draft == false
+    <span class="k">runs-on</span>: ubuntu-latest
+    <span class="k">steps</span>:
+      - <span class="k">uses</span>: actions/checkout@v7
+        <span class="k">with</span>: { fetch-depth: 0 }
+      - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
+        <span class="k">with</span>:
+          <span class="k">provider</span>: openai-compatible
+          <span class="k">model</span>: openai-compatible/my-served-model   <span class="c"># the exact id your endpoint serves</span>
+          <span class="k">openai-compatible-base-url</span>: ${{ vars.JBOT_OPENAI_COMPATIBLE_BASE_URL }}
+          <span class="k">openai-compatible-api-key</span>: ${{ secrets.JBOT_OPENAI_COMPATIBLE_API_KEY }}
+          <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
+  </div>
+
+  <h2 id="requirements">The three things your endpoint must do</h2>
+  <ul>
+    <li><b>Serve OpenAI-shaped <code>chat/completions</code>.</b> J-Bot drives the endpoint through the <code>@ai-sdk/openai-compatible</code> provider inside its OpenCode engine — the same request shape the OpenAI SDK sends when you swap <code>base_url</code>.</li>
+    <li><b>Pass tool calls through.</b> See the callout above. Proxies usually forward <code>tools</code> untouched; self-hosted servers often need a flag (vLLM's tool-call parser, for example); a few hosted APIs drop the parameter entirely — those are listed under <a href="#non-options">what doesn't work</a>.</li>
+    <li><b>Tell you the model id.</b> <code>model</code> takes the form <code>openai-compatible/&lt;endpoint-model-id&gt;</code>, where the id is exactly what the endpoint exposes — its <code>/v1/models</code> list is the source of truth. There is no default and no probing.</li>
+  </ul>
+
+  <h2 id="litellm">A LiteLLM proxy — the endpoint your company may already run</h2>
+  <p>LiteLLM's open-source proxy is how many platform teams put one OpenAI-format URL in front of every provider they've approved — with budgets, logging, and virtual keys (<code>sk-…</code>) per team. If that describes your org, PR review becomes a consumer of infrastructure you already govern: no new vendor, no new data-processing review, model choice stays with the platform team.</p>
+  <ul>
+    <li><b>Base URL:</b> your proxy origin — LiteLLM answers the OpenAI paths with or without a <code>/v1</code> suffix.</li>
+    <li><b>Key:</b> a virtual key scoped to CI, so review spend shows up as its own line in the proxy's budget tracking.</li>
+    <li><b>Model:</b> whatever alias the proxy config maps — often a clean name like <code>openai-compatible/team-code-model</code>. Tool-call fidelity is that of the provider behind the alias, so point CI at an alias backed by a tool-capable model.</li>
+  </ul>
+
+  <h2 id="self-hosted">Self-hosted vLLM — and the network reality</h2>
+  <p>vLLM serves an OpenAI-compatible API out of the box (<code>vllm serve &lt;model&gt;</code>, default port 8000). Two flags matter for review work: enable tool calling with <code>--enable-auto-tool-choice --tool-call-parser &lt;name&gt;</code> — the parser name is per model family in vLLM's docs — and consider <code>--served-model-name code-review</code> to give CI a stable, slash-free id that survives model swaps.</p>
+  <div class="callout">
+    <span class="tag">Reachability, stated plainly</span>
+    <p>A GitHub-<i>hosted</i> runner has no route into your LAN. To review against in-network inference you need one of: a <b>self-hosted runner</b> on that network, a <b>tunnel</b> (Tailscale, cloudflared) joined during the job, or the endpoint exposed publicly <b>behind authentication</b>. J-Bot validates that the base URL is absolute http(s) and then treats it like any other endpoint — the networking is yours to arrange. Most guides skip this paragraph; it is the actual work.</p>
+  </div>
+  <p><b>Ollama</b> exposes the same shape at <code>http://&lt;host&gt;:11434/v1</code> and accepts <code>tools</code> on models that carry the capability, though its OpenAI layer documents gaps (notably <code>tool_choice</code>). <b>llama.cpp's</b> server does OpenAI-style tool calls only with <code>--jinja</code> and a compatible chat template. <b>LM Studio</b> documents tool use on its local server too, but it's a desktop app — fine for trying the loop on your own machine, not a team CI target. In every case the model, not just the server, must be tool-capable: a 7B quant that mangles JSON arguments will fail reviews in ways that look like J-Bot bugs and aren't.</p>
+
+  <h2 id="hosted">Hosted APIs without a CLI</h2>
+  <p>The same three inputs cover hosted providers that publish an OpenAI-compatible base URL. Documented starting points, checked July 2026:</p>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>Endpoint</th><th>Documented base URL</th><th>Worth knowing</th></tr>
+    <tr><td>Groq</td><td><code>https://api.groq.com/openai/v1</code></td><td>First-party OpenAI-compatibility and tool-use docs; a free tier exists but its per-minute token cap suits small diffs only.</td></tr>
+    <tr><td>SambaNova</td><td><code>https://api.sambanova.ai/v1</code></td><td>Function calling documented on a named model list; free-tier daily token budget is roughly one medium review.</td></tr>
+    <tr><td>Mistral</td><td><code>https://api.mistral.ai/v1</code></td><td>OpenAI-shaped rather than officially OpenAI-compatible, and stricter than most about tool-call id format — run a test PR before adopting.</td></tr>
+  </table>
+  </div>
+  <p>If your provider is one J-Bot already knows natively — OpenRouter, Fireworks, Together, Cerebras, Nvidia, and the rest of the <a href="/#faq">built-in list</a> — prefer its native provider id: you keep model catalogs, provider-tuned options, and prompt caching. <code>openai-compatible</code> is the door for everyone else, including services launched after this page was written.</p>
+
+  <h2 id="non-options">What doesn't work, and why</h2>
+  <ul>
+    <li><b>Perplexity.</b> Its chat-completions API has no <code>tools</code> parameter at all (checked July 2026) — it's built for search answering, and no agentic loop can run over it.</li>
+    <li><b>Straico.</b> The v2 OpenAI-compatible API doesn't document tool calling; treat it as absent.</li>
+    <li><b>Portkey and other header-authenticated gateways.</b> Portkey expects its own <code>x-portkey-*</code> headers alongside provider auth; J-Bot sends only a bearer key against a base URL, so those gateways don't fit this path today.</li>
+    <li><b>Anything whose model can't call tools.</b> The request will go through and the review will still fail — see the requirement callout up top.</li>
+  </ul>
+
+  <h2 id="cost">Cost and caching notes</h2>
+  <ul>
+    <li><b>J-Bot's own line item is $0</b> — MIT-licensed action, no reviewer service, no per-seat charge. You pay your endpoint's rates plus normal CI minutes; on your own GPUs, the marginal cost of a review is electricity.</li>
+    <li><b>Prompt caching is off on this provider, on purpose.</b> Arbitrary endpoints reject provider-specific cache options, so J-Bot doesn't send them for <code>openai-compatible</code> — budget input tokens at list price. If cache discounts matter, that's another reason to use a native provider id where one exists.</li>
+    <li><b>The verifier can differ from the reviewer.</b> <code>aux-model</code> accepts the same form, so a cheap endpoint model can draft while a stronger one verifies — or the reverse.</li>
+  </ul>
+
+  <h2 id="privacy">Where the diff goes</h2>
+  <ul>
+    <li><b>Your runner, read-only.</b> The session runs headless with <code>contents: read</code>; write scopes exist only to post comments and reactions.</li>
+    <li><b>One recipient, chosen by you.</b> The diff goes to the base URL you configured and nowhere else — there is no reviewer service in the loop. Against in-network inference, it never leaves your infrastructure at all.</li>
+    <li><b>Fork PRs can't leak the key.</b> GitHub strips secrets from <code>pull_request</code> events on fork PRs, so outside contributors never see it.</li>
+    <li><b>Findings are checked before they post.</b> A second session adversarially verifies every blocking finding; nits are demoted so the PR gets signal, not noise.</li>
+  </ul>
+
+  <h2 id="faq">FAQ</h2>
+  <details class="faq-item" open>
+    <summary>Do I need a CLI for the provider I want to use?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>No — that is the point of this path. J-Bot's CLI backends exist to reuse coding-agent subscriptions (<a href="/guides/cli-subscription-code-review">Codex, Cursor, Devin and friends</a>). <code>provider: openai-compatible</code> covers everything else: if the service publishes an OpenAI-compatible base URL and an API key, it can review pull requests with no CLI installed anywhere.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Why does the model need tool calling?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>J-Bot runs an agentic review, not a one-shot prompt: the session lists files, reads context around the diff, greps for callers, and files findings through OpenAI-style tool calls. An endpoint that only does plain chat completions — or a model served without a tool-call parser — cannot drive that loop. Check the endpoint's function-calling documentation for the specific model you plan to pin.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Can the review reach an endpoint inside our VPN?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Only if the runner can. GitHub-hosted runners have no route into a private network, so an internal LiteLLM proxy or vLLM box needs one of: a self-hosted runner on the same network, a tunnel such as Tailscale or cloudflared joined during the job, or the endpoint exposed behind authentication. The base URL must be absolute http(s) — J-Bot validates it before the session starts.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Is there a default model for openai-compatible?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>No. A generic endpoint has no safe provider-wide default, so <code>model</code> is required, in the form <code>openai-compatible/&lt;endpoint-model-id&gt;</code>, where the id is exactly what the endpoint serves — check its <code>/v1/models</code> list. The credentials are namespaced too: <code>JBOT_OPENAI_COMPATIBLE_API_KEY</code> and <code>JBOT_OPENAI_COMPATIBLE_BASE_URL</code> never fall back to <code>OPENAI_API_KEY</code> or <code>OPENAI_BASE_URL</code>.</p></div>
+  </details>
+
+  <h2>Related</h2>
+  <div class="related">
+    <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Guide</span>Review PRs with a CLI subscription<p>The other path: reuse the Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build, or Qoder seat you pay for.</p></a>
+    <a class="rel-card" href="/guides/kimi-code-review-github-actions"><span class="k2">Guide</span>Kimi K3 code review in GitHub Actions<p>What day-one model access looks like when the gateway is a native provider.</p></a>
+    <a class="rel-card" href="https://github.com/pgup-ai/jbot-review-action#readme" target="_blank" rel="noopener noreferrer"><span class="k2">Docs</span>Action reference<p>Every input, provider id, and tuning knob — including the openai-compatible worked example.</p></a>
+  </div>
+</article>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="https://github.com/pgup-ai/jbot-review-action" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var TEXTS = {
+    byo: "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, reopened, ready_for_review, synchronize] }\n\nconcurrency:\n  group: jbot-review-${{ github.event.pull_request.number }}\n  cancel-in-progress: true\n\npermissions:\n  contents: read\n  pull-requests: write\n  issues: write\n  checks: read\n\njobs:\n  review:\n    if: github.event.pull_request.draft == false\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v7\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          provider: openai-compatible\n          model: openai-compatible/my-served-model\n          openai-compatible-base-url: ${{ vars.JBOT_OPENAI_COMPATIBLE_BASE_URL }}\n          openai-compatible-api-key: ${{ secrets.JBOT_OPENAI_COMPATIBLE_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}"
+  };
+  function legacyCopy(text) {
+    return new Promise(function (resolve, reject) {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.setAttribute('readonly', '');
+        ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+        document.body.appendChild(ta); ta.select();
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        ok ? resolve() : reject(new Error('execCommand copy failed'));
+      } catch (e) { reject(e); }
+    });
+  }
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).catch(function () { return legacyCopy(text); });
+    }
+    return legacyCopy(text);
+  }
+  document.querySelectorAll('button[data-copy]').forEach(function (btn) {
+    var timer, label = btn.textContent;
+    function flash(msg) {
+      btn.textContent = msg;
+      clearTimeout(timer);
+      timer = setTimeout(function () { btn.textContent = label; }, 1600);
+    }
+    btn.addEventListener('click', function () {
+      var text = TEXTS[btn.dataset.copy];
+      if (!text) return;
+      copyText(text).then(function () { flash('Copied ✓'); })
+        .catch(function () { flash('Copy failed'); });
+    });
+  });
+})();
+</script>
+</body>
+</html>

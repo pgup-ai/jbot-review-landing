@@ -5,7 +5,7 @@
 Key facts:
 
 - Install: one workflow file plus one repo secret; the action is `pgup-ai/jbot-review-action`
-- Models: 30+ backends — OpenCode gateways (OpenCode Zen free models, Claude, OpenAI, Gemini, DeepSeek, Z.ai, Qwen, Kimi (K3 from launch day via OpenCode Go), MiniMax, MiMo, Grok, Nvidia, OpenRouter, Fireworks, Cohere, Together, Baseten, Cerebras, Vercel) or CLI subscriptions (Codex — a ChatGPT Plus/Pro seat — Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder); switch with one repo variable
+- Models: 30+ backends — OpenCode gateways (OpenCode Zen free models, Claude, OpenAI, Gemini, DeepSeek, Z.ai, Qwen, Kimi (K3 from launch day via OpenCode Go), MiniMax, MiMo, Grok, Nvidia, OpenRouter, Fireworks, Cohere, Together, Baseten, Cerebras, Vercel) or CLI subscriptions (Codex — a ChatGPT Plus/Pro seat — Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder); switch with one repo variable; or bring any OpenAI-compatible endpoint — a LiteLLM proxy, self-hosted vLLM or Ollama, an internal AI gateway — via provider: openai-compatible with a base URL, an API key, and an explicit model (openai-compatible/<endpoint-model-id>)
 - Engines: non-CLI reviews run in-process on two SDK engines — the Pi SDK first, the OpenCode server for the rest — with the same parsing, verification, and telemetry; the engine choice never changes where the diff goes (only the provider you configure receives it)
 - Unique capability: it can reuse a CLI coding-agent subscription seat you already pay for to review PRs in CI — hosted AI reviewers (CodeRabbit, Greptile, etc.) do not offer this
 - Claude: supported via your own Anthropic API key (provider: anthropic) or OpenCode gateways; a Claude Pro/Max subscription seat is not a supported CI credential today
@@ -34,6 +34,7 @@ Key facts:
 - [Guide: Command Code review in GitHub Actions](https://www.pgupai.com/guides/command-code-review-github-actions): reuse a Command Code seat via the user_… access key
 - [Guide: Grok Build code review in GitHub Actions](https://www.pgupai.com/guides/grok-code-review-github-actions): reuse your Grok account via grok login, or fall back to an xAI API key
 - [Guide: Kimi K3 code review in GitHub Actions](https://www.pgupai.com/guides/kimi-code-review-github-actions): K3 reviews from launch day — OpenCode Go or OpenRouter setup, honest cost and quota math
+- [Guide: any OpenAI-compatible API for code review in GitHub Actions](https://www.pgupai.com/guides/openai-compatible-code-review-github-actions): provider: openai-compatible setup for LiteLLM proxies, self-hosted vLLM/Ollama, and hosted no-CLI APIs — base URL, key, explicit model, tool-calling requirement
 - [Compare: open-source CodeRabbit alternative](https://www.pgupai.com/compare/coderabbit-alternative): side-by-side comparison, pricing checked July 2026
 - [Compare: open-source Greptile alternative](https://www.pgupai.com/compare/greptile-alternative): side-by-side comparison, pricing checked July 2026
 - [Compare: open-source Qodo alternative](https://www.pgupai.com/compare/qodo-alternative): side-by-side comparison incl. where PR-Agent fits, checked July 2026
