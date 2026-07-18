@@ -381,13 +381,16 @@
   }
   document.querySelectorAll('button[data-copy]').forEach(function (btn) {
     var timer, label = btn.textContent;
+    function flash(msg) {
+      btn.textContent = msg;
+      clearTimeout(timer);
+      timer = setTimeout(function () { btn.textContent = label; }, 1600);
+    }
     btn.addEventListener('click', function () {
       var text = TEXTS[btn.dataset.copy];
       if (!text) return;
-      copyText(text).then(function () { btn.textContent = 'Copied ✓'; })
-        .catch(function () { btn.textContent = 'Copy failed'; });
-      clearTimeout(timer);
-      timer = setTimeout(function () { btn.textContent = label; }, 1600);
+      copyText(text).then(function () { flash('Copied ✓'); })
+        .catch(function () { flash('Copy failed'); });
     });
   });
 })();
