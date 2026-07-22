@@ -3,11 +3,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.pgupai.com/</loc>
-    <lastmod>2026-07-18</lastmod>
+    <lastmod>2026-07-22</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides</loc>
-    <lastmod>2026-07-18</lastmod>
+    <lastmod>2026-07-22</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/cli-subscription-code-review</loc>
@@ -48,6 +48,10 @@
   <url>
     <loc>https://www.pgupai.com/guides/kimi-code-review-github-actions</loc>
     <lastmod>2026-07-17</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/poolside-code-review-github-actions</loc>
+    <lastmod>2026-07-22</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/openai-compatible-code-review-github-actions</loc>
