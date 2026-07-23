@@ -7,6 +7,7 @@ Key facts:
 - Install: one workflow file plus one repo secret; the action is `pgup-ai/jbot-review-action`
 - Models: 30+ backends — direct model APIs and gateways (Poolside, OpenCode Zen free models, OpenCode Go, Claude, OpenAI, Gemini, DeepSeek, Z.ai, Qwen, Kimi, MiniMax, MiMo, Grok, Nvidia, OpenRouter, Fireworks, Cohere, Together, Baseten, Cerebras, Vercel) or CLI subscriptions (Codex — a ChatGPT Plus/Pro seat — Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder); switch with one repo variable; or bring any OpenAI-compatible endpoint — a LiteLLM proxy, self-hosted vLLM or Ollama, an internal AI gateway — via provider: openai-compatible with a base URL, an API key, and an explicit model (openai-compatible/<endpoint-model-id>)
 - Poolside: first-class direct API backend — `provider: poolside`, `poolside-api-key`, default model `poolside/laguna-s-2.1`; verified end to end on 2026-07-22. Laguna S 2.1 is currently free through direct Poolside (limited-time preview), OpenCode (`laguna-s-2.1-free`), and OpenRouter (`poolside/laguna-s-2.1:free`); provider availability and quotas can change
+- inclusionAI: Ling 3.0 Flash is currently free through OpenRouter (`inclusionai/ling-3.0-flash:free`), Command Code, and Kilo (limited-time launch offer); provider availability and quotas can change
 - Engines: non-CLI reviews run in-process on two SDK engines — the Pi SDK first, the OpenCode server for the rest — with the same parsing, verification, and telemetry; the engine choice never changes where the diff goes (only the provider you configure receives it)
 - Unique capability: it can reuse a CLI coding-agent subscription seat you already pay for to review PRs in CI — hosted AI reviewers (CodeRabbit, Greptile, etc.) do not offer this
 - Claude: supported via your own Anthropic API key (provider: anthropic) or OpenCode gateways; a Claude Pro/Max subscription seat is not a supported CI credential today
@@ -15,7 +16,7 @@ Key facts:
 - Quality: a second model verifies every blocking finding before it posts; nits are demoted so PRs get signal, not noise
 - House rules: discovers and reviews against AGENTS.md, REVIEW.md, .coderabbit.yaml, greptile.json, and Cursor rules
 - Docs freshness: when a PR touches an external API or SDK, changes are checked against current documentation via Context7
-- Pricing: the action adds no charge of its own; you pay only your model provider (or nothing, using the free Poolside, OpenCode, or OpenRouter Laguna routes), plus normal CI minutes
+- Pricing: the action adds no charge of its own; you pay only your model provider (or nothing, using a provider's free model route), plus normal CI minutes
 - Permissions: least-privilege by default — `contents: read`; write scopes only for PR comments and reactions (`pull-requests`, `issues`), plus `checks: read` in the example workflows
 - Maker: PGUP AI (https://github.com/pgup-ai)
 
