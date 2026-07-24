@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Ling 3.0 Flash Code Review in GitHub Actions | J-Bot Review</title>
-<meta name="description" content="Run inclusionAI Ling 3.0 Flash as a free AI code reviewer in GitHub Actions through OpenRouter, Command Code, or Kilo. Copy the verified provider, model, and secret names." />
+<meta name="description" content="Run inclusionAI Ling 3.0 Flash as a free AI code reviewer in GitHub Actions through OpenCode, Kilo, OpenRouter, or Command Code. Copy the exact provider, model, and secret names." />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0a0b0a" />
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
@@ -16,7 +16,7 @@
 <meta property="og:url" content="https://www.pgupai.com/guides/ling-3-0-flash-code-review-github-actions" />
 <meta property="og:site_name" content="J-Bot Review" />
 <meta property="og:title" content="Ling 3.0 Flash code review in GitHub Actions" />
-<meta property="og:description" content="Three manually verified free routes: OpenRouter, Command Code, and Kilo. Exact model and secret names included." />
+<meta property="og:description" content="Four free routes: OpenCode, Kilo, OpenRouter, and Command Code. Exact model and secret names included." />
 <meta property="og:image" content="https://www.pgupai.com/assets/og-guide-ling-20260723.png" />
 <meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-guide-ling-20260723.png" />
 <meta property="og:image:type" content="image/png" />
@@ -26,7 +26,7 @@
 <meta property="article:modified_time" content="2026-07-23" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Ling 3.0 Flash code review in GitHub Actions" />
-<meta name="twitter:description" content="Three manually verified free routes: OpenRouter, Command Code, and Kilo." />
+<meta name="twitter:description" content="Four free routes: OpenCode, Kilo, OpenRouter, and Command Code." />
 <meta name="twitter:image" content="https://www.pgupai.com/assets/og-guide-ling-20260723.png" />
 
 <script type="application/ld+json">
@@ -37,7 +37,7 @@
       "@type": "TechArticle",
       "@id": "https://www.pgupai.com/guides/ling-3-0-flash-code-review-github-actions#article",
       "headline": "Ling 3.0 Flash code review in GitHub Actions",
-      "description": "Run inclusionAI Ling 3.0 Flash as a free AI code reviewer in GitHub Actions through OpenRouter, Command Code, or Kilo.",
+      "description": "Run inclusionAI Ling 3.0 Flash as a free AI code reviewer in GitHub Actions through OpenCode, Kilo, OpenRouter, or Command Code.",
       "datePublished": "2026-07-23",
       "dateModified": "2026-07-23",
       "mainEntityOfPage": "https://www.pgupai.com/guides/ling-3-0-flash-code-review-github-actions",
@@ -74,22 +74,22 @@
         {
           "@type": "Question",
           "name": "Is Ling 3.0 Flash free for pull-request review?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes. As of 2026-07-23, Ling 3.0 Flash is free through OpenRouter, Command Code, and Kilo. All three routes were manually verified with J-Bot Review. Free windows, quotas, and model availability remain provider-controlled, and J-Bot adds no charge of its own." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. As of 2026-07-23, Ling 3.0 Flash is free through OpenCode, Kilo, OpenRouter, and Command Code. The OpenCode route was checked against its live model catalog; the other three were manually verified with J-Bot Review. Free windows, quotas, and model availability remain provider-controlled, and J-Bot adds no charge of its own." }
         },
         {
           "@type": "Question",
           "name": "What model id does Ling 3.0 Flash use on each provider?",
-          "acceptedAnswer": { "@type": "Answer", "text": "OpenRouter uses inclusionai/ling-3.0-flash:free. Command Code uses inclusionai/ling-3.0-flash-free. Kilo uses kilo/inclusionai/ling-3.0-flash:free. These provider-specific spellings were checked against the live model catalogs and manually verified in J-Bot Review." }
+          "acceptedAnswer": { "@type": "Answer", "text": "OpenCode uses ling-3.0-flash-free. Kilo uses kilo/inclusionai/ling-3.0-flash:free. OpenRouter uses inclusionai/ling-3.0-flash:free. Command Code uses inclusionai/ling-3.0-flash-free. These provider-specific spellings were checked against the live model catalogs; the Kilo, OpenRouter, and Command Code routes were also manually verified in J-Bot Review." }
         },
         {
           "@type": "Question",
-          "name": "Should I use OpenRouter, Command Code, or Kilo for Ling 3.0 Flash?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Use OpenRouter for the simplest API-key setup. Use Command Code if you already authenticate that CLI with a user access key. Use Kilo if you already carry Kilo auth into CI. The model is currently free on all three, so the practical difference is where you already manage credentials." }
+          "name": "Should I use OpenCode, Kilo, OpenRouter, or Command Code for Ling 3.0 Flash?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Use OpenCode if you already have an OpenCode key, Kilo if you already carry Kilo auth into CI, OpenRouter for a standard API-key setup, or Command Code if you already authenticate that CLI with a user access key. The model is currently free on all four, so the practical difference is where you already manage credentials." }
         },
         {
           "@type": "Question",
-          "name": "Have all three Ling 3.0 Flash routes been tested with J-Bot?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes. The OpenRouter, Command Code, and Kilo provider-model pairs were each manually verified with J-Bot Review on 2026-07-23." }
+          "name": "Have all four Ling 3.0 Flash routes been tested with J-Bot?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Kilo, OpenRouter, and Command Code were manually verified with J-Bot Review on 2026-07-23. OpenCode availability and its ling-3.0-flash-free model id were checked against the live OpenCode catalog; that route was not rerun end to end for this update." }
         }
       ]
     }
@@ -202,11 +202,11 @@
   </div>
   <p class="updated">Published July 23, 2026 · applies to pgup-ai/jbot-review-action v0</p>
 
-  <p class="lede"><b>inclusionAI's Ling 3.0 Flash can review pull requests for free through OpenRouter, Command Code, or Kilo.</b> All three routes have been manually verified with J-Bot Review, and each keeps the review inside your own GitHub Actions workflow.</p>
+  <p class="lede"><b>inclusionAI's Ling 3.0 Flash can review pull requests for free through OpenCode, Kilo, OpenRouter, or Command Code.</b> OpenCode is listed in the live model catalog; the other three routes were manually verified with J-Bot Review.</p>
 
   <div class="callout">
-    <span class="tag">Three routes · manually verified</span>
-    <p>OpenRouter, Command Code, and Kilo each completed the provider and model-selection path with Ling 3.0 Flash on July 23. The identifiers differ slightly, so copy the one that matches your backend.</p>
+    <span class="tag">Four free routes · exact ids</span>
+    <p>OpenCode now lists Ling 3.0 Flash alongside the verified Kilo, OpenRouter, and Command Code routes. The identifiers differ slightly, so copy the one that matches your backend.</p>
   </div>
 
   <h2 id="setup">OpenRouter setup in three steps</h2>
@@ -247,12 +247,13 @@
           <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
   </div>
 
-  <h2 id="routes">Three free routes, three exact model ids</h2>
-  <p>Pick the route where you already manage credentials. All three were manually verified, but free windows, quotas, and context limits still belong to each provider.</p>
+  <h2 id="routes">Four free routes, four exact model ids</h2>
+  <p>Pick the route where you already manage credentials. Free windows, quotas, and context limits still belong to each provider.</p>
   <div class="routes">
+    <div class="route"><div><b>OpenCode</b><span class="verified">Catalog verified</span></div><p><code>provider: opencode</code><br><code>model: ling-3.0-flash-free</code><br><code>opencode-api-key</code></p></div>
+    <div class="route"><div><b>Kilo</b><span class="verified">Verified</span></div><p><code>provider: kilo</code><br><code>model: kilo/inclusionai/ling-3.0-flash:free</code><br><code>kilo-auth</code></p></div>
     <div class="route"><div><b>OpenRouter</b><span class="verified">Verified</span></div><p><code>provider: openrouter</code><br><code>model: inclusionai/ling-3.0-flash:free</code><br><code>openrouter-api-key</code></p></div>
     <div class="route"><div><b>Command Code</b><span class="verified">Verified</span></div><p><code>provider: commandcode</code><br><code>model: inclusionai/ling-3.0-flash-free</code><br><code>commandcode-access-key</code></p></div>
-    <div class="route"><div><b>Kilo</b><span class="verified">Verified</span></div><p><code>provider: kilo</code><br><code>model: kilo/inclusionai/ling-3.0-flash:free</code><br><code>kilo-auth</code></p></div>
   </div>
 
   <h2 id="model">Why Ling 3.0 Flash fits review work</h2>
@@ -266,7 +267,7 @@
   <h2 id="privacy">Where the diff goes</h2>
   <ul>
     <li><b>Your runner stays in control.</b> The review session runs headless on your GitHub Actions runner with read-only repository access.</li>
-    <li><b>The route determines the destination.</b> OpenRouter sends the diff through your OpenRouter account; Command Code and Kilo use the corresponding authenticated CLI backend. J-Bot does not proxy the diff through a hosted reviewer service.</li>
+    <li><b>The route determines the destination.</b> Each provider uses its corresponding account or authenticated CLI backend. J-Bot does not proxy the diff through a hosted reviewer service.</li>
     <li><b>Fork PRs cannot read the key.</b> GitHub does not pass repository secrets to <code>pull_request</code> workflows from forks.</li>
     <li><b>Blocking findings are verified.</b> A second model session challenges each blocking finding before J-Bot posts it; nits are demoted.</li>
   </ul>
@@ -274,19 +275,19 @@
   <h2 id="faq">FAQ</h2>
   <details class="faq-item" open>
     <summary>Is Ling 3.0 Flash free for pull-request review?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Yes. As of 2026-07-23, Ling 3.0 Flash is free through OpenRouter, Command Code, and Kilo. All three routes were manually verified with J-Bot Review. Free windows, quotas, and model availability remain provider-controlled, and J-Bot adds no charge of its own.</p></div>
+    <div class="faq-a"><p>Yes. As of 2026-07-23, Ling 3.0 Flash is free through OpenCode, Kilo, OpenRouter, and Command Code. The OpenCode route was checked against its live model catalog; the other three were manually verified with J-Bot Review. Free windows, quotas, and model availability remain provider-controlled, and J-Bot adds no charge of its own.</p></div>
   </details>
   <details class="faq-item">
     <summary>What model id does Ling 3.0 Flash use on each provider?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>OpenRouter uses <code>inclusionai/ling-3.0-flash:free</code>. Command Code uses <code>inclusionai/ling-3.0-flash-free</code>. Kilo uses <code>kilo/inclusionai/ling-3.0-flash:free</code>. These provider-specific spellings were checked against the live model catalogs and manually verified in J-Bot Review.</p></div>
+    <div class="faq-a"><p>OpenCode uses <code>ling-3.0-flash-free</code>. Kilo uses <code>kilo/inclusionai/ling-3.0-flash:free</code>. OpenRouter uses <code>inclusionai/ling-3.0-flash:free</code>. Command Code uses <code>inclusionai/ling-3.0-flash-free</code>. These provider-specific spellings were checked against the live model catalogs; the Kilo, OpenRouter, and Command Code routes were also manually verified in J-Bot Review.</p></div>
   </details>
   <details class="faq-item">
-    <summary>Should I use OpenRouter, Command Code, or Kilo for Ling 3.0 Flash?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Use OpenRouter for the simplest API-key setup. Use Command Code if you already authenticate that CLI with a user access key. Use Kilo if you already carry Kilo auth into CI. The model is currently free on all three, so the practical difference is where you already manage credentials.</p></div>
+    <summary>Should I use OpenCode, Kilo, OpenRouter, or Command Code for Ling 3.0 Flash?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Use OpenCode if you already have an OpenCode key, Kilo if you already carry Kilo auth into CI, OpenRouter for a standard API-key setup, or Command Code if you already authenticate that CLI with a user access key. The model is currently free on all four, so the practical difference is where you already manage credentials.</p></div>
   </details>
   <details class="faq-item">
-    <summary>Have all three Ling 3.0 Flash routes been tested with J-Bot?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Yes. The OpenRouter, Command Code, and Kilo provider-model pairs were each manually verified with J-Bot Review on 2026-07-23.</p></div>
+    <summary>Have all four Ling 3.0 Flash routes been tested with J-Bot?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Kilo, OpenRouter, and Command Code were manually verified with J-Bot Review on 2026-07-23. OpenCode availability and its <code>ling-3.0-flash-free</code> model id were checked against the live OpenCode catalog; that route was not rerun end to end for this update.</p></div>
   </details>
 
   <h2>Related</h2>
