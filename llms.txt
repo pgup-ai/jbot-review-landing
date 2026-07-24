@@ -37,6 +37,7 @@ Key facts:
 - [Guide: Grok Build code review in GitHub Actions](https://www.pgupai.com/guides/grok-code-review-github-actions): reuse your Grok account via grok login, or fall back to an xAI API key
 - [Guide: Kimi K3 code review in GitHub Actions](https://www.pgupai.com/guides/kimi-code-review-github-actions): K3 reviews from launch day — OpenCode Go or OpenRouter setup, honest cost and quota math
 - [Guide: Poolside Laguna S 2.1 code review in GitHub Actions](https://www.pgupai.com/guides/poolside-code-review-github-actions): verified direct Poolside setup plus the free OpenCode and OpenRouter routes
+- [Guide: Ling 3.0 Flash code review in GitHub Actions](https://www.pgupai.com/guides/ling-3-0-flash-code-review-github-actions): three manually verified free routes through OpenRouter, Command Code, and Kilo, with exact model ids
 - [Guide: any OpenAI-compatible API for code review in GitHub Actions](https://www.pgupai.com/guides/openai-compatible-code-review-github-actions): provider: openai-compatible setup for LiteLLM proxies, self-hosted vLLM/Ollama, and hosted no-CLI APIs — base URL, key, explicit model, tool-calling requirement
 - [Compare: open-source CodeRabbit alternative](https://www.pgupai.com/compare/coderabbit-alternative): side-by-side comparison, pricing checked July 2026
 - [Compare: open-source Greptile alternative](https://www.pgupai.com/compare/greptile-alternative): side-by-side comparison, pricing checked July 2026
