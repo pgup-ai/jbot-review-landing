@@ -102,7 +102,7 @@
           "name": "Can J-Bot review a pull request without storing my agent credential in GitHub Actions?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes, through the optional private-beta local-agent route for Codex, Cursor, Devin, and Kilo. A companion on a machine you control runs the agent and keeps its provider credential there. GitHub Actions uses gateway routing credentials instead. For private repositories, the companion also needs Git access to create a temporary clone. The gateway relays and journals review prompts and agent transcripts, so run it inside a trust boundary you control."
+            "text": "Yes, through the optional private-beta ACP gateway route for Codex, Cursor, Devin, and Kilo. A companion on a machine you control runs the agent and keeps its provider credential there. GitHub Actions uses gateway routing credentials instead. For private repositories, the companion also needs Git access to create a temporary clone. The gateway relays and journals review prompts and agent transcripts, so run it inside a trust boundary you control."
           }
         },
         {
@@ -1046,10 +1046,10 @@
 
     <div class="local-route reveal">
       <div>
-        <p class="eyebrow">Local-agent routing · private beta</p>
+        <p class="eyebrow">ACP gateway · private beta</p>
         <h3>Keep provider credentials on your machine.</h3>
-        <p>Route a J-Bot review through a companion running Codex, Cursor, Devin, or Kilo on a machine you control. Your GitHub workflow uses gateway routing credentials—not the agent’s provider credential.</p>
-        <a href="/guides/local-agent-code-review">See how local-agent reviews work →</a>
+        <p>Route a J-Bot review through its ACP gateway to a companion running Codex, Cursor, Devin, or Kilo on a machine you control. Your GitHub workflow uses gateway routing credentials—not the agent’s provider credential.</p>
+        <a href="/guides/local-agent-code-review">See how ACP gateway reviews work →</a>
       </div>
       <div class="local-route-path" role="img" aria-label="GitHub Actions connects through your gateway to your companion">
         <span>GitHub Actions</span><span class="arr" aria-hidden="true">→</span><span>Your gateway</span><span class="arr" aria-hidden="true">→</span><span>Your companion</span>
@@ -1282,7 +1282,7 @@
       </details>
       <details class="faq-item">
         <summary>Can J-Bot review a pull request without storing my agent credential in GitHub Actions?<span class="faq-mark" aria-hidden="true">+</span></summary>
-        <div class="faq-a"><p>Yes, through the optional private-beta <a href="/guides/local-agent-code-review">local-agent route</a> for Codex, Cursor, Devin, and Kilo. A companion on a machine you control runs the agent and keeps its provider credential there. GitHub Actions uses gateway routing credentials instead. For private repositories, the companion also needs Git access to create a temporary clone. The gateway relays and journals review prompts and agent transcripts, so run it inside a trust boundary you control.</p></div>
+        <div class="faq-a"><p>Yes, through the optional private-beta <a href="/guides/local-agent-code-review">ACP gateway route</a> for Codex, Cursor, Devin, and Kilo. A companion on a machine you control runs the agent and keeps its provider credential there. GitHub Actions uses gateway routing credentials instead. For private repositories, the companion also needs Git access to create a temporary clone. The gateway relays and journals review prompts and agent transcripts, so run it inside a trust boundary you control.</p></div>
       </details>
       <details class="faq-item">
         <summary>Is J-Bot Review free?<span class="faq-mark" aria-hidden="true">+</span></summary>
