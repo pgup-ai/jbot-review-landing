@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Local coding agents for automated PR review | J-Bot Review</title>
+<meta name="description" content="Run J-Bot Review through Codex, Cursor, Devin, or Kilo on a companion machine you control. Keep the agent's provider credential out of GitHub Actions." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/guides/local-agent-code-review" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/guides/local-agent-code-review" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="Run PR reviews with a coding agent on your machine" />
+<meta property="og:description" content="Codex, Cursor, Devin, or Kilo runs on a companion you control. GitHub Actions stores gateway routing credentials—not the agent's provider credential." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-guide-local-agent-20260727.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-guide-local-agent-20260727.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Run PR reviews with a coding agent on your machine" />
+<meta name="twitter:description" content="Keep the agent's provider credential on a companion you control—not in GitHub Actions." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-guide-local-agent-20260727.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/guides/local-agent-code-review#article",
+      "headline": "Run pull-request reviews with a coding agent on your machine",
+      "description": "How J-Bot Review routes automated pull-request reviews through a companion running Codex, Cursor, Devin, or Kilo while keeping the agent's provider credential out of GitHub Actions.",
+      "url": "https://www.pgupai.com/guides/local-agent-code-review",
+      "image": "https://www.pgupai.com/assets/og-guide-local-agent-20260727.png",
+      "datePublished": "2026-07-27",
+      "dateModified": "2026-07-27",
+      "author": { "@type": "Organization", "name": "PGUP AI", "url": "https://www.pgupai.com/" },
+      "publisher": { "@type": "Organization", "name": "PGUP AI", "url": "https://www.pgupai.com/" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "J-Bot Review", "item": "https://www.pgupai.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://www.pgupai.com/guides" },
+        { "@type": "ListItem", "position": 3, "name": "Local-agent code review", "item": "https://www.pgupai.com/guides/local-agent-code-review" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.pgupai.com/guides/local-agent-code-review#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does local-agent routing require no credentials?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. It keeps the agent’s provider credential on the companion instead of putting it in GitHub Actions or the gateway. The workflow still needs gateway routing credentials, the companion needs its endpoint credential, and private repositories require Git access on the companion." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the repository stay only on the GitHub Actions runner?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. The standard Action path keeps the checkout on the runner, but a companion-routed review creates a temporary clone on the companion so the local agent can inspect the committed ref. The gateway does not clone the repository." }
+        },
+        {
+          "@type": "Question",
+          "name": "What does the gateway retain?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The gateway journals ACP session frames, including review prompts, diffs, agent reasoning, tool activity, permission decisions, and findings. Credentials are materialized on the companion and do not cross the ACP session. Automatic retention and pruning are not part of the private beta, so operators must manage the journal directory." }
+        },
+        {
+          "@type": "Question",
+          "name": "Which coding agents can run through the companion?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The private-beta route supports Codex, Cursor, Devin, and Kilo. Other J-Bot providers continue to run through the standard Action path and ignore the ACP gateway settings." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  /* Tokens and article structure mirror the existing J-Bot guide family. */
+  :root {
+    --bg: #0a0b0a; --surface: #0e100e; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --blue: #7aa2ff;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --border-code: rgba(255,255,255,0.09); --accent-border: rgba(94,227,154,0.16);
+    --code-text: #c8cdc7;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 740px; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .status { color: var(--blue); }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  .lede b, article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  h3 { font-family: var(--display); font-weight: 600; font-size: 17px; letter-spacing: -0.01em; margin: 26px 0 8px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+  ol li::marker { font-family: var(--mono); color: var(--accent); }
+  code { font-family: var(--mono); font-size: 12.5px; color: var(--code-text); background: var(--surface); border: 1px solid var(--border-code); border-radius: 5px; padding: 1px 6px; }
+
+  .callout { border: 1px solid var(--accent-border); background: rgba(94,227,154,0.04); border-radius: 12px; padding: 16px 18px; margin: 20px 0; }
+  .callout.blue { border-color: rgba(122,162,255,0.22); background: rgba(122,162,255,0.045); }
+  .callout p { margin: 0; font-size: 14.5px; }
+  .callout .tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 6px; }
+  .callout.blue .tag { color: var(--blue); }
+
+  .flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 26px; margin: 24px 0; }
+  .flow-node { position: relative; border: 1px solid var(--border-card); border-radius: 11px; background: var(--surface-subtle); padding: 15px 14px; min-height: 104px; }
+  .flow-node:not(:last-child)::after { content: '→'; position: absolute; right: -21px; top: 40px; color: var(--blue); font-family: var(--mono); }
+  .flow-node .n { display: block; margin-bottom: 7px; color: var(--blue); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .flow-node b { display: block; font-size: 14px; line-height: 1.25; }
+  .flow-node small { display: block; margin-top: 5px; color: var(--text-4); font-size: 11.5px; line-height: 1.4; }
+
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--text); font-weight: 600; }
+
+  .faq-item { border-bottom: 1px solid var(--hairline); }
+  .faq-item:first-of-type { border-top: 1px solid var(--hairline); }
+  .faq-item summary { display: flex; align-items: baseline; justify-content: space-between; gap: 22px; list-style: none; cursor: pointer; padding: 17px 2px; font-weight: 600; font-size: 15.5px; color: var(--text); line-height: 1.45; transition: color 0.15s var(--ease); }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary:hover { color: var(--accent-hover); }
+  .faq-mark { font-family: var(--mono); font-size: 15px; color: var(--text-4); flex: none; transition: transform 0.2s var(--ease), color 0.2s var(--ease); }
+  .faq-item[open] .faq-mark { transform: rotate(45deg); color: var(--accent); }
+  .faq-a { padding: 0 2px 20px; font-size: 14.5px; color: var(--text-2); }
+  .faq-a p { margin: 0; }
+
+  .related { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0 0; }
+  .rel-card { display: block; border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 18px; color: var(--text); transition: border-color 0.16s var(--ease); }
+  .rel-card:hover { border-color: rgba(94,227,154,0.35); color: var(--text); }
+  .rel-card .k2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 7px; }
+  .rel-card p { margin: 6px 0 0; font-size: 13px; color: var(--text-3); }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+
+  @media (max-width: 700px) {
+    .flow { grid-template-columns: 1fr; gap: 10px; }
+    .flow-node { min-height: 0; }
+    .flow-node:not(:last-child)::after { content: '↓'; right: auto; left: 18px; top: auto; bottom: -17px; z-index: 1; }
+  }
+  @media (max-width: 560px) {
+    .nav-links a:not(.btn) { display: none; }
+    main { padding-inline: 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .faq-mark, .rel-card { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides/cli-subscription-code-review">CLI subscriptions</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn" href="https://github.com/pgup-ai/jbot-review#readme" target="_blank" rel="noopener noreferrer">View source</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<article>
+  <p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / Local-agent review</p>
+  <h1>Run pull-request reviews with a coding agent on your machine</h1>
+  <p class="updated">Published July 27, 2026 · <span class="status">private beta</span></p>
+
+  <p class="lede"><b>J-Bot Review can route a GitHub Actions review through a companion running Codex, Cursor, Devin, or Kilo on a machine you control.</b> The agent’s provider credential stays on that machine; GitHub Actions stores gateway routing credentials instead. Review prompts and transcripts pass through—and are journaled by—the gateway you operate.</p>
+
+  <div class="callout blue">
+    <span class="tag">Private-beta boundary</span>
+    <p>This is an advanced, self-managed route, not the default Marketplace setup. Today it is for operators comfortable running the J-Bot gateway and companion from source. The standard Action remains the one-workflow, no-server path.</p>
+  </div>
+
+  <h2 id="how-it-works">How the local-agent route works</h2>
+  <p>GitHub Actions still starts the review and posts the result. Instead of launching the coding agent in the Action container, it drives an Agent Client Protocol (ACP) session through a gateway to your companion. ACP is the agent interface; J-Bot’s authentication, endpoint routing, journaling, and companion process are the transport around it.</p>
+
+  <div class="flow" role="img" aria-label="GitHub Actions sends a review through a user-operated gateway to a companion, which runs the coding agent against its model provider">
+    <div class="flow-node"><span class="n">01 · trigger</span><b>GitHub Actions</b><small>Starts the review and posts findings</small></div>
+    <div class="flow-node"><span class="n">02 · relay</span><b>Your gateway</b><small>Authenticates, routes, and journals ACP frames</small></div>
+    <div class="flow-node"><span class="n">03 · execute</span><b>Your companion</b><small>Clones the ref and runs the agent read-only</small></div>
+    <div class="flow-node"><span class="n">04 · infer</span><b>Agent provider</b><small>The same backend the local agent normally uses</small></div>
+  </div>
+
+  <p>The repository itself is not stored by the gateway. For a routed review, the companion makes a temporary clone of the committed pull-request ref, runs the agent there, and removes the workspace when the session ends.</p>
+
+  <h2 id="compare-paths">Standard Action vs. local-agent route</h2>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Question</th><th>Standard Action</th><th>Local-agent route</th></tr></thead>
+    <tbody>
+      <tr><td>Where the agent runs</td><td>GitHub Actions runner</td><td>Your companion machine</td></tr>
+      <tr><td>Provider credential</td><td>GitHub repository secret</td><td>Companion machine only</td></tr>
+      <tr><td>J-Bot server</td><td>None</td><td>Your gateway relays the session</td></tr>
+      <tr><td>Repository checkout</td><td>Runner</td><td>Runner plus a temporary companion clone</td></tr>
+      <tr><td>Best fit</td><td>Fastest installation; no service to operate</td><td>Keep agent credentials out of CI; use a companion you control</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>The homepage’s “zero servers” and “checkout stays on your runner” claims describe the standard Action. Choosing the companion route changes that topology deliberately.</p>
+
+  <h2 id="credentials-and-data">Where credentials and review data live</h2>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Location</th><th>Credentials</th><th>Code and review data</th></tr></thead>
+    <tbody>
+      <tr><td>GitHub Actions</td><td>GitHub token; gateway URL, client token, and endpoint id</td><td>Runner checkout, pull-request context, prompt and diff sent to the gateway</td></tr>
+      <tr><td>Gateway</td><td>Client bearer token and separate companion endpoint tokens</td><td>Relays and journals ACP frames: prompts, diffs, reasoning, tool activity, permission decisions, and findings</td></tr>
+      <tr><td>Companion</td><td>Agent/provider credential; endpoint token; Git credentials for private repositories</td><td>Temporary repository clone and the running agent process</td></tr>
+      <tr><td>Agent provider</td><td>Used by the agent on the companion</td><td>Receives the model context the coding agent normally sends</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout">
+    <span class="tag">Not credentialless</span>
+    <p><b>The agent’s provider credential does not enter GitHub Actions or the gateway.</b> Routing credentials still exist, and a private-repository clone requires Git authentication on the companion.</p>
+  </div>
+
+  <h2 id="supported-agents">Supported agents in the private beta</h2>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Agent</th><th>Authentication on the companion</th><th>Current note</th></tr></thead>
+    <tbody>
+      <tr><td>Codex</td><td>Local <code>~/.codex</code> authentication</td><td>Uses the companion’s Codex setup</td></tr>
+      <tr><td>Cursor</td><td><code>CURSOR_API_KEY</code> on the companion</td><td>The key stays off the runner, but Cursor does not use ambient login here</td></tr>
+      <tr><td>Devin</td><td>Local Devin credentials</td><td>Uses the companion’s existing Devin authentication</td></tr>
+      <tr><td>Kilo</td><td>Local Kilo auth file</td><td>Default companion agent when none is specified</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Cline, Command Code, Grok Build, Qoder, and model-API providers remain available through the standard Action path; setting gateway variables does not route them to the companion.</p>
+
+  <h2 id="security-model">Security boundaries</h2>
+  <ul>
+    <li><b>Provider authentication stays on the companion.</b> It is loaded into the agent process locally and is not sent as an ACP frame.</li>
+    <li><b>Write requests have a deny floor.</b> The companion answers agent permission requests using J-Bot’s read-only review policy; the remote client cannot grant a write.</li>
+    <li><b>The companion connects outbound.</b> It attaches to the configured gateway endpoint, so the companion itself does not need an inbound public port.</li>
+    <li><b>Private repositories need a second Git trust decision.</b> The companion clones the pull-request ref using its own ambient Git authentication.</li>
+    <li><b>The gateway is sensitive infrastructure.</b> Its journal contains prompt, diff, reasoning, and tool-output content. Files are permission-restricted, but automatic retention and pruning are not part of the beta.</li>
+    <li><b>The provider still receives model context.</b> “Local agent” describes where the agent process and credential live; it does not imply a local model or an offline review.</li>
+  </ul>
+
+  <h2 id="operator-shape">What an operator runs</h2>
+  <ol>
+    <li><b>A gateway behind TLS.</b> The current server is a single Node process with filesystem journals. It can run behind Caddy, cloudflared, or another reverse proxy.</li>
+    <li><b>A companion on the agent machine.</b> It advertises the agents it can serve, enforces a session limit, and maintains an outbound connection to its endpoint.</li>
+    <li><b>A thin-client review workflow.</b> The workflow supplies the gateway URL and client token, selects an endpoint, and identifies the repository, head ref, and base commit for the companion clone.</li>
+  </ol>
+
+  <p>The implementation README carries the current environment variables and source-run commands. Because packaging is still being hardened, treat that document—not copied snippets on third-party sites—as the source of truth: <a href="https://github.com/pgup-ai/jbot-review#acp-gateway" target="_blank" rel="noopener noreferrer">ACP gateway setup in the J-Bot repository →</a></p>
+
+  <h2 id="limits">Current limits</h2>
+  <ul>
+    <li><b>Source-managed installation.</b> There is not yet a standalone companion installer or a general Marketplace setup flow.</li>
+    <li><b>Operator-managed trust boundary.</b> This is not a hosted signup or multi-tenant gateway service.</li>
+    <li><b>Manual retention.</b> Journals remain on disk until the operator removes them; set an operational deletion policy appropriate for the repository.</li>
+    <li><b>Committed code only.</b> The companion reviews the supplied repository ref, not uncommitted files on the runner.</li>
+    <li><b>Companion availability matters.</b> The selected endpoint must be online, offer the requested agent, and have a free session slot.</li>
+    <li><b>Four remote agents today.</b> Only Codex, Cursor, Devin, and Kilo use this route.</li>
+  </ul>
+
+  <h2 id="fit">When to choose this route</h2>
+  <ul>
+    <li>Your security policy avoids placing long-lived provider or agent credentials in CI.</li>
+    <li>You already operate a trusted machine with the coding agent configured.</li>
+    <li>You want the companion’s read-only enforcement and a journal you can inspect on infrastructure you control.</li>
+    <li>You accept operating the gateway, companion availability, Git access, and journal retention.</li>
+  </ul>
+  <p>If the simplest reliable setup matters more, use the <a href="/#setup">standard GitHub Action</a>. It remains the default path: one workflow, no J-Bot server, and the checkout stays on the runner.</p>
+
+  <h2 id="faq">FAQ</h2>
+  <details class="faq-item" open>
+    <summary>Does local-agent routing require no credentials?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>No. It keeps the agent’s provider credential on the companion instead of putting it in GitHub Actions or the gateway. The workflow still needs gateway routing credentials, the companion needs its endpoint credential, and private repositories require Git access on the companion.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Does the repository stay only on the GitHub Actions runner?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>No. The standard Action path keeps the checkout on the runner, but a companion-routed review creates a temporary clone on the companion so the local agent can inspect the committed ref. The gateway does not clone the repository.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>What does the gateway retain?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>The gateway journals ACP session frames, including review prompts, diffs, agent reasoning, tool activity, permission decisions, and findings. Credentials are materialized on the companion and do not cross the ACP session. Automatic retention and pruning are not part of the private beta, so operators must manage the journal directory.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Which coding agents can run through the companion?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>The private-beta route supports Codex, Cursor, Devin, and Kilo. Other J-Bot providers continue to run through the standard Action path and ignore the ACP gateway settings.</p></div>
+  </details>
+
+  <h2>Related documentation</h2>
+  <div class="related">
+    <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Standard path</span>CLI subscription review<p>Put the CLI credential in Actions and run the whole review on the runner.</p></a>
+    <a class="rel-card" href="https://github.com/pgup-ai/jbot-review#acp-gateway" target="_blank" rel="noopener noreferrer"><span class="k2">Implementation</span>ACP gateway README<p>Current environment variables, commands, and verification steps.</p></a>
+    <a class="rel-card" href="https://agentclientprotocol.com/get-started/introduction" target="_blank" rel="noopener noreferrer"><span class="k2">Protocol</span>Agent Client Protocol<p>The standard client-agent interface behind the routed review session.</p></a>
+    <a class="rel-card" href="/#proof"><span class="k2">Output</span>See a real J-Bot review<p>Verified, diff-anchored findings on a live pull request.</p></a>
+  </div>
+</article>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="https://github.com/pgup-ai/jbot-review" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
