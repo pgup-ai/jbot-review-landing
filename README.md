@@ -9,19 +9,21 @@ The public action users install lives at
 
 ## What's here
 
-A single, self-contained static page. No build step, no dependencies.
+A static, multi-page site made from self-contained HTML files. No build step,
+no dependencies.
 
 ```
-index.html      # the whole page (inline CSS + minimal vanilla JS)
-vercel.json     # static config: no build step
-robots.txt      # crawl policy: all bots welcome, AI crawlers explicitly; points at sitemap
-sitemap.xml     # single-URL sitemap (submit in Google Search Console)
+index.html      # landing page (inline CSS + minimal vanilla JS)
+guides/         # guide pages
+compare/        # comparison pages
+vercel.json     # static config and clean-URL rewrites
+robots.txt      # crawl policy; points at the sitemap
+sitemap.xml     # public clean URLs (submit in Google Search Console)
 llms.txt        # fact sheet for AI assistants (llmstxt.org convention)
-guides/         # guide pages (self-contained HTML; clean URLs via vercel.json)
 assets/
-  logo.png      # J-Bot gradient mark (transparent, 512x512)
+  logo.png      # J-Bot gradient mark
   favicon-16.png, favicon-32.png, apple-touch-icon.png, icon-512.png
-  og.png        # 1200x630 social share card
+  og*.png       # 1200x630 social share cards
 ```
 
 ## Develop
@@ -36,10 +38,9 @@ python3 -m http.server 8000   # then open http://localhost:8000
 
 Live at **https://www.pgupai.com**, hosted on Vercel (project `pgup-ai-landing`).
 Pushes to `main` auto-deploy; `vercel.json` marks it static with no build step.
-Social-card tags use absolute `https://www.pgupai.com/...` URLs.
-When `assets/og.png` changes, copy it to a new dated filename and point the
-`og:image` and `twitter:image` URLs at that new file so social crawlers do not
-reuse a cached card.
+Social-card tags use absolute `https://www.pgupai.com/...` URLs. When a social
+card changes, publish it under a new dated filename and point its `og:image` and
+`twitter:image` URLs at that file so social crawlers do not reuse a cached card.
 If X/Twitter has already cached the root URL, use `/x` as a fresh share URL;
 it carries the same metadata and redirects humans back to `/`.
 
@@ -61,7 +62,6 @@ the directory as-is. On a new domain, update the absolute URLs in `index.html`
 - Dark mode, single locked accent (signal green `#3ECF8E`) on near-black.
 - Large logo surfaces use the gradient J-Bot mark. Favicons and touch/PWA icons
   use the flat export for sharper small-size rendering.
-- The OG card (`og.png`) is a separate composed 1200x630 image using the
-  gradient mark.
+- OG cards are separate composed 1200x630 images using the gradient mark.
 - Respects `prefers-reduced-motion`; reveal animations degrade to static.
 - Responsive down to ~360px; no horizontal overflow.
