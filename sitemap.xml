@@ -7,7 +7,7 @@
   </url>
   <url>
     <loc>https://www.pgupai.com/guides</loc>
-    <lastmod>2026-07-27</lastmod>
+    <lastmod>2026-07-31</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/cli-subscription-code-review</loc>
@@ -56,6 +56,10 @@
   <url>
     <loc>https://www.pgupai.com/guides/ling-3-0-flash-code-review-github-actions</loc>
     <lastmod>2026-07-23</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/deepseek-v4-flash-code-review-github-actions</loc>
+    <lastmod>2026-07-31</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/openai-compatible-code-review-github-actions</loc>
