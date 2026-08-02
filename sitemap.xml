@@ -3,11 +3,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.pgupai.com/</loc>
-    <lastmod>2026-07-27</lastmod>
+    <lastmod>2026-08-01</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides</loc>
-    <lastmod>2026-07-31</lastmod>
+    <lastmod>2026-08-01</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/cli-subscription-code-review</loc>
@@ -59,7 +59,7 @@
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/deepseek-v4-flash-code-review-github-actions</loc>
-    <lastmod>2026-07-31</lastmod>
+    <lastmod>2026-08-01</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/openai-compatible-code-review-github-actions</loc>

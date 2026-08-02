@@ -4,6 +4,8 @@
 node_modules/
 .vercel/
 /.idea/
+.claude/
+audit-shots/
 
 # Local-only working docs (strategy notes, drafts). Never committed or deployed.
 local/
