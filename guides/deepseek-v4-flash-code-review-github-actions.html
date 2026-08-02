@@ -80,7 +80,7 @@
         {
           "@type": "Question",
           "name": "Which J-Bot route gets the official DeepSeek V4 Flash?",
-          "acceptedAnswer": { "@type": "Answer", "text": "OpenCode's deepseek-v4-flash-free route is updated to the official model, and DeepSeek's direct API serves it through deepseek-v4-flash. In J-Bot, use provider: opencode with model: deepseek-v4-flash-free for the limited-time free route, or provider: deepseek with model: deepseek-v4-flash and a DEEPSEEK_API_KEY for the first-party route." }
+          "acceptedAnswer": { "@type": "Answer", "text": "OpenCode's deepseek-v4-flash-free route and InferX's deepseek-v4-flash-0731 endpoint explicitly identify the official release. DeepSeek's direct API serves it through the unchanged deepseek-v4-flash id. The Cline, OpenRouter, Kenari, and UnoRouter free listings do not identify the 0731 checkpoint, so verify those routes before depending on official-release behavior." }
         },
         {
           "@type": "Question",
@@ -90,7 +90,7 @@
         {
           "@type": "Question",
           "name": "Where is DeepSeek V4 Flash free for J-Bot Review?",
-          "acceptedAnswer": { "@type": "Answer", "text": "As of 2026-08-01, OpenCode and InferX expose free routes confirmed for the official 0731 release. Kenari and UnoRouter also publish zero-priced DeepSeek V4 Flash aliases, but their public catalog metadata does not identify the 0731 snapshot, so verify the served checkpoint before relying on official-release behavior. OpenCode is a native J-Bot provider; the other routes use provider: openai-compatible with that provider's base URL, API key, and explicit model. Free windows, capacity, quotas, and data terms remain provider-controlled." }
+          "acceptedAnswer": { "@type": "Answer", "text": "As of 2026-08-01, OpenCode, Cline, InferX, Kenari, and UnoRouter publish zero-priced DeepSeek V4 Flash routes. OpenRouter also advertises deepseek/deepseek-v4-flash:free, but its live catalog currently omits the slug and reports no serving endpoints, so treat it as intermittent. Only OpenCode and InferX explicitly identify the official 0731 snapshot. J-Bot supports native opencode, cline, and openrouter providers; InferX, Kenari, and UnoRouter use provider: openai-compatible. Free windows, quotas, availability, and data terms remain provider-controlled." }
         }
       ]
     }
@@ -280,12 +280,22 @@
           <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
   </div>
 
-  <h2 id="routes">Four published $0 routes</h2>
+  <h2 id="routes">Six advertised $0 routes</h2>
   <div class="routes">
     <div class="route">
       <span class="route-tag">OpenCode · official 0731</span>
       <h3>Native J-Bot route · $0</h3>
       <p><code>provider: opencode</code><br><code>model: deepseek-v4-flash-free</code><br><code>opencode-api-key</code></p>
+    </div>
+    <div class="route">
+      <span class="route-tag">Cline · live free catalog</span>
+      <h3>CLI route · limited quota</h3>
+      <p><code>provider: cline</code><br><code>model: cline/deepseek/deepseek-v4-flash</code><br><code>cline-auth</code></p>
+    </div>
+    <div class="route">
+      <span class="route-tag">OpenRouter · free listing</span>
+      <h3>Native J-Bot route · intermittent</h3>
+      <p><code>provider: openrouter</code><br><code>model: deepseek/deepseek-v4-flash:free</code><br><code>openrouter-api-key</code></p>
     </div>
     <div class="route">
       <span class="route-tag">InferX · official 0731</span>
@@ -308,8 +318,8 @@
       <p><code>provider: deepseek</code><br><code>model: deepseek-v4-flash</code><br><code>deepseek-api-key</code></p>
     </div>
   </div>
-  <p>OpenCode and DeepSeek are native J-Bot providers. For InferX, Kenari, or UnoRouter, save the provider key as <code>JBOT_OPENAI_COMPATIBLE_API_KEY</code>, set the matching base URL as the repository variable <code>JBOT_OPENAI_COMPATIBLE_BASE_URL</code>, and use the explicit model above. Sources checked August 1: <a href="https://opencode.ai/docs/zen" target="_blank" rel="noopener noreferrer">OpenCode Zen</a>, <a href="https://www.reddit.com/r/DeepSeek/comments/1vavyfj/hey_guys_deepseek_v4_flash_is_free_on_inferx/" target="_blank" rel="noopener noreferrer">InferX's provider announcement</a>, <a href="https://kenari.id/v1/models" target="_blank" rel="noopener noreferrer">Kenari's live catalog</a>, and <a href="https://unorouter.com/en/rankings" target="_blank" rel="noopener noreferrer">UnoRouter's live usage ranking</a>.</p>
-  <p class="fineprint"><b>Why OpenRouter is not counted:</b> its legacy <code>deepseek-v4-flash:free</code> page still says “Free,” but the live endpoint API returned no serving endpoints when checked August 1. Its separately named official 0731 route was available at paid rates. A catalog page alone is not an executable $0 route.</p>
+  <p>OpenCode, OpenRouter, and DeepSeek are native J-Bot providers; Cline uses its CLI with <code>CLINE_AUTH_JSON</code>. For InferX, Kenari, or UnoRouter, save the provider key as <code>JBOT_OPENAI_COMPATIBLE_API_KEY</code>, set <code>JBOT_OPENAI_COMPATIBLE_BASE_URL</code>, and use the explicit model above. Sources checked August 1: <a href="https://opencode.ai/docs/zen" target="_blank" rel="noopener noreferrer">OpenCode Zen</a>, <a href="https://api.cline.bot/api/v1/ai/cline/recommended-models" target="_blank" rel="noopener noreferrer">Cline's live free-model feed</a>, <a href="https://docs.cline.bot/getting-started/free-models" target="_blank" rel="noopener noreferrer">Cline free-model terms</a>, <a href="https://openrouter.ai/deepseek/deepseek-v4-flash:free/pricing" target="_blank" rel="noopener noreferrer">OpenRouter's free listing</a>, <a href="https://www.reddit.com/r/DeepSeek/comments/1vavyfj/hey_guys_deepseek_v4_flash_is_free_on_inferx/" target="_blank" rel="noopener noreferrer">InferX's provider announcement</a>, <a href="https://kenari.id/v1/models" target="_blank" rel="noopener noreferrer">Kenari's live catalog</a>, and <a href="https://unorouter.com/en/rankings" target="_blank" rel="noopener noreferrer">UnoRouter's live ranking</a>.</p>
+  <p class="fineprint"><b>OpenRouter availability:</b> its public <code>deepseek-v4-flash:free</code> page says “Free,” but the live catalog omitted the slug and the <a href="https://openrouter.ai/api/v1/models/deepseek/deepseek-v4-flash:free/endpoints" target="_blank" rel="noopener noreferrer">endpoint API</a> reported no serving backends when checked August 1. Treat the route as opportunistic, not reliable capacity.</p>
 
   <h2 id="benchmarks">The official 0731 agent benchmarks</h2>
   <p>DeepSeek published nine agent and coding-agent results with the official release. These are DeepSeek's reported scores, not J-Bot evaluations:</p>
@@ -359,8 +369,8 @@
   <h2 id="privacy">Where the diff goes</h2>
   <ul>
     <li><b>Your runner stays in control.</b> The review runs inside GitHub Actions with read-only repository access; write permissions are used only to post review output.</li>
-    <li><b>The provider you select receives the diff.</b> With <code>provider: deepseek</code>, that is DeepSeek's first-party API. With <code>provider: opencode</code>, that is OpenCode Zen and its upstream. With <code>provider: openai-compatible</code>, it is the InferX, Kenari, or UnoRouter base URL you configured.</li>
-    <li><b>The free OpenCode route is a feedback route.</b> OpenCode states that data collected through DeepSeek V4 Flash Free may be used to improve the model. Do not send sensitive code through that route unless its terms fit your policy.</li>
+    <li><b>The provider you select receives the diff.</b> That is DeepSeek, OpenCode and its upstream, Cline and its upstream, OpenRouter and its upstream, or the OpenAI-compatible base URL you configure.</li>
+    <li><b>Free routes may be feedback routes.</b> OpenCode and Cline state that data from their free models may be used to improve models. Do not send sensitive code unless the selected provider's terms fit your policy.</li>
     <li><b>Custom-gateway terms differ.</b> Free pricing does not imply zero retention, stable capacity, or a permanent offer. Review each provider's current terms before sending private code.</li>
     <li><b>Fork PRs cannot read the key.</b> GitHub does not pass repository secrets to <code>pull_request</code> workflows from forks.</li>
   </ul>
@@ -372,7 +382,7 @@
   </details>
   <details class="faq-item">
     <summary>Which J-Bot route gets the official DeepSeek V4 Flash?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>OpenCode's <code>deepseek-v4-flash-free</code> route is updated to the official model, and DeepSeek's direct API serves it through <code>deepseek-v4-flash</code>. In J-Bot, use <code>provider: opencode</code> with <code>model: deepseek-v4-flash-free</code> for the limited-time free route, or <code>provider: deepseek</code> with <code>model: deepseek-v4-flash</code> and a <code>DEEPSEEK_API_KEY</code> for the first-party route.</p></div>
+    <div class="faq-a"><p>OpenCode's <code>deepseek-v4-flash-free</code> route and InferX's <code>deepseek-v4-flash-0731</code> endpoint explicitly identify the official release. DeepSeek's direct API serves it through the unchanged <code>deepseek-v4-flash</code> id. The Cline, OpenRouter, Kenari, and UnoRouter free listings do not identify the 0731 checkpoint, so verify those routes before depending on official-release behavior.</p></div>
   </details>
   <details class="faq-item">
     <summary>Is DeepSeek V4 Flash on par with Gemini 3.6 Flash, and how much cheaper is it?<span class="faq-mark" aria-hidden="true">+</span></summary>
@@ -380,7 +390,7 @@
   </details>
   <details class="faq-item">
     <summary>Where is DeepSeek V4 Flash free for J-Bot Review?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>As of 2026-08-01, OpenCode and InferX expose free routes confirmed for the official 0731 release. Kenari and UnoRouter also publish zero-priced DeepSeek V4 Flash aliases, but their public catalog metadata does not identify the 0731 snapshot, so verify the served checkpoint before relying on official-release behavior. OpenCode is a native J-Bot provider; the other routes use <code>provider: openai-compatible</code> with that provider's base URL, API key, and explicit model. Free windows, capacity, quotas, and data terms remain provider-controlled.</p></div>
+    <div class="faq-a"><p>As of 2026-08-01, OpenCode, Cline, InferX, Kenari, and UnoRouter publish zero-priced DeepSeek V4 Flash routes. OpenRouter also advertises <code>deepseek/deepseek-v4-flash:free</code>, but its live catalog currently omits the slug and reports no serving endpoints, so treat it as intermittent. Only OpenCode and InferX explicitly identify the official 0731 snapshot. J-Bot supports native <code>opencode</code>, <code>cline</code>, and <code>openrouter</code> providers; InferX, Kenari, and UnoRouter use <code>provider: openai-compatible</code>. Free windows, quotas, availability, and data terms remain provider-controlled.</p></div>
   </details>
 
   <h2>Related</h2>
