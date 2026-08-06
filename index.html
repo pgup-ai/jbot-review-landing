@@ -410,6 +410,14 @@
   .trust > div:not(:last-child) { border-right: 1px solid rgba(255, 255, 255, 0.08); }
   .trust .n { font-family: var(--display); font-size: 22px; font-weight: 600; color: var(--text); }
   .trust .l { font-size: 12px; color: var(--text-3); font-family: var(--mono); margin-top: 2px; }
+  /* One label links to the stat's provenance in #proof. A dim underline marks it
+     as interactive on touch, where hover cannot; the siblings stay plain text. */
+  .trust .l a {
+    text-decoration: underline; text-decoration-color: rgba(233, 236, 232, 0.24);
+    text-underline-offset: 3px;
+    transition: color 0.15s var(--ease), text-decoration-color 0.15s var(--ease);
+  }
+  .trust .l a:hover { color: var(--accent); text-decoration-color: var(--accent); }
 
   /* ============================================================
      Workflow drop-in
