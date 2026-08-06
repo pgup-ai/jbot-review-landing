@@ -16,6 +16,7 @@ Key facts:
 - Privacy: on the standard Action path, the review runs read-only on your GitHub Actions runner and the diff goes only to the model you bring; there is no third-party reviewer service in the loop. The optional companion route has a different topology documented in the local-agent guide
 - GitHub App: a hosted-dashboard way to run the same reviewer — bring your own keys (encrypted at rest), review config, history, and usage meters — currently in private beta; the Action remains the no-server option
 - Quality: a second model verifies every blocking finding before it posts; nits are demoted so PRs get signal, not noise
+- Dogfooding scale (snapshot 2026-08-05): 2,749 successful PR-triggered reviews, 7,418 files, and 2,199,745 diff lines (669 unique PRs, deduplicated) across the maintainers' own two private production repos since June 2026; first-party usage, not customer adoption
 - House rules: discovers and reviews against AGENTS.md, REVIEW.md, .coderabbit.yaml, greptile.json, and Cursor rules
 - Docs freshness: when a PR touches an external API or SDK, changes are checked against current documentation via Context7
 - Pricing: the action adds no charge of its own; you pay only your model provider (or nothing, using a provider's free model route), plus normal CI minutes

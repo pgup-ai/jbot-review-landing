@@ -34,6 +34,20 @@ Plain HTML. Open it directly, or serve locally to exercise relative asset paths:
 python3 -m http.server 8000   # then open http://localhost:8000
 ```
 
+The dogfooding numbers in the `#proof` stat band are static text. To refresh
+them (needs `gh` authenticated with access to the source repos):
+
+```bash
+node scripts/refresh-proof-stats.mjs
+```
+
+Round the printed totals **down**, paste them into the band in `index.html`
+(the review count also appears in the hero trust strip), update the "As of"
+date there, the dogfooding line in `llms.txt`, and `<lastmod>` in
+`sitemap.xml`. Per-PR API responses are cached in gitignored
+`local/proof-stats-cache.json`, so re-runs only pay for new PRs.
+`scripts/` is excluded from the deployed site via `.vercelignore`.
+
 ## Deploy
 
 Live at **https://www.pgupai.com**, hosted on Vercel (project `pgup-ai-landing`).
