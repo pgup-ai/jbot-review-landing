@@ -42,9 +42,10 @@ node scripts/refresh-proof-stats.mjs
 ```
 
 Round the printed totals **down**, paste them into the band in `index.html`
-(the review count also appears in the hero trust strip), update the "As of"
-date there, the dogfooding line in `llms.txt`, and `<lastmod>` in
-`sitemap.xml`. Per-PR API responses are cached in gitignored
+(the review count also appears in the hero trust strip), then update the
+dogfooding line in `llms.txt` and `<lastmod>` in `sitemap.xml`. Leave the
+band's "Since June 2026" alone — it is the date reviews started, not the
+date they were counted; `llms.txt` carries the measurement date. Per-PR API responses are cached in gitignored
 `local/proof-stats-cache.json`, so re-runs only pay for new PRs.
 `scripts/` is excluded from the deployed site via `.vercelignore`.
 
