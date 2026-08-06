@@ -410,6 +410,14 @@
   .trust > div:not(:last-child) { border-right: 1px solid rgba(255, 255, 255, 0.08); }
   .trust .n { font-family: var(--display); font-size: 22px; font-weight: 600; color: var(--text); }
   .trust .l { font-size: 12px; color: var(--text-3); font-family: var(--mono); margin-top: 2px; }
+  /* One label links to the stat's provenance in #proof. A dim underline marks it
+     as interactive on touch, where hover cannot; the siblings stay plain text. */
+  .trust .l a {
+    text-decoration: underline; text-decoration-color: rgba(233, 236, 232, 0.24);
+    text-underline-offset: 3px;
+    transition: color 0.15s var(--ease), text-decoration-color 0.15s var(--ease);
+  }
+  .trust .l a:hover { color: var(--accent); text-decoration-color: var(--accent); }
 
   /* ============================================================
      Workflow drop-in
@@ -617,6 +625,11 @@
   .proof-live { text-align: center; margin: 12px 0 0; font-family: var(--mono); font-size: 12.5px; }
   .proof-live a { color: var(--accent); transition: color 0.15s var(--ease); }
   .proof-live a:hover { color: var(--accent-hover); }
+  /* Dogfooding stat band: reuses the hero .trust strip. Numbers are baked in
+     from scripts/refresh-proof-stats.mjs output (repos are private; nothing
+     is fetched at page load) and rounded down, never up. */
+  .proof-stats .trust { margin-top: 44px; }
+  .proof-stats .proof-caption { max-width: 560px; margin-inline: auto; line-height: 1.55; }
 
   /* ============================================================
      Sections with hairline separators (how / features / compare /
@@ -878,6 +891,12 @@
   @media (max-width: 560px) {
     .trust { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 0; }
     .trust > div:nth-child(2n) { border-right: none; }
+    /* The proof band has three stats, so the hero's 2x2 collapse would orphan
+       the last one; keep them on one row with tighter padding instead. */
+    .proof-stats .trust { grid-template-columns: repeat(3, auto); justify-content: center; }
+    .proof-stats .trust > div { padding: 0 14px; }
+    .proof-stats .trust > div:nth-child(2n) { border-right: 1px solid rgba(255, 255, 255, 0.08); }
+    .proof-stats .trust .n { font-size: 19px; }
     .wrap { padding-inline: 20px; }
   }
 </style>
@@ -942,7 +961,8 @@
       <div><div class="n">$0</div><div class="l">per seat</div></div>
       <div><div class="n">1 file</div><div class="l">to install</div></div>
       <div><div class="n">30+</div><div class="l">providers &amp; CLIs</div></div>
-      <div><div class="n">MIT</div><div class="l">open source</div></div>
+      <!-- Dogfooding count; details + provenance caption live in the #proof stat band -->
+      <div><div class="n">2,700+</div><div class="l"><a href="#proof">reviews run</a></div></div>
     </div>
   </div>
 </section>
@@ -1096,6 +1116,15 @@
     </div>
     <p class="proof-caption">Full base…head diff, sharded for speed · nits demoted, false positives dropped</p>
     <p class="proof-live"><a href="https://github.com/pgup-ai/jbot-review/pull/78#pullrequestreview-4619619627" target="_blank" rel="noopener noreferrer">See a real J-Bot review on a live pull request →</a></p>
+
+    <div class="proof-stats reveal">
+      <div class="trust">
+        <div><div class="n">2,700+</div><div class="l">reviews run</div></div>
+        <div><div class="n">7,400+</div><div class="l">files reviewed</div></div>
+        <div><div class="n">2.1M+</div><div class="l">diff lines reviewed</div></div>
+      </div>
+      <p class="proof-caption">From our internal repos · Since June&nbsp;2026</p>
+    </div>
   </div>
 </section>
 
