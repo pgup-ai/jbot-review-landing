@@ -74,7 +74,7 @@
         {
           "@type": "Question",
           "name": "Is Muse Spark 1.2 free for pull-request review?",
-          "acceptedAnswer": { "@type": "Answer", "text": "On one route. As of 2026-08-20 the live model catalog lists opencode/muse-spark-1.2-contributor-free at $0 input and $0 output. The standard opencode/muse-spark-1.2 route is priced at $1.25 per million input and $4.25 per million output, and opencode-go/muse-spark-1.2-contributor at $0.10 and $0.20. Free windows, quotas, and eligibility for a contributor route remain provider-controlled. J-Bot adds no charge of its own." }
+          "acceptedAnswer": { "@type": "Answer", "text": "On one route. As of 2026-08-20 the live model catalog lists opencode/muse-spark-1.2-contributor-free at $0 input and $0 output. The standard opencode/muse-spark-1.2 route is priced at $1.25 per million input and $4.25 per million output, and opencode-go/muse-spark-1.2-contributor at $0.10 and $0.20. The zero-priced route is a feedback route. OpenCode publishes it for a limited time to collect feedback and improve the model, and gives it none of the zero-retention wording it publishes for Ox Alpha Free, so keep private code on the metered muse-spark-1.2 route. Free windows, quotas, and eligibility for a contributor route remain provider-controlled. J-Bot adds no charge of its own." }
         },
         {
           "@type": "Question",
@@ -208,7 +208,7 @@
 
   <div class="callout">
     <span class="tag">Two OpenCode ids · one of them $0</span>
-    <p>OpenCode lists Muse Spark 1.2 twice: a metered route and a contributor route priced at zero. They differ by one suffix, so copy the exact id rather than letting model selection stay implicit.</p>
+    <p>OpenCode lists Muse Spark 1.2 twice: a metered route and a contributor route priced at zero. They differ by one suffix, so copy the exact id rather than letting model selection stay implicit. The zero-priced route is a feedback route, described below, so check its terms before you point it at private code.</p>
   </div>
 
   <h2 id="setup">OpenCode setup in three steps</h2>
@@ -261,17 +261,17 @@
 
   <h2 id="model">Why Muse Spark 1.2 fits review work</h2>
   <ul>
-    <li><b>The context window holds the whole change.</b> The catalog lists 1,048,576 input tokens with up to 131,072 output tokens on the OpenCode routes — room for a large base…head diff plus the surrounding files J-Bot pulls in for context, without shard-by-shard truncation.</li>
-    <li><b>It calls tools.</b> Review is an agentic loop — read a file, check a symbol, challenge a finding — not a single completion. The catalog advertises tool calling and reasoning on every Muse Spark 1.2 route listed above.</li>
+    <li><b>The context window holds the whole change.</b> The catalog lists 1,048,576 input tokens with up to 131,072 output tokens on the OpenCode routes. That holds a large base…head diff plus the surrounding files J-Bot reads for context, with no shard-by-shard truncation.</li>
+    <li><b>It calls tools.</b> Review is an agentic loop, not a single completion. J-Bot reads files and challenges its own blocking findings mid-session. The catalog advertises tool calling and reasoning on every Muse Spark 1.2 route listed above.</li>
     <li><b>Caching cuts the metered route.</b> The paid OpenCode route lists cached input at $0.15 per million against $1.25 uncached. J-Bot keeps the expensive shared prefix stable across shards, so a multi-shard review reuses it.</li>
     <li><b>J-Bot adds $0.</b> The Action is MIT-licensed, with no reviewer service and no per-seat fee. On the contributor route your remaining cost is normal GitHub Actions minutes.</li>
   </ul>
 
   <h2 id="egress">When the runner's egress is the problem</h2>
-  <p>Some providers decide what a caller may reach based on the IP it arrives from — and a GitHub-hosted runner egresses from address ranges you do not pick. If your account is provisioned for a route your CI cannot reach, the optional <code>opencode-proxy-url</code> input sends OpenCode's traffic through a proxy you control: a static-IP egress your platform team already runs, or a host in a region your account is provisioned for.</p>
+  <p>Some providers decide what a caller may reach based on the IP it arrives from, and a GitHub-hosted runner egresses from address ranges you do not pick. If your account is provisioned for a route your CI cannot reach, the optional <code>opencode-proxy-url</code> input sends OpenCode's traffic through a proxy you control: a static-IP egress your platform team already runs, or a host in a region your account is provisioned for.</p>
 
   <div class="code-card">
-    <div class="code-head"><span class="file">.github/workflows/jbot-review.yml — proxy input</span><button type="button" class="copybtn" data-copy="proxy" aria-live="polite">Copy</button></div>
+    <div class="code-head"><span class="file">.github/workflows/jbot-review.yml · proxy input</span><button type="button" class="copybtn" data-copy="proxy" aria-live="polite">Copy</button></div>
 <pre>      - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
         <span class="k">with</span>:
           <span class="k">provider</span>: opencode
@@ -281,10 +281,10 @@
           <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
   </div>
 
-  <p>It is deliberately conservative, because a proxy that quietly breaks should not cost you a review:</p>
+  <p>A proxy that quietly breaks should not cost you a review, so the wiring is cautious:</p>
   <ul>
     <li><b>Verified before it is trusted.</b> J-Bot performs an egress check through the proxy and requires a valid IP back. Only then does it inject the proxy environment and pin SDK sessions to OpenCode.</li>
-    <li><b>It fails open.</b> If the secret is absent or verification fails, J-Bot logs a warning and continues on the direct route. The review still runs.</li>
+    <li><b>It fails open.</b> An absent secret is logged as information; a failed verification is logged as a warning. Either way J-Bot continues on the direct route and the review still runs.</li>
     <li><b>Fork pull requests never use it.</b> The proxy is skipped for fork-head PRs, so the credential is not exposed to code you have not merged.</li>
     <li><b>It is scoped to the OpenCode child.</b> No global proxy is exported, and loopback is excluded by default so the local SDK listener is never intercepted.</li>
     <li><b>Use a dedicated low-privilege credential.</b> An authenticated proxy URL is inherited by OpenCode and the processes it spawns. Treat it as a CI-only secret, and rotate it like any other.</li>
@@ -293,6 +293,7 @@
 
   <h2 id="privacy">Where the diff goes</h2>
   <ul>
+    <li><b>The $0 route is a feedback route.</b> OpenCode publishes Muse Spark 1.2 Contributor Free for a limited time and says the team is using it to "collect feedback and improve the model". It carries none of the zero-retention wording OpenCode gives its Ox Alpha Free listing. Send private code through the metered <code>muse-spark-1.2</code> route or another provider, and read the current terms first.</li>
     <li><b>Your runner stays in control.</b> The review session runs headless on your GitHub Actions runner with read-only repository access.</li>
     <li><b>The route determines the destination.</b> Each provider uses its corresponding account or authenticated CLI backend. J-Bot does not proxy the diff through a hosted reviewer service.</li>
     <li><b>A configured proxy is one more hop.</b> If you set <code>opencode-proxy-url</code>, OpenCode's traffic transits a host you chose. Point it at infrastructure inside your own trust boundary.</li>
@@ -303,7 +304,7 @@
   <h2 id="faq">FAQ</h2>
   <details class="faq-item" open>
     <summary>Is Muse Spark 1.2 free for pull-request review?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>On one route. As of 2026-08-20 the live model catalog lists <code>opencode/muse-spark-1.2-contributor-free</code> at $0 input and $0 output. The standard <code>opencode/muse-spark-1.2</code> route is priced at $1.25 per million input and $4.25 per million output, and <code>opencode-go/muse-spark-1.2-contributor</code> at $0.10 and $0.20. Free windows, quotas, and eligibility for a contributor route remain provider-controlled. J-Bot adds no charge of its own.</p></div>
+    <div class="faq-a"><p>On one route. As of 2026-08-20 the live model catalog lists <code>opencode/muse-spark-1.2-contributor-free</code> at $0 input and $0 output. The standard <code>opencode/muse-spark-1.2</code> route is priced at $1.25 per million input and $4.25 per million output, and <code>opencode-go/muse-spark-1.2-contributor</code> at $0.10 and $0.20. The zero-priced route is a feedback route. OpenCode publishes it for a limited time to collect feedback and improve the model, and gives it none of the zero-retention wording it publishes for Ox Alpha Free, so keep private code on the metered <code>muse-spark-1.2</code> route. Free windows, quotas, and eligibility for a contributor route remain provider-controlled. J-Bot adds no charge of its own.</p></div>
   </details>
   <details class="faq-item">
     <summary>What model id does Muse Spark 1.2 use on each provider?<span class="faq-mark" aria-hidden="true">+</span></summary>
