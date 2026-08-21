@@ -158,6 +158,9 @@ export default async function middleware(request) {
       status: 200,
       headers: {
         'content-type': MARKDOWN_TYPE,
+        // Declared explicitly: on HEAD the platform discards the body, and a
+        // response it considers empty loses its Content-Type on the way out.
+        'content-length': String(new TextEncoder().encode(markdown).length),
         'cache-control': 'public, max-age=0, must-revalidate',
         vary: 'Accept, Accept-Encoding',
         // Point agents back at the HTML representation of the same resource.
