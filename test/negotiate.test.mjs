@@ -52,6 +52,11 @@ test('a more specific q=0 overrides a broader wildcard', () => {
   assert.equal(negotiate('text/*, text/markdown;q=0', BOTH), 'text/html');
 });
 
+test('takes the highest q among duplicate ranges rather than 406ing', () => {
+  assert.equal(negotiate('text/html;q=0, text/html;q=1', ['text/html']), 'text/html');
+  assert.equal(negotiate('text/markdown;q=1, text/markdown;q=0', BOTH), 'text/markdown');
+});
+
 test('returns null (406) only when nothing is acceptable', () => {
   assert.equal(negotiate('application/pdf', BOTH), null);
   assert.equal(negotiate('*/*;q=0', BOTH), null);

@@ -27,18 +27,26 @@ export function canonicalPath(pathname) {
   return out || '/';
 }
 
-export function markdownTwinFor(pathname) {
+function markdownTwinFor(pathname) {
   return ROUTES[canonicalPath(pathname)] ?? null;
 }
 
+/** Neutralise a value echoed back to the client, whatever the body format. */
+export function sanitize(value) {
+  return value.replace(/[\u0000-\u001f\u007f`]/g, '').slice(0, 120);
+}
+
+/** Render an untrusted value as a code span it cannot break out of. */
+const codeSpan = (value) => `\`${sanitize(value)}\``;
+
 /** RFC 9110 recommends a 406 body listing what the resource can produce. */
-function notAcceptable(accept) {
+function notAcceptable(accept, method) {
   const body =
     'This resource is available in:\n' +
     '- text/html\n' +
     '- text/markdown\n\n' +
-    `You requested: ${accept}\n`;
-  return new Response(body, {
+    `You requested: ${sanitize(accept)}\n`;
+  return new Response(method === 'HEAD' ? null : body, {
     status: 406,
     headers: {
       'content-type': 'text/plain; charset=utf-8',
@@ -52,7 +60,7 @@ function notAcceptable(accept) {
 function notFoundMarkdown(pathname, origin) {
   return (
     '# 404 — Page not found\n\n' +
-    `No page exists at \`${pathname}\` on this site.\n\n` +
+    `No page exists at ${codeSpan(pathname)} on this site.\n\n` +
     '## Where to look next\n\n' +
     `- [Home](${origin}/) — what J-Bot Review is and how to install it\n` +
     `- [Guides](${origin}/guides) — every provider and setup path\n` +
@@ -94,7 +102,7 @@ export default async function middleware(request) {
     const accept = request.headers.get('accept');
     const chosen = negotiate(accept, PRODUCES);
 
-    if (chosen === null) return notAcceptable(accept ?? '');
+    if (chosen === null) return notAcceptable(accept ?? '', method);
 
     // Returning undefined continues the chain, serving the static file as before.
     if (chosen !== 'text/markdown') return undefined;
@@ -102,7 +110,8 @@ export default async function middleware(request) {
     const twin = markdownTwinFor(url.pathname);
     if (!twin) {
       // 404 in the format the agent asked for, so it can recover.
-      return new Response(notFoundMarkdown(canonicalPath(url.pathname), url.origin), {
+      const body = notFoundMarkdown(canonicalPath(url.pathname), url.origin);
+      return new Response(method === 'HEAD' ? null : body, {
         status: 404,
         headers: {
           'content-type': MARKDOWN_TYPE,

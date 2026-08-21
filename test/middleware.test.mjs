@@ -2,7 +2,7 @@ import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import middleware, { canonicalPath, markdownTwinFor, config } from '../middleware.ts';
+import middleware, { canonicalPath, sanitize, config } from '../middleware.ts';
 import { ROUTES, NOT_FOUND_MARKDOWN } from '../lib/routes.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
@@ -96,6 +96,33 @@ test('answers a Markdown 404 with recovery links for an unknown path', async () 
   assert.ok(body.includes(`${ORIGIN}/sitemap.xml`), 'should point at the sitemap');
   assert.ok(body.includes(`${ORIGIN}/llms.txt`), 'should point at llms.txt');
   assert.ok(body.includes(`${ORIGIN}/guides`), 'should point at the guides index');
+});
+
+test('a reflected value cannot carry markup or control characters back', () => {
+  // new URL() percent-encodes backticks, so this is unreachable through
+  // middleware() — which is exactly why it is worth pinning directly.
+  assert.equal(sanitize('/a`b'), '/ab');
+  assert.equal(sanitize('/a\nb'), '/ab');
+  assert.equal(sanitize('/a\u0000b'), '/ab');
+  assert.equal(sanitize('/' + 'x'.repeat(500)).length, 120, 'long values are truncated');
+});
+
+test('the 404 body echoes the missed path in one code span', async () => {
+  const response = await middleware(request('/nope`%0a%23-injected', 'text/markdown'));
+  const line = (await response.text()).split('\n').find((l) => l.startsWith('No page exists at'));
+  assert.ok(line, 'the 404 must name the path that was missed');
+  assert.equal((line.match(/`/g) || []).length, 2, 'exactly one code span');
+});
+
+test('builds no body for HEAD on the 404 and 406 branches', async () => {
+  // Vercel strips it anyway, but the response must not depend on that.
+  for (const [path, accept] of [['/no-such-page', 'text/markdown'], ['/', 'application/pdf']]) {
+    const response = await middleware(request(path, accept, 'HEAD'));
+    assert.equal(response.body, null, `${path} (${accept})`);
+    const get = await middleware(request(path, accept));
+    assert.equal(response.status, get.status);
+    assert.equal(response.headers.get('content-type'), get.headers.get('content-type'));
+  }
 });
 
 test('lets unknown paths fall through to the static 404 page for browsers', async () => {
