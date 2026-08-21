@@ -126,17 +126,22 @@ test('lets unknown paths fall through to the static 404 page for browsers', asyn
 
 // --- Robustness ------------------------------------------------------------
 
-test('HEAD answers with exactly the headers GET would send', async () => {
-  // A null-body Response loses its Content-Type on Vercel, and Content-Type is
-  // the header acceptmarkdown.com's `curl -sI` check looks for. So HEAD is
-  // answered like GET and the platform strips the body.
-  const head = await middleware(request('/', 'text/markdown', 'HEAD'));
-  const get = await middleware(request('/', 'text/markdown'));
-  assert.equal(head.status, get.status);
-  for (const header of ['content-type', 'vary', 'cache-control', 'link']) {
-    assert.equal(head.headers.get(header), get.headers.get(header), header);
-  }
-  assert.equal(head.headers.get('content-type'), 'text/markdown; charset=utf-8');
+test('HEAD rewrites to the static twin so the headers survive', async () => {
+  // Vercel strips Content-Type from any middleware-produced response to HEAD,
+  // and that is the header acceptmarkdown.com's `curl -sI` check reads. A
+  // rewrite hands the request to the static layer, which keeps it.
+  const response = await middleware(request('/guides', 'text/markdown', 'HEAD'));
+  assert.equal(
+    response.headers.get('x-middleware-rewrite'),
+    `${ORIGIN}/md/guides/index.md`,
+  );
+  assert.equal(await response.text(), '', 'a rewrite carries no body of its own');
+});
+
+test('HEAD on an unknown path still answers a Markdown 404', async () => {
+  const response = await middleware(request('/no-such-page', 'text/markdown', 'HEAD'));
+  assert.equal(response.status, 404);
+  assert.equal(response.headers.get('x-middleware-rewrite'), null);
 });
 
 test('falls back to HTML when something answers in place of the twin', async () => {

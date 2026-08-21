@@ -115,9 +115,6 @@ export default async function middleware(request) {
   try {
     const method = request.method.toUpperCase();
     if (method !== 'GET' && method !== 'HEAD') return undefined;
-    // HEAD is answered exactly like GET: the platform strips the body, and a
-    // null-body Response loses its Content-Type, which is the one header a
-    // HEAD-based compliance check is looking for.
 
     const url = new URL(request.url);
     const accept = request.headers.get('accept');
@@ -143,6 +140,17 @@ export default async function middleware(request) {
       });
     }
 
+    // Vercel strips Content-Type from any middleware-produced response to a
+    // HEAD request — and Content-Type is exactly what acceptmarkdown.com's
+    // `curl -sI` compliance check reads. Rewriting to the static twin instead
+    // lets the file-serving layer set the headers, which it keeps on HEAD.
+    // `Vary` still comes from the vercel.json rule for the requested path.
+    if (method === 'HEAD') {
+      return new Response(null, {
+        headers: { 'x-middleware-rewrite': new URL(twin, url.origin).toString() },
+      });
+    }
+
     const cookie = protectionCookie(request);
     const upstream = await fetch(new URL(twin, url.origin), {
       headers: cookie ? { cookie } : undefined,
@@ -158,9 +166,6 @@ export default async function middleware(request) {
       status: 200,
       headers: {
         'content-type': MARKDOWN_TYPE,
-        // Declared explicitly: on HEAD the platform discards the body, and a
-        // response it considers empty loses its Content-Type on the way out.
-        'content-length': String(new TextEncoder().encode(markdown).length),
         'cache-control': 'public, max-age=0, must-revalidate',
         vary: 'Accept, Accept-Encoding',
         // Point agents back at the HTML representation of the same resource.
