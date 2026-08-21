@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Privacy — J-Bot Review</title>
+<meta name="description" content="What www.pgupai.com collects (nothing), which third parties see a request, and where your code goes when you run J-Bot Review in your own CI." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/privacy" />
+<link rel="alternate" type="text/markdown" href="/md/privacy.md" title="Markdown representation" />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.pgupai.com/privacy" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="Privacy — J-Bot Review" />
+<meta property="og:description" content="What www.pgupai.com collects (nothing), which third parties see a request, and where your code goes when you run J-Bot Review in your own CI." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-20260704.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-20260704.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Privacy — J-Bot Review" />
+<meta name="twitter:description" content="What www.pgupai.com collects (nothing), which third parties see a request, and where your code goes when you run J-Bot Review in your own CI." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-20260704.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://www.pgupai.com/privacy#page",
+      "name": "Privacy — J-Bot Review",
+      "url": "https://www.pgupai.com/privacy",
+      "description": "What this site collects, which third parties see a request, and where your code goes when you run J-Bot Review.",
+      "publisher": {
+        "@id": "https://www.pgupai.com/#org"
+      },
+      "isPartOf": {
+        "@id": "https://www.pgupai.com/#website"
+      },
+      "dateModified": "2026-08-21"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "J-Bot Review",
+          "item": "https://www.pgupai.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Privacy",
+          "item": "https://www.pgupai.com/privacy"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  /* Tokens mirrored from the landing page (index.html) */
+  :root {
+    --bg: #0a0b0a; --surface: #0e100e; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 780px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 780px; margin-inline: auto; padding: 52px 24px 24px; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(30px, 5vw, 42px); letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 12px; }
+  .lede { font-size: 17px; color: var(--text-2); margin: 0 0 8px; }
+  .lede b { color: var(--text); font-weight: 600; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 36px; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 22px; letter-spacing: -0.015em; margin: 40px 0 14px; }
+  h3 { font-family: var(--display); font-weight: 600; font-size: 17px; letter-spacing: -0.01em; margin: 26px 0 8px; }
+  p { color: var(--text-2); margin: 0 0 14px; }
+  p b, li b { color: var(--text); font-weight: 600; }
+  ul, ol { color: var(--text-2); padding-left: 20px; margin: 0 0 14px; }
+  li { margin-bottom: 8px; }
+  code { font-family: var(--mono); font-size: 0.9em; background: rgba(255,255,255,0.05); border: 1px solid var(--hairline); border-radius: 5px; padding: 1px 5px; color: var(--text); }
+  .callout { border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 16px 18px; margin: 22px 0; }
+  .callout .tag { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .res-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 8px; }
+  .rel-card { display: block; border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 18px; color: var(--text); transition: border-color 0.16s var(--ease); }
+  .rel-card:hover { border-color: rgba(94,227,154,0.35); color: var(--text); }
+  .rel-card .k2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 7px; }
+  .rel-card p { margin: 6px 0 0; font-size: 13px; color: var(--text-3); }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 780px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides">Guides</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<article>
+<p class="crumbs"><a href="/">Home</a> / Privacy</p>
+  <h1>Privacy</h1>
+  <p class="lede">This page covers two separate things that are easy to confuse: <b>what this website does with your data</b>, and <b>where your code goes when you run J-Bot Review</b>. The short version is that this site collects nothing, and your code never reaches PGUP AI.</p>
+  <p class="updated">Last updated August 21, 2026</p>
+
+  <h2>What this website collects</h2>
+  <p><b>Nothing.</b> www.pgupai.com is a set of static HTML files. It has:</p>
+  <ul>
+    <li><b>No analytics.</b> There is no Google Analytics, no Plausible, no Vercel Analytics, and no telemetry pixel of any kind.</li>
+    <li><b>No cookies.</b> The site sets none. There is nothing to consent to, which is why you have never seen a banner here.</li>
+    <li><b>No local storage.</b> Nothing is written to <code>localStorage</code> or <code>sessionStorage</code>.</li>
+    <li><b>No accounts, forms, or sign-ups.</b> There is no field on this site in which you could type personal data.</li>
+    <li><b>No advertising or tracking networks.</b> No third-party ad, retargeting, or fingerprinting script is loaded.</li>
+  </ul>
+
+  <h2>Who sees a request anyway</h2>
+  <p>Serving a web page is not free of third parties, so here are the two that exist:</p>
+  <ul>
+    <li><b>Vercel</b> hosts this site. Like any web host, its edge network processes the request in order to answer it and keeps standard operational logs — IP address, user agent, requested path, timestamp — under <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Vercel's privacy policy</a>. PGUP AI does not use those logs to build a profile of you.</li>
+    <li><b>Google Fonts</b> serves the three typefaces this site uses. Your browser fetches them from <code>fonts.googleapis.com</code> and <code>fonts.gstatic.com</code>, which discloses your IP address and user agent to Google under <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's privacy policy</a>. If that matters to you, blocking those two hosts degrades the site to system fonts and nothing else breaks.</li>
+  </ul>
+  <p>Content negotiation on this site is stateless. Asking for the Markdown representation of a page with <code>Accept: text/markdown</code> is handled per request and stores nothing about you.</p>
+
+  <h2>Where your code goes when you run J-Bot Review</h2>
+  <p>This is the part that matters most, and it is a property of the software rather than of this website.</p>
+  <p>On the standard Action path, <b>PGUP AI never receives your code</b>. The reviewer is a container action that GitHub runs on your own runner. It reads your checkout read-only. The pull-request diff and the context the agent requests go to <b>the model provider whose key you configured</b>, under your own account and that provider's data-retention terms. There is no third-party reviewer service in the loop, and no J-Bot server that your diff passes through.</p>
+  <p>Two consequences follow from that:</p>
+  <ul>
+    <li><b>Your provider's terms are the ones that apply</b> to your code, not ours. That includes free model routes — some are explicitly feedback routes with no published zero-retention wording, and the guides say so where that is the case.</li>
+    <li><b>Fork pull requests cannot spend your key.</b> On <code>pull_request</code> events GitHub strips secrets from fork pull requests.</li>
+  </ul>
+  <div class="callout">
+    <span class="tag">Optional routes differ</span>
+    <p>Two optional, private-beta routes have a different topology and are documented separately. The <a href="/guides/local-agent-code-review">ACP gateway</a> keeps an agent's provider credential on a companion machine you control, but the gateway relays and journals review prompts, diffs, reasoning, tool activity, and findings — so run it inside a trust boundary you control. The hosted GitHub App stores the model keys you add, encrypted at rest. Neither is the standard path, and neither is enabled unless you choose it.</p>
+  </div>
+
+  <h2>Your rights</h2>
+  <p>Because this site holds no personal data about you, there is no account to delete, no profile to export, and no mailing list to leave. If you believe PGUP AI holds data about you and you want it removed, <a href="/contact">get in touch</a> and it will be dealt with.</p>
+
+  <h2>Changes to this page</h2>
+  <p>If this site ever starts collecting something — analytics, for example — this page will be updated before that happens, and the change will be visible in the <a href="https://github.com/pgup-ai/jbot-review-landing" target="_blank" rel="noopener noreferrer">public commit history</a> of the repository that contains it. The date at the top of this page is the last time it changed.</p>
+
+  <h2>Related</h2>
+  <div class="res-grid">
+    <a class="rel-card" href="/about"><span class="k2">About</span>About the project<p>Who builds J-Bot Review and why it runs in your CI.</p></a>
+    <a class="rel-card" href="/contact"><span class="k2">Contact</span>Get in touch<p>The public channel, and how to report a security issue.</p></a>
+    <a class="rel-card" href="/guides/local-agent-code-review"><span class="k2">Guide</span>ACP gateway topology<p>Where credentials, clones, and journal data live on the optional route.</p></a>
+  </div>
+</article>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/privacy">Privacy</a> · <a href="https://github.com/pgup-ai/jbot-review-action" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
