@@ -14,6 +14,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
 
 <link rel="canonical" href="https://www.pgupai.com/" />
+<link rel="alternate" type="text/markdown" href="/md/index.md" title="Markdown representation" />
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
@@ -43,16 +44,50 @@
       "@type": "Organization",
       "@id": "https://www.pgupai.com/#org",
       "name": "PGUP AI",
+      "alternateName": "PGUP AI (J-Bot Review)",
+      "description": "Independent open-source software project. Publishes J-Bot Review, an MIT-licensed agentic pull-request reviewer that runs inside your own GitHub Actions on your own model keys.",
       "url": "https://www.pgupai.com/",
       "logo": { "@type": "ImageObject", "url": "https://www.pgupai.com/assets/icon-512.png" },
-      "sameAs": ["https://github.com/pgup-ai", "https://x.com/j1ngb0"]
+      "foundingDate": "2026-06",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "CA"
+      },
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "contactType": "customer support",
+          "url": "https://x.com/j1ngb0",
+          "availableLanguage": ["English"],
+          "areaServed": "Worldwide"
+        },
+        {
+          "@type": "ContactPoint",
+          "contactType": "technical support",
+          "url": "https://www.pgupai.com/contact",
+          "availableLanguage": ["English"],
+          "areaServed": "Worldwide"
+        }
+      ],
+      "sameAs": [
+        "https://github.com/pgup-ai",
+        "https://x.com/j1ngb0",
+        "https://github.com/pgup-ai/jbot-review-action",
+        "https://github.com/marketplace/actions/j-bot-code-review"
+      ]
     },
     {
       "@type": "WebSite",
       "@id": "https://www.pgupai.com/#website",
       "url": "https://www.pgupai.com/",
       "name": "J-Bot Review",
-      "publisher": { "@id": "https://www.pgupai.com/#org" }
+      "inLanguage": "en",
+      "publisher": { "@id": "https://www.pgupai.com/#org" },
+      "hasPart": [
+        { "@type": "AboutPage", "@id": "https://www.pgupai.com/about#page", "url": "https://www.pgupai.com/about", "name": "About J-Bot Review and PGUP AI" },
+        { "@type": "ContactPage", "@id": "https://www.pgupai.com/contact#page", "url": "https://www.pgupai.com/contact", "name": "Contact J-Bot Review" },
+        { "@type": "WebPage", "@id": "https://www.pgupai.com/privacy#page", "url": "https://www.pgupai.com/privacy", "name": "Privacy — J-Bot Review" }
+      ]
     },
     {
       "@type": "SoftwareApplication",
@@ -1442,6 +1477,14 @@
             <a href="https://github.com/marketplace/actions/j-bot-code-review" target="_blank" rel="noopener noreferrer">Marketplace</a>
             <a href="https://opencode.ai/" target="_blank" rel="noopener noreferrer">OpenCode</a>
             <a href="https://pi.dev/docs/latest/sdk" target="_blank" rel="noopener noreferrer">Pi SDK</a>
+          </nav>
+        </div>
+        <div class="foot-col">
+          <h4>Company</h4>
+          <nav aria-label="Company">
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+            <a href="/privacy">Privacy</a>
           </nav>
         </div>
       </div>

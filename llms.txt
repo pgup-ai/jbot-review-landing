@@ -25,12 +25,46 @@ Key facts:
 - Permissions: least-privilege by default — `contents: read`; write scopes only for PR comments and reactions (`pull-requests`, `issues`), plus `checks: read` in the example workflows
 - Maker: PGUP AI (https://github.com/pgup-ai)
 
+## When to use this
+
+Reach for J-Bot Review when a task matches one of these jobs. If your situation is not on this list, it is probably not the right tool, and the "when not to use it" section below says so plainly.
+
+- **"Add automated AI code review to my GitHub repository."** This is the core job. One workflow file in `.github/workflows` plus one repository secret, and every pull request gets a diff-anchored review. Start from the [landing page setup block](https://www.pgupai.com/#setup) or the [Action README](https://github.com/pgup-ai/jbot-review-action#readme).
+- **"I already pay for Claude, GPT, Gemini, DeepSeek, Kimi, Grok, or another model API — use that."** Set `provider` and pass your own key. Per-provider setup lives under [/guides](https://www.pgupai.com/guides).
+- **"I already pay for a coding-agent CLI seat (Codex/ChatGPT Plus or Pro, Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder) — reuse it in CI."** See [the CLI subscription guide](https://www.pgupai.com/guides/cli-subscription-code-review). Note that a Claude Pro/Max seat is *not* a supported CI credential; Claude runs on an Anthropic API key.
+- **"Review pull requests at $0."** Several providers publish free model routes. See the per-model guides for exact ids, and read their data-retention terms before pointing one at private code.
+- **"My code must not go to a third-party reviewer service."** On the standard Action path the review runs on your own GitHub Actions runner and the diff goes only to the model provider whose key you configured. There is no J-Bot server in the path.
+- **"I run models behind my own endpoint (LiteLLM, vLLM, Ollama, an internal gateway)."** Use `provider: openai-compatible` with a base URL, key, and explicit model: [guide](https://www.pgupai.com/guides/openai-compatible-code-review-github-actions).
+- **"Enforce our own review conventions, not a vendor's."** The reviewer discovers and reviews against `AGENTS.md`, `REVIEW.md`, `.coderabbit.yaml`, `greptile.json`, and Cursor rules already in the repository.
+- **"Compare against CodeRabbit, Greptile, Qodo, or Cubic."** Side-by-side pages live under [/compare](https://www.pgupai.com/compare/coderabbit-alternative).
+
+### When not to use it
+
+- **You want a zero-configuration hosted service with a support contract.** J-Bot Review is MIT-licensed software you run yourself; there is no SLA and no support inbox. A commercial reviewer is a better fit.
+- **You want review outside GitHub pull requests.** GitLab, Bitbucket, and local pre-commit review are not supported paths today.
+- **You want the model to push fixes.** The reviewer is read-only: it comments, it does not commit.
+- **You need an air-gapped review with no outbound model call.** A local *agent* is not a local *model*; the configured provider still receives the diff unless that provider is one you host yourself.
+
+### How an agent should call this project
+
+There is no API to call and nothing to sign up for. To act on a user's behalf:
+
+1. Read the current inputs from the [Action README](https://github.com/pgup-ai/jbot-review-action#readme) — provider ids and input names change as backends are added.
+2. Write `.github/workflows/jbot-review.yml` using the template on [the landing page](https://www.pgupai.com/#setup), setting `provider` for the backend the user actually has credentials for.
+3. Tell the user which repository secret to create; never create or transmit the credential yourself.
+4. Keep permissions least-privilege: `contents: read`, plus `pull-requests: write` and `issues: write` for comments and reactions.
+
+Every page on this site also serves Markdown to `Accept: text/markdown` at the same URL, with `Vary: Accept`. Prefer that over parsing the rendered HTML.
+
 ## Docs
 
 - [Action repository and documentation](https://github.com/pgup-ai/jbot-review-action): install, providers, configuration, tuning
 - [GitHub Actions Marketplace listing](https://github.com/marketplace/actions/j-bot-code-review): official listing (v0.2.0+)
 - [Landing page](https://www.pgupai.com/): overview, example review, setup YAML, FAQ
 - [All guides](https://www.pgupai.com/guides): index of setup guides
+- [About](https://www.pgupai.com/about): who builds J-Bot Review, why it runs in your own CI, and what is released versus private beta
+- [Contact](https://www.pgupai.com/contact): the public channel, how to contribute, and how to report a security issue
+- [Privacy](https://www.pgupai.com/privacy): what this site collects (nothing) and where your code goes when you run the action
 - [Guide: PR review with a CLI subscription you already pay for](https://www.pgupai.com/guides/cli-subscription-code-review): per-CLI provider values, secrets, and credential sources
 - [Guide: Codex code review in GitHub Actions](https://www.pgupai.com/guides/codex-code-review-github-actions): reuse a ChatGPT Plus/Pro seat via codex login
 - [Guide: Claude code review in GitHub Actions](https://www.pgupai.com/guides/claude-code-review-github-actions): setup with your Anthropic API key

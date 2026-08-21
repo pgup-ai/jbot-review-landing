@@ -1,0 +1,249 @@
+import test, { before, after } from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import middleware, { canonicalPath, sanitize, config } from '../middleware.ts';
+import { ROUTES, NOT_FOUND_MARKDOWN } from '../lib/routes.mjs';
+
+const ROOT = path.resolve(import.meta.dirname, '..');
+const ORIGIN = 'https://www.pgupai.com';
+
+/** Serve /md/*.md from disk so the middleware can be exercised offline. */
+const realFetch = globalThis.fetch;
+before(() => {
+  globalThis.fetch = async (input) => {
+    const target = new URL(input instanceof Request ? input.url : String(input));
+    const file = path.join(ROOT, target.pathname.replace(/^\//, ''));
+    if (!fs.existsSync(file)) return new Response('not found', { status: 404 });
+    return new Response(fs.readFileSync(file, 'utf8'), { status: 200 });
+  };
+});
+after(() => { globalThis.fetch = realFetch; });
+
+const request = (pathname, accept, method = 'GET') =>
+  new Request(`${ORIGIN}${pathname}`, {
+    method,
+    headers: accept === undefined ? {} : { accept },
+  });
+
+test('normalises paths to the clean URL used as the route key', () => {
+  assert.equal(canonicalPath('/'), '/');
+  assert.equal(canonicalPath('/index'), '/');
+  assert.equal(canonicalPath('/index.html'), '/');
+  assert.equal(canonicalPath('/guides/'), '/guides');
+  assert.equal(canonicalPath('/guides/index'), '/guides');
+  assert.equal(canonicalPath('/guides/index.html'), '/guides');
+  assert.equal(canonicalPath('/guides//claude-code-review-github-actions'), '/guides/claude-code-review-github-actions');
+  assert.equal(canonicalPath('/about.html'), '/about');
+});
+
+// --- Negotiated responses --------------------------------------------------
+
+test('serves Markdown at the same URL for Accept: text/markdown', async () => {
+  const response = await middleware(request('/guides', 'text/markdown'));
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('content-type'), 'text/markdown; charset=utf-8');
+  // Points agents back at the HTML representation of the same resource.
+  assert.equal(response.headers.get('link'), `<${ORIGIN}/guides>; rel="canonical"`);
+  const body = await response.text();
+  assert.match(body, /^#|^\*\*/m);
+  assert.ok(body.includes('J-Bot'), 'markdown body should carry the page content');
+});
+
+test('sets Vary: Accept on every negotiated response', async () => {
+  for (const accept of ['text/markdown', 'application/pdf', 'text/markdown, text/html;q=0.1']) {
+    const response = await middleware(request('/guides', accept));
+    if (response) assert.equal(response.headers.get('vary'), 'Accept, Accept-Encoding', `Accept: ${accept}`);
+  }
+});
+
+test('leaves HTML requests untouched so the static file is served', async () => {
+  const browser = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8';
+  assert.equal(await middleware(request('/', browser)), undefined);
+  assert.equal(await middleware(request('/guides', 'text/html')), undefined);
+  assert.equal(await middleware(request('/', undefined)), undefined);
+  assert.equal(await middleware(request('/', '*/*')), undefined);
+});
+
+test('answers 406 when the client accepts nothing this site produces', async () => {
+  const response = await middleware(request('/', 'application/pdf'));
+  assert.equal(response.status, 406);
+  assert.equal(response.headers.get('content-type'), 'text/plain; charset=utf-8');
+  const body = await response.text();
+  assert.match(body, /text\/html/);
+  assert.match(body, /text\/markdown/);
+  assert.match(body, /You requested: application\/pdf/);
+  // The same URL answers 200 for a different Accept, so it must not be cached.
+  assert.equal(response.headers.get('cache-control'), 'no-store');
+});
+
+test('honours q=0 rather than substring-matching the Accept header', async () => {
+  // "anything but markdown" must still get HTML, not a Markdown body.
+  assert.equal(await middleware(request('/', 'text/markdown;q=0, text/html')), undefined);
+  // Markdown ranked above HTML wins.
+  const response = await middleware(request('/', 'text/markdown, text/html;q=0.8'));
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('content-type'), 'text/markdown; charset=utf-8');
+});
+
+test('answers a Markdown 404 with recovery links for an unknown path', async () => {
+  const response = await middleware(request('/no-such-page', 'text/markdown'));
+  assert.equal(response.status, 404);
+  assert.equal(response.headers.get('content-type'), 'text/markdown; charset=utf-8');
+  const body = await response.text();
+  assert.match(body, /^# 404/);
+  assert.ok(body.includes('/no-such-page'), 'should name the path that was missed');
+  assert.ok(body.includes(`${ORIGIN}/sitemap.xml`), 'should point at the sitemap');
+  assert.ok(body.includes(`${ORIGIN}/llms.txt`), 'should point at llms.txt');
+  assert.ok(body.includes(`${ORIGIN}/guides`), 'should point at the guides index');
+});
+
+test('a reflected value cannot carry markup or control characters back', () => {
+  // new URL() percent-encodes backticks, so this is unreachable through
+  // middleware() — which is exactly why it is worth pinning directly.
+  assert.equal(sanitize('/a`b'), '/ab');
+  assert.equal(sanitize('/a\nb'), '/ab');
+  assert.equal(sanitize('/a\u0000b'), '/ab');
+  assert.equal(sanitize('/' + 'x'.repeat(500)).length, 120, 'long values are truncated');
+});
+
+test('the 404 body echoes the missed path in one code span', async () => {
+  const response = await middleware(request('/nope`%0a%23-injected', 'text/markdown'));
+  const line = (await response.text()).split('\n').find((l) => l.startsWith('No page exists at'));
+  assert.ok(line, 'the 404 must name the path that was missed');
+  assert.equal((line.match(/`/g) || []).length, 2, 'exactly one code span');
+});
+
+test('builds no body for HEAD on the 404 and 406 branches', async () => {
+  // Vercel strips it anyway, but the response must not depend on that.
+  for (const [path, accept] of [['/no-such-page', 'text/markdown'], ['/', 'application/pdf']]) {
+    const response = await middleware(request(path, accept, 'HEAD'));
+    assert.equal(response.body, null, `${path} (${accept})`);
+    const get = await middleware(request(path, accept));
+    assert.equal(response.status, get.status);
+    assert.equal(response.headers.get('content-type'), get.headers.get('content-type'));
+  }
+});
+
+test('lets unknown paths fall through to the static 404 page for browsers', async () => {
+  assert.equal(await middleware(request('/no-such-page', 'text/html')), undefined);
+  assert.equal(await middleware(request('/no-such-page', undefined)), undefined);
+});
+
+// --- Robustness ------------------------------------------------------------
+
+test('HEAD rewrites to the static twin so the headers survive', async () => {
+  // Vercel strips Content-Type from any middleware-produced response to HEAD,
+  // and that is the header acceptmarkdown.com's `curl -sI` check reads. A
+  // rewrite hands the request to the static layer, which keeps it.
+  const response = await middleware(request('/guides', 'text/markdown', 'HEAD'));
+  assert.equal(
+    response.headers.get('x-middleware-rewrite'),
+    `${ORIGIN}/md/guides/index.md`,
+  );
+  assert.equal(await response.text(), '', 'a rewrite carries no body of its own');
+});
+
+test('HEAD on an unknown path still answers a Markdown 404', async () => {
+  const response = await middleware(request('/no-such-page', 'text/markdown', 'HEAD'));
+  assert.equal(response.status, 404);
+  assert.equal(response.headers.get('x-middleware-rewrite'), null);
+});
+
+test('falls back to HTML when something answers in place of the twin', async () => {
+  const saved = globalThis.fetch;
+  // A deployment-protection interstitial or error page: 200, but HTML.
+  const interstitials = [
+    new Response('<!DOCTYPE html><html><body>Log in</body></html>', {
+      status: 200, headers: { 'content-type': 'text/html; charset=utf-8' },
+    }),
+    // Same trap without a giveaway Content-Type.
+    new Response('<html><body>Authenticating…</body></html>', { status: 200 }),
+  ];
+  try {
+    for (const canned of interstitials) {
+      globalThis.fetch = async () => canned.clone();
+      assert.equal(
+        await middleware(request('/', 'text/markdown')),
+        undefined,
+        'must not serve HTML under a text/markdown Content-Type',
+      );
+    }
+  } finally {
+    globalThis.fetch = saved;
+  }
+});
+
+test('forwards only the deployment-protection cookie to the twin subrequest', async () => {
+  const saved = globalThis.fetch;
+  let seen;
+  globalThis.fetch = async (input, init) => {
+    seen = init?.headers;
+    return new Response('# Page\n\n' + 'x'.repeat(500), { status: 200 });
+  };
+  try {
+    const req = new Request(`${ORIGIN}/`, {
+      headers: { accept: 'text/markdown', cookie: 'session=secret; _vercel_jwt=abc123; other=nope' },
+    });
+    await middleware(req);
+    assert.equal(seen.cookie, '_vercel_jwt=abc123');
+    assert.doesNotMatch(seen.cookie, /secret|other/, 'must not forward unrelated cookies');
+
+    await middleware(request('/', 'text/markdown'));
+    assert.equal(seen?.cookie, undefined, 'no cookie in, no cookie header out');
+  } finally {
+    globalThis.fetch = saved;
+  }
+});
+
+test('ignores non-GET methods entirely', async () => {
+  for (const method of ['POST', 'PUT', 'DELETE', 'OPTIONS']) {
+    assert.equal(await middleware(request('/', 'text/markdown', method)), undefined, method);
+  }
+});
+
+test('falls back to HTML when the Markdown twin cannot be fetched', async () => {
+  const saved = globalThis.fetch;
+  globalThis.fetch = async () => new Response('gone', { status: 500 });
+  try {
+    assert.equal(await middleware(request('/', 'text/markdown')), undefined);
+  } finally {
+    globalThis.fetch = saved;
+  }
+});
+
+test('fails open to static serving if anything throws', async () => {
+  const saved = globalThis.fetch;
+  globalThis.fetch = async () => { throw new Error('network down'); };
+  try {
+    assert.equal(await middleware(request('/', 'text/markdown')), undefined);
+  } finally {
+    globalThis.fetch = saved;
+  }
+});
+
+// --- Route-table integrity -------------------------------------------------
+
+test('the 404 Markdown body exists, since no route points at it', () => {
+  assert.ok(fs.existsSync(path.join(ROOT, NOT_FOUND_MARKDOWN.slice(1))), NOT_FOUND_MARKDOWN);
+});
+
+test('the matcher excludes assets, twins, and extensioned files', () => {
+  const pattern = new RegExp(`^${config.matcher[0]}$`);
+  for (const excluded of ['/assets/logo.png', '/md/index.md', '/robots.txt', '/sitemap.xml', '/llms.txt', '/x']) {
+    assert.equal(pattern.test(excluded), false, `${excluded} should not reach the middleware`);
+  }
+  for (const included of ['/', '/guides', '/guides/claude-code-review-github-actions', '/about', '/no-such-page']) {
+    assert.equal(pattern.test(included), true, `${included} should reach the middleware`);
+  }
+});
+
+test('serves each route its own non-empty Markdown twin', async () => {
+  for (const [url, twin] of Object.entries(ROUTES)) {
+    const response = await middleware(request(url, 'text/markdown'));
+    assert.equal(response.status, 200, url);
+    const body = await response.text();
+    assert.ok(body.length > 400, `${url} served a suspiciously short body`);
+    assert.equal(body, fs.readFileSync(path.join(ROOT, twin.slice(1)), 'utf8'), `${url} served the wrong twin`);
+  }
+});

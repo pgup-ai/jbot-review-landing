@@ -1,2 +1,5 @@
 # Repo tooling that should not be served as part of the static site.
 scripts/
+test/
+
+# lib/ IS deployed: middleware.ts imports lib/negotiate.mjs and lib/routes.mjs.
