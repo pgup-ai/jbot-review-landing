@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { htmlToMarkdown, decodeEntities, textOf, parseFragment } from '../lib/markdown.mjs';
+import { htmlToMarkdown, decodeEntities } from '../lib/markdown.mjs';
 import { contentPages, markdownPathFor, urlPathFor, build, ORIGIN } from '../scripts/build-markdown.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
@@ -130,11 +130,6 @@ test('does not escape underscores inside words', () => {
 test('escapes characters that would otherwise start Markdown syntax', () => {
   assert.match(convert('<p>a [b] c</p>'), /a \\\[b\\\] c/);
   assert.match(convert('<p>2 * 3</p>'), /2 \\\* 3/);
-});
-
-test('textOf strips markup but keeps readable text', () => {
-  const tree = parseFragment('<p>a <b>b</b><span aria-hidden="true">x</span></p>');
-  assert.equal(textOf(tree).trim(), 'a b');
 });
 
 test('throws on a page without a <main> element', () => {

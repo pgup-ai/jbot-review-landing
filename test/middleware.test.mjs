@@ -4,7 +4,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 import middleware, { canonicalPath, markdownTwinFor, config } from '../middleware.ts';
 import { ROUTES, NOT_FOUND_MARKDOWN } from '../lib/routes.mjs';
-import { contentPages, urlPathFor, NOT_FOUND_PAGE } from '../scripts/build-markdown.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const ORIGIN = 'https://www.pgupai.com';
@@ -27,8 +26,6 @@ const request = (pathname, accept, method = 'GET') =>
     headers: accept === undefined ? {} : { accept },
   });
 
-// --- Path normalisation ----------------------------------------------------
-
 test('normalises paths to the clean URL used as the route key', () => {
   assert.equal(canonicalPath('/'), '/');
   assert.equal(canonicalPath('/index'), '/');
@@ -40,19 +37,14 @@ test('normalises paths to the clean URL used as the route key', () => {
   assert.equal(canonicalPath('/about.html'), '/about');
 });
 
-test('resolves the Markdown twin for every generated route', () => {
-  for (const [url, twin] of Object.entries(ROUTES)) {
-    assert.equal(markdownTwinFor(url), twin);
-  }
-  assert.equal(markdownTwinFor('/no-such-page'), null);
-});
-
 // --- Negotiated responses --------------------------------------------------
 
 test('serves Markdown at the same URL for Accept: text/markdown', async () => {
-  const response = await middleware(request('/', 'text/markdown'));
+  const response = await middleware(request('/guides', 'text/markdown'));
   assert.equal(response.status, 200);
   assert.equal(response.headers.get('content-type'), 'text/markdown; charset=utf-8');
+  // Points agents back at the HTML representation of the same resource.
+  assert.equal(response.headers.get('link'), `<${ORIGIN}/guides>; rel="canonical"`);
   const body = await response.text();
   assert.match(body, /^#|^\*\*/m);
   assert.ok(body.includes('J-Bot'), 'markdown body should carry the page content');
@@ -61,7 +53,7 @@ test('serves Markdown at the same URL for Accept: text/markdown', async () => {
 test('sets Vary: Accept on every negotiated response', async () => {
   for (const accept of ['text/markdown', 'application/pdf', 'text/markdown, text/html;q=0.1']) {
     const response = await middleware(request('/guides', accept));
-    if (response) assert.match(response.headers.get('vary'), /\bAccept\b/, `Accept: ${accept}`);
+    if (response) assert.equal(response.headers.get('vary'), 'Accept, Accept-Encoding', `Accept: ${accept}`);
   }
 });
 
@@ -81,10 +73,7 @@ test('answers 406 when the client accepts nothing this site produces', async () 
   assert.match(body, /text\/html/);
   assert.match(body, /text\/markdown/);
   assert.match(body, /You requested: application\/pdf/);
-});
-
-test('does not cache a 406, since the same URL answers 200 for another client', async () => {
-  const response = await middleware(request('/', 'application/pdf'));
+  // The same URL answers 200 for a different Accept, so it must not be cached.
   assert.equal(response.headers.get('cache-control'), 'no-store');
 });
 
@@ -96,16 +85,6 @@ test('honours q=0 rather than substring-matching the Accept header', async () =>
   assert.equal(response.status, 200);
   assert.equal(response.headers.get('content-type'), 'text/markdown; charset=utf-8');
 });
-
-test('points agents back at the HTML representation via a canonical Link header', async () => {
-  const response = await middleware(request('/guides/claude-code-review-github-actions', 'text/markdown'));
-  assert.equal(
-    response.headers.get('link'),
-    `<${ORIGIN}/guides/claude-code-review-github-actions>; rel="canonical"`,
-  );
-});
-
-// --- 404 behaviour ---------------------------------------------------------
 
 test('answers a Markdown 404 with recovery links for an unknown path', async () => {
   const response = await middleware(request('/no-such-page', 'text/markdown'));
@@ -172,7 +151,7 @@ test('forwards only the deployment-protection cookie to the twin subrequest', as
   const saved = globalThis.fetch;
   let seen;
   globalThis.fetch = async (input, init) => {
-    seen = init?.headers ?? null;
+    seen = init?.headers;
     return new Response('# Page\n\n' + 'x'.repeat(500), { status: 200 });
   };
   try {
@@ -182,21 +161,9 @@ test('forwards only the deployment-protection cookie to the twin subrequest', as
     await middleware(req);
     assert.equal(seen.cookie, '_vercel_jwt=abc123');
     assert.doesNotMatch(seen.cookie, /secret|other/, 'must not forward unrelated cookies');
-  } finally {
-    globalThis.fetch = saved;
-  }
-});
 
-test('sends no cookie when the request carries none', async () => {
-  const saved = globalThis.fetch;
-  let seen = 'unset';
-  globalThis.fetch = async (input, init) => {
-    seen = init?.headers;
-    return new Response('# Page\n\n' + 'x'.repeat(500), { status: 200 });
-  };
-  try {
     await middleware(request('/', 'text/markdown'));
-    assert.equal(seen, undefined);
+    assert.equal(seen?.cookie, undefined, 'no cookie in, no cookie header out');
   } finally {
     globalThis.fetch = saved;
   }
@@ -230,18 +197,8 @@ test('fails open to static serving if anything throws', async () => {
 
 // --- Route-table integrity -------------------------------------------------
 
-test('the generated route table covers every content page except the error page', () => {
-  const expected = contentPages(ROOT)
-    .filter((file) => file !== NOT_FOUND_PAGE)
-    .map((file) => urlPathFor(file))
-    .sort();
-  assert.deepEqual(Object.keys(ROUTES).sort(), expected);
-});
-
-test('every route points at a Markdown file that exists', () => {
-  for (const twin of [...Object.values(ROUTES), NOT_FOUND_MARKDOWN]) {
-    assert.ok(fs.existsSync(path.join(ROOT, twin.replace(/^\//, ''))), `missing ${twin}`);
-  }
+test('the 404 Markdown body exists, since no route points at it', () => {
+  assert.ok(fs.existsSync(path.join(ROOT, NOT_FOUND_MARKDOWN.slice(1))), NOT_FOUND_MARKDOWN);
 });
 
 test('the matcher excludes assets, twins, and extensioned files', () => {

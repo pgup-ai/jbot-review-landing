@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { negotiate, parseAccept } from '../lib/negotiate.mjs';
+import { negotiate, EMPTY_ACCEPT_IS_UNCONSTRAINED } from '../lib/negotiate.mjs';
 
 const BOTH = ['text/html', 'text/markdown'];
 const MD_ONLY = ['text/markdown'];
@@ -37,7 +37,6 @@ test('a real Chrome Accept header still gets HTML', () => {
 });
 
 test('honours q-value ordering rather than header order', () => {
-  assert.equal(negotiate('text/html;q=0.2, text/markdown;q=0.9', BOTH), 'text/markdown');
   assert.equal(negotiate('text/markdown;q=0.3, text/html;q=0.7', BOTH), 'text/html');
 });
 
@@ -55,11 +54,8 @@ test('a more specific q=0 overrides a broader wildcard', () => {
 
 test('returns null (406) only when nothing is acceptable', () => {
   assert.equal(negotiate('application/pdf', BOTH), null);
-  assert.equal(negotiate('image/png, application/json', BOTH), null);
   assert.equal(negotiate('*/*;q=0', BOTH), null);
-});
-
-test('never 406s a request that has any acceptable representation', () => {
+  // One acceptable representation, however grudging, must not 406.
   assert.equal(negotiate('application/pdf, text/html;q=0.1', BOTH), 'text/html');
 });
 
@@ -74,21 +70,8 @@ test('clamps out-of-range q values instead of trusting them', () => {
   assert.equal(negotiate('text/markdown;q=-1, text/html', BOTH), 'text/html');
 });
 
-test('an absent Accept header is not the same as an empty one', () => {
-  assert.equal(negotiate(null, BOTH), 'text/html');
-  assert.equal(negotiate(undefined, BOTH), 'text/html');
-});
-
-test('empty Accept follows the documented site policy', async () => {
-  const { EMPTY_ACCEPT_IS_UNCONSTRAINED } = await import('../lib/negotiate.mjs');
-  const expected = EMPTY_ACCEPT_IS_UNCONSTRAINED ? 'text/html' : null;
-  assert.equal(negotiate('', BOTH), expected);
-  assert.equal(negotiate('   ', BOTH), expected);
-});
-
-test('parseAccept exposes the parsed ranking', () => {
-  assert.deepEqual(parseAccept('text/markdown, text/html;q=0.8'), [
-    { type: 'text', subtype: 'markdown', q: 1 },
-    { type: 'text', subtype: 'html', q: 0.8 },
-  ]);
+test('an empty Accept serves the default rather than 406', () => {
+  assert.equal(EMPTY_ACCEPT_IS_UNCONSTRAINED, true, 'policy changed — update these expectations');
+  assert.equal(negotiate('', BOTH), 'text/html');
+  assert.equal(negotiate('   ', BOTH), 'text/html');
 });

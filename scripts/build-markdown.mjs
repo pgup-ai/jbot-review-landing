@@ -16,7 +16,7 @@ import { fileURLToPath } from 'node:url';
 import { htmlToMarkdown } from '../lib/markdown.mjs';
 
 export const ORIGIN = 'https://www.pgupai.com';
-export const OUTPUT_DIR = 'md';
+const OUTPUT_DIR = 'md';
 
 /** Pages that are not content: social-share shims and the like. */
 const EXCLUDED = new Set(['x.html']);
@@ -25,7 +25,7 @@ const EXCLUDED = new Set(['x.html']);
 export const NOT_FOUND_PAGE = '404.html';
 
 /** Generated route table consumed by the Edge Middleware. */
-export const ROUTES_MODULE = 'lib/routes.mjs';
+const ROUTES_MODULE = 'lib/routes.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -37,12 +37,10 @@ export function urlPathFor(file) {
   return `/${withoutExtension}`;
 }
 
-/** Map a repo-relative HTML path to its Markdown twin under `md/`. */
 export function markdownPathFor(file) {
   return path.posix.join(OUTPUT_DIR, file.replace(/\.html$/, '.md'));
 }
 
-/** Every content page in the repo, in stable order. */
 export function contentPages(root = ROOT) {
   const pages = [];
   const walk = (dir) => {
@@ -61,8 +59,8 @@ export function contentPages(root = ROOT) {
   return pages;
 }
 
-/** Render one page's Markdown twin, including its canonical footer. */
-export function renderPage(file, root = ROOT) {
+/** Render one page's twin, including the canonical footer agents recover from. */
+function renderPage(file, root = ROOT) {
   const html = fs.readFileSync(path.join(root, file), 'utf8');
   const urlPath = urlPathFor(file);
   const canonical = `${ORIGIN}${urlPath === '/' ? '/' : urlPath}`;
@@ -78,8 +76,7 @@ export function renderPage(file, root = ROOT) {
   return `${body}\n${footer}`;
 }
 
-/** Render the generated route table the middleware imports. */
-export function renderRoutes(root = ROOT) {
+function renderRoutes(root = ROOT) {
   const entries = contentPages(root)
     .filter((file) => file !== NOT_FOUND_PAGE)
     .map((file) => [urlPathFor(file), `/${markdownPathFor(file)}`])
@@ -100,12 +97,7 @@ export function renderRoutes(root = ROOT) {
   ].join('\n');
 }
 
-/**
- * Build every twin.
- *
- * @param {{check?: boolean, root?: string}} [options]
- * @returns {{path: string, stale: boolean}[]}
- */
+/** Build every twin. With `check`, reports staleness without writing. */
 export function build({ check = false, root = ROOT } = {}) {
   const results = [];
   for (const file of contentPages(root)) {

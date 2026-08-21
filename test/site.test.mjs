@@ -19,12 +19,6 @@ function mainText(file) {
 
 // --- Trust anchor pages (audit item 4) -------------------------------------
 
-test('the trust anchor pages exist', () => {
-  for (const file of TRUST_PAGES) {
-    assert.ok(fs.existsSync(path.join(ROOT, file)), `missing ${file}`);
-  }
-});
-
 test('each trust anchor page carries well over the 500-character minimum', () => {
   for (const file of TRUST_PAGES) {
     const length = mainText(file).length;
@@ -137,10 +131,7 @@ test('llms.txt has a when-to-use section with concrete jobs', () => {
   const bullets = section.split('\n').filter((l) => l.startsWith('- '));
   assert.ok(bullets.length >= 8, `expected concrete use cases, found ${bullets.length}`);
   assert.match(section, /text\/markdown/, 'should tell agents about content negotiation');
-});
 
-test('llms.txt links the trust anchor pages', () => {
-  const llms = read('llms.txt');
   for (const page of ['/about', '/contact', '/privacy']) {
     assert.ok(llms.includes(`${ORIGIN}${page}`), `llms.txt is missing ${page}`);
   }
