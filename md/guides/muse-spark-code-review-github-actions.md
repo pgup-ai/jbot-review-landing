@@ -50,31 +50,31 @@ jobs:
 
 Pick the route where you already manage credentials. Prices are the provider's list rates per million tokens, read from the live catalog on 2026-08-20; quotas and contributor eligibility remain provider-controlled.
 
-**OpenCode**Catalog listed · $0 / $0
+**OpenCode** (Catalog listed · $0 / $0)
 
 `provider: opencode`
 `model: muse-spark-1.2-contributor-free`
 `opencode-api-key`
 
-**OpenCode**Catalog listed · $1.25 / $4.25
+**OpenCode** (Catalog listed · $1.25 / $4.25)
 
 `provider: opencode`
 `model: muse-spark-1.2`
 `opencode-api-key`
 
-**OpenCode Go**Catalog listed · $0.10 / $0.20
+**OpenCode Go** (Catalog listed · $0.10 / $0.20)
 
 `provider: opencode-go`
 `model: muse-spark-1.2-contributor`
 `opencode-api-key`
 
-**Kilo**Catalog listed · $1.25 / $4.25
+**Kilo** (Catalog listed · $1.25 / $4.25)
 
 `provider: kilo`
 `model: kilo/meta/muse-spark-1.2`
 `kilo-auth`
 
-**OpenRouter**Catalog listed · $1.25 / $4.25
+**OpenRouter** (Catalog listed · $1.25 / $4.25)
 
 `provider: openrouter`
 `model: meta/muse-spark-1.2`
@@ -93,7 +93,7 @@ Some providers decide what a caller may reach based on the IP it arrives from, a
 
 `.github/workflows/jbot-review.yml · proxy input`
 
-```
+```yaml
       - uses: pgup-ai/jbot-review-action@v0
         with:
           provider: opencode

@@ -101,7 +101,8 @@ curl -sI -H "Accept: text/markdown" https://www.pgupai.com/guides
 How it fits together:
 
 - `middleware.ts` is Vercel [Routing Middleware](https://vercel.com/docs/routing-middleware),
-  wired through `proxy.entrypoint` in `vercel.json`. It runs *before* the
+  found by root auto-detection — deliberately *not* via `proxy.entrypoint`, which would
+  pin it to the non-bundling Node runtime. It runs *before* the
   filesystem, which is the only hook that can change the representation of a
   path that already exists — `vercel.json` rewrites run *after* the filesystem,
   so they can never intercept `/guides/foo`.

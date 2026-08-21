@@ -50,7 +50,7 @@ jobs:
 
 Laguna S 2.1 is free through all three routes today. Pick based on where you already manage keys; free windows, quotas, and context limits remain provider-controlled.
 
-**Poolside**Direct · verified
+**Poolside** (Direct · verified)
 
 `provider: poolside`
 `model: poolside/laguna-s-2.1`

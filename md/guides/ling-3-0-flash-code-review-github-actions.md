@@ -50,25 +50,25 @@ jobs:
 
 Pick the route where you already manage credentials. Free windows, quotas, and context limits still belong to each provider.
 
-**OpenCode**Catalog verified
+**OpenCode** (Catalog verified)
 
 `provider: opencode`
 `model: ling-3.0-flash-free`
 `opencode-api-key`
 
-**Kilo**Verified
+**Kilo** (Verified)
 
 `provider: kilo`
 `model: kilo/inclusionai/ling-3.0-flash:free`
 `kilo-auth`
 
-**OpenRouter**Verified
+**OpenRouter** (Verified)
 
 `provider: openrouter`
 `model: inclusionai/ling-3.0-flash:free`
 `openrouter-api-key`
 
-**Command Code**Verified
+**Command Code** (Verified)
 
 `provider: commandcode`
 `model: inclusionai/ling-3.0-flash-free`

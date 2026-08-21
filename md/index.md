@@ -82,7 +82,7 @@ jbot-review bot · reviewed 2 files · 40s ago
 
 src/auth/session.ts
 
-```
+```diff
 @@ -41,7 +41,9 @@ export async function createSession(
 -  const token = jwt.sign(payload, SECRET)
 +  const token = jwt.sign(payload, SECRET, {

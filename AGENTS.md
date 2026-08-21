@@ -6,8 +6,10 @@
   `README.md` for the repository layout and local preview command.
 - Preserve the no-build, no-dependency architecture. Do not add a framework, package
   manager, or bundler. There are no npm dependencies and nothing for Vercel to build.
-- One deliberate exception exists: `middleware.ts` is Vercel Routing Middleware, wired
-  through `proxy.entrypoint` in `vercel.json`. It exists because Accept-header content
+- One deliberate exception exists: `middleware.ts` is Vercel Routing Middleware, picked up
+  by Vercel's root auto-detection. Do not add a `proxy` entrypoint to `vercel.json`: that
+  pins it to the Node runtime, which does not bundle its ESM imports and 500s on every
+  request. It exists because Accept-header content
   negotiation is impossible in static config — `vercel.json` rewrites run *after* the
   filesystem, so nothing declarative can intercept a path that already resolves to a
   file. Keep it dependency-free, keep its `try/catch` fail-open behavior, and do not

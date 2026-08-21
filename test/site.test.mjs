@@ -41,8 +41,9 @@ test('the trust anchor pages are reachable from the site footers', () => {
     if (file === NOT_FOUND_PAGE) continue;
     const footer = read(file).match(/<footer[\s\S]*?<\/footer>/);
     assert.ok(footer, `${file} has no footer`);
-    assert.match(footer[0], /href="\/about"/, `${file} footer is missing /about`);
-    assert.match(footer[0], /href="\/privacy"/, `${file} footer is missing /privacy`);
+    for (const page of ['/about', '/contact', '/privacy']) {
+      assert.match(footer[0], new RegExp(`href="${page}"`), `${file} footer is missing ${page}`);
+    }
   }
 });
 

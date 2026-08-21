@@ -50,7 +50,27 @@ test('renders a code card as a caption plus a fenced block with a language', () 
 
 test('reconstructs line breaks from block-styled .row spans inside <pre>', () => {
   const md = convert('<pre class="diff"><span class="row">line one</span><span class="row">line two</span></pre>');
-  assert.equal(md.trim(), '```\nline one\nline two\n```');
+  assert.equal(md.trim(), '```diff\nline one\nline two\n```');
+});
+
+test('labels a diff block so an agent can parse it as one', () => {
+  assert.match(convert('<pre class="diff">- a</pre>'), /^```diff$/m);
+  assert.match(convert('<pre>plain</pre>'), /^```$/m);
+});
+
+test('reads the fence language from a caption that carries a qualifier', () => {
+  const md = convert(
+    '<div class="code-card"><div class="code-head"><span class="file">deploy.yml · extra input</span>' +
+      '</div><pre>a: b</pre></div>',
+  );
+  assert.match(md, /^```yaml$/m);
+});
+
+test('falls back to the literal text for an out-of-range numeric entity', () => {
+  // String.fromCodePoint throws above 0x10FFFF, which would abort the build.
+  assert.equal(decodeEntities('&#1114112;'), '&#1114112;');
+  assert.equal(decodeEntities('&#x110000;'), '&#x110000;');
+  assert.equal(decodeEntities('&#x1F600;'), '😀');
 });
 
 test('renders a table with a header row', () => {
@@ -96,6 +116,8 @@ test('joins a chip row with separators instead of gluing the labels', () => {
 
 test('parenthesises badge labels that sit flush against their text', () => {
   assert.equal(convert('<h3>Custom endpoints<span class="new-tag">new</span></h3>').trim(), '### Custom endpoints (new)');
+  assert.equal(convert('<p><b>Kilo</b><span class="verified">Verified</span></p>').trim(), '**Kilo** (Verified)');
+  assert.equal(convert('<p>OpenCode Zen<i class="ftag">free models</i></p>').trim(), 'OpenCode Zen (free models)');
 });
 
 test('uses the accessible name of a role="img" graphic', () => {
