@@ -83,15 +83,41 @@ function notFoundMarkdown(pathname, origin) {
   );
 }
 
-/** Wrap a body in a response, honouring HEAD (headers only, no body). */
-function respond(body, init, method) {
-  return new Response(method === 'HEAD' ? null : body, init);
+/**
+ * Extract Vercel's deployment-protection cookie, if present.
+ *
+ * The subrequest below is same-origin to our own deployment. On a protected
+ * preview it would otherwise be intercepted by the SSO wall, so forward just
+ * that one cookie — never the caller's whole Cookie header.
+ */
+function protectionCookie(request) {
+  const cookie = request.headers.get('cookie');
+  if (!cookie) return null;
+  const match = /(?:^|;\s*)(_vercel_jwt=[^;]+)/.exec(cookie);
+  return match ? match[1] : null;
+}
+
+/**
+ * True when a subrequest returned something that is not our Markdown twin.
+ *
+ * A deployment-protection interstitial, an error page, or a CDN notice all
+ * answer 200 with HTML. Serving one of those under a text/markdown
+ * Content-Type would hand an agent a page of markup and claim it was
+ * Markdown, which is worse than not negotiating at all.
+ */
+function isNotMarkdown(response, body) {
+  const type = response.headers.get('content-type') || '';
+  if (/\bhtml\b/i.test(type)) return true;
+  return /^\s*<(?:!|html|head|body)/i.test(body);
 }
 
 export default async function middleware(request) {
   try {
     const method = request.method.toUpperCase();
     if (method !== 'GET' && method !== 'HEAD') return undefined;
+    // HEAD is answered exactly like GET: the platform strips the body, and a
+    // null-body Response loses its Content-Type, which is the one header a
+    // HEAD-based compliance check is looking for.
 
     const url = new URL(request.url);
     const accept = request.headers.get('accept');
@@ -107,23 +133,28 @@ export default async function middleware(request) {
     if (!twin) {
       // Unknown path. Answer 404 in the format the agent asked for so it can
       // recover, rather than handing it the styled HTML error page.
-      return respond(notFoundMarkdown(canonicalPath(url.pathname), url.origin), {
+      return new Response(notFoundMarkdown(canonicalPath(url.pathname), url.origin), {
         status: 404,
         headers: {
           'content-type': MARKDOWN_TYPE,
           'cache-control': 'public, max-age=0, must-revalidate',
           vary: 'Accept, Accept-Encoding',
         },
-      }, method);
+      });
     }
 
-    const upstream = await fetch(new URL(twin, url.origin));
-    // If the twin is missing for any reason, fall back to the HTML page
-    // rather than failing the request.
+    const cookie = protectionCookie(request);
+    const upstream = await fetch(new URL(twin, url.origin), {
+      headers: cookie ? { cookie } : undefined,
+    });
+    // If the twin is missing or something answered in its place, fall back to
+    // the HTML page rather than serving the wrong bytes as Markdown.
     if (!upstream.ok) return undefined;
 
     const markdown = await upstream.text();
-    return respond(markdown, {
+    if (isNotMarkdown(upstream, markdown)) return undefined;
+
+    return new Response(markdown, {
       status: 200,
       headers: {
         'content-type': MARKDOWN_TYPE,
@@ -133,7 +164,7 @@ export default async function middleware(request) {
         link: `<${url.origin}${canonicalPath(url.pathname)}>; rel="canonical"`,
         'x-content-type-options': 'nosniff',
       },
-    }, method);
+    });
   } catch {
     // Fail open: any unexpected error serves the site exactly as before.
     return undefined;

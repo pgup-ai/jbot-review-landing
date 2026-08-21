@@ -126,11 +126,75 @@ test('lets unknown paths fall through to the static 404 page for browsers', asyn
 
 // --- Robustness ------------------------------------------------------------
 
-test('HEAD returns the negotiated headers without a body', async () => {
-  const response = await middleware(request('/', 'text/markdown', 'HEAD'));
-  assert.equal(response.status, 200);
-  assert.equal(response.headers.get('content-type'), 'text/markdown; charset=utf-8');
-  assert.equal(await response.text(), '');
+test('HEAD answers with exactly the headers GET would send', async () => {
+  // A null-body Response loses its Content-Type on Vercel, and Content-Type is
+  // the header acceptmarkdown.com's `curl -sI` check looks for. So HEAD is
+  // answered like GET and the platform strips the body.
+  const head = await middleware(request('/', 'text/markdown', 'HEAD'));
+  const get = await middleware(request('/', 'text/markdown'));
+  assert.equal(head.status, get.status);
+  for (const header of ['content-type', 'vary', 'cache-control', 'link']) {
+    assert.equal(head.headers.get(header), get.headers.get(header), header);
+  }
+  assert.equal(head.headers.get('content-type'), 'text/markdown; charset=utf-8');
+});
+
+test('falls back to HTML when something answers in place of the twin', async () => {
+  const saved = globalThis.fetch;
+  // A deployment-protection interstitial or error page: 200, but HTML.
+  const interstitials = [
+    new Response('<!DOCTYPE html><html><body>Log in</body></html>', {
+      status: 200, headers: { 'content-type': 'text/html; charset=utf-8' },
+    }),
+    // Same trap without a giveaway Content-Type.
+    new Response('<html><body>Authenticating…</body></html>', { status: 200 }),
+  ];
+  try {
+    for (const canned of interstitials) {
+      globalThis.fetch = async () => canned.clone();
+      assert.equal(
+        await middleware(request('/', 'text/markdown')),
+        undefined,
+        'must not serve HTML under a text/markdown Content-Type',
+      );
+    }
+  } finally {
+    globalThis.fetch = saved;
+  }
+});
+
+test('forwards only the deployment-protection cookie to the twin subrequest', async () => {
+  const saved = globalThis.fetch;
+  let seen;
+  globalThis.fetch = async (input, init) => {
+    seen = init?.headers ?? null;
+    return new Response('# Page\n\n' + 'x'.repeat(500), { status: 200 });
+  };
+  try {
+    const req = new Request(`${ORIGIN}/`, {
+      headers: { accept: 'text/markdown', cookie: 'session=secret; _vercel_jwt=abc123; other=nope' },
+    });
+    await middleware(req);
+    assert.equal(seen.cookie, '_vercel_jwt=abc123');
+    assert.doesNotMatch(seen.cookie, /secret|other/, 'must not forward unrelated cookies');
+  } finally {
+    globalThis.fetch = saved;
+  }
+});
+
+test('sends no cookie when the request carries none', async () => {
+  const saved = globalThis.fetch;
+  let seen = 'unset';
+  globalThis.fetch = async (input, init) => {
+    seen = init?.headers;
+    return new Response('# Page\n\n' + 'x'.repeat(500), { status: 200 });
+  };
+  try {
+    await middleware(request('/', 'text/markdown'));
+    assert.equal(seen, undefined);
+  } finally {
+    globalThis.fetch = saved;
+  }
 });
 
 test('ignores non-GET methods entirely', async () => {
