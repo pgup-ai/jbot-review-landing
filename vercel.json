@@ -6,9 +6,6 @@
   "outputDirectory": ".",
   "cleanUrls": true,
   "trailingSlash": false,
-  "proxy": {
-    "entrypoint": "middleware.ts"
-  },
   "rewrites": [
     {
       "source": "/x",

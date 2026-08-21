@@ -168,10 +168,14 @@ test('robots.txt stays open to crawlers and points at the sitemap', () => {
 
 // --- Deployment configuration ----------------------------------------------
 
-test('vercel.json is valid and wires the middleware entrypoint', () => {
+test('the middleware is where Vercel auto-detects it, on the bundling runtime', () => {
   const config = JSON.parse(read('vercel.json'));
-  assert.equal(config.proxy.entrypoint, 'middleware.ts');
-  assert.ok(fs.existsSync(path.join(ROOT, config.proxy.entrypoint)), 'entrypoint file must exist');
+  assert.ok(fs.existsSync(path.join(ROOT, 'middleware.ts')), 'middleware.ts must be at the project root');
+  // A `proxy` entrypoint forces the Node.js runtime, which transpiles to CommonJS
+  // and leaves relative imports as require() of ESM — ERR_REQUIRE_ESM at invocation.
+  // Root auto-detection uses the Edge runtime, which bundles the imports instead.
+  assert.equal(config.proxy, undefined, 'proxy forces the non-bundling Node runtime');
+  assert.doesNotMatch(read('middleware.ts'), /runtime:\s*'nodejs'/, 'nodejs runtime does not bundle imports');
   assert.equal(config.cleanUrls, true, 'clean URLs are what the route table assumes');
 });
 
