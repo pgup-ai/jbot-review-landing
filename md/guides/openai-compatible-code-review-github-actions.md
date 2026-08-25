@@ -1,6 +1,6 @@
 # Use any OpenAI-compatible API for code review in GitHub Actions
 
-Updated July 18, 2026 · applies to pgup-ai/jbot-review-action v0
+Updated August 25, 2026 · applies to pgup-ai/jbot-review-action v0
 
 **If it speaks the OpenAI chat-completions protocol, it can review your pull requests.** `provider: openai-compatible` points J-Bot Review — an open-source (MIT) GitHub Action — at an endpoint you name instead of one it knows: a LiteLLM proxy your platform team already runs, a vLLM or Ollama server on your own hardware, or a hosted API that never shipped a CLI. Three inputs — a base URL, an API key, and an explicit model — and J-Bot adds **$0** of its own.
 
