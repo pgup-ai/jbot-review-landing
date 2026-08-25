@@ -40,7 +40,7 @@
       "url": "https://www.pgupai.com/guides/openai-compatible-code-review-github-actions",
       "image": "https://www.pgupai.com/assets/og-guide-openai-compatible-20260718.png",
       "datePublished": "2026-07-18",
-      "dateModified": "2026-07-18",
+      "dateModified": "2026-08-25",
       "author": { "@type": "Organization", "name": "PGUP AI", "url": "https://www.pgupai.com/" },
       "publisher": { "@type": "Organization", "name": "PGUP AI", "url": "https://www.pgupai.com/" }
     },
@@ -216,7 +216,7 @@
 <article>
   <p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / OpenAI-compatible</p>
   <h1>Use any OpenAI-compatible API for code review in GitHub Actions</h1>
-  <p class="updated">Updated July 18, 2026 · applies to pgup-ai/jbot-review-action v0</p>
+  <p class="updated">Updated August 25, 2026 · applies to pgup-ai/jbot-review-action v0</p>
 
   <p class="lede"><b>If it speaks the OpenAI chat-completions protocol, it can review your pull requests.</b> <code>provider: openai-compatible</code> points J-Bot Review — an open-source (MIT) GitHub Action — at an endpoint you name instead of one it knows: a LiteLLM proxy your platform team already runs, a vLLM or Ollama server on your own hardware, or a hosted API that never shipped a CLI. Three inputs — a base URL, an API key, and an explicit model — and J-Bot adds <b>$0</b> of its own.</p>
 
@@ -288,10 +288,11 @@
   <p><b>Ollama</b> exposes the same shape at <code>http://&lt;host&gt;:11434/v1</code> and accepts <code>tools</code> on models that carry the capability, though its OpenAI layer documents gaps (notably <code>tool_choice</code>). <b>llama.cpp's</b> server does OpenAI-style tool calls only with <code>--jinja</code> and a compatible chat template. <b>LM Studio</b> documents tool use on its local server too, but it's a desktop app — fine for trying the loop on your own machine, not a team CI target. In every case the model, not just the server, must be tool-capable: a 7B quant that mangles JSON arguments will fail reviews in ways that look like J-Bot bugs and aren't.</p>
 
   <h2 id="hosted">Hosted APIs without a CLI</h2>
-  <p>The same three inputs cover hosted providers that publish an OpenAI-compatible base URL. Documented starting points, checked July 2026:</p>
+  <p>The same three inputs cover hosted providers that publish an OpenAI-compatible base URL. Documented starting points, checked July–August 2026:</p>
   <div class="tbl-wrap">
   <table>
     <tr><th>Endpoint</th><th>Documented base URL</th><th>Worth knowing</th></tr>
+    <tr><td>GMI Cloud</td><td><code>https://api.gmi-serving.com/v1</code></td><td>Model ids keep their vendor prefix, so the full J-Bot value is <code>openai-compatible/MiniMaxAI/MiniMax-M3</code> — only the first segment selects the provider, and the slash inside the model id is passed through untouched.</td></tr>
     <tr><td>Groq</td><td><code>https://api.groq.com/openai/v1</code></td><td>First-party OpenAI-compatibility and tool-use docs; a free tier exists but its per-minute token cap suits small diffs only.</td></tr>
     <tr><td>SambaNova</td><td><code>https://api.sambanova.ai/v1</code></td><td>Function calling documented on a named model list; free-tier daily token budget is roughly one medium review.</td></tr>
     <tr><td>Mistral</td><td><code>https://api.mistral.ai/v1</code></td><td>OpenAI-shaped rather than officially OpenAI-compatible, and stricter than most about tool-call id format — run a test PR before adopting.</td></tr>

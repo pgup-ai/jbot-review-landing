@@ -1,6 +1,6 @@
 # Use any OpenAI-compatible API for code review in GitHub Actions
 
-Updated July 18, 2026 · applies to pgup-ai/jbot-review-action v0
+Updated August 25, 2026 · applies to pgup-ai/jbot-review-action v0
 
 **If it speaks the OpenAI chat-completions protocol, it can review your pull requests.** `provider: openai-compatible` points J-Bot Review — an open-source (MIT) GitHub Action — at an endpoint you name instead of one it knows: a LiteLLM proxy your platform team already runs, a vLLM or Ollama server on your own hardware, or a hosted API that never shipped a CLI. Three inputs — a base URL, an API key, and an explicit model — and J-Bot adds **$0** of its own.
 
@@ -73,10 +73,11 @@ vLLM serves an OpenAI-compatible API out of the box (`vllm serve <model>`, defau
 
 ## Hosted APIs without a CLI
 
-The same three inputs cover hosted providers that publish an OpenAI-compatible base URL. Documented starting points, checked July 2026:
+The same three inputs cover hosted providers that publish an OpenAI-compatible base URL. Documented starting points, checked July–August 2026:
 
 | Endpoint | Documented base URL | Worth knowing |
 | --- | --- | --- |
+| GMI Cloud | `https://api.gmi-serving.com/v1` | Model ids keep their vendor prefix, so the full J-Bot value is `openai-compatible/MiniMaxAI/MiniMax-M3` — only the first segment selects the provider, and the slash inside the model id is passed through untouched. |
 | Groq | `https://api.groq.com/openai/v1` | First-party OpenAI-compatibility and tool-use docs; a free tier exists but its per-minute token cap suits small diffs only. |
 | SambaNova | `https://api.sambanova.ai/v1` | Function calling documented on a named model list; free-tier daily token budget is roughly one medium review. |
 | Mistral | `https://api.mistral.ai/v1` | OpenAI-shaped rather than officially OpenAI-compatible, and stricter than most about tool-call id format — run a test PR before adopting. |
