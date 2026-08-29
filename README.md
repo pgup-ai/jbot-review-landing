@@ -60,18 +60,20 @@ node scripts/build-markdown.mjs
 That rewrites `md/**` and the generated `lib/routes.mjs`. Both are committed.
 
 The dogfooding numbers in the `#proof` stat band are static text with two
-sources. The review-run and token totals are read off the engines' run
-telemetry and pasted in by hand. The diff-line total comes from the GitHub
-API (needs `gh` authenticated with access to the source repos):
+sources. All three band totals — review runs, diff lines across runs, and
+tokens — are read off the engines' run telemetry and pasted in by hand.
+The narrower GitHub-derived baseline quoted in `llms.txt` and `about.html`
+comes from the GitHub API (needs `gh` authenticated with access to the
+source repos):
 
 ```bash
 node scripts/refresh-proof-stats.mjs
 ```
 
-Round every total **down**, paste them into the band in `index.html`
-(the run count also appears in the hero trust strip), then update the
-dogfooding line in `llms.txt`, the snapshot paragraph in `about.html`,
-and `<lastmod>` in `sitemap.xml`. Leave the
+Round every total **down**, paste the telemetry totals into the band in
+`index.html` (the run count also appears in the hero trust strip), then
+update the dogfooding line in `llms.txt`, the snapshot paragraph in
+`about.html`, and `<lastmod>` in `sitemap.xml`. Leave the
 band's "Since June 2026" alone — it is the date reviews started, not the
 date they were counted; `llms.txt` carries the measurement date. Per-PR API responses are cached in gitignored
 `local/proof-stats-cache.json`, so re-runs only pay for new PRs.
