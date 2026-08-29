@@ -24,7 +24,7 @@ That has a practical consequence for cost. The action adds no charge of its own 
 
 ## Track record
 
-The maintainers run J-Bot Review on their own work. As of the August 20, 2026 snapshot, it had completed **3,008 successful pull-request-triggered reviews** across **8,185 files** and **2,241,518 diff lines** (756 unique pull requests, deduplicated) in two private production repositories since June 2026. That is first-party dogfooding, not a customer adoption figure, and it is stated that way deliberately.
+The maintainers run J-Bot Review on their own work. As of August 29, 2026, its engines had metered **6,350 review runs** and **1,059,006,673 tokens** since June 2026, covering **4.2M+ diff lines** across runs. A narrower GitHub-derived snapshot (August 20, 2026) counted **3,008 successful pull-request-triggered reviews** across **8,185 files** and **2,241,518 unique diff lines** (756 unique pull requests, deduplicated) in the two main private production repositories — narrower because it counts only successful pull-request-triggered runs in those two repositories. All of it is first-party dogfooding, not a customer adoption figure, and it is stated that way deliberately.
 
 ## What is released and what is not
 

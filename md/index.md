@@ -14,7 +14,7 @@ An open-source agentic PR reviewer as a single GitHub Action. It runs on your ru
 
 **30+** — providers & CLIs
 
-**3,000+** — [reviews run](https://www.pgupai.com/#proof)
+**6,300+** — [review runs](https://www.pgupai.com/#proof)
 
 `.github/workflows/jbot-review.yml`
 
@@ -104,13 +104,13 @@ Full base…head diff, sharded for speed · nits demoted, false positives droppe
 
 [See a real J-Bot review on a live pull request →](https://github.com/pgup-ai/jbot-review/pull/78#pullrequestreview-4619619627)
 
-**3,000+** — reviews run
+**6,300+** — review runs
 
-**8,100+** — files reviewed
+**4.2M+** — diff lines reviewed
 
-**2.2M+** — diff lines reviewed
+**1B+** — tokens consumed
 
-From our internal repos · Since June 2026
+All first-party usage · Since June 2026
 
 How it works
 
