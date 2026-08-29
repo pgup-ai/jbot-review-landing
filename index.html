@@ -668,9 +668,11 @@
   .proof-live { text-align: center; margin: 12px 0 0; font-family: var(--mono); font-size: 12.5px; }
   .proof-live a { color: var(--accent); transition: color 0.15s var(--ease); }
   .proof-live a:hover { color: var(--accent-hover); }
-  /* Dogfooding stat band: reuses the hero .trust strip. Numbers are baked in
-     from scripts/refresh-proof-stats.mjs output (repos are private; nothing
-     is fetched at page load) and rounded down, never up. */
+  /* Dogfooding stat band: reuses the hero .trust strip. Totals are baked in
+     by hand from the engines' run telemetry; scripts/refresh-proof-stats.mjs
+     computes the stricter GitHub-derived series quoted in llms.txt and
+     about.html (repos are private; nothing is fetched at page load). Every
+     figure is rounded down, never up. */
   .proof-stats .trust { margin-top: 44px; }
   .proof-stats .proof-caption { max-width: 560px; margin-inline: auto; line-height: 1.55; }
 
@@ -1005,7 +1007,7 @@
       <div><div class="n">1 file</div><div class="l">to install</div></div>
       <div><div class="n">30+</div><div class="l">providers &amp; CLIs</div></div>
       <!-- Dogfooding count; details + provenance caption live in the #proof stat band -->
-      <div><div class="n">3,000+</div><div class="l"><a href="#proof">reviews run</a></div></div>
+      <div><div class="n">6,300+</div><div class="l"><a href="#proof">review runs</a></div></div>
     </div>
   </div>
 </section>
@@ -1163,11 +1165,11 @@
 
     <div class="proof-stats reveal">
       <div class="trust">
-        <div><div class="n">3,000+</div><div class="l">reviews run</div></div>
-        <div><div class="n">8,100+</div><div class="l">files reviewed</div></div>
-        <div><div class="n">2.2M+</div><div class="l">diff lines reviewed</div></div>
+        <div><div class="n">6,300+</div><div class="l">review runs</div></div>
+        <div><div class="n">4.2M+</div><div class="l">diff lines reviewed</div></div>
+        <div><div class="n">1B+</div><div class="l">tokens consumed</div></div>
       </div>
-      <p class="proof-caption">From our internal repos · Since June&nbsp;2026</p>
+      <p class="proof-caption">All first-party usage · Since June&nbsp;2026</p>
     </div>
   </div>
 </section>
