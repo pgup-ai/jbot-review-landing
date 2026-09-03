@@ -47,7 +47,7 @@ jobs:
 
 ## Five routes, five exact model ids
 
-Pick the route where you already manage credentials. The first segment of each id selects the provider, so the Action's deprecated `provider` input can stay unset. Prices are the provider's list rates per million tokens, read from the live catalog on 2026-09-03; quotas and contributor eligibility remain provider-controlled. Kilo and OpenRouter also list `meta/muse-spark-1.3-contributor` at $0.10 / $0.20 under the same contributor terms as the OpenCode route.
+Pick the route where you already manage credentials. The first segment of each id selects the provider, so the Action's deprecated `provider` input can stay unset. Prices are the provider's list rates per million tokens, read from the live catalog on 2026-09-03; quotas and contributor eligibility remain provider-controlled. Kilo and OpenRouter also list `meta/muse-spark-1.3-contributor` at $0.10 / $0.20 under the same contributor terms as the OpenCode route. Command Code added 1.3 to its seat on release day, 2026-09-02, and J-Bot's Command Code model table was probed against it the same day.
 
 **OpenCode** (Catalog listed · $0 / $0)
 
@@ -69,7 +69,7 @@ Pick the route where you already manage credentials. The first segment of each i
 `model: openrouter/meta/muse-spark-1.3`
 `openrouter-api-key`
 
-**Command Code** (Probed 2026-09-02 · CLI seat)
+**Command Code** (Added 2026-09-02 · CLI seat)
 
 `model: commandcode/meta/muse-spark-1.3`
 `commandcode-access-key`
@@ -134,7 +134,7 @@ On one route. As of 2026-09-03 the live model catalog lists `opencode/muse-spark
 
 ### What model id does Muse Spark 1.3 use on each provider?
 
-OpenCode uses `opencode/muse-spark-1.3-contributor-free` and lists no metered 1.3 route as of 2026-09-03. OpenCode Go uses `opencode-go/muse-spark-1.3-contributor`. Kilo uses `kilo/meta/muse-spark-1.3`, OpenRouter uses `openrouter/meta/muse-spark-1.3`, and Command Code uses `commandcode/meta/muse-spark-1.3` through your Command Code seat. Kilo and OpenRouter also list a `-contributor` suffix at the discounted contributor rate. The first segment of each id selects the J-Bot provider; the Action's separate provider input is deprecated. Every spelling was read from the live model catalog on 2026-09-03.
+OpenCode uses `opencode/muse-spark-1.3-contributor-free` and lists no metered 1.3 route as of 2026-09-03. OpenCode Go uses `opencode-go/muse-spark-1.3-contributor`. Kilo uses `kilo/meta/muse-spark-1.3`, OpenRouter uses `openrouter/meta/muse-spark-1.3`, and Command Code, which added 1.3 on 2026-09-02, uses `commandcode/meta/muse-spark-1.3` through your seat. Kilo and OpenRouter also list a `-contributor` suffix at the discounted contributor rate. The first segment of each id selects the J-Bot provider; the Action's separate provider input is deprecated. Every spelling was read from the live model catalog on 2026-09-03.
 
 ### My runner cannot reach the model provider. What are my options?
 
