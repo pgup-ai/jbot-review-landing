@@ -119,7 +119,7 @@ A proxy changes where your request appears to come from, not what you are entitl
 
 ## Where the diff goes
 
-- **The $0 route is a contributor route.** OpenCode lists Muse Spark 1.3 Contributor Free for a limited time as heavily discounted pricing in exchange for permission to use your prompts and completions to train future Meta models. Meta's own model page marks the contributor tier as used to improve its products and the standard tier as not. Send private code through a standard route such as `kilo/meta/muse-spark-1.3` or `openrouter/meta/muse-spark-1.3`, and read the current terms first.
+- **The $0 route is a contributor route.** OpenCode lists Muse Spark 1.3 Contributor Free for a limited time as heavily discounted pricing in exchange for permission to use your prompts and completions to train future Meta models. Meta's own model page marks the contributor tier as used to improve its products and the standard tier as not. Send private code through a standard route such as `kilo/meta/muse-spark-1.3` or `openrouter/meta/muse-spark-1.3`, which keeps it off Meta's contributor terms. The gateway you pick still receives the diff under its own retention and training policy, so read that policy before sending private code.
 - **Your runner stays in control.** The review session runs headless on your GitHub Actions runner with read-only repository access.
 - **The route determines the destination.** Each provider uses its corresponding account or authenticated CLI backend. J-Bot does not proxy the diff through a hosted reviewer service.
 - **A configured proxy is one more hop.** If you set `opencode-proxy-url`, OpenCode's traffic transits a host you chose. Point it at infrastructure inside your own trust boundary.
