@@ -17,7 +17,7 @@ Setup and architecture guides for an **agentic PR reviewer you control** — wit
 - **DeepSeek · official 0731** — [DeepSeek V4 Flash code review in GitHub Actions](https://www.pgupai.com/guides/deepseek-v4-flash-code-review-github-actions): Six advertised $0 routes—including Cline and OpenRouter—with exact setup, snapshot and availability caveats, and official 0731 benchmarks. (Updated Aug 1, 2026)
 - **OpenAI-compatible** — [Any OpenAI-compatible API, no CLI required](https://www.pgupai.com/guides/openai-compatible-code-review-github-actions): A LiteLLM proxy, self-hosted vLLM or Ollama, or a hosted API with no CLI — three inputs: base URL, key, explicit model. (Updated Jul 18, 2026)
 - **ACP gateway · private beta** — [Keep agent credentials on your machine](https://www.pgupai.com/guides/local-agent-code-review): Route Codex, Cursor, Devin, or Kilo through J-Bot’s ACP gateway to a companion you control. See where credentials, repository clones, and journal data live. (Published Jul 27, 2026)
-- **Meta · free route** — [Muse Spark 1.2 code review in GitHub Actions](https://www.pgupai.com/guides/muse-spark-code-review-github-actions): A $0 contributor route on OpenCode with a 1M-token context window, what its feedback terms mean for private code, and how to pin review egress to an IP you control. (Published Aug 20, 2026)
+- **Meta · free route** — [Muse Spark 1.3 code review in GitHub Actions](https://www.pgupai.com/guides/muse-spark-code-review-github-actions): A $0 contributor route on OpenCode, about 20% fewer tool calls than 1.2, what Meta's contributor terms mean for private code, and how to pin review egress to an IP you control. (Updated Sep 3, 2026)
 
 ## More resources
 
