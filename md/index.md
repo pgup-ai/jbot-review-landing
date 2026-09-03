@@ -62,7 +62,7 @@ Muse Spark 1.3 · Muse Spark 1.2 · DeepSeek V4 Flash · MiniMax M3 · MiMo v2.5
 
 **DeepSeek V4 Flash:** official 0731 is free through OpenCode and InferX. Cline, OpenRouter, Kenari, and UnoRouter also list $0 routes; snapshots and availability vary. [Compare routes →](https://www.pgupai.com/guides/deepseek-v4-flash-code-review-github-actions)
 
-**MiniMax M3:** $0 routes listed on Vercel (`minimax/minimax-m3-free`), OpenCode (`minimax-m3-free`), and Kilo and OpenRouter (`minimax/minimax-m3:free`) as of 2026-09-03; availability and quotas vary by provider.
+**MiniMax M3:** $0 routes listed on OpenCode (`minimax-m3-free`), Vercel (`minimax/minimax-m3-free`), and Kilo and OpenRouter (`minimax/minimax-m3:free`) as of 2026-09-03; Cline and Command Code carry it under their own plans. Availability and quotas vary by provider.
 
 ACP gateway · private beta
 
