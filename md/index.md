@@ -44,7 +44,7 @@ jobs:
 
 ### Model APIs & gateways
 
-OpenCode Zen (free models) · OpenCode Go · Claude · OpenAI · Gemini · DeepSeek · Z.ai · Qwen · Kimi (K3 · day one) · MiniMax · MiMo · Grok · Nvidia · OpenRouter · Poolside (direct API) · Fireworks · Cohere · Together · Baseten · Cerebras · Vercel · + more
+OpenCode Zen (free models) · OpenCode Go · Claude · OpenAI · Gemini · DeepSeek · Z.ai · Qwen · Kimi (K3 · day one) · MiniMax · MiMo · Grok · Nvidia · OpenRouter · Poolside (direct API) · Fireworks · Cohere · Together · Baseten · Cerebras · Vercel · GMI Cloud · + more
 
 ### CLI subscriptions
 
@@ -56,11 +56,13 @@ LiteLLM · vLLM · Ollama · + any OpenAI-compatible
 
 ### Or start at $0 — free models
 
-Muse Spark 1.2 · DeepSeek V4 Flash · Laguna S 2.1 · Ling 3.0 Flash · MiMo v2.5
+Muse Spark 1.3 · Muse Spark 1.2 · DeepSeek V4 Flash · MiniMax M3 · MiMo v2.5
 
-**Muse Spark 1.2:** OpenCode lists a contributor route at $0 alongside the metered one. It is a feedback route with no published zero-retention terms, so keep private code on the metered route. [Exact model ids →](https://www.pgupai.com/guides/muse-spark-code-review-github-actions)
+**Muse Spark 1.3 / 1.2:** OpenCode lists a $0 contributor route for both; only 1.2 also has a metered OpenCode route as of 2026-09-03. The contributor tier lets Meta train on your prompts and completions, so keep private code on a standard route such as Kilo or OpenRouter. [Exact model ids →](https://www.pgupai.com/guides/muse-spark-code-review-github-actions)
 
 **DeepSeek V4 Flash:** official 0731 is free through OpenCode and InferX. Cline, OpenRouter, Kenari, and UnoRouter also list $0 routes; snapshots and availability vary. [Compare routes →](https://www.pgupai.com/guides/deepseek-v4-flash-code-review-github-actions)
+
+**MiniMax M3:** $0 routes listed on OpenCode (`minimax-m3-free`), Vercel (`minimax/minimax-m3-free`), and Kilo and OpenRouter (`minimax/minimax-m3:free`) as of 2026-09-03; Cline and Command Code carry it under their own plans. Availability and quotas vary by provider.
 
 ACP gateway · private beta
 
