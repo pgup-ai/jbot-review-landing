@@ -130,7 +130,7 @@ A proxy changes where your request appears to come from, not what you are entitl
 
 ### Is Muse Spark 1.3 free for pull-request review?
 
-On one route. As of 2026-09-03 the live model catalog lists `opencode/muse-spark-1.3-contributor-free` at $0 input and $0 output. OpenCode Go lists `muse-spark-1.3-contributor` at $0.10 per million input and $0.20 output, and the standard `meta/muse-spark-1.3` on Kilo and OpenRouter costs $1.25 and $4.25. The zero-priced route is Meta's Contributor tier: OpenCode describes it as heavily discounted pricing in exchange for permission to use your prompts and completions to train future Meta models, published for a limited time. Keep private code on a standard route, which Meta lists as not used to improve its products. Free windows, quotas, and contributor eligibility remain provider-controlled. J-Bot adds no charge of its own.
+On one route. As of 2026-09-03 the live model catalog lists `opencode/muse-spark-1.3-contributor-free` at $0 input and $0 output. OpenCode Go lists `opencode-go/muse-spark-1.3-contributor` at $0.10 per million input and $0.20 output, and the standard `kilo/meta/muse-spark-1.3` and `openrouter/meta/muse-spark-1.3` cost $1.25 and $4.25. The zero-priced route is Meta's Contributor tier: OpenCode describes it as heavily discounted pricing in exchange for permission to use your prompts and completions to train future Meta models, published for a limited time. Keep private code on a standard route, which Meta lists as not used to improve its products. Free windows, quotas, and contributor eligibility remain provider-controlled. J-Bot adds no charge of its own.
 
 ### What model id does Muse Spark 1.3 use on each provider?
 

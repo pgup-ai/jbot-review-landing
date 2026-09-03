@@ -58,9 +58,11 @@ LiteLLM · vLLM · Ollama · + any OpenAI-compatible
 
 Muse Spark 1.3 · Muse Spark 1.2 · DeepSeek V4 Flash · MiniMax M3 · MiMo v2.5
 
-**Muse Spark 1.3 / 1.2:** OpenCode lists a contributor route at $0 alongside the metered one. It is a feedback route with no published zero-retention terms, so keep private code on the metered route. [Exact model ids →](https://www.pgupai.com/guides/muse-spark-code-review-github-actions)
+**Muse Spark 1.3 / 1.2:** OpenCode lists a $0 contributor route for both; only 1.2 also has a metered OpenCode route as of 2026-09-03. The contributor tier lets Meta train on your prompts and completions, so keep private code on a standard route such as Kilo or OpenRouter. [Exact model ids →](https://www.pgupai.com/guides/muse-spark-code-review-github-actions)
 
 **DeepSeek V4 Flash:** official 0731 is free through OpenCode and InferX. Cline, OpenRouter, Kenari, and UnoRouter also list $0 routes; snapshots and availability vary. [Compare routes →](https://www.pgupai.com/guides/deepseek-v4-flash-code-review-github-actions)
+
+**MiniMax M3:** $0 routes listed on Vercel (`minimax/minimax-m3-free`), OpenCode (`minimax-m3-free`), and Kilo and OpenRouter (`minimax/minimax-m3:free`) as of 2026-09-03; availability and quotas vary by provider.
 
 ACP gateway · private beta
 
