@@ -59,10 +59,22 @@ test('/privacy states the third parties the site actually loads', () => {
   const text = mainText('privacy.html');
   assert.match(text, /Vercel/);
   assert.match(text, /Google Fonts/);
-  // The claims below must stay true of the built site.
+  assert.match(text, /PostHog US Cloud/);
+  assert.match(text, /only after you choose Allow analytics/);
+  assert.doesNotMatch(text, /No analytics\.|collects nothing/);
   const home = read('index.html');
-  assert.doesNotMatch(home, /googletagmanager|google-analytics|plausible\.io|\/_vercel\/insights/, 'site claims no analytics');
-  assert.doesNotMatch(home, /localStorage|sessionStorage|document\.cookie/, 'site claims no cookies or storage');
+  assert.match(home, /src="\/assets\/analytics\.js" defer/);
+  assert.doesNotMatch(home, /googletagmanager|google-analytics|plausible\.io|\/_vercel\/insights/, 'only PostHog is configured');
+});
+
+test('all content pages load the shared analytics assets once, excluding errors and redirects', () => {
+  for (const file of contentPages(ROOT)) {
+    if (file === NOT_FOUND_PAGE) continue;
+    const html = read(file);
+    assert.equal((html.match(/src="\/assets\/analytics\.js"/g) || []).length, 1, file);
+    assert.equal((html.match(/href="\/assets\/analytics\.css"/g) || []).length, 1, file);
+  }
+  for (const file of [NOT_FOUND_PAGE, 'x.html']) assert.doesNotMatch(read(file), /assets\/analytics/);
 });
 
 test('the 404 page is a real page and asks not to be indexed', () => {

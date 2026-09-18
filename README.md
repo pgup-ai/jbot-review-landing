@@ -133,6 +133,28 @@ Unmatched paths return a real HTTP 404 — never a 200 with an app shell. Browse
 get `404.html`; a client negotiating Markdown gets a short Markdown body with
 links back to `/guides`, `llms.txt`, and the sitemap so an agent can recover.
 
+## Website analytics
+
+PostHog US project **616784** collects page views and selected CTA clicks after
+visitors opt in. `assets/analytics.js` and `assets/analytics.css` provide the shared
+loader and preferences UI. Only HTTPS production hosts (`pgupai.com` and
+`www.pgupai.com`) send events; local and Vercel preview hosts never load the SDK.
+The public `phc_` ingestion token is intentionally in the client script. Never
+put personal API keys, MCP OAuth credentials, or account secrets there.
+
+The footer's **Analytics preferences** control allows withdrawal. Global Privacy
+Control and Do Not Track suppress collection. Replay, autocapture, surveys,
+heatmaps, and person profiles are disabled. Only allowlisted campaign parameters
+are retained in analytics URLs; page views are captured once per full page load,
+not on hash navigation. The explicit `cta_clicked` event reports `cta_id` values
+`setup`, `contact`, `github`, and `marketplace`. All events carry `site_id: pgup`.
+
+Use [Web Analytics](https://us.posthog.com/project/616784/web) for traffic and
+[Activity](https://us.posthog.com/project/616784/activity/explore) to inspect events.
+Dashboard totals represent visitors who accept analytics and whose requests are
+not blocked. Analytics are separate from the GitHub Action; no review telemetry
+is sent by this integration. Update `/privacy` alongside collection changes.
+
 ## SEO / GEO
 
 - `index.html` carries JSON-LD in `<head>` (Organization, WebSite,

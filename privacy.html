@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Privacy — J-Bot Review</title>
-<meta name="description" content="What www.pgupai.com collects (nothing), which third parties see a request, and where your code goes when you run J-Bot Review in your own CI." />
+<meta name="description" content="Optional PostHog analytics, your tracking choices, and where your code goes when you run J-Bot Review in your own CI." />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0a0b0a" />
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
@@ -17,7 +17,7 @@
 <meta property="og:url" content="https://www.pgupai.com/privacy" />
 <meta property="og:site_name" content="J-Bot Review" />
 <meta property="og:title" content="Privacy — J-Bot Review" />
-<meta property="og:description" content="What www.pgupai.com collects (nothing), which third parties see a request, and where your code goes when you run J-Bot Review in your own CI." />
+<meta property="og:description" content="Optional PostHog analytics, your tracking choices, and where your code goes when you run J-Bot Review in your own CI." />
 <meta property="og:image" content="https://www.pgupai.com/assets/og-20260704.png" />
 <meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-20260704.png" />
 <meta property="og:image:type" content="image/png" />
@@ -25,7 +25,7 @@
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Privacy — J-Bot Review" />
-<meta name="twitter:description" content="What www.pgupai.com collects (nothing), which third parties see a request, and where your code goes when you run J-Bot Review in your own CI." />
+<meta name="twitter:description" content="Optional PostHog analytics, your tracking choices, and where your code goes when you run J-Bot Review in your own CI." />
 <meta name="twitter:image" content="https://www.pgupai.com/assets/og-20260704.png" />
 
 <script type="application/ld+json">
@@ -44,7 +44,7 @@
       "isPartOf": {
         "@id": "https://www.pgupai.com/#website"
       },
-      "dateModified": "2026-08-21"
+      "dateModified": "2026-09-18"
     },
     {
       "@type": "BreadcrumbList",
@@ -131,6 +131,8 @@
   .foot-inner a { color: var(--text-3); }
   .foot-inner a:hover { color: var(--text); }
 </style>
+<link rel="stylesheet" href="/assets/analytics.css" />
+<script src="/assets/analytics.js" defer></script>
 </head>
 <body>
 
@@ -149,25 +151,31 @@
 <article>
 <p class="crumbs"><a href="/">Home</a> / Privacy</p>
   <h1>Privacy</h1>
-  <p class="lede">This page covers two separate things that are easy to confuse: <b>what this website does with your data</b>, and <b>where your code goes when you run J-Bot Review</b>. The short version is that this site collects nothing, and your code never reaches PGUP AI.</p>
-  <p class="updated">Last updated August 21, 2026</p>
+  <p class="lede">This page covers two separate things that are easy to confuse: <b>what this website does with your data</b>, and <b>where your code goes when you run J-Bot Review</b>. Website analytics are optional. On the standard GitHub Action path, your code never reaches PGUP AI.</p>
+  <p class="updated">Last updated September 18, 2026</p>
 
   <h2>What this website collects</h2>
-  <p><b>Nothing.</b> www.pgupai.com is a set of static HTML files. It has:</p>
+  <p>We use <b>PostHog US Cloud</b> to understand which pages and links are useful. Its script loads only after you choose <b>Allow analytics</b>. Until then, or if you decline, we send no analytics events to PostHog.</p>
   <ul>
-    <li><b>No analytics.</b> There is no Google Analytics, no Plausible, no Vercel Analytics, and no telemetry pixel of any kind.</li>
-    <li><b>No cookies.</b> The site sets none. There is nothing to consent to, which is why you have never seen a banner here.</li>
-    <li><b>No local storage.</b> Nothing is written to <code>localStorage</code> or <code>sessionStorage</code>.</li>
-    <li><b>No accounts, forms, or sign-ups.</b> There is no field on this site in which you could type personal data.</li>
-    <li><b>No advertising or tracking networks.</b> No third-party ad, retargeting, or fingerprinting script is loaded.</li>
+    <li><b>Usage events:</b> page views and selected setup, contact, GitHub, and Marketplace link clicks.</li>
+    <li><b>Traffic context:</b> page paths, referring websites, permitted campaign tags, browser and device information. PostHog processes your IP address when receiving requests, including for approximate geographic information.</li>
+    <li><b>Browser identifiers:</b> after you accept, PostHog uses local storage and session storage to recognize the same browser and group visits. This does not tell us your name or email.</li>
+    <li><b>No session replay or form capture:</b> we disable recordings, automatic interaction capture, heatmaps, and surveys. There are currently no accounts or enquiry forms on this site.</li>
+    <li><b>No visitor identification service:</b> RB2B, advertising pixels, and third-party person-resolution tools are not installed.</li>
   </ul>
+  <p>We strip URL fragments and non-campaign query parameters from analytics URLs. Please do not put personal data in campaign tags or website URLs.</p>
+
+  <h2 id="analytics-controls">Your analytics choices</h2>
+  <p>Use <b>Analytics preferences</b> in the footer to allow or decline analytics at any time. We store your choice in your browser as <code>pgup_analytics_choice</code>, including when you decline, so we can remember it. If browser storage is unavailable, your choice applies only to the current page.</p>
+  <p>Declining stops future event collection and clears PostHog's analytics persistence on the current page when its SDK is loaded. It does not delete events already received. We also keep analytics off when your browser sends Global Privacy Control or Do Not Track. Clearing your browser's site data removes the stored preference and identifiers.</p>
 
   <h2>Who sees a request anyway</h2>
-  <p>Serving a web page is not free of third parties, so here are the two that exist:</p>
+  <p>Serving a web page is not free of third parties, these services process requests:</p>
   <ul>
     <li><b>Vercel</b> hosts this site. Like any web host, its edge network processes the request in order to answer it and keeps standard operational logs — IP address, user agent, requested path, timestamp — under <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Vercel's privacy policy</a>. PGUP AI does not use those logs to build a profile of you.</li>
     <li><b>Google Fonts</b> serves the three typefaces this site uses. Your browser fetches them from <code>fonts.googleapis.com</code> and <code>fonts.gstatic.com</code>, which discloses your IP address and user agent to Google under <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's privacy policy</a>. If that matters to you, blocking those two hosts degrades the site to system fonts and nothing else breaks.</li>
   </ul>
+  <p><b>PostHog</b> receives analytics only after you accept, under <a href="https://posthog.com/privacy" target="_blank" rel="noopener noreferrer">PostHog’s privacy policy</a>. The project uses US hosting. We use this data to improve the site, not to identify unnamed visitors for sales outreach.</p>
   <p>Content negotiation on this site is stateless. Asking for the Markdown representation of a page with <code>Accept: text/markdown</code> is handled per request and stores nothing about you.</p>
 
   <h2>Where your code goes when you run J-Bot Review</h2>
@@ -184,10 +192,10 @@
   </div>
 
   <h2>Your rights</h2>
-  <p>Because this site holds no personal data about you, there is no account to delete, no profile to export, and no mailing list to leave. If you believe PGUP AI holds data about you and you want it removed, <a href="/contact">get in touch</a> and it will be dealt with.</p>
+  <p>There is no site account or mailing list. For questions about analytics data, or to request access or deletion, <a href="/contact">get in touch</a> and it will be dealt with.</p>
 
   <h2>Changes to this page</h2>
-  <p>If this site ever starts collecting something — analytics, for example — this page will be updated before that happens, and the change will be visible in the <a href="https://github.com/pgup-ai/jbot-review-landing" target="_blank" rel="noopener noreferrer">public commit history</a> of the repository that contains it. The date at the top of this page is the last time it changed.</p>
+  <p>We update this page when our data practices change. Changes are visible in the <a href="https://github.com/pgup-ai/jbot-review-landing" target="_blank" rel="noopener noreferrer">public commit history</a> of the repository that contains it. The date at the top of this page is the last time it changed.</p>
 
   <h2>Related</h2>
   <div class="res-grid">
