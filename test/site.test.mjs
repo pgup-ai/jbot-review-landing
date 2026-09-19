@@ -67,14 +67,15 @@ test('/privacy states the third parties the site actually loads', () => {
   assert.doesNotMatch(home, /googletagmanager|google-analytics|plausible\.io|\/_vercel\/insights/, 'only PostHog is configured');
 });
 
-test('all content pages load the shared analytics assets once, excluding errors and redirects', () => {
+test('analytics assets load once on enabled pages and stay absent from excluded pages', () => {
+  const excluded = [NOT_FOUND_PAGE, 'x.html', 'guides/opencode-v2-migration.html'];
   for (const file of contentPages(ROOT)) {
-    if (file === NOT_FOUND_PAGE) continue;
+    if (excluded.includes(file)) continue;
     const html = read(file);
     assert.equal((html.match(/src="\/assets\/analytics\.js"/g) || []).length, 1, file);
     assert.equal((html.match(/href="\/assets\/analytics\.css"/g) || []).length, 1, file);
   }
-  for (const file of [NOT_FOUND_PAGE, 'x.html']) assert.doesNotMatch(read(file), /assets\/analytics/);
+  for (const file of excluded) assert.doesNotMatch(read(file), /assets\/analytics/);
 });
 
 test('the 404 page is a real page and asks not to be indexed', () => {

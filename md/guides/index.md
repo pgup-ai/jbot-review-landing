@@ -2,6 +2,7 @@
 
 Setup and architecture guides for an **agentic PR reviewer you control** — with a direct model API, gateway, CLI subscription, or optional local-agent companion. Released paths include exact configuration; private-beta guides state the trust boundaries and current limits.
 
+- **Engineering · OpenCode V2** — [OpenCode V2 migration: lessons from an AI code reviewer](https://www.pgupai.com/guides/opencode-v2-migration): SDK choice, plugin isolation, timeout recovery, and the usage bug that hid most of a review’s tokens. (Published Sep 18, 2026)
 - **CLI subscriptions** — [PR review with the CLI subscription you already pay for](https://www.pgupai.com/guides/cli-subscription-code-review): Codex (ChatGPT Plus/Pro), Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder — the per-CLI provider values, secrets, and where each credential comes from. (Updated Jul 11, 2026)
 - **Codex** — [Codex code review in GitHub Actions](https://www.pgupai.com/guides/codex-code-review-github-actions): Reuse your ChatGPT Plus/Pro seat: codex login once, one CODEX_AUTH_JSON secret, and Codex reviews every PR read-only. (Updated Jul 4, 2026)
 - **Claude** — [Claude code review in GitHub Actions](https://www.pgupai.com/guides/claude-code-review-github-actions): One workflow file plus your ANTHROPIC_API_KEY: Claude reviews every PR on your own runner, with findings verified before they post. (Updated Jul 4, 2026)

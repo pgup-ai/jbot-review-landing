@@ -58,6 +58,7 @@ Every page on this site also serves Markdown to `Accept: text/markdown` at the s
 
 ## Docs
 
+- [Engineering: OpenCode V2 migration](https://www.pgupai.com/guides/opencode-v2-migration): J-Bot’s migration to client/CLI 2.0.5, repository-plugin isolation, timeout recovery, usage accounting, and the limits of its validation
 - [Action repository and documentation](https://github.com/pgup-ai/jbot-review-action): install, providers, configuration, tuning
 - [GitHub Actions Marketplace listing](https://github.com/marketplace/actions/j-bot-code-review): official listing (v0.2.0+)
 - [Landing page](https://www.pgupai.com/): overview, example review, setup YAML, FAQ
