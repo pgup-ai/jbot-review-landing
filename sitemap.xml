@@ -19,7 +19,7 @@
   </url>
   <url>
     <loc>https://www.pgupai.com/guides</loc>
-    <lastmod>2026-08-01</lastmod>
+    <lastmod>2026-09-18</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/cli-subscription-code-review</loc>
@@ -100,5 +100,9 @@
   <url>
     <loc>https://www.pgupai.com/compare/cubic-alternative</loc>
     <lastmod>2026-07-11</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/opencode-v2-migration</loc>
+    <lastmod>2026-09-18</lastmod>
   </url>
 </urlset>

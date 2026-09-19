@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OpenCode V2 migration: lessons from an AI code reviewer | J-Bot Review</title>
+<meta name="description" content="What broke when we moved J-Bot Review to OpenCode V2: SDK selection, plugin isolation, timeout recovery, and a 100× usage-accounting error." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/guides/opencode-v2-migration" />
+<link rel="alternate" type="text/markdown" href="/md/guides/opencode-v2-migration.md" title="Markdown representation" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/guides/opencode-v2-migration" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="OpenCode V2 migration: lessons from an AI code reviewer" />
+<meta property="og:description" content="What broke when we moved J-Bot Review to OpenCode V2: SDK selection, plugin isolation, timeout recovery, and a 100× usage-accounting error." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-opencode-v2-migration-20260918-v2.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-opencode-v2-migration-20260918-v2.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="OpenCode V2 migration: SDK choice, session isolation, and usage accounting. Engineering notes from J-Bot Review." />
+<meta name="twitter:image:alt" content="OpenCode V2 migration: SDK choice, session isolation, and usage accounting. Engineering notes from J-Bot Review." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="OpenCode V2 migration: lessons from an AI code reviewer" />
+<meta name="twitter:description" content="What broke when we moved J-Bot Review to OpenCode V2: SDK selection, plugin isolation, timeout recovery, and a 100× usage-accounting error." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-opencode-v2-migration-20260918-v2.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/guides/opencode-v2-migration#article",
+      "headline": "OpenCode V2 migration: lessons from an AI code reviewer",
+      "description": "What broke when we moved J-Bot Review to OpenCode V2: SDK selection, plugin isolation, timeout recovery, and a 100× usage-accounting error.",
+      "url": "https://www.pgupai.com/guides/opencode-v2-migration",
+      "mainEntityOfPage": "https://www.pgupai.com/guides/opencode-v2-migration",
+      "image": [
+        "https://www.pgupai.com/assets/og-opencode-v2-migration-20260918-v2.png"
+      ],
+      "datePublished": "2026-09-18",
+      "dateModified": "2026-09-18",
+      "author": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/",
+        "logo": { "@type": "ImageObject", "url": "https://www.pgupai.com/assets/icon-512.png" }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "J-Bot Review",
+          "item": "https://www.pgupai.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://www.pgupai.com/guides"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "OpenCode V2 migration",
+          "item": "https://www.pgupai.com/guides/opencode-v2-migration"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #0a0b0a; --surface: #0e100e; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --blue: #7aa2ff;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --border-code: rgba(255,255,255,0.09);
+    --code-text: #c8cdc7;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 740px; overflow-wrap: anywhere; }
+  article a { text-decoration: underline; text-underline-offset: 3px; }
+  h2[id] { scroll-margin-top: 90px; }
+  .contents { border-block: 1px solid var(--hairline); padding: 18px 0; margin: 28px 0; }
+  .contents b { font-size: 14px; }
+  .contents ul { margin-bottom: 0; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  .topic { font-family: var(--mono); font-size: 11px; color: var(--blue); letter-spacing: 0.07em; text-transform: uppercase; margin: 0 0 10px; }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .title-row { display: flex; align-items: flex-start; gap: 16px; }
+  .opencode-mark { width: 42px; height: 42px; flex: none; object-fit: contain; filter: grayscale(1) invert(1); opacity: 0.9; margin-top: 2px; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  h3 { font-family: var(--display); font-weight: 600; font-size: 17px; letter-spacing: -0.01em; margin: 26px 0 8px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+  code { font-family: var(--mono); font-size: 12.5px; color: var(--code-text); background: var(--surface); border: 1px solid var(--border-code); border-radius: 5px; padding: 1px 6px; }
+
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; min-width: 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--text); font-weight: 600; }
+
+  .related { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0 0; }
+  .rel-card { display: block; border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 18px; color: var(--text); text-decoration: none; }
+  .rel-card:hover { border-color: rgba(94,227,154,0.35); color: var(--text); }
+  .rel-card .k2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 7px; }
+  .rel-card p { margin: 6px 0 0; font-size: 13px; color: var(--text-3); }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+
+  @media (max-width: 560px) {
+    .nav-links a:not(.btn) { display: none; }
+    main { padding-inline: 20px; }
+    .title-row { gap: 12px; }
+    .opencode-mark { width: 34px; height: 34px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides">Guides</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<article>
+  <p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / OpenCode V2 migration</p>
+  <p class="topic">Engineering notes · OpenCode 2.0.5</p>
+  <div class="title-row">
+    <img class="opencode-mark" src="/assets/opencode-logo-grayscale.png" alt="" width="42" height="42" />
+    <h1>OpenCode V2 migration: lessons from an AI code reviewer</h1>
+  </div>
+  <p class="updated">Published September 18, 2026</p>
+
+  <p class="lede">During our OpenCode V2 migration, a review’s reported token usage was about 100× too low. The review still returned findings. We were reading usage from the final assistant message, while V2 recorded a separate assistant message for each step.</p>
+  <p>We moved J-Bot Review, our open-source PR reviewer, to <code>@opencode/client</code> and <code>@opencode/cli</code> 2.0.5. It runs in GitHub Actions with a model you choose. This article covers its OpenCode backend; other backends have their own runtimes.</p>
+  <p>The migration changed how we load plugins, isolate the model’s shell, and finish a review. These observations are specific to 2.0.5.</p>
+
+  <nav class="contents" aria-label="Article contents">
+    <b>In this article</b>
+    <ul>
+      <li><a href="#packages">Choosing the V2 packages</a></li>
+      <li><a href="#isolation">Keeping repository plugins and credentials out</a></li>
+      <li><a href="#sessions">Waiting for a review and recovering at timeout</a></li>
+      <li><a href="#usage">Counting the whole turn</a></li>
+      <li><a href="#validation">What we verified</a></li>
+    </ul>
+  </nav>
+
+  <h2 id="packages">The package named “SDK” wasn’t the one we needed</h2>
+  <p>Our V1 integration used <code>@opencode-ai/sdk</code> to start an OpenCode child process and talk to it over HTTP. In V2, the similarly named <code>@opencode/sdk</code> embeds the server in the calling process. We wanted to keep the child-process boundary.</p>
+  <div class="tbl-wrap" role="region" aria-label="OpenCode package choices" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">Package</th><th scope="col">Role in our migration</th></tr></thead>
+      <tbody>
+        <tr><td><code>@opencode-ai/sdk</code></td><td>The V1 client and process-spawning helper we replaced.</td></tr>
+        <tr><td><code>@opencode/client</code></td><td>The V2 network client we adopted.</td></tr>
+        <tr><td><code>@opencode/cli</code></td><td>The V2 binary we spawn with <code>opencode serve</code>.</td></tr>
+        <tr><td><code>@opencode/sdk</code></td><td>The in-process host; outside the architecture we chose.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>We chose V2 for its session controls and server authentication. Several endpoints we needed were still experimental, and adopting them meant rewriting the session driver and plugin.</p>
+  <p>The new launcher starts a server on a loopback address with an OS-assigned port, reads its URL and generated password from the startup banner, and authenticates the client. A listening port isn’t enough for readiness: we also wait for the selected models to appear and for J-Bot’s plugin to report itself active. A review must not start with its enforcement plugin missing.</p>
+
+  <h2 id="isolation">Repository plugins load before the first model tool call</h2>
+  <p>A PR reviewer reads code it hasn’t approved. Letting that checkout supply a startup plugin would let the repository execute code before the model’s tool permissions could help.</p>
+  <p>We kept project configuration disabled with <code>OPENCODE_DISABLE_PROJECT_CONFIG</code>. We also gave the server a J-Bot-owned <code>XDG_CONFIG_HOME</code> containing only our plugin, plus a data directory for each run. The operator’s global plugins and configuration stay out too.</p>
+  <p>The <a href="https://github.com/pgup-ai/jbot-review/blob/770719210307238ce71abb2d3982c42d478e2a23/test/opencode-hermetic-config.test.ts">integration test</a> plants plugins in both the reviewed repository and an ambient global config directory. Each would write a marker file if loaded. With the real V2 binary, neither marker appears, J-Bot’s plugin is active, and an unauthenticated server request gets a 401.</p>
+  <p>Credentials need a separate check. The server needs provider keys to call a model; the shell tool doesn’t. We use <code>session.environment</code> to replace the shell’s inherited environment with an explicit allowlist. In the migration probes, the seeded environment-leak count was zero on both the free Zen route and the paid DeepSeek route we tested. That checks this path, not every possible way a secret could be exposed.</p>
+  <p>We also denied subagents. A child session could otherwise escape the parent session’s environment allowlist.</p>
+  <h3>Porting the read-only rules</h3>
+  <p>V1’s per-prompt tool switches didn’t carry over. We moved to ordered permission rules on configuration and session creation, then used a V2 <code>context</code> hook to remove write, edit, patch, and delegation tools from model requests. Shell commands remain subject to the shell policy.</p>
+  <p>OpenCode’s <a href="https://opencode.ai/v2/docs/build/plugins/migrate-v1">plugin migration documentation</a> explains the new registration model. Our <a href="https://github.com/pgup-ai/jbot-review/blob/770719210307238ce71abb2d3982c42d478e2a23/src/shared/opencode-plugin.ts">plugin implementation</a> shows the additional restrictions for a reviewer. Those restrictions have to survive the migration in code; a read-only instruction in the prompt can’t substitute for them.</p>
+
+  <h2 id="sessions">A waiting HTTP request has its own deadline</h2>
+  <p>V2 gave us <code>session.wait</code>, but a long-running review can outlast the HTTP client’s header timeout. We wait in slices of at most 240 seconds, below the 300-second Undici limit our driver accounts for, while keeping one deadline for the whole turn. A completed wait is followed by a check for the completed assistant message.</p>
+  <p>The timeout recovery path took more care. We already had a way to interrupt a review near its deadline and ask for the findings it had collected. On V2, that means interrupting the session, switching it to our <code>jbot-wrapup</code> agent, and requesting the final JSON in the same session.</p>
+  <p>The plugin removes every tool for that agent. Without that step, a request to finish could trigger another round of repository exploration. If the wrap-up misses its deadline or returns unusable output, the pass still fails.</p>
+  <p>Recovered findings carry a partial-coverage notice. The interrupted session’s result isn’t cached as a completed shard. Readers need to know when a review was cut short, even if it found something useful.</p>
+  <p>Our own review of the migration caught a bug here: wrap-up eligibility depended on a recorded outcome that some auxiliary sessions didn’t have. Those sessions could never wrap up. We changed the check to follow the session’s current agent. The <a href="https://github.com/pgup-ai/jbot-review/blob/770719210307238ce71abb2d3982c42d478e2a23/src/shared/opencode-session.ts">session driver</a> contains the wait loop, agent switch, and deadline handling.</p>
+
+  <h2 id="usage">The final answer didn’t contain the whole bill</h2>
+  <p>The final assistant message gave us the findings text, but its token counters left out the earlier steps. We now collect the turn’s assistant messages and add their input, output, reasoning, cache, and cost fields. If the listing is incomplete, the log says usage is under-counted.</p>
+  <p>This is easy to miss in a smoke test that only asks whether valid JSON came back. Include a multi-step tool session when checking your own accounting.</p>
+  <h3>Checking that reasoning settings reached the provider</h3>
+  <p>In our 2.0.5 probes, model settings and variants placed in config didn’t apply to catalog models as expected. We passed options per session through a file that the plugin reads, then applied them to the model request in the <code>context</code> hook.</p>
+  <p>To check the path, we deliberately sent an invalid reasoning-effort value to DeepSeek. The provider rejected that exact value. That gave us evidence it reached the provider; inspecting our own configuration object wouldn’t have established that.</p>
+
+  <h2 id="validation">What we verified</h2>
+  <p>We tested with the real V2 server and ran the reviewer against its own migration. That caught the broken wrap-up path described above, a lost reasoning-effort setting, and a temporary directory left behind after failed startup.</p>
+  <p>These checks gave us confidence in the integration. They don’t show that V2 finds more bugs or reviews code faster. Our small evaluation still produced false positives, and we didn’t run a broader comparison before the migration shipped. If you migrate, check your reviewer’s output on familiar code as well as testing its session lifecycle.</p>
+
+  <h2 id="before-you-migrate">Before you migrate</h2>
+  <p>Start with a session that uses tools. Check which process owns credentials, plant a plugin in the checkout to test isolation, force a timeout, and reconcile usage across the turn. A successful final response won’t expose those failures for you.</p>
+
+  <h2>Related</h2>
+  <div class="related">
+    <a class="rel-card" href="/guides/openai-compatible-code-review-github-actions"><span class="k2">Guide</span>Any OpenAI-compatible API<p>Connect your own gateway or model server to J-Bot Review.</p></a>
+    <a class="rel-card" href="/guides/local-agent-code-review"><span class="k2">Architecture</span>Local-agent PR review<p>Run a coding agent on a companion machine and see where credentials and code go.</p></a>
+    <a class="rel-card" href="https://github.com/pgup-ai/jbot-review-action#readme" target="_blank" rel="noopener noreferrer"><span class="k2">Docs</span>Action reference<p>Add the reviewer to your repository with the current workflow and key inputs.</p></a>
+  </div>
+</article>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/privacy">Privacy</a> · <a href="https://github.com/pgup-ai/jbot-review" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
