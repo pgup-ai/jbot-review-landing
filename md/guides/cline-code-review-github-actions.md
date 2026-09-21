@@ -2,17 +2,17 @@
 
 Updated July 4, 2026 · applies to pgup-ai/jbot-review-action v0
 
-**Cline can review your pull requests on whichever billing mode you're already on.** Subscription? Use `cline-pass`. Pay-as-you-go credits? Plain `cline`. Either way, J-Bot Review (an MIT-licensed GitHub Action) runs the Cline CLI read-only inside your own CI: `cline auth` once, one secret, one workflow file, and J-Bot adds **nothing to the bill**.
+J-Bot Review runs Cline in your GitHub Actions runner to review pull requests. Use `cline-pass` for a Cline subscription or `cline` for pay-as-you-go credits. Setup takes a credential file and a workflow. J-Bot is MIT-licensed and adds no fee; your Cline usage and CI minutes are billed as usual.
 
-> **Same trick, other seats**
+> **Using another CLI?**
 >
-> The pattern isn't Cline-specific. **Codex (ChatGPT Plus/Pro), Cursor, Devin, Kilo, Command Code, Grok Build, and Qoder** each take one secret and one provider value — the [CLI subscription guide](https://www.pgupai.com/guides/cli-subscription-code-review) has the whole table.
+> For Codex, Cursor, Devin, Kilo, Command Code, Grok Build, or Qoder, see the [CLI subscription guide](https://www.pgupai.com/guides/cli-subscription-code-review).
 
 ## Setup in three steps
 
-1. **Copy the credential.** Run `cline auth` locally, then save the entire contents of `~/.cline/data/settings/providers.json` as the repository secret `CLINE_AUTH_JSON` (_Settings → Secrets and variables → Actions_). The secret is the whole file, not a key inside it.
+1. **Copy the credential.** Run `cline auth` locally, then save the entire contents of `~/.cline/data/settings/providers.json` as the repository secret `CLINE_AUTH_JSON` (_Settings → Secrets and variables → Actions_).
 2. **Commit the workflow.** Add the file below as `.github/workflows/jbot-review.yml` — pick `cline-pass` (subscription) or `cline` (pay-as-you-go).
-3. **Open a pull request.** Cline reviews the full base…head diff read-only on your runner (`cline --plan`) and posts review comments with a verdict; findings are adversarially verified first, nits demoted.
+3. **Open a pull request.** Cline reviews the full diff on your runner without editing files. J-Bot checks the findings before posting review comments and a verdict.
 
 `.github/workflows/jbot-review.yml`
 
@@ -47,37 +47,37 @@ jobs:
 
 ## What lands on the PR
 
-- Diff-anchored comments across the full base…head range, closed out with a verdict. Cline itself runs `--plan --auto-approve false`, so it can read the checkout but never write to it.
-- With verification enabled (the default), all findings go through verification before posting. Refuted findings are dropped; uncertain findings stay in run diagnostics and are withheld from PR comments.
-- House rules are read from the repo: `AGENTS.md`, `REVIEW.md`, `.coderabbit.yaml`, `greptile.json`, Cursor rules.
+- The review covers the full diff between the merge base and PR head. Comments point to the relevant changed lines. Cline runs with `--plan --auto-approve false` to keep the review read-only.
+- Verification is on by default. J-Bot checks each finding and drops those the verifier refutes. If the verifier is unsure, the finding stays in the run diagnostics and isn't posted as a PR comment.
+- J-Bot reads review guidelines from your repo: `AGENTS.md`, `REVIEW.md`, `.coderabbit.yaml`, `greptile.json`, Cursor rules.
 - Context7 pulls current docs whenever the PR touches an external API or SDK.
 
 ## Cost & privacy
 
-- Billing stays inside your Cline plan (`cline-pass`) or credit balance (`cline`). CI minutes aside, J-Bot adds nothing.
-- Model pinning follows Cline's id scheme: `cline-pass/glm-5.2`, `cline/deepseek/deepseek-v4-flash`, or leave `model` unset for each mode's default.
-- The `providers.json` secret is only read for its auth token, but it's still a credential. Actions secrets only, and fork PRs never see it — GitHub strips secrets there. Check your plan's terms for CI use.
-- PRs that only touch docs don't spend a model call.
+- Cline charges your subscription (`cline-pass`) or credit balance (`cline`). GitHub Actions usage is billed separately.
+- To choose a model, set `model` to `cline-pass/glm-5.2` or `cline/deepseek/deepseek-v4-flash`. Leave it unset to use the default for your billing mode.
+- J-Bot reads the auth token from `providers.json`. Store the file in an Actions secret. GitHub doesn't pass that secret to fork PRs in this workflow. Check your plan's terms for CI use.
+- J-Bot skips model calls for PRs that only change documentation.
 
 ## FAQ
 
 ### Can I use my Cline subscription for automated code review?
 
-Yes. Set `provider: cline-pass` and J-Bot Review drives the Cline CLI inside your own GitHub Actions, billed through the Cline subscription you already pay for. Pay-as-you-go Cline credits work too — same secret, `provider: cline` instead. J-Bot itself adds no charge.
+Yes. Set `provider: cline-pass` to bill reviews through your Cline subscription. For pay-as-you-go credits, use `provider: cline`. Both run in your GitHub Actions runner and use the same credential file.
 
 ### Where does the CLINE_AUTH_JSON secret come from?
 
-Run `cline auth` on your machine, then copy the entire contents of `~/.cline/data/settings/providers.json` into a repository secret named `CLINE_AUTH_JSON`. The secret is the whole file, not a key inside it, and both billing modes share it. Only the auth token is used, but it's a password-equivalent all the same — Actions secrets only.
+Run `cline auth` on your machine, then copy the entire contents of `~/.cline/data/settings/providers.json` into an Actions repository secret named `CLINE_AUTH_JSON`. Treat this file like a password.
 
 ### What is the difference between provider: cline and cline-pass?
 
-Billing mode. `cline` is pay-as-you-go (Cline credits); `cline-pass` bills through your Cline subscription. They are separate providers sharing one credential. Pin models as `cline/<type>/<model>` (for example `cline/deepseek/deepseek-v4-flash`) or `cline-pass/<model>` (for example `cline-pass/glm-5.2`), or omit `model` to use each mode's default.
+`cline` uses pay-as-you-go credits; `cline-pass` uses your subscription. Model names also differ: use `cline/<type>/<model>` (for example `cline/deepseek/deepseek-v4-flash`) or `cline-pass/<model>` (for example `cline-pass/glm-5.2`), or omit `model` to use each mode's default.
 
 ## Related
 
 - **Guide** — [Review PRs with a CLI subscription](https://www.pgupai.com/guides/cli-subscription-code-review): Codex, Cursor, Devin, Kilo, Command Code, Grok Build, Qoder — the full per-CLI setup table.
-- **Guide** — [Codex code review in GitHub Actions](https://www.pgupai.com/guides/codex-code-review-github-actions): Your ChatGPT Plus/Pro seat, step by step.
-- **Docs** — [Action reference](https://github.com/pgup-ai/jbot-review-action#readme): Every input, provider id, and tuning knob.
+- **Guide** — [Codex code review in GitHub Actions](https://www.pgupai.com/guides/codex-code-review-github-actions): Set up reviews with your ChatGPT Plus/Pro subscription.
+- **Docs** — [Action reference](https://github.com/pgup-ai/jbot-review-action#readme): Inputs, provider IDs, and configuration options.
 
 ---
 
