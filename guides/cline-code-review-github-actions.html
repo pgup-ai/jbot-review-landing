@@ -61,7 +61,7 @@
       "step": [
         { "@type": "HowToStep", "position": 1, "name": "Copy the credential", "text": "Run cline auth locally, then save the entire contents of ~/.cline/data/settings/providers.json as the repository secret CLINE_AUTH_JSON (Settings → Secrets and variables → Actions)." },
         { "@type": "HowToStep", "position": 2, "name": "Commit the workflow", "text": "Add .github/workflows/jbot-review.yml with provider: cline-pass (subscription) or cline (pay-as-you-go) and cline-auth: ${{ secrets.CLINE_AUTH_JSON }} using the pgup-ai/jbot-review-action@v0 action." },
-        { "@type": "HowToStep", "position": 3, "name": "Open a pull request", "text": "On the next PR, Cline reviews the full diff read-only on your runner (cline --plan) and posts diff-anchored findings with a verdict; blocking findings are verified by a second session before posting." }
+        { "@type": "HowToStep", "position": 3, "name": "Open a pull request", "text": "On the next PR, Cline reviews the full diff read-only on your runner (cline --plan) and posts diff-anchored findings with a verdict; findings go through verification before posting." }
       ]
     },
     {
@@ -219,7 +219,7 @@
   <ol>
     <li><b>Copy the credential.</b> Run <code>cline auth</code> locally, then save the entire contents of <code>~/.cline/data/settings/providers.json</code> as the repository secret <code>CLINE_AUTH_JSON</code> (<em>Settings → Secrets and variables → Actions</em>). The secret is the whole file, not a key inside it.</li>
     <li><b>Commit the workflow.</b> Add the file below as <code>.github/workflows/jbot-review.yml</code> — pick <code>cline-pass</code> (subscription) or <code>cline</code> (pay-as-you-go).</li>
-    <li><b>Open a pull request.</b> Cline reviews the full base…head diff read-only on your runner (<code>cline --plan</code>) and posts review comments with a verdict; blocking findings are adversarially verified first, nits demoted.</li>
+    <li><b>Open a pull request.</b> Cline reviews the full base…head diff read-only on your runner (<code>cline --plan</code>) and posts review comments with a verdict; findings are adversarially verified first, nits demoted.</li>
   </ol>
 
   <div class="code-card">
@@ -255,7 +255,7 @@
   <h2 id="what-cline-reviews">What lands on the PR</h2>
   <ul>
     <li>Diff-anchored comments across the full base…head range, closed out with a verdict. Cline itself runs <code>--plan --auto-approve false</code>, so it can read the checkout but never write to it.</li>
-    <li>Blocking findings go through a verification session first. The ones that don't survive get dropped; borderline ones post as advisory.</li>
+    <li>With verification enabled (the default), all findings go through verification before posting. Refuted findings are dropped; uncertain findings stay in run diagnostics and are withheld from PR comments.</li>
     <li>House rules are read from the repo: <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>.coderabbit.yaml</code>, <code>greptile.json</code>, Cursor rules.</li>
     <li>Context7 pulls current docs whenever the PR touches an external API or SDK.</li>
   </ul>

@@ -12,7 +12,7 @@ Updated July 4, 2026 · applies to pgup-ai/jbot-review-action v0
 
 1. **Copy the credential.** Run `cline auth` locally, then save the entire contents of `~/.cline/data/settings/providers.json` as the repository secret `CLINE_AUTH_JSON` (_Settings → Secrets and variables → Actions_). The secret is the whole file, not a key inside it.
 2. **Commit the workflow.** Add the file below as `.github/workflows/jbot-review.yml` — pick `cline-pass` (subscription) or `cline` (pay-as-you-go).
-3. **Open a pull request.** Cline reviews the full base…head diff read-only on your runner (`cline --plan`) and posts review comments with a verdict; blocking findings are adversarially verified first, nits demoted.
+3. **Open a pull request.** Cline reviews the full base…head diff read-only on your runner (`cline --plan`) and posts review comments with a verdict; findings are adversarially verified first, nits demoted.
 
 `.github/workflows/jbot-review.yml`
 
@@ -48,7 +48,7 @@ jobs:
 ## What lands on the PR
 
 - Diff-anchored comments across the full base…head range, closed out with a verdict. Cline itself runs `--plan --auto-approve false`, so it can read the checkout but never write to it.
-- Blocking findings go through a verification session first. The ones that don't survive get dropped; borderline ones post as advisory.
+- With verification enabled (the default), all findings go through verification before posting. Refuted findings are dropped; uncertain findings stay in run diagnostics and are withheld from PR comments.
 - House rules are read from the repo: `AGENTS.md`, `REVIEW.md`, `.coderabbit.yaml`, `greptile.json`, Cursor rules.
 - Context7 pulls current docs whenever the PR touches an external API or SDK.
 
