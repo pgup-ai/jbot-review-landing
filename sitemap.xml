@@ -19,7 +19,7 @@
   </url>
   <url>
     <loc>https://www.pgupai.com/guides</loc>
-    <lastmod>2026-09-18</lastmod>
+    <lastmod>2026-09-24</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/cli-subscription-code-review</loc>
@@ -104,5 +104,25 @@
   <url>
     <loc>https://www.pgupai.com/guides/opencode-v2-migration</loc>
     <lastmod>2026-09-18</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/why-ai-code-review-is-slow</loc>
+    <lastmod>2026-09-24</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/ai-code-review-speed-experiments</loc>
+    <lastmod>2026-09-24</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/context-pack-ai-code-review</loc>
+    <lastmod>2026-09-24</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/ai-code-review-team-guidelines</loc>
+    <lastmod>2026-09-24</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/faster-ai-code-review-results</loc>
+    <lastmod>2026-09-24</lastmod>
   </url>
 </urlset>

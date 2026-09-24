@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI code review that reads your team’s coding rules | J-Bot Review</title>
+<meta name="description" content="Only the rules it can see. J-Bot Review read guideline files up to 24 KB and took each from the top. How it now finds the sections that matter to each pull request." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/guides/ai-code-review-team-guidelines" />
+<link rel="alternate" type="text/markdown" href="/md/guides/ai-code-review-team-guidelines.md" title="Markdown representation" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/guides/ai-code-review-team-guidelines" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="AI code review that reads your team’s coding rules" />
+<meta property="og:description" content="Only the rules it can see. J-Bot Review read guideline files up to 24 KB and took each from the top. How it now finds the sections that matter to each pull request." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-ai-code-review-team-guidelines-20260924.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-ai-code-review-team-guidelines-20260924.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="An AI code reviewer that finds the rules that matter to each change. Part 4 of Making AI code review faster." />
+<meta property="article:published_time" content="2026-09-24" />
+<meta property="article:section" content="Engineering" />
+<meta name="twitter:image:alt" content="An AI code reviewer that finds the rules that matter to each change. Part 4 of Making AI code review faster." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="AI code review that reads your team’s coding rules" />
+<meta name="twitter:description" content="Only the rules it can see. J-Bot Review read guideline files up to 24 KB and took each from the top. How it now finds the sections that matter to each pull request." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-ai-code-review-team-guidelines-20260924.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/guides/ai-code-review-team-guidelines#article",
+      "headline": "Can an AI code reviewer follow your team’s coding guidelines?",
+      "description": "Only the rules it can see. J-Bot Review read guideline files up to 24 KB and took each from the top. How it now finds the sections that matter to each pull request.",
+      "url": "https://www.pgupai.com/guides/ai-code-review-team-guidelines",
+      "mainEntityOfPage": "https://www.pgupai.com/guides/ai-code-review-team-guidelines",
+      "image": [
+        "https://www.pgupai.com/assets/og-ai-code-review-team-guidelines-20260924.png"
+      ],
+      "datePublished": "2026-09-24",
+      "dateModified": "2026-09-24",
+      "keywords": "AI code review coding standards, AI code review custom rules, AGENTS.md code review, guideline compliance, pull request review rules, rules-for-diff",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "AI code review"
+        },
+        {
+          "@type": "Thing",
+          "name": "Coding standards"
+        },
+        {
+          "@type": "Thing",
+          "name": "Pull request review"
+        }
+      ],
+      "isPartOf": {
+        "@type": "CreativeWorkSeries",
+        "name": "Making AI code review faster",
+        "url": "https://www.pgupai.com/guides"
+      },
+      "position": 4,
+      "author": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.pgupai.com/assets/icon-512.png"
+        }
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.pgupai.com/guides/ai-code-review-team-guidelines#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Which files does J-Bot Review read as guidelines?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "AGENTS.md, REVIEW.md, CLAUDE.md, CONTRIBUTING.md, ARCHITECTURE.md, TECHNICAL_STANDARDS.md, DESIGN.md, DECISIONS.md, .cursor/rules, .cursorrules, .windsurfrules and .github/copilot-instructions.md, plus the same files inside changed folders, the Markdown files they link to, and sections routed by .pr-governance/review/rules-for-diff.yaml."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does J-Bot Review send all of my guidelines to the model?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Each review pass has a byte budget: 96 KB for the guideline-compliance pass, 24 KB for the main review, and 8 KB for each focused lens pass. What changed is which sections fill that budget: the ones that name the changed files come first."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I make sure a rule is always checked for certain files?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Route it. A rules-for-diff.yaml file under .pr-governance/review maps changed paths to numbered rules or document headings, and routed sections load ahead of general documents. Keep a numbered rule’s defaults in the lead-in of its section: a routed sub-rule now brings that lead-in along when it is 2 KB or less."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why not give the reviewer a bigger guideline budget?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because attention is limited. In an earlier investigation, a main review with a 149 KB prompt, 58% of it guidelines, missed four bugs that the same model found when given the change alone. Picking the right sections helped more than adding bytes."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "J-Bot Review",
+          "item": "https://www.pgupai.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://www.pgupai.com/guides"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Team guidelines",
+          "item": "https://www.pgupai.com/guides/ai-code-review-team-guidelines"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #0a0b0a; --surface: #0e100e; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --blue: #7aa2ff;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --border-code: rgba(255,255,255,0.09);
+    --code-text: #c8cdc7;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 740px; overflow-wrap: anywhere; }
+  article a { text-decoration: underline; text-underline-offset: 3px; }
+  h2[id] { scroll-margin-top: 90px; }
+  .contents { border-block: 1px solid var(--hairline); padding: 18px 0; margin: 28px 0; }
+  .contents b { font-size: 14px; }
+  .contents ul { margin-bottom: 0; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  .topic { font-family: var(--mono); font-size: 11px; color: var(--blue); letter-spacing: 0.07em; text-transform: uppercase; margin: 0 0 10px; }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  h3 { font-family: var(--display); font-weight: 600; font-size: 17px; letter-spacing: -0.01em; margin: 26px 0 8px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+  code { font-family: var(--mono); font-size: 12.5px; color: var(--code-text); background: var(--surface); border: 1px solid var(--border-code); border-radius: 5px; padding: 1px 6px; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 22px 0; }
+  .stats > div { border: 1px solid var(--border-card); border-radius: 11px; padding: 14px 16px; background: var(--surface-subtle); }
+  .stats .n { font-family: var(--display); font-size: 27px; font-weight: 600; letter-spacing: -0.01em; color: var(--accent); line-height: 1.1; }
+  .stats .l { color: var(--text-3); font-size: 13px; line-height: 1.45; margin-top: 7px; }
+
+  .callout { border: 1px solid rgba(94,227,154,0.28); background: rgba(94,227,154,0.045); border-radius: 12px; padding: 16px 18px; margin: 24px 0; }
+  .callout .tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 4px; }
+  .callout p, .callout li { color: var(--text-2); }
+  .callout p { margin: 6px 0 0; }
+  .callout ul { margin: 6px 0 0; }
+
+  .series { border: 1px solid var(--border-card); border-radius: 12px; padding: 16px 20px; margin: 28px 0; background: var(--surface-subtle); }
+  .series b { font-size: 14px; }
+  .series ol { margin: 8px 0 0; }
+  .series li { font-size: 14px; margin: 4px 0; }
+  .series li[aria-current] { color: var(--text); font-weight: 600; }
+
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; min-width: 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; overflow-wrap: break-word; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--text); font-weight: 600; }
+
+  .faq-item { border-bottom: 1px solid var(--hairline); }
+  .faq-item:first-of-type { border-top: 1px solid var(--hairline); }
+  .faq-item summary { display: flex; align-items: baseline; justify-content: space-between; gap: 22px; list-style: none; cursor: pointer; padding: 17px 2px; font-weight: 600; font-size: 15.5px; color: var(--text); line-height: 1.45; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-mark { font-family: var(--mono); font-size: 15px; color: var(--text-4); flex: none; transition: transform 0.2s var(--ease), color 0.2s var(--ease); }
+  .faq-item[open] .faq-mark { transform: rotate(45deg); color: var(--accent); }
+  .faq-a { padding: 0 2px 20px; font-size: 14.5px; color: var(--text-2); }
+  .faq-a p { margin: 0; }
+
+  .related { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0 0; }
+  .rel-card { display: block; border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 18px; color: var(--text); text-decoration: none; }
+  .rel-card:hover { border-color: rgba(94,227,154,0.35); color: var(--text); }
+  .rel-card .k2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 7px; }
+  .rel-card p { margin: 6px 0 0; font-size: 13px; color: var(--text-3); }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+
+  @media (max-width: 560px) {
+    .nav-links a:not(.btn) { display: none; }
+    main { padding-inline: 20px; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stats .n { font-size: 21px; }
+    .tbl-wrap table { min-width: 600px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .faq-mark { transition: none; }
+  }
+</style>
+<link rel="stylesheet" href="/assets/analytics.css" />
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides">Guides</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<article>
+  <p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / Team guidelines</p>
+  <p class="topic">Engineering notes · Making AI code review faster · Part 4 of 5</p>
+  <h1>Can an AI code reviewer follow your team’s coding guidelines?</h1>
+  <p class="updated">Published September 24, 2026</p>
+
+  <p class="lede">Yes, when it can see them. Until this release, J-Bot Review read each guideline file only up to its first 24 KB, and every review pass then took each file from the top. On one private repository with about 520 KB of applicable guidelines, the pass that hunts for cross-file problems saw 1 to 4% of the largest domain documents. Rules further down a long document reached no prompt at all.</p>
+  <p>J-Bot Review, an open-source agentic PR reviewer that runs in your own GitHub Actions, now loads guideline files whole and ranks each file’s sections by the files a pull request changes. On a pull request that added a database lock the team’s standards rule out, the reviewer went from missing the rule to quoting it.</p>
+
+  <nav class="contents" aria-label="Article contents">
+    <b>In this article</b>
+    <ul>
+      <li><a href="#what-counts">What counts as a guideline</a></li>
+      <li><a href="#budgets">Why the reviewer does not read everything</a></li>
+      <li><a href="#what-was-cut">What the budgets were cutting</a></li>
+      <li><a href="#what-changed">What changed</a></li>
+      <li><a href="#one-heading-up">The rule that was one heading up</a></li>
+      <li><a href="#cost">What it costs</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+  </nav>
+
+  <h2 id="what-counts">What counts as a guideline</h2>
+  <p>J-Bot Review treats a repository’s written instructions as review rules. That includes <code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>CLAUDE.md</code>, <code>CONTRIBUTING.md</code>, <code>ARCHITECTURE.md</code>, <code>TECHNICAL_STANDARDS.md</code>, <code>.cursor/rules</code>, <code>.cursorrules</code>, <code>.windsurfrules</code> and <code>.github/copilot-instructions.md</code>. Nested <code>AGENTS.md</code>, <code>CLAUDE.md</code>, <code>REVIEW.md</code> and rule files inside the changed folders count too, and so do Markdown documents linked from the top-level files.</p>
+  <p>A repository can also route rules by path. A <code>.pr-governance/review/rules-for-diff.yaml</code> file maps changed paths to specific numbered rules or document sections, and routed sections load ahead of everything else.</p>
+  <p>A dedicated guideline-compliance pass checks the change against these rules. The main review and the focused lens passes get a smaller excerpt.</p>
+
+  <h2 id="budgets">Why the reviewer does not read everything</h2>
+  <p>Two reasons: size and attention.</p>
+  <ul>
+    <li><b>Size.</b> The guidelines that applied to one pull request on that private repository came to about 520 KB. Every review pass would carry that on every page of the review.</li>
+    <li><b>Attention.</b> In an earlier investigation, a main review with a 149 KB prompt, 58% of it guidelines, missed four bugs that the same model found when given the change alone. More text diluted its attention.</li>
+  </ul>
+  <p>So each pass has a byte budget: 96 KB for the compliance pass, 24 KB for the main review, and 8 KB for each lens pass.</p>
+
+  <h2 id="what-was-cut">What the budgets were cutting</h2>
+  <p>The budgets were reasonable. What filled them was not.</p>
+  <ul>
+    <li><b>Files were cut when they were loaded.</b> Every guideline file stopped at 24 KB. The largest documents on that repository ran from 47 to 81 KB, so their second halves reached no review session.</li>
+    <li><b>Every budget took every file from the top.</b> Files shared a budget in small rotating chunks, starting from their first line. For a lens pass that meant about 360 bytes of each document per round: mostly titles and introductions.</li>
+    <li><b>The share that arrived was small.</b> On two real pull requests, the lens pass received 1% of a 47 KB invariants document and 4% of a 12 KB design document. The main review received 8% and 24% of the same two documents.</li>
+    <li><b>Sessions rarely went back for the rest.</b> Across 16 recorded reviews on one model, the main review opened a guideline file 4 times in 941 file reads. The compliance pass opened one in 8 of 16 runs. The lens passes had no tools to try.</li>
+  </ul>
+  <div class="callout">
+    <span class="tag">The short version</span>
+    <p>The reviewer can apply only the rules it can see. Most of ours were below the fold.</p>
+  </div>
+
+  <h2 id="what-changed">What changed</h2>
+  <ul>
+    <li><b>Guideline files load whole</b>, up to 128 KB each and 1 MB in total. The per-pass budgets did not grow.</li>
+    <li><b>Sections are ranked by the change.</b> Each section scores on the changed folder and file names it mentions, weighted by how rare each word is across all sections. A match in a heading counts double, and a word found in more than a quarter of the sections is ignored because it cannot tell them apart.</li>
+    <li><b>Short parent sections travel with their children.</b> When a <code>###</code> rule moves up, its <code>##</code> parent’s text comes along if it is 2 KB or less, so a rule keeps its topic and defaults. The document’s <code>#</code> overview stays where it is, so small budgets do not open on introductions again.</li>
+    <li><b>Routed sub-rules bring their defaults.</b> When the routing file cites rule 13.1, the reviewer also loads rule 13’s own lead-in, up to 2 KB.</li>
+    <li><b>The compliance pass sees what it skipped.</b> When its budget cannot hold every section, its note lists each file’s skipped section headings, so it can open the one that applies.</li>
+  </ul>
+  <p>For an agent-runtime change, for example, the compliance pass now receives the seam and contract sections written about that runtime, where it used to receive each document’s opening sections.</p>
+
+  <h2 id="one-heading-up">The rule that was one heading up</h2>
+  <p>One test pull request added a pessimistic database lock to a payment update. The team’s standards cover this in a parent section on concurrency: do not add compare-and-set clauses or pessimistic locks. The repository’s routing file pointed reviews of those paths at a sub-rule about threading version numbers, 13.1, and not at its parent, 13.</p>
+  <ul>
+    <li><b>Before:</b> no review session saw the parent rule. The main review raised a concern near the lock, and verification left it unverified, so it was not posted.</li>
+    <li><b>After:</b> the main review and the compliance pass both quoted the rule and suggested keeping the existing conditional update. The finding was verified and posted.</li>
+  </ul>
+  <p>Across the two-PR check, the known issue was posted on both pull requests, against one of two before. That is one run each: a clear signal, but not a benchmark.</p>
+
+  <h2 id="cost">What it costs</h2>
+  <ul>
+    <li><b>Time:</b> ranking took 14 to 39 milliseconds per review. With 3,000 changed files, the most GitHub lists for one pull request, it took about 1.1 seconds.</li>
+    <li><b>Prompt size:</b> unchanged. The budgets are the same, and only what fills them changed.</li>
+    <li><b>Follow-up reviews:</b> a new ranking does not force a full re-review. The check for changed rules hashes the rules themselves, not the order a given diff put them in.</li>
+  </ul>
+  <div class="callout">
+    <span class="tag">Tips for teams that write guidelines</span>
+    <ul>
+      <li>Name the module or folder in section headings. Heading matches count double.</li>
+      <li>Put a numbered rule’s defaults in its first 2 KB, before its sub-rules.</li>
+      <li>Route rules that must always apply to a path with <code>rules-for-diff.yaml</code>.</li>
+    </ul>
+  </div>
+
+  <h2 id="faq">FAQ</h2>
+  <details class="faq-item" open>
+    <summary>Which files does J-Bot Review read as guidelines?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p><code>AGENTS.md</code>, <code>REVIEW.md</code>, <code>CLAUDE.md</code>, <code>CONTRIBUTING.md</code>, <code>ARCHITECTURE.md</code>, <code>TECHNICAL_STANDARDS.md</code>, <code>DESIGN.md</code>, <code>DECISIONS.md</code>, <code>.cursor/rules</code>, <code>.cursorrules</code>, <code>.windsurfrules</code> and <code>.github/copilot-instructions.md</code>, plus the same files inside changed folders, the Markdown files they link to, and sections routed by <code>.pr-governance/review/rules-for-diff.yaml</code>.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Does J-Bot Review send all of my guidelines to the model?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>No. Each review pass has a byte budget: 96 KB for the guideline-compliance pass, 24 KB for the main review, and 8 KB for each focused lens pass. What changed is which sections fill that budget: the ones that name the changed files come first.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>How do I make sure a rule is always checked for certain files?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Route it. A <code>rules-for-diff.yaml</code> file under <code>.pr-governance/review</code> maps changed paths to numbered rules or document headings, and routed sections load ahead of general documents. Keep a numbered rule’s defaults in the lead-in of its section: a routed sub-rule now brings that lead-in along when it is 2 KB or less.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Why not give the reviewer a bigger guideline budget?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Because attention is limited. In an earlier investigation, a main review with a 149 KB prompt, 58% of it guidelines, missed four bugs that the same model found when given the change alone. Picking the right sections helped more than adding bytes.</p></div>
+  </details>
+
+  <nav class="series" aria-label="Making AI code review faster series">
+    <b>Series: Making AI code review faster</b>
+    <ol>
+      <li><a href="/guides/why-ai-code-review-is-slow">Why AI code review is slow</a></li>
+      <li><a href="/guides/ai-code-review-speed-experiments">What we tried before context packs</a></li>
+      <li><a href="/guides/context-pack-ai-code-review">Context packs: the fix that worked</a></li>
+      <li aria-current="page">Making the reviewer read your rules</li>
+      <li><a href="/guides/faster-ai-code-review-results">The results</a></li>
+    </ol>
+  </nav>
+
+  <h2>Related</h2>
+  <div class="related">
+    <a class="rel-card" href="/guides/context-pack-ai-code-review"><span class="k2">Part 3</span>Context packs: the fix that worked<p>The code bundle that replaced most of the reviewer’s lookups.</p></a>
+    <a class="rel-card" href="/guides/faster-ai-code-review-results"><span class="k2">Part 5</span>The results<p>What the changes did to speed, turns, and caught issues.</p></a>
+    <a class="rel-card" href="https://github.com/pgup-ai/jbot-review/pull/242"><span class="k2">Source</span>The guideline-ranking pull request<p>Whole-file loading, section ranking, and parent rules in the open-source repo.</p></a>
+  </div>
+</article>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/privacy">Privacy</a> · <a href="https://github.com/pgup-ai/jbot-review" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
