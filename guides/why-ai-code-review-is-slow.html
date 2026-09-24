@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Why AI code review is slow: what our own data showed | J-Bot Review</title>
-<meta name="description" content="Two-thirds of our AI reviewer’s turns were lookups, and running tools took 1.8% of the time. What we measured in production, and the bugs that quietly threw work away." />
+<meta name="description" content="Two-thirds of our AI reviewer’s turns were lookups, and on the backend that measures it, running tools took 1.8% of the time. We traced where the rest went, and found bugs that threw finished work away." />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0a0b0a" />
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
@@ -17,9 +17,9 @@
 <meta property="og:url" content="https://www.pgupai.com/guides/why-ai-code-review-is-slow" />
 <meta property="og:site_name" content="J-Bot Review" />
 <meta property="og:title" content="Why AI code review is slow: what our own data showed" />
-<meta property="og:description" content="Two-thirds of our AI reviewer’s turns were lookups, and running tools took 1.8% of the time. What we measured in production, and the bugs that quietly threw work away." />
-<meta property="og:image" content="https://www.pgupai.com/assets/og-why-ai-code-review-is-slow-20260924.png" />
-<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-why-ai-code-review-is-slow-20260924.png" />
+<meta property="og:description" content="Two-thirds of our AI reviewer’s turns were lookups, and on the backend that measures it, running tools took 1.8% of the time. We traced where the rest went, and found bugs that threw finished work away." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-why-ai-code-review-is-slow-20260924-v2.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-why-ai-code-review-is-slow-20260924-v2.png" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -29,8 +29,8 @@
 <meta name="twitter:image:alt" content="Why AI code review is slow: two-thirds of the turns were lookups. Part 1 of Making AI code review faster." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Why AI code review is slow: what our own data showed" />
-<meta name="twitter:description" content="Two-thirds of our AI reviewer’s turns were lookups, and running tools took 1.8% of the time. What we measured in production, and the bugs that quietly threw work away." />
-<meta name="twitter:image" content="https://www.pgupai.com/assets/og-why-ai-code-review-is-slow-20260924.png" />
+<meta name="twitter:description" content="Two-thirds of our AI reviewer’s turns were lookups, and on the backend that measures it, running tools took 1.8% of the time. We traced where the rest went, and found bugs that threw finished work away." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-why-ai-code-review-is-slow-20260924-v2.png" />
 
 <script type="application/ld+json">
 {
@@ -40,11 +40,11 @@
       "@type": "TechArticle",
       "@id": "https://www.pgupai.com/guides/why-ai-code-review-is-slow#article",
       "headline": "Why is AI code review slow?",
-      "description": "Two-thirds of our AI reviewer’s turns were lookups, and running tools took 1.8% of the time. What we measured in production, and the bugs that quietly threw work away.",
+      "description": "Two-thirds of our AI reviewer’s turns were lookups, and on the backend that measures it, running tools took 1.8% of the time. We traced where the rest went, and found bugs that threw finished work away.",
       "url": "https://www.pgupai.com/guides/why-ai-code-review-is-slow",
       "mainEntityOfPage": "https://www.pgupai.com/guides/why-ai-code-review-is-slow",
       "image": [
-        "https://www.pgupai.com/assets/og-why-ai-code-review-is-slow-20260924.png"
+        "https://www.pgupai.com/assets/og-why-ai-code-review-is-slow-20260924-v2.png"
       ],
       "datePublished": "2026-09-24",
       "dateModified": "2026-09-24",
@@ -93,7 +93,7 @@
           "name": "Why does AI code review take minutes when a chatbot answers in seconds?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A chat answer is usually one turn. A review is dozens. In our data a main review averaged about 15 turns in a row and 26 tool calls, and each turn waits for the model to read, reason and pick its next step. Several review passes run too, and the slowest one decides when the review is done."
+            "text": "A chat answer is usually one turn. A review takes many. In our data a main review averaged about 15 turns in a row and 26 tool calls, and each turn waits for the model to read, reason and pick its next step. Several review passes run too, and the slowest one decides when the review is done."
           }
         },
         {
@@ -101,7 +101,7 @@
           "name": "Does a bigger pull request take longer to review?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Not reliably. In our production data the correlation between pull-request size and review time was 0.03. How much the model reasoned was a much better predictor, at 0.50."
+            "text": "Not in our data. The correlation between pull-request size and review time was 0.03. How much the model reasoned was a much better predictor, at 0.50."
           }
         },
         {
@@ -117,7 +117,7 @@
           "name": "Is the model or the reviewer the slow part?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Both, in different ways. The model route sets the pace. Median main-review time ranged from 54 seconds to 1,060 seconds between routes. The reviewer’s design decides how many turns the model needs, and that’s the part context packs changed."
+            "text": "Both. The model route decides how fast each turn goes. On the same test pull requests, one free model finished in about 50 seconds and another took about 24 minutes. The reviewer’s design decides how many turns the model needs, and that’s the part context packs changed."
           }
         }
       ]
@@ -289,8 +289,8 @@
   <h1>Why is AI code review slow?</h1>
   <p class="updated">Published September 24, 2026</p>
 
-  <p class="lede">Mostly because the model works one step at a time, and every step is a full round trip. When we traced J-Bot Review in production, two-thirds of the main review’s turns went to looking code up, and those turns took 61% of the model’s time. Running the tools themselves took 1.8% of the session. Nearly all the rest was the model deciding what to do next.</p>
-  <p>J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI, with the model you choose. We spent five weeks making it faster, and this series is the write-up. We went in expecting slow tools. What we found was a model doing lookups one at a time, plus a handful of bugs that quietly threw work away.</p>
+  <p class="lede">Mostly because the model works one step at a time, and every step is a full round trip. When we traced J-Bot Review in production, two-thirds of the main review’s turns went to looking code up, and those turns took 61% of the model’s time. On the one backend that reports tool time separately, running the tools took 1.8% of the session. Nearly all the rest was the model deciding what to do next.</p>
+  <p>J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI, with the model you choose. We spent five weeks making it faster, and this series is the write-up. We had guessed the tools were slow. The time was going to a model doing its lookups one at a time, and a handful of bugs were discarding work or hiding code from the reviewer without raising an error.</p>
 
   <nav class="contents" aria-label="Article contents">
     <b>In this article</b>
@@ -298,7 +298,7 @@
       <li><a href="#how-slow">How slow it was</a></li>
       <li><a href="#where-time-went">Where the time went</a></li>
       <li><a href="#model-route">The model route mattered most</a></li>
-      <li><a href="#quietly-missing">What was quietly missing</a></li>
+      <li><a href="#quietly-missing">Failures that raised no error</a></li>
       <li><a href="#how-we-found-it">How we found it</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
@@ -307,18 +307,18 @@
   <div class="stats" aria-label="What we measured before the changes">
     <div><div class="n">11.1&nbsp;min</div><div class="l">median from push to posted review, for the 80 of 195 pushes that got one</div></div>
     <div><div class="n">67%</div><div class="l">of main-review turns were only lookups</div></div>
-    <div><div class="n">1.8%</div><div class="l">of session time spent running tools</div></div>
-    <div><div class="n">20×</div><div class="l">spread in median main-review time between model routes</div></div>
+    <div><div class="n">1.8%</div><div class="l">of session time spent running tools, on the backend that measures it</div></div>
+    <div><div class="n">41%</div><div class="l">of review runs were cancelled by a newer push</div></div>
   </div>
 
   <h2 id="how-slow">How slow it was</h2>
   <p>We took one busy private repository and measured a day of it in September 2026: 195 pushes. Only 80 of them ever got a review posted for that exact commit. For those 80, the median time from push to posted review was 11.1 minutes, and the slowest tenth took 25.6 minutes or longer.</p>
-  <p>Developers didn’t wait that long. They pushed again after a median of 6.9 minutes, and because that repository’s workflow cancels a running review when a new push lands, 41% of review runs were cancelled before they finished. Of the runs that did reach a verdict, one in five failed anyway, mostly on model-plan quotas and time limits. That left 115 of the 195 pushes without a review of their own.</p>
+  <p>Developers didn’t wait that long. They pushed again after a median of 6.9 minutes, and because that repository’s workflow cancels a running review when a new push lands, 41% of review runs were cancelled before they finished. Of the runs that weren’t cancelled, one in five failed anyway, mostly on model-plan quotas and time limits. That left 115 of the 195 pushes without a review of their own.</p>
 
   <h2 id="where-time-went">Where the time went</h2>
   <h3>It wasn’t the tools</h3>
-  <p>On the backend that reports tool time separately, file reads and searches took 1.8% of session time. In one full review we profiled, the tools ran for 196 milliseconds in total. The review took 323 seconds.</p>
-  <p>The rest is the model reading, reasoning and picking its next move, and you never see most of it. On one backend we audited, 94 to 99% of the output tokens were hidden reasoning. A typical focused pass produced 415 characters of visible answer out of 3,962 output tokens.</p>
+  <p>On the backend that reports tool time separately, file reads and searches took 1.8% of session time. In one full review we profiled, the tools ran for 196 milliseconds in total, out of 323 seconds.</p>
+  <p>The rest is the model reading, reasoning and picking its next move. On one backend we audited, 94 to 99% of the output tokens were hidden reasoning. A typical focused pass produced 415 characters of visible answer out of 3,962 output tokens.</p>
   <h3>Most turns were lookups</h3>
   <p>A main review averaged about 15 turns in a row and 26 tool calls. We sorted 3,387 of those calls by what they did:</p>
   <ul>
@@ -327,46 +327,44 @@
     <li>15.9% read an unchanged file linked to the diff</li>
     <li>11.9% listed folders</li>
   </ul>
-  <p>Two-thirds of all turns were nothing but lookups like these, and they ate 61% of the main review’s model time. Most of them could be predicted from the diff alone. That’s where the idea for context packs came from, and <a href="/guides/context-pack-ai-code-review">Part 3</a> covers them.</p>
+  <p>Two-thirds of main-review turns were nothing but lookups like these, and they took 61% of the main review’s model time. Many of them could be predicted from the diff. Handing the model those lookups before its first turn is the idea behind context packs, which <a href="/guides/context-pack-ai-code-review">Part 3</a> covers.</p>
   <h3>Size didn’t predict time</h3>
-  <p>We assumed big pull requests were the slow ones. They weren’t. The correlation between a pull request’s size and its review time was 0.03, which is next to nothing. How much the model reasoned was a far better predictor, at 0.50.</p>
+  <p>We had assumed big pull requests were the slow ones, but size and review time barely moved together. The correlation was 0.03. How much the model reasoned was a far better predictor, at 0.50.</p>
   <h3>Everyone waited for the slowest pass</h3>
   <p>A single review runs several model sessions: the main review, focused lens passes, a guideline check, and a verification step that tries to disprove each finding before it’s posted. The main review often finished first and then sat there. In one run, 322.9 of 617.8 seconds went to waiting on side passes. On small pull requests, verification alone took 20.0 seconds after a 22.5-second main review, because it re-read about 48,000 tokens it couldn’t get from cache.</p>
 
   <h2 id="model-route">The model route mattered most</h2>
-  <p>Nothing we changed in the code moved the clock as much as which model a run landed on, and through which provider:</p>
+  <p>Which model a run landed on, and through which provider, mattered more than any code change we made:</p>
   <ul>
-    <li>Median main-review time was 54 seconds on one route and 1,060 seconds on another.</li>
+    <li>The slowest route’s main reviews took a median of 1,060 seconds. The fastest took 54 seconds, but about 80% of its main reviews came back empty.</li>
     <li>On the same set of test pull requests, one free model finished in about 50 seconds and another took about 24 minutes.</li>
-    <li>Dropping reasoning effort to low cut the median review from 63.6 to 37.7 seconds, a paired change of −29.8% that held in 21 of 24 pairs. On another model the same setting made it reason 36% more, so there’s no single right setting.</li>
+    <li>Dropping reasoning effort to low cut the median review from 63.6 to 37.7 seconds. Measured pair by pair, the median change was −29.8%, and it held in 21 of 24 pairs. On another model the same setting made it reason 36% more, so there’s no single right setting.</li>
   </ul>
-  <p>Speed alone can fool you, too. One model finished its main reviews in a median of 12 seconds, and 13 of its 14 reviews came back empty.</p>
 
-  <h2 id="quietly-missing">What was quietly missing</h2>
-  <p>The hardest problems to find didn’t raise an error. From the outside, each of these looked like a finished review:</p>
+  <h2 id="quietly-missing">Failures that raised no error</h2>
+  <p>None of these raised an error. From the outside, each looked like a finished review:</p>
   <ul>
-    <li><b>Files the index couldn’t parse.</b> 1,282 of 4,014 TypeScript files failed on decorators, so services and controllers had no caller evidence at all. We found it during the context-pack work.</li>
-    <li><b>A reader that stopped at 48 KiB.</b> One backend’s file reader returned only the first 48 KiB of a file, with no way to page or search. As far as the model knew, a helper deep in a large file didn’t exist.</li>
-    <li><b>Confirmed findings that never posted.</b> A tentative finding kept its tentative label even after the verifier confirmed it, so the publishing step held it back. After the fix, a real defect was posted in 3 of 3 runs instead of 0 of 3.</li>
-    <li><b>Work that finished, then got thrown away.</b> Side passes still running 300 seconds after the main review were cut off and their work discarded, 345 to 450 seconds of model time each.</li>
-    <li><b>The one file nobody opened.</b> A serious bug slipped through because the unchanged file that called the changed code never made it into the review. No diff was truncated. The reviewer just never looked there.</li>
-    <li><b>Rules past the first 24 KB.</b> Guideline files were cut off at 24 KB, so long documents lost their second halves. <a href="/guides/ai-code-review-team-guidelines">Part 4</a> is about that one.</li>
-    <li><b>Bookkeeping cut short.</b> We spotted this one in our own run logs. The steps that resolve fixed review threads and summarize new commits were stopped 9 seconds after they started, and the run then waited 7 more minutes for other passes anyway.</li>
+    <li>The code index couldn’t parse TypeScript decorators. On one repository 1,282 of 4,014 TypeScript files failed, so services and controllers had no caller evidence at all. We found it during the context-pack work.</li>
+    <li>One backend’s file reader returned only the first 48 KiB of a file, with no way to page or search. As far as the model knew, a helper deep in a large file didn’t exist.</li>
+    <li>A tentative finding kept its tentative label even after the verifier confirmed it, so the publishing step held it back. After the fix, a real defect was posted in 3 of 3 runs instead of 0 of 3.</li>
+    <li>J-Bot Review cut off side passes still running 300 seconds after the main review and discarded their work, 345 to 450 seconds of model time each.</li>
+    <li>A serious bug slipped through because the unchanged file that called the changed code never made it into the review. The diff arrived whole, and the reviewer never opened the caller.</li>
+    <li>Guideline files stopped at 24 KB, so long documents lost everything past that point. <a href="/guides/ai-code-review-team-guidelines">Part 4</a> is about that one.</li>
+    <li>The steps that resolve fixed review threads and summarize new commits were cut off the moment the main review finished, 9 seconds after they started, and then the run waited 7 more minutes for other passes anyway. We caught that one while J-Bot Review was reviewing its own pull request.</li>
   </ul>
 
   <h2 id="how-we-found-it">How we found it</h2>
-  <p>No single test showed all of this. Every review writes telemetry for each session: turns, tool calls, tokens, how much of the output was reasoning, and time. We parsed 145 production review attempts and their 336 side-pass sessions to see which ones finished and why the rest didn’t. We replayed 54 production runs offline to count which lookups a pack could have answered. And we ran A/B tests on real pull requests whose issues developers had already accepted, so speed changes were scored on time, turns and caught issues together.</p>
-  <p>J-Bot Review also reviews its own pull requests, and several of the silent failures above showed up there first.</p>
-  <p>Our earlier speed tests had used small synthetic pull requests that finished in 20 to 60 seconds. They couldn’t show the two things that mattered most in production: which model route a run happened to draw, and how many attempts were wasted or cancelled. <a href="/guides/ai-code-review-speed-experiments">Part 2</a> covers the 23 ideas we tried next.</p>
+  <p>Every review writes telemetry for each session: turns, tool calls, tokens, how much of the output was reasoning, and time. Parsing 145 production review attempts and their 336 side-pass sessions showed which ones finished and why the rest didn’t. We also replayed 54 production runs offline to test early versions of the pack, and ran A/B tests on real pull requests whose issues developers had already accepted, scoring each speed change on time, turns and caught issues together.</p>
+  <p>Our earlier speed tests had used small synthetic pull requests that finished in 20 to 60 seconds. They couldn’t show the two things that mattered most in production: which model route a run happened to draw, and how many attempts were wasted or cancelled. We tried 23 ideas next, and <a href="/guides/ai-code-review-speed-experiments">Part 2</a> scores every one.</p>
 
   <h2 id="faq">FAQ</h2>
   <details class="faq-item" open>
     <summary>Why does AI code review take minutes when a chatbot answers in seconds?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>A chat answer is usually one turn. A review is dozens. In our data a main review averaged about 15 turns in a row and 26 tool calls, and each turn waits for the model to read, reason and pick its next step. Several review passes run too, and the slowest one decides when the review is done.</p></div>
+    <div class="faq-a"><p>A chat answer is usually one turn. A review takes many. In our data a main review averaged about 15 turns in a row and 26 tool calls, and each turn waits for the model to read, reason and pick its next step. Several review passes run too, and the slowest one decides when the review is done.</p></div>
   </details>
   <details class="faq-item">
     <summary>Does a bigger pull request take longer to review?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Not reliably. In our production data the correlation between pull-request size and review time was 0.03. How much the model reasoned was a much better predictor, at 0.50.</p></div>
+    <div class="faq-a"><p>Not in our data. The correlation between pull-request size and review time was 0.03. How much the model reasoned was a much better predictor, at 0.50.</p></div>
   </details>
   <details class="faq-item">
     <summary>What is a turn in an AI code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
@@ -374,7 +372,7 @@
   </details>
   <details class="faq-item">
     <summary>Is the model or the reviewer the slow part?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Both, in different ways. The model route sets the pace. Median main-review time ranged from 54 seconds to 1,060 seconds between routes. The reviewer’s design decides how many turns the model needs, and that’s the part context packs changed.</p></div>
+    <div class="faq-a"><p>Both. The model route decides how fast each turn goes. On the same test pull requests, one free model finished in about 50 seconds and another took about 24 minutes. The reviewer’s design decides how many turns the model needs, and that’s the part context packs changed.</p></div>
   </details>
 
   <nav class="series" aria-label="Making AI code review faster series">
@@ -390,8 +388,8 @@
 
   <h2>Related</h2>
   <div class="related">
-    <a class="rel-card" href="/guides/ai-code-review-speed-experiments"><span class="k2">Part 2</span>What we tried before context packs<p>The ideas that looked good, and the data that ruled them out.</p></a>
-    <a class="rel-card" href="/guides/faster-ai-code-review-results"><span class="k2">Part 5</span>The results<p>What the changes did to speed, turns, and caught issues.</p></a>
+    <a class="rel-card" href="/guides/ai-code-review-speed-experiments"><span class="k2">Part 2</span>What we tried before context packs<p>The 23 ideas we tried before context packs, and what each one measured.</p></a>
+    <a class="rel-card" href="/guides/faster-ai-code-review-results"><span class="k2">Part 5</span>The results<p>Turns, time and caught issues after the changes.</p></a>
     <a class="rel-card" href="/#setup"><span class="k2">Setup</span>Add J-Bot Review to your repo<p>One workflow file, your own runner, the model you choose.</p></a>
   </div>
 </article>

@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>AI code review that reads your team’s coding rules | J-Bot Review</title>
-<meta name="description" content="Only the rules it can see. J-Bot Review read guideline files up to 24 KB and took each from the top. How it now finds the sections that matter to each pull request." />
+<meta name="description" content="Only the rules it can see. J-Bot Review used to read guideline files up to 24 KB and take each from the top. Now it reads them whole and starts with the sections about your change." />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0a0b0a" />
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
@@ -17,7 +17,7 @@
 <meta property="og:url" content="https://www.pgupai.com/guides/ai-code-review-team-guidelines" />
 <meta property="og:site_name" content="J-Bot Review" />
 <meta property="og:title" content="AI code review that reads your team’s coding rules" />
-<meta property="og:description" content="Only the rules it can see. J-Bot Review read guideline files up to 24 KB and took each from the top. How it now finds the sections that matter to each pull request." />
+<meta property="og:description" content="Only the rules it can see. J-Bot Review used to read guideline files up to 24 KB and take each from the top. Now it reads them whole and starts with the sections about your change." />
 <meta property="og:image" content="https://www.pgupai.com/assets/og-ai-code-review-team-guidelines-20260924.png" />
 <meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-ai-code-review-team-guidelines-20260924.png" />
 <meta property="og:image:type" content="image/png" />
@@ -29,7 +29,7 @@
 <meta name="twitter:image:alt" content="An AI code reviewer that finds the rules that matter to each change. Part 4 of Making AI code review faster." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="AI code review that reads your team’s coding rules" />
-<meta name="twitter:description" content="Only the rules it can see. J-Bot Review read guideline files up to 24 KB and took each from the top. How it now finds the sections that matter to each pull request." />
+<meta name="twitter:description" content="Only the rules it can see. J-Bot Review used to read guideline files up to 24 KB and take each from the top. Now it reads them whole and starts with the sections about your change." />
 <meta name="twitter:image" content="https://www.pgupai.com/assets/og-ai-code-review-team-guidelines-20260924.png" />
 
 <script type="application/ld+json">
@@ -40,7 +40,7 @@
       "@type": "TechArticle",
       "@id": "https://www.pgupai.com/guides/ai-code-review-team-guidelines#article",
       "headline": "Can an AI code reviewer follow your team’s coding guidelines?",
-      "description": "Only the rules it can see. J-Bot Review read guideline files up to 24 KB and took each from the top. How it now finds the sections that matter to each pull request.",
+      "description": "Only the rules it can see. J-Bot Review used to read guideline files up to 24 KB and take each from the top. Now it reads them whole and starts with the sections about your change.",
       "url": "https://www.pgupai.com/guides/ai-code-review-team-guidelines",
       "mainEntityOfPage": "https://www.pgupai.com/guides/ai-code-review-team-guidelines",
       "image": [
@@ -117,7 +117,7 @@
           "name": "Why not give the reviewer a bigger guideline budget?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Because attention is limited. In an earlier investigation, a main review with a 149 KB prompt, 58% of it guidelines, missed four bugs that the same model found when given the change alone. So we pick better sections and keep the budgets where they are."
+            "text": "Because more wasn’t better in the one case we measured. In an earlier investigation, a main review with a 149 KB prompt, 58% of it guidelines, missed four bugs that the same model found when given the change alone. So we pick better sections and keep the budgets where they are."
           }
         }
       ]
@@ -289,23 +289,23 @@
   <h1>Can an AI code reviewer follow your team’s coding guidelines?</h1>
   <p class="updated">Published September 24, 2026</p>
 
-  <p class="lede">Yes, if it can see them. Until late September 2026, J-Bot Review read each guideline file only up to its first 24 KB, and every review pass then took each file from the top. On one private repository with about 520 KB of applicable guidelines, the focused lens passes saw 1 to 4% of the largest domain documents. Rules further down a long document never reached a prompt.</p>
+  <p class="lede">Yes, but only the rules that reach it. Until late September 2026, J-Bot Review read each guideline file only up to its first 24 KB, and every review pass then took each file from the top. On one pull request in a private repository, about 520 KB of guidelines applied, and the focused lens passes saw 1 to 4% of the domain documents we checked. Rules past the first 24 KB never made it into any prompt, and sessions rarely opened the files to look.</p>
   <p>J-Bot Review, an open-source agentic PR reviewer that runs in your own GitHub Actions, now loads guideline files whole and ranks each file’s sections by the files a pull request changes. On a pull request that added a database lock the team’s standards rule out, the reviewer went from missing the rule to quoting it.</p>
 
   <nav class="contents" aria-label="Article contents">
     <b>In this article</b>
     <ul>
-      <li><a href="#what-counts">What counts as a guideline</a></li>
-      <li><a href="#budgets">Why the reviewer doesn’t read everything</a></li>
-      <li><a href="#what-was-cut">What the budgets were cutting</a></li>
+      <li><a href="#what-counts">Where J-Bot Review looks for rules</a></li>
+      <li><a href="#budgets">Per-pass budgets</a></li>
+      <li><a href="#what-was-cut">Cut at 24 KB, read from the top</a></li>
       <li><a href="#what-changed">What changed</a></li>
       <li><a href="#one-heading-up">The rule that was one heading up</a></li>
-      <li><a href="#cost">What it costs</a></li>
+      <li><a href="#cost">Cost</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
   </nav>
 
-  <h2 id="what-counts">What counts as a guideline</h2>
+  <h2 id="what-counts">Where J-Bot Review looks for rules</h2>
   <p>J-Bot Review treats a repository’s written instructions as review rules. Where it looks depends on the folder:</p>
   <div class="tbl-wrap" role="region" aria-label="Where J-Bot Review looks for guidelines" tabindex="0">
     <table>
@@ -321,44 +321,36 @@
   <p>A repository can also route rules by path. A <code>.pr-governance/review/rules-for-diff.yaml</code> file maps changed paths to specific numbered rules or document sections, and routed sections load ahead of everything else.</p>
   <p>A dedicated guideline-compliance pass checks the change against these rules. The main review and the focused lens passes get a smaller excerpt.</p>
 
-  <h2 id="budgets">Why the reviewer doesn’t read everything</h2>
-  <p>There’s too much of it, and more text makes the model worse. The guidelines that applied to one pull request on that private repository came to about 520 KB, and every review pass would carry all of it on every page of the review. We’d also seen what a flood of rules does. In an earlier investigation, a main review with a 149 KB prompt, 58% of it guidelines, missed four bugs that the same model caught when we gave it the change alone.</p>
-  <p>So each pass gets a byte budget: 96 KB for the compliance pass, 24 KB for the main review, and 8 KB for each lens pass.</p>
+  <h2 id="budgets">Per-pass budgets</h2>
+  <p>The reviewer doesn’t read everything. There’s too much of it, and in one case we measured, more text made the model worse. The guidelines that applied to one pull request on that private repository came to about 520 KB, and every review pass would carry all of it on every page of the review. In an earlier investigation, a main review with a 149 KB prompt, 58% of it guidelines, missed four bugs that the same model caught when we gave it the change alone.</p>
+  <p>Each pass gets a byte budget instead: 96 KB for the compliance pass, 24 KB for the main review, and 8 KB for each lens pass.</p>
 
-  <h2 id="what-was-cut">What the budgets were cutting</h2>
+  <h2 id="what-was-cut">Cut at 24 KB, read from the top</h2>
   <p>This came up almost by accident. We were debating whether a lens pass’s 8 KB was too small, so we measured what was actually in it.</p>
-  <p>Every guideline file stopped at 24 KB when it was loaded. The biggest documents on that repository ran from 47 to 81 KB, so their second halves never reached a review session. Then every budget took each file from the top. Files shared a budget in small rotating chunks starting at line one, which for a lens pass meant about 360 bytes of each document per round. That’s a title and part of an introduction.</p>
+  <p>Every guideline file stopped at 24 KB when it was loaded. The biggest documents on that repository ran from 47 to 81 KB, so everything past their first 24 KB stayed out of every prompt. Then every budget took each file from the top. Files shared a budget in small rotating chunks starting at line one, which for a lens pass meant about 360 bytes of each document per round. About enough for a title and part of an introduction.</p>
   <p>On two real pull requests, the lens pass got 1% of a 47 KB invariants document and 4% of a 12 KB design document. The main review got 8% and 24% of the same two.</p>
-  <p>And the sessions almost never went back for the rest. Across 16 recorded reviews on one model, the main review opened a guideline file 4 times in 941 file reads. The compliance pass opened one in 8 of the 16 runs. The lens passes had no tools, so they couldn’t have.</p>
-  <p>None of this raised an error. The reviewer was checking code against the first pages of our rules, and from the outside it looked like it had all of them.</p>
+  <p>The main review almost never went back for the rest. Across 16 recorded reviews on one model, it opened a guideline file 4 times in 941 file reads. The compliance pass opened one in 8 of the 16 runs, and the lens passes had no tools, so they couldn’t have.</p>
+  <p>The reviewer was checking code against the first pages of our rules, and nothing in its output said the rest was missing.</p>
 
   <h2 id="what-changed">What changed</h2>
   <p>We kept every per-pass budget the same size and changed what fills them:</p>
   <ul>
-    <li><b>Guideline files load whole.</b> Each file can be up to 128 KB, and all of them together up to 1 MB.</li>
-    <li><b>Sections are ranked by the change.</b> Each section scores on the changed folder and file names it mentions, weighted by how rare each word is across all sections. A match in a heading counts double. A word that shows up in more than a quarter of the sections is ignored, since it can’t tell them apart.</li>
-    <li><b>Short parent sections travel with their children.</b> When a <code>###</code> rule moves up, its <code>##</code> parent’s text comes along if it’s 2 KB or less, so the rule keeps its topic and defaults. The document’s <code>#</code> overview stays put, so small budgets don’t open on introductions again.</li>
-    <li><b>Routed sub-rules bring their defaults.</b> When the routing file cites rule 13.1, the reviewer also loads rule 13’s own lead-in, up to 2 KB.</li>
-    <li><b>The compliance pass sees what it skipped.</b> When its budget can’t hold every section, its note lists each file’s skipped section headings, so it can open the one that applies.</li>
+    <li>Guideline files now load whole, up to 128 KB each and 1 MB in total.</li>
+    <li>J-Bot Review ranks each file’s sections by the change. A section scores on the changed folder and file names it mentions, weighted by how rare each word is across all sections. A match in a heading counts double, and a word that shows up in more than a quarter of the sections is ignored, since it can’t tell them apart.</li>
+    <li>A <code>###</code> rule that moves up brings its <code>##</code> parent’s text along if that text is 2 KB or less, so the rule keeps its topic and defaults. The document’s <code>#</code> overview stays put, so small budgets don’t open on introductions again.</li>
+    <li>A routed sub-rule brings its parent’s defaults. When the routing file cites rule 13.1, the reviewer also loads rule 13’s own lead-in, up to 2 KB.</li>
+    <li>If the compliance pass’s budget can’t hold every section, its note lists each file’s skipped section headings, so it can open the one that applies.</li>
   </ul>
-  <p>For a change to an agent runtime, for example, the compliance pass now gets the seam and contract sections written about that runtime. It used to get the opening sections of each document.</p>
+  <p>For a change to an agent runtime, for example, the compliance pass used to get the opening sections of each document. Now it gets the sections about how that runtime connects to the rest of the system and what it promises its callers. If you write guidelines, name the module or folder in your section headings, since heading matches count double.</p>
 
   <h2 id="one-heading-up">The rule that was one heading up</h2>
-  <p>One test pull request added a pessimistic database lock to a payment update. The team’s standards cover exactly this in rule 13, a parent section on concurrency that says not to add compare-and-set clauses or pessimistic locks. But the repository’s routing file pointed reviews of those paths at sub-rule 13.1, about threading version numbers, and not at rule 13 itself.</p>
-  <p>So no review session ever saw rule 13. The main review raised a concern near the lock, verification couldn’t confirm it, and it never got posted. With parent rules loaded, the main review and the compliance pass both quoted rule 13 and suggested keeping the existing conditional update. Verification confirmed the finding, and it was posted.</p>
-  <p>Across the two-PR check, the known issue was posted on both pull requests, against one of two before. That’s one run per pull request, a small sample.</p>
+  <p>One test pull request added a pessimistic database lock to a payment update. The team’s standards cover this case in rule 13, a parent section on concurrency that says not to add compare-and-set clauses or pessimistic locks. But the repository’s routing file pointed reviews of those paths at sub-rule 13.1, about threading version numbers, and not at rule 13 itself.</p>
+  <p>That kept rule 13 out of every review session. The main review raised a concern near the lock, verification couldn’t confirm it, and it never got posted. With parent rules loaded, the main review and the compliance pass both quoted rule 13 and suggested keeping the existing conditional update. Verification confirmed the finding, and it was posted.</p>
+  <p>In the two-PR check, with one run per pull request, each pull request’s known issue got posted, against one of the two before.</p>
 
-  <h2 id="cost">What it costs</h2>
+  <h2 id="cost">Cost</h2>
   <p>Very little. Ranking took 14 to 39 milliseconds per review, and about 1.1 seconds with 3,000 changed files, the most GitHub lists for one pull request. Prompts didn’t grow, since the budgets are the same size.</p>
   <p>A new ranking also doesn’t force a full re-review of an open pull request, because the check for changed rules hashes the rules themselves and ignores the order a diff puts them in. The one exception is the first review after upgrading. Loading whole files changes what gets hashed, so each open pull request gets one full review.</p>
-  <div class="callout">
-    <span class="tag">Tips for teams that write guidelines</span>
-    <ul>
-      <li>Name the module or folder in section headings. Heading matches count double.</li>
-      <li>Keep a numbered rule’s defaults in a short lead-in, under 2 KB, before its first sub-rule.</li>
-      <li>Route rules that must always apply to a path with <code>rules-for-diff.yaml</code>.</li>
-    </ul>
-  </div>
 
   <h2 id="faq">FAQ</h2>
   <details class="faq-item" open>
@@ -375,7 +367,7 @@
   </details>
   <details class="faq-item">
     <summary>Why not give the reviewer a bigger guideline budget?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Because attention is limited. In an earlier investigation, a main review with a 149 KB prompt, 58% of it guidelines, missed four bugs that the same model found when given the change alone. So we pick better sections and keep the budgets where they are.</p></div>
+    <div class="faq-a"><p>Because more wasn’t better in the one case we measured. In an earlier investigation, a main review with a 149 KB prompt, 58% of it guidelines, missed four bugs that the same model found when given the change alone. So we pick better sections and keep the budgets where they are.</p></div>
   </details>
 
   <nav class="series" aria-label="Making AI code review faster series">
@@ -391,8 +383,8 @@
 
   <h2>Related</h2>
   <div class="related">
-    <a class="rel-card" href="/guides/context-pack-ai-code-review"><span class="k2">Part 3</span>Context packs: the fix that worked<p>The code bundle that replaced most of the reviewer’s lookups.</p></a>
-    <a class="rel-card" href="/guides/faster-ai-code-review-results"><span class="k2">Part 5</span>The results<p>What the changes did to speed, turns, and caught issues.</p></a>
+    <a class="rel-card" href="/guides/context-pack-ai-code-review"><span class="k2">Part 3</span>Context packs: the fix that worked<p>What goes in a pack, and the four details behind it.</p></a>
+    <a class="rel-card" href="/guides/faster-ai-code-review-results"><span class="k2">Part 5</span>The results<p>The before-and-after numbers for the whole series.</p></a>
     <a class="rel-card" href="https://github.com/pgup-ai/jbot-review/pull/242"><span class="k2">Source</span>The guideline-ranking pull request<p>Whole-file loading, section ranking, and parent rules in the open-source repo.</p></a>
   </div>
 </article>

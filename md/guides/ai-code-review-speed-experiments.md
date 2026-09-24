@@ -4,9 +4,9 @@ Engineering notes · Making AI code review faster · Part 2 of 5
 
 Published September 24, 2026
 
-Taking work away from the model worked. Adding things to it mostly didn’t. Over five weeks we tried 23 ideas to make J-Bot Review faster. The ones that paid off either removed a whole model session or handed the model code it would otherwise have fetched one turn at a time. Smarter retrieval, caching and asking the model to be efficient either left the clock where it was or cost us bugs the reviewer should have caught.
+Taking work away from the model. Over five weeks we tried 23 ideas to make J-Bot Review faster, and the ones that paid off either removed a whole model session or handed the model code it would otherwise have fetched turn by turn. Smarter retrieval, caching and asking the model to be efficient either didn’t change review time or cost us bugs the reviewer should have caught.
 
-J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI. [Part 1](https://www.pgupai.com/guides/why-ai-code-review-is-slow) showed where its time went. Here’s what we tried before context packs, grouped by the idea behind each attempt. Fifteen of the 23 didn’t make it.
+J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI. [Part 1](https://www.pgupai.com/guides/why-ai-code-review-is-slow) showed where its time went. Fifteen of the 23 ideas we tried before context packs didn’t make it, and they’re grouped below by the idea behind each one.
 
 **In this article**
 
@@ -23,7 +23,7 @@ J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action 
 
 Each idea ran against the same pull requests with the change switched on and off, one to five times. We logged wall-clock time, model turns, tool calls, tokens and cost, and we checked whether the review still caught bugs we had planted or that developers had fixed. A faster review that missed bugs didn’t become a default.
 
-Small samples fool you. On one set of pull requests, the exact same code refuted 47% of its findings in one round and 20% in the next. So anything that looked like a win got a rerun before we believed it.
+On one set of pull requests, the same unchanged code refuted 47% of its findings in one round and 20% in the next. So we count single runs as hints, and every table here says how many runs sit behind each number.
 
 ## Giving the model more evidence
 
@@ -31,26 +31,26 @@ If the reviewer spends its time hunting for code, the obvious fix is to hunt for
 
 | Idea | What we measured | Outcome |
 | --- | --- | --- |
-| Rank callers with a hosted relevance model (Jev) and add the best ones | Faster than no evidence in 2 of 5 paired runs on one PR; caught a known bug 1 time in 5, against 0 in 5 without it | Kept as an opt-in preset |
+| Rank callers with a hosted relevance model (Jev) and add the best ones | Faster than no evidence in 2 of 5 paired runs on one PR; caught a known bug 1 time in 5, against 0 in 10 without it | Kept as an opt-in preset |
 | Collect import links and library-doc summaries before the review | Fewer tool calls, no reliable time saving; with ranking on, the verifier confirmed an unsupported concern in 3 of 3 trials | Rejected |
 | Attach related files to every file the model reads | A narrow version cut tool calls 27.7% and turns 13.4%, but confirmed 12 of 15 required bugs against 15 of 15 | Kept as an opt-in preset |
 | Give the verifier more surrounding code and callers | Verification took 81.9% longer; wrong confirmations went from 7 to 8 of 27 | Rejected |
 | Offer a “fetch context for this line” tool | The model called it 0 times | Rejected and removed |
 | Precompute a where-used index for every changed symbol | In simulation it could answer at most 30% of the model’s searches, at 20 to 325 KB per PR | Rejected before building |
 
-None of it made reviews reliably faster. More text in the prompt meant more to read, and extra evidence for the verifier slowed it down without improving its verdicts. The retrieval tool stung the most. We built it and described it in the prompt, and across 36 reviews the model called it zero times. It kept using the plain file reads it already knew.
+None of it made reviews reliably faster. More text in the prompt meant more to read, and extra evidence for the verifier slowed it down without improving its verdicts. The retrieval tool was the clearest miss. We built it and described it in the prompt, and across 36 reviews the model called it zero times. It kept using the plain file reads it already knew.
 
 ## Making the machinery faster
 
-Next we went after the plumbing.
+Caching and tooling came next, on the theory that faster tools make faster reviews.
 
 | Idea | What we measured | Outcome |
 | --- | --- | --- |
-| Cache file reads, parsed indexes and model-ranking calls | Setup fell from 501 to 211 ms; review time did not move. In a 323-second review, all tool work added up to 196 ms | Rejected |
+| Cache file reads, parsed indexes and model-ranking calls | Setup fell from 501 to 211 ms; review time didn’t move | Rejected |
 | Use each coding agent’s own read and search tools | Fixed a capacity problem: one page instead of seven, prompts 501,783 to 192,290 bytes. Not a speed-up by itself | Shipped for Command Code and Pi |
 | Share one prompt cache across all sessions of a run | The gateway reused a prompt prefix only inside one session, so nothing changed | Rejected |
 
-The one that shipped fixed a capacity problem. None of them moved the clock, and a profile of one full review shows why. It took 323 seconds, and every tool call added together took 196 milliseconds. You could make tools free and nobody would notice.
+Only the switch to each agent’s own read and search tools shipped, and what it fixed was capacity. None of the three changed review time. In the 323-second review we profiled for Part 1, every tool call added together took 196 milliseconds, so there was almost nothing to save.
 
 ## Asking the model to do less
 
@@ -58,15 +58,15 @@ Then we tried asking nicely.
 
 | Idea | What we measured | Outcome |
 | --- | --- | --- |
-| Mid-session checkpoints: reassess, reuse evidence, batch reads | Median 22.0 s against 19.9 s without; more tool calls, not fewer | Rejected |
+| Mid-session checkpoints: reassess, reuse evidence, batch reads | Median 22.0 s against 19.9 s without, and more tool calls | Rejected |
 | A nudge to request every known read in one turn | About 1.9 tool calls per turn with and without it | Rejected |
 | Tell the model not to look things up | Turns fell about 50%; known issues posted fell to 1 or 2 of 8, against 4 to 6 | Rejected |
 
-The checkpoints and the batching nudge didn’t change what the model did. The blunt instruction did cut turns, by skipping exactly the lookups that find real bugs, so we dropped it.
+Neither the checkpoints nor the batching nudge changed what the model did. The blunt instruction cut turns, but reviews lost the issues that need a lookup, so we dropped it.
 
 ## Running fewer sessions
 
-A review is several model sessions: the main review, focused lens passes, a guideline check, and verification. Drop a session and all of its turns go with it.
+Each model session in a review, from the lens passes to verification, takes turns of its own, and dropping one removes all of them.
 
 | Idea | What we measured | Outcome |
 | --- | --- | --- |
@@ -77,11 +77,11 @@ A review is several model sessions: the main review, focused lens passes, a guid
 | Merge the focused lens passes into one | Known issues posted fell to 1 of 4, against 4 of 4 | Rejected |
 | Skip the interactions lens when no outside code calls the change | Would drop its checks for contradictions between hunks | Rejected |
 
-This is where the clear wins were, with one condition. The session you drop can’t be doing work nobody else does. The single compliance session and the merged lens pass both failed that test.
+The clear wins came from here, as long as the dropped session wasn’t the only one catching something. The single compliance session and the merged lens pass both failed that test.
 
 ## Sending less
 
-Last, we tried shrinking the prompt.
+Smaller prompts looked like an easy win.
 
 | Idea | What we measured | Outcome |
 | --- | --- | --- |
@@ -91,13 +91,13 @@ Last, we tried shrinking the prompt.
 | Add code from a companion repository | 69.4 s against 33.4 s; recall did not improve | Rejected |
 | Size each context pack to its page’s diff | Helped one slow reasoning model; another explored more, with 10% more turns | Rejected |
 
-Diff batching still bugs us. It cut the bytes the model read by 44.1%, total time didn’t move, and it was the default for a while anyway.
+Diff batching became the default on a byte count. It cut tool-output bytes by 44.1%, total time didn’t move, and it stayed the default until context packs replaced it.
 
 ## What we kept
 
-The ideas that worked all removed turns the model would otherwise take one after another, and none of them told the model what not to do. Handing the verifier the code the reviewer had already read cut verification time roughly in half. Folding the guideline check into a lens pass removed a session outright. It still does, except on OpenCode, where lens passes now run without tools and the guideline check has its own session again.
+Every idea that worked removed turns the model would otherwise have taken one after another. None of them worked by telling the model what not to do. Handing the verifier the code the reviewer had already read cut verification time roughly in half. Folding the guideline check into a lens pass removed a session outright. It still does, except on OpenCode, where lens passes now run without tools and the guideline check has its own session again.
 
-Context packs do the same thing for the main review. They hand it the code it predictably looks up before the first turn and leave it free to go looking for more. [Part 3](https://www.pgupai.com/guides/context-pack-ai-code-review) explains how.
+[Context packs](https://www.pgupai.com/guides/context-pack-ai-code-review) do the same for the main review. They hand it the code it would predictably look up, before its first turn, and leave it free to go looking for more.
 
 The numbers here come from the audit reports in J-Bot Review’s open-source repository, summarized in the [experiment-presets audit](https://github.com/pgup-ai/jbot-review/blob/main/docs/audits/2026-09-19-experiment-presets.md), and from the [context-pack pull request](https://github.com/pgup-ai/jbot-review/pull/241).
 
@@ -117,7 +117,7 @@ We wouldn’t. Telling the model not to look things up cut its turns by about ha
 
 ### Why not give the reviewer a search tool for context?
 
-We did. A tool that returned definitions and callers for a given line was called 0 times across 36 reviews, so we removed it. The models kept using the file-reading and search tools they already knew.
+We tried one. A tool that returned definitions and callers for a given line was called 0 times across 36 reviews, so we removed it. The models kept using the file-reading and search tools they already knew.
 
 **Series: Making AI code review faster**
 
@@ -129,8 +129,8 @@ We did. A tool that returned definitions and callers for a given line was called
 
 ## Related
 
-- **Part 1** — [Why AI code review is slow](https://www.pgupai.com/guides/why-ai-code-review-is-slow): Where the time went, and how we measured it.
-- **Part 3** — [Context packs: the fix that worked](https://www.pgupai.com/guides/context-pack-ai-code-review): What goes in a pack and the details that made it work.
+- **Part 1** — [Why AI code review is slow](https://www.pgupai.com/guides/why-ai-code-review-is-slow): Two-thirds of the turns were lookups, and tools took 1.8% of session time on the backend that measures it.
+- **Part 3** — [Context packs: the fix that worked](https://www.pgupai.com/guides/context-pack-ai-code-review): The code bundle that saves the reviewer many of its lookups.
 - **Source** — [The experiment-presets audit](https://github.com/pgup-ai/jbot-review/blob/main/docs/audits/2026-09-19-experiment-presets.md): Method, samples, and raw numbers behind the retrieval and caching experiments.
 
 ---
