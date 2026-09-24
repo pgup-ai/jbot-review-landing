@@ -68,7 +68,7 @@ test('/privacy states the third parties the site actually loads', () => {
 });
 
 test('analytics assets load once on enabled pages and stay absent from excluded pages', () => {
-  const excluded = [NOT_FOUND_PAGE, 'x.html', 'guides/opencode-v2-migration.html'];
+  const excluded = [NOT_FOUND_PAGE, 'x.html'];
   for (const file of contentPages(ROOT)) {
     if (excluded.includes(file)) continue;
     const html = read(file);

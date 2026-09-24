@@ -80,7 +80,7 @@
       person_profiles: 'never',
       autocapture: false,
       capture_pageview: false,
-      capture_pageleave: false,
+      capture_pageleave: true,
       capture_dead_clicks: false,
       capture_exceptions: false,
       capture_heatmaps: false,
@@ -124,7 +124,7 @@
   var panel = document.createElement('section');
   panel.className = 'analytics-choice';
   panel.setAttribute('aria-label', 'Analytics preferences');
-  panel.innerHTML = '<p><strong>Help improve J-Bot Review</strong><br>Allow optional page-view and link-click analytics? No session recordings. <a href="/privacy#analytics-controls">Privacy details</a></p><p class="analytics-signal" hidden>Your browser requests no tracking. Analytics remain off.</p><div class="analytics-actions"><button type="button" data-choice="declined">Decline analytics</button><button type="button" data-choice="accepted">Allow analytics</button><button type="button" data-choice="close" hidden>Close</button></div>';
+  panel.innerHTML = '<p><strong>Help improve J-Bot Review</strong><br>Allow optional page-view, visit-duration, and link-click analytics? No session recordings. <a href="/privacy#analytics-controls">Privacy details</a></p><p class="analytics-signal" hidden>Your browser requests no tracking. Analytics remain off.</p><div class="analytics-actions"><button type="button" data-choice="declined">Decline analytics</button><button type="button" data-choice="accepted">Allow analytics</button><button type="button" data-choice="close" hidden>Close</button></div>';
   document.body.appendChild(panel);
   var settings = document.createElement('button');
   settings.type = 'button';
