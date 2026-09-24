@@ -361,7 +361,7 @@
     <table>
       <thead><tr><th scope="col">Idea</th><th scope="col">What we measured</th><th scope="col">Outcome</th></tr></thead>
       <tbody>
-        <tr><td>Check guidelines inside the first lens pass instead of a separate session</td><td>108.1 s to 83.7 s (−22.6%); both known bugs kept</td><td>Shipped</td></tr>
+        <tr><td>Check guidelines inside the first lens pass instead of a separate session</td><td>108.1 s to 83.7 s (−22.6%); both known bugs kept</td><td>Shipped, except with OpenCode’s tool-free lens passes</td></tr>
         <tr><td>Reuse finished checks when a follow-up commit only touches docs</td><td>48.6 s to 38.7 s (−20.3%); known bugs 6 of 6 in both arms</td><td>Kept as an opt-in preset</td></tr>
         <tr><td>Hand the verifier the code the reviewer already read</td><td>Verification 18.0 s to 8.6 s; input tokens 45,490 to 17,538</td><td>Shipped for Command Code</td></tr>
         <tr><td>One guideline-compliance session per PR instead of one per page</td><td>Uncached input −20%, but it missed the issue that pass normally catches</td><td>Rejected</td></tr>
@@ -389,7 +389,7 @@
   <p>Diff batching still bugs us. It cut the bytes the model read by 44.1%, total time didn’t move, and it was the default for a while anyway.</p>
 
   <h2 id="what-we-kept">What we kept</h2>
-  <p>The ideas that worked all removed turns the model would otherwise take one after another, and none of them told the model what not to do. Handing the verifier the code the reviewer had already read cut verification time roughly in half. Folding the guideline check into another pass removed a session outright.</p>
+  <p>The ideas that worked all removed turns the model would otherwise take one after another, and none of them told the model what not to do. Handing the verifier the code the reviewer had already read cut verification time roughly in half. Folding the guideline check into a lens pass removed a session outright. It still does, except on OpenCode, where lens passes now run without tools and the guideline check has its own session again.</p>
   <p>Context packs do the same thing for the main review. They hand it the code it predictably looks up before the first turn and leave it free to go looking for more. <a href="/guides/context-pack-ai-code-review">Part 3</a> explains how.</p>
   <p>The numbers here come from the audit reports in J-Bot Review’s open-source repository, summarized in the <a href="https://github.com/pgup-ai/jbot-review/blob/main/docs/audits/2026-09-19-experiment-presets.md">experiment-presets audit</a>, and from the <a href="https://github.com/pgup-ai/jbot-review/pull/241">context-pack pull request</a>.</p>
 

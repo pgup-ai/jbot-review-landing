@@ -305,15 +305,15 @@
   </nav>
 
   <div class="stats" aria-label="What we measured before the changes">
-    <div><div class="n">11.1&nbsp;min</div><div class="l">median from push to posted review on a busy private repository</div></div>
+    <div><div class="n">11.1&nbsp;min</div><div class="l">median from push to posted review, for the 80 of 195 pushes that got one</div></div>
     <div><div class="n">67%</div><div class="l">of main-review turns were only lookups</div></div>
     <div><div class="n">1.8%</div><div class="l">of session time spent running tools</div></div>
     <div><div class="n">20×</div><div class="l">spread in median main-review time between model routes</div></div>
   </div>
 
   <h2 id="how-slow">How slow it was</h2>
-  <p>We took one busy private repository and measured a day of it in September 2026: 195 pushes. The median push waited 11.1 minutes for its review. The slowest tenth waited 25.6 minutes or longer.</p>
-  <p>Developers didn’t wait that long. They pushed again after a median of 6.9 minutes, and because that repository’s workflow cancels a running review when a new push lands, 41% of review runs never finished. Of the runs that did reach a verdict, one in five failed anyway, mostly on model-plan quotas and time limits.</p>
+  <p>We took one busy private repository and measured a day of it in September 2026: 195 pushes. Only 80 of them ever got a review posted for that exact commit. For those 80, the median time from push to posted review was 11.1 minutes, and the slowest tenth took 25.6 minutes or longer.</p>
+  <p>Developers didn’t wait that long. They pushed again after a median of 6.9 minutes, and because that repository’s workflow cancels a running review when a new push lands, 41% of review runs were cancelled before they finished. Of the runs that did reach a verdict, one in five failed anyway, mostly on model-plan quotas and time limits. That left 115 of the 195 pushes without a review of their own.</p>
 
   <h2 id="where-time-went">Where the time went</h2>
   <h3>It wasn’t the tools</h3>
@@ -355,7 +355,7 @@
   </ul>
 
   <h2 id="how-we-found-it">How we found it</h2>
-  <p>No single test showed all of this. Every review writes telemetry for each session: turns, tool calls, tokens, how much of the output was reasoning, and time. We parsed 145 production review attempts and their 336 side-pass sessions to see which ones finished and why the rest didn’t. We replayed 54 production runs offline to count which lookups a pack could have answered. And we ran A/B tests on real pull requests whose issues developers had already accepted, so every speed change was scored on time, turns and caught issues together.</p>
+  <p>No single test showed all of this. Every review writes telemetry for each session: turns, tool calls, tokens, how much of the output was reasoning, and time. We parsed 145 production review attempts and their 336 side-pass sessions to see which ones finished and why the rest didn’t. We replayed 54 production runs offline to count which lookups a pack could have answered. And we ran A/B tests on real pull requests whose issues developers had already accepted, so speed changes were scored on time, turns and caught issues together.</p>
   <p>J-Bot Review also reviews its own pull requests, and several of the silent failures above showed up there first.</p>
   <p>Our earlier speed tests had used small synthetic pull requests that finished in 20 to 60 seconds. They couldn’t show the two things that mattered most in production: which model route a run happened to draw, and how many attempts were wasted or cancelled. <a href="/guides/ai-code-review-speed-experiments">Part 2</a> covers the 23 ideas we tried next.</p>
 

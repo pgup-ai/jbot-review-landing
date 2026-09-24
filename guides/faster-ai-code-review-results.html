@@ -93,7 +93,7 @@
           "name": "How do you measure whether a faster review is still accurate?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "We replay real pull requests whose issues developers accepted and fixed, and count how many of those issues the review posts. We checked every speed change against that count. Changes that cut turns but lost issues, such as prompts telling the model to skip lookups, didn’t ship."
+            "text": "We replay real pull requests whose issues developers accepted and fixed, and count how many of those issues the review posts. We checked the speed changes against that count, except one replay that only measured the pack itself. Changes that cut turns but lost issues, such as prompts telling the model to skip lookups, didn’t ship."
           }
         },
         {
@@ -117,7 +117,7 @@
           "name": "What does J-Bot Review cost?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "J-Bot Review is open source and $0 per seat. It runs in your own GitHub Actions, and you pay only the model provider you bring, which can be a free route."
+            "text": "J-Bot Review is open source and $0 per seat. It runs in your own GitHub Actions, so you pay the model provider you bring, which can be a free route, plus your normal CI minutes."
           }
         }
       ]
@@ -333,7 +333,7 @@
   <p>The accuracy check also ruled things out. Prompts that told the model to skip lookups cut turns by about half and lost the issues that need a lookup, so they didn’t ship. <a href="/guides/ai-code-review-speed-experiments">Part 2</a> lists those experiments.</p>
 
   <h2 id="production">In production</h2>
-  <p>Before the change, on one busy private repository over about a day in September 2026, the median time from a push to a posted review was 11.1 minutes, and the slowest 10% took 25.6 minutes or more. Developers pushed again after a median of 6.9 minutes, and a newer push cancelled 41% of review runs before they finished.</p>
+  <p>Before the change, we measured about a day of one busy private repository in September 2026. Only 80 of its 195 pushes got a review posted for their commit, and for those the median time from push to posted review was 11.1 minutes, with the slowest 10% at 25.6 minutes or more. Developers pushed again after a median of 6.9 minutes, and a newer push cancelled 41% of review runs before they finished.</p>
   <p>Here are two production reviews since context packs shipped. Around the same time we also took the slowest model route out of that repository’s rotation, so the two changes are mixed together:</p>
   <ul>
     <li>A 7-file frontend pull request, reviewed in 98 seconds with about 3,500 reasoning tokens across the whole review.</li>
@@ -356,7 +356,7 @@
   <h2 id="faq">FAQ</h2>
   <details class="faq-item" open>
     <summary>How do you measure whether a faster review is still accurate?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>We replay real pull requests whose issues developers accepted and fixed, and count how many of those issues the review posts. We checked every speed change against that count. Changes that cut turns but lost issues, such as prompts telling the model to skip lookups, didn’t ship.</p></div>
+    <div class="faq-a"><p>We replay real pull requests whose issues developers accepted and fixed, and count how many of those issues the review posts. We checked the speed changes against that count, except one replay that only measured the pack itself. Changes that cut turns but lost issues, such as prompts telling the model to skip lookups, didn’t ship.</p></div>
   </details>
   <details class="faq-item">
     <summary>How long does a J-Bot Review run take now?<span class="faq-mark" aria-hidden="true">+</span></summary>
@@ -368,7 +368,7 @@
   </details>
   <details class="faq-item">
     <summary>What does J-Bot Review cost?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>J-Bot Review is open source and $0 per seat. It runs in your own GitHub Actions, and you pay only the model provider you bring, which can be a free route.</p></div>
+    <div class="faq-a"><p>J-Bot Review is open source and $0 per seat. It runs in your own GitHub Actions, so you pay the model provider you bring, which can be a free route, plus your normal CI minutes.</p></div>
   </details>
 
   <nav class="series" aria-label="Making AI code review faster series">

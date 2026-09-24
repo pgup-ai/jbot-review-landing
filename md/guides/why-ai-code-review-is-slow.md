@@ -17,7 +17,7 @@ J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action 
 - [How we found it](https://www.pgupai.com/guides/why-ai-code-review-is-slow#how-we-found-it)
 - [FAQ](https://www.pgupai.com/guides/why-ai-code-review-is-slow#faq)
 
-**11.1 min** — median from push to posted review on a busy private repository
+**11.1 min** — median from push to posted review, for the 80 of 195 pushes that got one
 
 **67%** — of main-review turns were only lookups
 
@@ -27,9 +27,9 @@ J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action 
 
 ## How slow it was
 
-We took one busy private repository and measured a day of it in September 2026: 195 pushes. The median push waited 11.1 minutes for its review. The slowest tenth waited 25.6 minutes or longer.
+We took one busy private repository and measured a day of it in September 2026: 195 pushes. Only 80 of them ever got a review posted for that exact commit. For those 80, the median time from push to posted review was 11.1 minutes, and the slowest tenth took 25.6 minutes or longer.
 
-Developers didn’t wait that long. They pushed again after a median of 6.9 minutes, and because that repository’s workflow cancels a running review when a new push lands, 41% of review runs never finished. Of the runs that did reach a verdict, one in five failed anyway, mostly on model-plan quotas and time limits.
+Developers didn’t wait that long. They pushed again after a median of 6.9 minutes, and because that repository’s workflow cancels a running review when a new push lands, 41% of review runs were cancelled before they finished. Of the runs that did reach a verdict, one in five failed anyway, mostly on model-plan quotas and time limits. That left 115 of the 195 pushes without a review of their own.
 
 ## Where the time went
 
@@ -82,7 +82,7 @@ The hardest problems to find didn’t raise an error. From the outside, each of 
 
 ## How we found it
 
-No single test showed all of this. Every review writes telemetry for each session: turns, tool calls, tokens, how much of the output was reasoning, and time. We parsed 145 production review attempts and their 336 side-pass sessions to see which ones finished and why the rest didn’t. We replayed 54 production runs offline to count which lookups a pack could have answered. And we ran A/B tests on real pull requests whose issues developers had already accepted, so every speed change was scored on time, turns and caught issues together.
+No single test showed all of this. Every review writes telemetry for each session: turns, tool calls, tokens, how much of the output was reasoning, and time. We parsed 145 production review attempts and their 336 side-pass sessions to see which ones finished and why the rest didn’t. We replayed 54 production runs offline to count which lookups a pack could have answered. And we ran A/B tests on real pull requests whose issues developers had already accepted, so speed changes were scored on time, turns and caught issues together.
 
 J-Bot Review also reviews its own pull requests, and several of the silent failures above showed up there first.
 

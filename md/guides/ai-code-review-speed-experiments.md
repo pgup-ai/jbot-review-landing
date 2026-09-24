@@ -70,7 +70,7 @@ A review is several model sessions: the main review, focused lens passes, a guid
 
 | Idea | What we measured | Outcome |
 | --- | --- | --- |
-| Check guidelines inside the first lens pass instead of a separate session | 108.1 s to 83.7 s (−22.6%); both known bugs kept | Shipped |
+| Check guidelines inside the first lens pass instead of a separate session | 108.1 s to 83.7 s (−22.6%); both known bugs kept | Shipped, except with OpenCode’s tool-free lens passes |
 | Reuse finished checks when a follow-up commit only touches docs | 48.6 s to 38.7 s (−20.3%); known bugs 6 of 6 in both arms | Kept as an opt-in preset |
 | Hand the verifier the code the reviewer already read | Verification 18.0 s to 8.6 s; input tokens 45,490 to 17,538 | Shipped for Command Code |
 | One guideline-compliance session per PR instead of one per page | Uncached input −20%, but it missed the issue that pass normally catches | Rejected |
@@ -95,7 +95,7 @@ Diff batching still bugs us. It cut the bytes the model read by 44.1%, total tim
 
 ## What we kept
 
-The ideas that worked all removed turns the model would otherwise take one after another, and none of them told the model what not to do. Handing the verifier the code the reviewer had already read cut verification time roughly in half. Folding the guideline check into another pass removed a session outright.
+The ideas that worked all removed turns the model would otherwise take one after another, and none of them told the model what not to do. Handing the verifier the code the reviewer had already read cut verification time roughly in half. Folding the guideline check into a lens pass removed a session outright. It still does, except on OpenCode, where lens passes now run without tools and the guideline check has its own session again.
 
 Context packs do the same thing for the main review. They hand it the code it predictably looks up before the first turn and leave it free to go looking for more. [Part 3](https://www.pgupai.com/guides/context-pack-ai-code-review) explains how.
 
