@@ -46,7 +46,7 @@ Here’s the idea on a small test repository we built. The pull request changed 
 
 Reviews caught that bug with or without Jev. A test this small shows that Jev picks the right code. It can’t show whether that makes reviews better, so we moved on to real pull requests.
 
-The same ranking can choose evidence for the verifier, the step that tries to disprove each finding before it’s posted. On a test repository where 15 excerpts competed for four slots, Jev swapped in two files that addressed the claims being checked more directly than the ones plain ordering picked.
+The same ranking can choose evidence for the verifier, the step that tries to disprove each finding before it’s posted. On a test repository where 15 excerpts competed for four slots, Jev swapped in two files that addressed the claims being checked more directly than the ones plain ordering picked. That was a research test. The `jev` preset never sends verifier evidence to Jev.
 
 ## What it changed
 
@@ -98,7 +98,7 @@ Jev runs only in the opt-in `jev` preset. Get an API key from TypeSafe, save it 
     # your existing inputs
 ```
 
-Presets don’t stack, so `jev` replaces the default `context-pack` preset, and those reviews run without context packs. We’d try it on one repository first. J-Bot Review logs every Jev call with its candidates, scores, timing and estimated cost, so you can compare runs with and without it. To try it locally, put the key in your `.env` and run `JBOT_REVIEW_EXPERIMENT=jev npm run review:local -- --base origin/main`.
+Presets don’t stack, so `jev` replaces the default `context-pack` preset, and those reviews run without context packs. We’d try it on one repository first. J-Bot Review logs every Jev call with candidate counts, scores, timing and estimated cost, so you can compare runs with and without it. To try it locally, put the key in your `.env` and run `JBOT_REVIEW_EXPERIMENT=jev npm run review:local -- --base origin/main`.
 
 Only the `jev` preset sends code to TypeSafe: the diffs around the changed functions and the candidate excerpts, never more than 30,000 bytes per request. Every other preset makes no Jev call.
 
