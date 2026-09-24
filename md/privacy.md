@@ -2,13 +2,13 @@
 
 This page covers two separate things that are easy to confuse: **what this website does with your data**, and **where your code goes when you run J-Bot Review**. Website analytics are optional. On the standard GitHub Action path, your code never reaches PGUP AI.
 
-Last updated September 18, 2026
+Last updated September 24, 2026
 
 ## What this website collects
 
 We use **PostHog US Cloud** to understand which pages and links are useful. Its script loads only after you choose **Allow analytics**. Until then, or if you decline, we send no analytics events to PostHog.
 
-- **Usage events:** page views and selected setup, contact, GitHub, and Marketplace link clicks.
+- **Usage events:** page views, page exits to estimate visit duration, and selected setup, contact, GitHub, and Marketplace link clicks.
 - **Traffic context:** page paths, referring websites, permitted campaign tags, browser and device information. PostHog processes your IP address when receiving requests, including for approximate geographic information.
 - **Browser identifiers:** after you accept, PostHog uses local storage and session storage to recognize the same browser and group visits. This does not tell us your name or email.
 - **No session replay or form capture:** we disable recordings, automatic interaction capture, heatmaps, and surveys. There are currently no accounts or enquiry forms on this site.

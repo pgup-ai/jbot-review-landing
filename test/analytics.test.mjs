@@ -85,6 +85,7 @@ test('no PostHog request before consent or after declining; acceptance captures 
   assert.equal(h.events[0].properties.utm_source, 'launch');
   assert.equal(h.config().disable_session_recording, true);
   assert.equal(h.config().autocapture, false);
+  assert.equal(h.config().capture_pageleave, true);
   h.choose('accepted');
   assert.equal(h.events.length, 1);
 });
