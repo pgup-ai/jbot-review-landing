@@ -31,7 +31,7 @@ Each row is a separate A/B test on real pull requests from a private production 
 
 | Change | Test | Before → after | Known issues posted |
 | --- | --- | --- | --- |
-| Context packs | 8 PRs × 2 runs | Turns −30 to −35%; cached input −37% | 54% → 44% pooled over 24 to 32 reviews per arm, each ±9 to 10 points |
+| Context packs | 8 PRs × 2 runs | Turns −30 to −35%; cached input −37% | 54% → 44% on the 4 PRs with known issues, pooled across several rounds (24 to 32 reviews per arm, each ±9 to 10 points) |
 | Tool-free lens passes and two-step verification | 4 PRs × 1 run | 110 → 86 s median; 117 → 83 turns; 274 → 158 tool calls | 1 → 2 of 4 |
 | Leaving exploration to the model | 4 PRs × 1 run | 85 → 60 s median; 99 → 58 turns; 152 → 50 tool calls | 2 → 2 of 4 |
 | Serving packs that hit the read cap | Replay of a production review | A 49.6 KB pack served instead of discarded; without it, that review took 81 turns and 92 tool calls | Not measured |
@@ -41,7 +41,7 @@ Turn counts are totals across every model request in the review: the main pages,
 
 ## Did accuracy hold?
 
-As far as samples this size can show, yes. The largest test pooled 24 to 32 reviews per arm on the four pull requests with known issues. The context-pack arm posted 44% of the known issues and the old default posted 54%. Each arm is uncertain by about 9 to 10 points, so the gap is within run-to-run noise. It’s still a 10-point gap, and we’re watching it.
+As far as samples this size can show, yes. The turn test ran each of eight pull requests twice, which is too few reviews to judge accuracy. So for accuracy we pooled several rounds on the four pull requests with known issues, 24 to 32 reviews per arm. The context-pack arm posted 44% of the known issues and the old default posted 54%. Each arm is uncertain by about 9 to 10 points, so the gap is within run-to-run noise. It’s still a 10-point gap, and we’re watching it.
 
 The smaller follow-up tests held or improved, going from 1 to 2 of 4, 2 to 2 of 4, and 1 to 2 of 2.
 

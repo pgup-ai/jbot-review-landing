@@ -20,7 +20,14 @@ J-Bot Review, an open-source agentic PR reviewer that runs in your own GitHub Ac
 
 ## What counts as a guideline
 
-J-Bot Review treats a repository’s written instructions as review rules. At the root that means `AGENTS.md`, `REVIEW.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `ARCHITECTURE.md`, `DESIGN.md`, `DECISIONS.md` and `TECHNICAL_STANDARDS.md`, plus Cursor and Windsurf rule files and `.github/copilot-instructions.md`. The same kinds of files inside the changed folders count too, and so do Markdown documents the top-level files link to.
+J-Bot Review treats a repository’s written instructions as review rules. Where it looks depends on the folder:
+
+| Where | What it reads |
+| --- | --- |
+| Repository root | `AGENTS.md`, `REVIEW.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `ARCHITECTURE.md`, `DESIGN.md`, `DECISIONS.md`, `TECHNICAL_STANDARDS.md`, `.github/copilot-instructions.md`, Cursor and Windsurf rules, and other review bots’ rule files, `.coderabbit.yaml` and `greptile.json` |
+| Folders that hold a changed file, and their parent folders below the root | `AGENTS.md`, `REVIEW.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `DESIGN.md`, `DECISIONS.md`, `TECHNICAL_STANDARDS.md`, Cursor and Windsurf rules, and a `REVIEW.md` under `.agents`, `.devin` or `.cursor` |
+| Linked documents | Markdown files that any of the above link to |
+| `.pr-governance` | Its README and the documents it links to, or every file in the folder when there’s no README |
 
 A repository can also route rules by path. A `.pr-governance/review/rules-for-diff.yaml` file maps changed paths to specific numbered rules or document sections, and routed sections load ahead of everything else.
 
@@ -80,7 +87,7 @@ A new ranking also doesn’t force a full re-review of an open pull request, bec
 
 ### Which files does J-Bot Review read as guidelines?
 
-At the repository root: `AGENTS.md`, `REVIEW.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `ARCHITECTURE.md`, `DESIGN.md`, `DECISIONS.md`, `TECHNICAL_STANDARDS.md`, Cursor and Windsurf rule files, and `.github/copilot-instructions.md`. It also reads the same kinds of files inside changed folders, Markdown files the top-level ones link to, and sections routed by `.pr-governance/review/rules-for-diff.yaml`.
+At the repository root, `AGENTS.md`, `REVIEW.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `ARCHITECTURE.md`, `DESIGN.md`, `DECISIONS.md`, `TECHNICAL_STANDARDS.md`, `.github/copilot-instructions.md`, Cursor and Windsurf rules, `.coderabbit.yaml` and `greptile.json`. In folders that hold changed files it reads a shorter list: the Markdown files above except `ARCHITECTURE.md` and the Copilot file, Cursor and Windsurf rules, and a `REVIEW.md` under `.agents`, `.devin` or `.cursor`. It also reads Markdown files those link to, the `.pr-governance` folder, and sections routed by `.pr-governance/review/rules-for-diff.yaml`.
 
 ### Does J-Bot Review send all of my guidelines to the model?
 
