@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>How we added Jev, a relevance model, to AI code review | J-Bot Review</title>
+<meta name="description" content="Jev scores which callers of changed code an AI reviewer should see. One HTTPS call, about 0.2 seconds and a fraction of a cent. Where it helped J-Bot Review, and where it didn’t." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/guides/jev-relevance-ranking-code-review" />
+<link rel="alternate" type="text/markdown" href="/md/guides/jev-relevance-ranking-code-review.md" title="Markdown representation" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/guides/jev-relevance-ranking-code-review" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="How we added Jev, a relevance model, to AI code review" />
+<meta property="og:description" content="Jev scores which callers of changed code an AI reviewer should see. One HTTPS call, about 0.2 seconds and a fraction of a cent. Where it helped J-Bot Review, and where it didn’t." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-jev-relevance-ranking-code-review-20260924.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-jev-relevance-ranking-code-review-20260924.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="How Jev ranks the code an AI reviewer sees. Engineering notes from J-Bot Review." />
+<meta property="article:published_time" content="2026-09-24" />
+<meta property="article:section" content="Engineering" />
+<meta name="twitter:image:alt" content="How Jev ranks the code an AI reviewer sees. Engineering notes from J-Bot Review." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="How we added Jev, a relevance model, to AI code review" />
+<meta name="twitter:description" content="Jev scores which callers of changed code an AI reviewer should see. One HTTPS call, about 0.2 seconds and a fraction of a cent. Where it helped J-Bot Review, and where it didn’t." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-jev-relevance-ranking-code-review-20260924.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/guides/jev-relevance-ranking-code-review#article",
+      "headline": "How does Jev help AI code review?",
+      "description": "Jev scores which callers of changed code an AI reviewer should see. One HTTPS call, about 0.2 seconds and a fraction of a cent. Where it helped J-Bot Review, and where it didn’t.",
+      "url": "https://www.pgupai.com/guides/jev-relevance-ranking-code-review",
+      "mainEntityOfPage": "https://www.pgupai.com/guides/jev-relevance-ranking-code-review",
+      "image": [
+        "https://www.pgupai.com/assets/og-jev-relevance-ranking-code-review-20260924.png"
+      ],
+      "datePublished": "2026-09-24",
+      "dateModified": "2026-09-24",
+      "keywords": "TypeSafe Jev, relevance model, reranking for code review, AI code review context, LLM reranker, agentic code review",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "AI code review"
+        },
+        {
+          "@type": "Thing",
+          "name": "Relevance ranking"
+        },
+        {
+          "@type": "Thing",
+          "name": "Large language model"
+        }
+      ],
+      "author": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.pgupai.com/assets/icon-512.png"
+        }
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.pgupai.com/guides/jev-relevance-ranking-code-review#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Jev?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A relevance model from TypeSafe. You send it material and yes-or-no questions, and it returns a score from 0 to 1 for each question, its estimate that the answer is yes. J-Bot Review uses those scores to choose which callers of changed code the reviewer sees."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does J-Bot Review send my code to TypeSafe?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only if you turn on the jev preset. Then J-Bot Review sends the diffs around the changed functions and up to 24 candidate excerpts, never more than 30,000 bytes per request. The default preset and every other preset make no Jev call."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Jev on by default?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It’s the opt-in jev preset. On the pull request with the most candidates it cut estimated cost 16%, but it wasn’t reliably faster, and a smaller pull request showed no gain over plain ordering, so context packs stay the default."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much does Jev add to a review?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "About 0.2 seconds per call in our tests. Each call cost between $0.00008 and $0.00038 at TypeSafe’s published input price, and output tokens are free."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "J-Bot Review",
+          "item": "https://www.pgupai.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://www.pgupai.com/guides"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Jev relevance ranking",
+          "item": "https://www.pgupai.com/guides/jev-relevance-ranking-code-review"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #0a0b0a; --surface: #0e100e; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --blue: #7aa2ff;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --border-code: rgba(255,255,255,0.09);
+    --code-text: #c8cdc7;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 740px; overflow-wrap: anywhere; }
+  article a { text-decoration: underline; text-underline-offset: 3px; }
+  h2[id] { scroll-margin-top: 90px; }
+  .contents { border-block: 1px solid var(--hairline); padding: 18px 0; margin: 28px 0; }
+  .contents b { font-size: 14px; }
+  .contents ul { margin-bottom: 0; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  .topic { font-family: var(--mono); font-size: 11px; color: var(--blue); letter-spacing: 0.07em; text-transform: uppercase; margin: 0 0 10px; }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  h3 { font-family: var(--display); font-weight: 600; font-size: 17px; letter-spacing: -0.01em; margin: 26px 0 8px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+  code { font-family: var(--mono); font-size: 12.5px; color: var(--code-text); background: var(--surface); border: 1px solid var(--border-code); border-radius: 5px; padding: 1px 6px; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 22px 0; }
+  .stats > div { border: 1px solid var(--border-card); border-radius: 11px; padding: 14px 16px; background: var(--surface-subtle); }
+  .stats .n { font-family: var(--display); font-size: 27px; font-weight: 600; letter-spacing: -0.01em; color: var(--accent); line-height: 1.1; }
+  .stats .l { color: var(--text-3); font-size: 13px; line-height: 1.45; margin-top: 7px; }
+
+  .callout { border: 1px solid rgba(94,227,154,0.28); background: rgba(94,227,154,0.045); border-radius: 12px; padding: 16px 18px; margin: 24px 0; }
+  .callout .tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 4px; }
+  .callout p, .callout li { color: var(--text-2); }
+  .callout p { margin: 6px 0 0; }
+  .callout ul { margin: 6px 0 0; }
+
+  .series { border: 1px solid var(--border-card); border-radius: 12px; padding: 16px 20px; margin: 28px 0; background: var(--surface-subtle); }
+  .series b { font-size: 14px; }
+  .series ol { margin: 8px 0 0; }
+  .series li { font-size: 14px; margin: 4px 0; }
+  .series li[aria-current] { color: var(--text); font-weight: 600; }
+
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; min-width: 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; overflow-wrap: break-word; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--text); font-weight: 600; }
+
+  .faq-item { border-bottom: 1px solid var(--hairline); }
+  .faq-item:first-of-type { border-top: 1px solid var(--hairline); }
+  .faq-item summary { display: flex; align-items: baseline; justify-content: space-between; gap: 22px; list-style: none; cursor: pointer; padding: 17px 2px; font-weight: 600; font-size: 15.5px; color: var(--text); line-height: 1.45; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-mark { font-family: var(--mono); font-size: 15px; color: var(--text-4); flex: none; transition: transform 0.2s var(--ease), color 0.2s var(--ease); }
+  .faq-item[open] .faq-mark { transform: rotate(45deg); color: var(--accent); }
+  .faq-a { padding: 0 2px 20px; font-size: 14.5px; color: var(--text-2); }
+  .faq-a p { margin: 0; }
+
+  .related { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0 0; }
+  .rel-card { display: block; border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 18px; color: var(--text); text-decoration: none; }
+  .rel-card:hover { border-color: rgba(94,227,154,0.35); color: var(--text); }
+  .rel-card .k2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 7px; }
+  .rel-card p { margin: 6px 0 0; font-size: 13px; color: var(--text-3); }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+
+  @media (max-width: 560px) {
+    .nav-links a:not(.btn) { display: none; }
+    main { padding-inline: 20px; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stats .n { font-size: 21px; }
+    .tbl-wrap table { min-width: 600px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .faq-mark { transition: none; }
+  }
+
+  .code-card { background: var(--surface); border: 1px solid var(--border-code); border-radius: 12px; overflow: hidden; margin: 18px 0; }
+  .code-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--hairline); }
+  .code-head .file { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+  pre { margin: 0; padding: 16px 18px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.7; color: var(--code-text); }
+  .k { color: var(--blue); }
+  .s { color: var(--accent); }
+  .c { color: var(--text-4); }
+</style>
+<link rel="stylesheet" href="/assets/analytics.css" />
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides">Guides</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<article>
+  <p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / Jev relevance ranking</p>
+  <p class="topic">Engineering notes · Integrations</p>
+  <h1>How does Jev help AI code review?</h1>
+  <p class="updated">Published September 24, 2026</p>
+
+  <p class="lede">It picks which code the reviewer sees. When a pull request changes a function that other files use, J-Bot Review can find many places that mention it, and only a few fit in the prompt. Jev, a relevance model from TypeSafe, reads each candidate and scores how likely it is to matter for the change. The best few go to the reviewer. Each call took about 0.2 seconds and cost a fraction of a cent.</p>
+  <p>J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI, with the model you choose. Jev is available as the opt-in <code>jev</code> preset. On the pull request with the most candidates, it cut review cost 16%, and it caught a known bug in one of five runs, where ten runs without it never did. On smaller pull requests it made no measurable difference, which is why it isn’t the default.</p>
+
+  <nav class="contents" aria-label="Article contents">
+    <b>In this article</b>
+    <ul>
+      <li><a href="#what-jev-is">What Jev is</a></li>
+      <li><a href="#integration">Adding it took one HTTPS call</a></li>
+      <li><a href="#how-it-helps">How it helps a review</a></li>
+      <li><a href="#results">What it changed</a></li>
+      <li><a href="#lessons">What we’d tell anyone adding a relevance model</a></li>
+      <li><a href="#next">Where else it could help</a></li>
+      <li><a href="#try-it">How to turn it on</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+  </nav>
+
+  <h2 id="what-jev-is">What Jev is</h2>
+  <p>Jev is a relevance model from TypeSafe, which describes it as its flagship model. You don’t chat with it. You send it some material and a set of yes-or-no questions, and it answers each one with a number between 0 and 1, its estimate that the answer is yes. TypeSafe calls that number a noul.</p>
+  <p>That shape fits ranking. Ask the same question about 20 pieces of code, sort by score, and keep the top few. Input costs $0.042 per million tokens and output is free, according to TypeSafe’s <a href="https://docs.typesafe.ai/models">model page</a>. J-Bot Review pins version <code>jev-1.13.0</code>.</p>
+
+  <h2 id="integration">Adding it took one HTTPS call</h2>
+  <p>There’s no SDK to install. J-Bot Review sends one POST request to TypeSafe’s API with the diff around each changed function, the candidate excerpts, and one question per excerpt. The question asks whether the excerpt contains a concrete use or test of the changed function whose behavior the change could affect. An import, a declaration or a bare mention of the name counts as no.</p>
+  <p>Jev returns one score per excerpt. J-Bot Review keeps the excerpts that score 0.5 or higher, takes the top four, and adds them to the reviewer’s prompt, up to 6,000 bytes, with a note naming anything it left out.</p>
+  <p>The call itself is short. Most of the work went into the limits around it:</p>
+  <ul>
+    <li>A request covers at most 24 excerpts from 12 files and can’t exceed 30,000 bytes.</li>
+    <li>Collecting and scoring share a five-second deadline, with no retries.</li>
+    <li>A missing key, a timeout or a malformed answer leaves the review exactly as it would have been without Jev.</li>
+    <li>The TypeSafe key stays in J-Bot Review’s own process. The model sessions that read your code never see it.</li>
+  </ul>
+
+  <h2 id="how-it-helps">How it helps a review</h2>
+  <p>Jev never decides whether code is broken. J-Bot Review’s own code finds the candidates, reads the files and enforces the limits. Jev judges one narrow thing, whether each candidate is relevant to the change. The reviewer model, and after it a separate verifier, decide whether there’s a bug. No score can remove a finding or a file from the review.</p>
+  <p>Here’s the idea on a small test repository we built. The pull request changed <code>invoiceTotal</code> to return cents instead of dollars. One unchanged file still multiplied that result by 100 before charging, which would overcharge by 100×. Six other files mentioned <code>invoiceTotal</code> only in metadata strings. Jev put the payment code through and left the name mentions out, so the reviewer got a 913-byte excerpt with exactly the lines it needed.</p>
+  <p>Reviews caught that bug with or without Jev. A test this small shows that Jev picks the right code. It can’t show whether that makes reviews better, so we moved on to real pull requests.</p>
+  <p>The same ranking can choose evidence for the verifier, the step that tries to disprove each finding before it’s posted. On a test repository where 15 excerpts competed for four slots, Jev swapped in two files that addressed the claims being checked more directly than the ones plain ordering picked. That was a research test. The <code>jev</code> preset never sends verifier evidence to Jev.</p>
+
+  <h2 id="results">What it changed</h2>
+  <p>We tested Jev five ways, each time against the same run without it. In four of the five we also ran a second control that sent the same candidates in their original order, so ranking was the only difference. The first three rows are whole reviews on DeepSeek V4 Flash through OpenCode. The last two time only the verification step, on Muse Spark through Command Code.</p>
+  <div class="tbl-wrap" role="region" aria-label="Jev test results" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">Test</th><th scope="col">What we measured</th><th scope="col">What it tells us</th></tr></thead>
+      <tbody>
+        <tr><td>A small test pull request, 8 candidates, 3 runs per arm</td><td>Jev passed along the one caller that mattered. Median review 29.4&nbsp;s against 25.9&nbsp;s without it; the means were within 0.1&nbsp;s.</td><td>Right evidence, no speed change</td></tr>
+        <tr><td><a href="https://github.com/pgup-ai/jbot-review/pull/128">PR #128</a> from J-Bot Review’s history, 18 candidates, 5 runs per arm</td><td>Estimated cost −16.0%, cheaper in 5 of 5 runs. Mean time −15.8%, but faster in only 2 of 5. Main-review turns 10.2 → 7.4. A known bug found in 1 of 5 runs, against 0 of 10 without Jev.</td><td>Real savings when there’s a lot to choose from</td></tr>
+        <tr><td><a href="https://github.com/pgup-ai/jbot-review/pull/148">PR #148</a>, 4 candidates, 5 runs per arm</td><td>Mean time 12.7% lower than with no extra evidence, but 12.7% higher than the same candidates in plain order. Median almost unchanged, 41.2&nbsp;s against 41.8&nbsp;s.</td><td>Nothing to gain from ranking four items</td></tr>
+        <tr><td>Evidence for the verifier, 15 excerpts competing for 4 slots, 3 runs per arm</td><td>Mean verification 40.7&nbsp;s, against 58.6&nbsp;s with no extra evidence and 52.1&nbsp;s in plain order. Same turn counts as plain order in every pair.</td><td>Better picks; the speedup isn’t proven</td></tr>
+        <tr><td>Evidence for the verifier when all 9 excerpts fit, 3 runs per arm</td><td>Jev’s 0.5 cutoff kept 1, 3 and 1 of the 9. Mean 40.4&nbsp;s, against 24.6&nbsp;s for sending all nine.</td><td>Don’t rank what already fits</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Jev itself was never the slow part. In the real-PR test, each Jev call added 171 to 281 milliseconds, and all ten calls together cost $0.0025, against $0.86 for all 30 reviews. The swings came from the reviewer model: how much it explored, how long verification took, and in one run an unsupported comment that took 128 seconds of verification.</p>
+  <p>So Jev stays an opt-in preset. The savings on PR #128 were real, the speedup wasn’t consistent, and one bug caught in five runs is too thin to count as better recall. The audits have every run: the <a href="https://github.com/pgup-ai/jbot-review/blob/main/docs/audits/2026-09-19-jev-real-pr-comparison.md">real-PR comparison</a>, the <a href="https://github.com/pgup-ai/jbot-review/blob/main/docs/audits/2026-09-21-jev-handoff.md">verifier comparison</a> and the <a href="https://github.com/pgup-ai/jbot-review/blob/main/docs/audits/2026-09-21-handoff-packing.md">packing follow-up</a>.</p>
+
+  <h2 id="lessons">What we’d tell anyone adding a relevance model</h2>
+  <ul>
+    <li><b>Rank only when there’s a choice to make.</b> If every candidate fits, a cutoff can only remove evidence. That’s what slowed the last test in the table.</li>
+    <li><b>Test against plain ordering too.</b> Adding any evidence changes a review. A fair test also sends the same candidates unranked, and on PR #148 that version beat Jev.</li>
+    <li><b>Keep scores away from verdicts.</b> A relevance score can be wrong. J-Bot Review uses it to choose evidence and never to drop a finding.</li>
+    <li><b>Ask literal questions about one thing at a time.</b> TypeSafe’s <a href="https://docs.typesafe.ai/model-jaggedness/jev-1.13">notes on Jev’s limits</a> say it reads questions literally and loses accuracy as unrelated text piles up. So each question names a single candidate, the request carries only the changed code and the excerpts, and the question tells Jev to ignore any instructions written inside the code.</li>
+  </ul>
+
+  <h2 id="next">Where else it could help</h2>
+  <p>A relevance score earns its keep wherever a review has more candidates than room. We haven’t built or measured any of these yet:</p>
+  <ul>
+    <li><b>Trimming a context pack that overflows.</b> Packs stop at 64 KiB and list what they leave out. A score could decide which callers make the cut. <a href="/guides/context-pack-ai-code-review">Part 3</a> of our speed series explains packs.</li>
+    <li><b>Choosing guideline sections.</b> A lens pass gets 8 KB of your rules, picked today by matching words from the changed paths. A score could ask directly whether each rule applies to the change. <a href="/guides/ai-code-review-team-guidelines">Part 4</a> covers how sections are picked now.</li>
+    <li><b>Spotting repeat comments.</b> Before posting, J-Bot Review checks whether a finding repeats an earlier review comment. A yes-or-no score could help catch a reworded repeat.</li>
+    <li><b>Pointing at the right tests.</b> Scoring test files against a diff could show the reviewer which tests exercise the change.</li>
+    <li><b>Triage beyond review.</b> Routing issues, labeling pull requests by risk and sorting alerts all ask one question of many items, the kind of job Jev is built for.</li>
+  </ul>
+  <p>Each of these would need the same test we ran here, with plain ordering as a control and caught issues tracked alongside time and cost.</p>
+
+  <h2 id="try-it">How to turn it on</h2>
+  <p>Jev runs only in the opt-in <code>jev</code> preset. Get an API key from TypeSafe, save it as a repository secret, and add two environment variables to the J-Bot Review step in your workflow:</p>
+  <div class="code-card">
+    <div class="code-head"><span class="file">.github/workflows/jbot-review.yml</span></div>
+<pre>- <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
+  <span class="k">env</span>:
+    <span class="k">JBOT_REVIEW_EXPERIMENT</span>: jev
+    <span class="k">TYPESAFE_API_KEY</span>: ${{ secrets.TYPESAFE_API_KEY }}
+  <span class="k">with</span>:
+    <span class="c"># your existing inputs</span></pre>
+  </div>
+  <p>Presets don’t stack, so <code>jev</code> replaces the default <code>context-pack</code> preset, and those reviews run without context packs. We’d try it on one repository first. J-Bot Review logs every Jev call with candidate counts, scores, timing and estimated cost, so you can compare runs with and without it. To try it locally, put the key in your <code>.env</code> and run <code>JBOT_REVIEW_EXPERIMENT=jev npm run review:local -- --base origin/main</code>.</p>
+  <p>Only the <code>jev</code> preset sends code to TypeSafe: the diffs around the changed functions and the candidate excerpts, never more than 30,000 bytes per request. Every other preset makes no Jev call.</p>
+
+  <h2 id="faq">FAQ</h2>
+  <details class="faq-item" open>
+    <summary>What is Jev?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>A relevance model from TypeSafe. You send it material and yes-or-no questions, and it returns a score from 0 to 1 for each question, its estimate that the answer is yes. J-Bot Review uses those scores to choose which callers of changed code the reviewer sees.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Does J-Bot Review send my code to TypeSafe?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Only if you turn on the <code>jev</code> preset. Then J-Bot Review sends the diffs around the changed functions and up to 24 candidate excerpts, never more than 30,000 bytes per request. The default preset and every other preset make no Jev call.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Is Jev on by default?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>No. It’s the opt-in <code>jev</code> preset. On the pull request with the most candidates it cut estimated cost 16%, but it wasn’t reliably faster, and a smaller pull request showed no gain over plain ordering, so context packs stay the default.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>How much does Jev add to a review?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>About 0.2 seconds per call in our tests. Each call cost between $0.00008 and $0.00038 at TypeSafe’s published input price, and output tokens are free.</p></div>
+  </details>
+
+
+
+  <h2>Related</h2>
+  <div class="related">
+    <a class="rel-card" href="/guides/ai-code-review-speed-experiments"><span class="k2">Speed series</span>23 ways we tried to make AI code review faster<p>Jev was one of them. The full scoreboard, failures included.</p></a>
+    <a class="rel-card" href="/guides/context-pack-ai-code-review"><span class="k2">Speed series</span>Context packs: the fix that worked<p>The default preset, and how it hands the reviewer code up front.</p></a>
+    <a class="rel-card" href="https://github.com/pgup-ai/jbot-review/blob/main/docs/audits/2026-09-19-jev-real-pr-comparison.md"><span class="k2">Source</span>The Jev real-PR comparison<p>30 randomized reviews, per-run numbers and the adjudication.</p></a>
+  </div>
+</article>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/privacy">Privacy</a> · <a href="https://github.com/pgup-ai/jbot-review" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
