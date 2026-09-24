@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Faster AI code review: the before-and-after numbers | J-Bot Review</title>
-<meta name="description" content="Fewer turns, fewer tool calls, and shorter reviews, with caught issues holding within run-to-run noise. The measured results of J-Bot Review’s move to context packs." />
+<meta name="description" content="Context packs cut J-Bot Review’s model turns 30 to 45% in A/B tests, and caught issues stayed within run-to-run noise. The numbers, including what we saw in production." />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0a0b0a" />
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
@@ -17,7 +17,7 @@
 <meta property="og:url" content="https://www.pgupai.com/guides/faster-ai-code-review-results" />
 <meta property="og:site_name" content="J-Bot Review" />
 <meta property="og:title" content="Faster AI code review: the before-and-after numbers" />
-<meta property="og:description" content="Fewer turns, fewer tool calls, and shorter reviews, with caught issues holding within run-to-run noise. The measured results of J-Bot Review’s move to context packs." />
+<meta property="og:description" content="Context packs cut J-Bot Review’s model turns 30 to 45% in A/B tests, and caught issues stayed within run-to-run noise. The numbers, including what we saw in production." />
 <meta property="og:image" content="https://www.pgupai.com/assets/og-faster-ai-code-review-results-20260924.png" />
 <meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-faster-ai-code-review-results-20260924.png" />
 <meta property="og:image:type" content="image/png" />
@@ -29,7 +29,7 @@
 <meta name="twitter:image:alt" content="Faster AI code review: turns down 30 to 45 percent, reviews in about a minute. Part 5 of Making AI code review faster." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Faster AI code review: the before-and-after numbers" />
-<meta name="twitter:description" content="Fewer turns, fewer tool calls, and shorter reviews, with caught issues holding within run-to-run noise. The measured results of J-Bot Review’s move to context packs." />
+<meta name="twitter:description" content="Context packs cut J-Bot Review’s model turns 30 to 45% in A/B tests, and caught issues stayed within run-to-run noise. The numbers, including what we saw in production." />
 <meta name="twitter:image" content="https://www.pgupai.com/assets/og-faster-ai-code-review-results-20260924.png" />
 
 <script type="application/ld+json">
@@ -40,7 +40,7 @@
       "@type": "TechArticle",
       "@id": "https://www.pgupai.com/guides/faster-ai-code-review-results#article",
       "headline": "How much faster did context packs make J-Bot Review?",
-      "description": "Fewer turns, fewer tool calls, and shorter reviews, with caught issues holding within run-to-run noise. The measured results of J-Bot Review’s move to context packs.",
+      "description": "Context packs cut J-Bot Review’s model turns 30 to 45% in A/B tests, and caught issues stayed within run-to-run noise. The numbers, including what we saw in production.",
       "url": "https://www.pgupai.com/guides/faster-ai-code-review-results",
       "mainEntityOfPage": "https://www.pgupai.com/guides/faster-ai-code-review-results",
       "image": [
@@ -93,7 +93,7 @@
           "name": "How do you measure whether a faster review is still accurate?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "We replay real pull requests whose issues developers accepted and fixed, and count how many of those issues the review posts. Every speed change was checked against that count. Changes that cut turns but lost issues, such as prompts telling the model to skip lookups, did not ship."
+            "text": "We replay real pull requests whose issues developers accepted and fixed, and count how many of those issues the review posts. We checked every speed change against that count. Changes that cut turns but lost issues, such as prompts telling the model to skip lookups, didn’t ship."
           }
         },
         {
@@ -109,7 +109,7 @@
           "name": "Does a faster review mean a shallower one?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Not in our tests. The main review keeps its repository tools and decides what else to read; context packs remove predictable lookups rather than forbidding them. Across the A/B tests, the share of known issues posted stayed within run-to-run noise."
+            "text": "Not in our tests. The main review keeps its repository tools and decides what else to read. Context packs hand it the predictable lookups up front, and it can still make any others it wants. Across the A/B tests, the share of known issues posted stayed within run-to-run noise."
           }
         },
         {
@@ -289,8 +289,8 @@
   <h1>How much faster did context packs make J-Bot Review?</h1>
   <p class="updated">Published September 24, 2026</p>
 
-  <p class="lede">In A/B tests on eight real pull requests, context packs cut the number of model turns in a J-Bot Review run by 30 to 35%, and by 45% on the pull requests with known issues. Two follow-up changes cut the median review on four pull requests from 110 to 86 seconds, then, in a separate round, from 85 to 60 seconds. The share of known issues the reviewer posted stayed within run-to-run noise.</p>
-  <p>J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI, with the model you bring. This is the last part of a five-part series. The earlier parts cover <a href="/guides/why-ai-code-review-is-slow">what was slow</a>, <a href="/guides/ai-code-review-speed-experiments">what we tried first</a>, <a href="/guides/context-pack-ai-code-review">how context packs work</a>, and <a href="/guides/ai-code-review-team-guidelines">how the reviewer now finds your rules</a>.</p>
+  <p class="lede">In A/B tests on eight real pull requests, context packs cut the number of model turns in a J-Bot Review run by 30 to 35%, and by 45% on the pull requests with known issues. Two follow-up changes then cut the median review on four pull requests from 110 to 86 seconds, and in a later round from 85 to 60. The share of known issues the reviewer posted stayed within run-to-run noise.</p>
+  <p>J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI, with the model you bring. This is the last of five parts. If you’re starting here, the earlier parts cover <a href="/guides/why-ai-code-review-is-slow">what was slow</a>, <a href="/guides/ai-code-review-speed-experiments">what we tried first</a>, <a href="/guides/context-pack-ai-code-review">how context packs work</a>, and <a href="/guides/ai-code-review-team-guidelines">how the reviewer now finds your rules</a>.</p>
 
   <nav class="contents" aria-label="Article contents">
     <b>In this article</b>
@@ -299,7 +299,7 @@
       <li><a href="#accuracy">Did accuracy hold?</a></li>
       <li><a href="#production">In production</a></li>
       <li><a href="#biggest-lever">The biggest lever was the model route</a></li>
-      <li><a href="#not-yet">What we have not measured yet</a></li>
+      <li><a href="#not-yet">What we haven’t measured yet</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
   </nav>
@@ -312,7 +312,7 @@
   </div>
 
   <h2 id="scoreboard">The scoreboard</h2>
-  <p>Each row is a separate A/B test on real pull requests from a private production repository, run through OpenCode with a free model unless noted. “Known issues” are problems that developers accepted and fixed on those pull requests. A test counts one when the review posted it.</p>
+  <p>Each row is a separate A/B test on real pull requests from a private production repository, run through OpenCode with a free model unless the row says otherwise. “Known issues” are problems developers accepted and fixed on those pull requests, and we count one as caught only when the review actually posted it.</p>
   <div class="tbl-wrap" role="region" aria-label="Results by change" tabindex="0">
     <table>
       <thead><tr><th scope="col">Change</th><th scope="col">Test</th><th scope="col">Before → after</th><th scope="col">Known issues posted</th></tr></thead>
@@ -325,50 +325,38 @@
       </tbody>
     </table>
   </div>
-  <p>The turn counts are totals across every model request in the review: the main pages, the rules check, and verification. Wall-clock times are medians across the pull requests in each test.</p>
+  <p>Turn counts are totals across every model request in the review: the main pages, the rules check, and verification. Wall-clock times are medians across the pull requests in each test.</p>
 
   <h2 id="accuracy">Did accuracy hold?</h2>
-  <p>As far as samples this size can show, yes. The largest test pooled 24 to 32 reviews per arm on the four pull requests with known issues. The context-pack arm posted 44% of the known issues and the old default posted 54%, with each arm uncertain by about 9 to 10 points, so the gap is within run-to-run noise. The smaller follow-up tests moved the other way: 1 to 2 of 4, 2 to 2 of 4, and 1 to 2 of 2.</p>
-  <p>The accuracy check also ruled things out. Prompts that told the model to skip lookups cut turns by about half and lost the issues that need a lookup, so they did not ship. <a href="/guides/ai-code-review-speed-experiments">Part 2</a> lists those experiments.</p>
+  <p>As far as samples this size can show, yes. The largest test pooled 24 to 32 reviews per arm on the four pull requests with known issues. The context-pack arm posted 44% of the known issues and the old default posted 54%. Each arm is uncertain by about 9 to 10 points, so the gap is within run-to-run noise. It’s still a 10-point gap, and we’re watching it.</p>
+  <p>The smaller follow-up tests held or improved, going from 1 to 2 of 4, 2 to 2 of 4, and 1 to 2 of 2.</p>
+  <p>The accuracy check also ruled things out. Prompts that told the model to skip lookups cut turns by about half and lost the issues that need a lookup, so they didn’t ship. <a href="/guides/ai-code-review-speed-experiments">Part 2</a> lists those experiments.</p>
 
   <h2 id="production">In production</h2>
-  <p>Before the change, on one busy private repository over about a day in September 2026, the median time from a push to a posted review was 11.1 minutes, and the slowest 10% took 25.6 minutes or more. Developers pushed again after a median of 6.9 minutes, and 41% of review runs were cancelled by a newer push before they finished.</p>
-  <p>After context packs shipped, and after we also removed the slowest model route from that repository’s rotation, two production reviews show where things stand:</p>
+  <p>Before the change, on one busy private repository over about a day in September 2026, the median time from a push to a posted review was 11.1 minutes, and the slowest 10% took 25.6 minutes or more. Developers pushed again after a median of 6.9 minutes, and a newer push cancelled 41% of review runs before they finished.</p>
+  <p>Here are two production reviews since context packs shipped. Around the same time we also took the slowest model route out of that repository’s rotation, so the two changes are mixed together:</p>
   <ul>
-    <li>A 7-file frontend pull request: reviewed in 98 seconds, using about 3,500 reasoning tokens across the whole review.</li>
-    <li>A 31-file backend pull request: reviewed in 73 seconds.</li>
+    <li>A 7-file frontend pull request, reviewed in 98 seconds with about 3,500 reasoning tokens across the whole review.</li>
+    <li>A 31-file backend pull request, reviewed in 73 seconds.</li>
   </ul>
-  <p>Those are review run times. Push-to-posted time also includes queueing and starting the CI job, including pulling the reviewer’s container image, so the two measures are not directly comparable. We have not re-measured push-to-posted across a full day since the change.</p>
+  <p>Those are review run times. Push-to-posted time also includes queueing and starting the CI job, including pulling the reviewer’s container image, so the two measures aren’t directly comparable. We haven’t re-measured push-to-posted across a full day since the change.</p>
 
   <h2 id="biggest-lever">The biggest lever was the model route</h2>
   <p>Nothing we changed in the reviewer moved latency as much as the choice of model and route:</p>
   <ul>
     <li>Across production runs, the median main review took 54 seconds on one route and 1,060 seconds on another.</li>
     <li>On the same test pull requests, one free model finished reviews in about 50 seconds while another took about 24 minutes.</li>
-    <li>With its tools turned off, one reasoning model still wrote 48,493 tokens of hidden reasoning to produce a 421-token answer. That single pass took 16.7 minutes.</li>
+    <li>One reasoning model, with its tools turned off, still wrote 48,493 tokens of hidden reasoning to produce a 421-token answer.</li>
   </ul>
-  <p>Turning tools off removes round trips. It does not stop a model from deliberating. If reviews feel slow, test two or three model routes on your own pull requests before tuning anything else. J-Bot Review also runs its main review at low reasoning effort by default.</p>
+  <p>That last pass took 16.7 minutes without a single tool call. Cutting round trips only helps if the model doesn’t spend the time thinking instead. If your reviews feel slow, test two or three model routes on your own pull requests before you tune anything else. J-Bot Review defaults its main review to low reasoning effort on most providers, which cut one model’s median review from 63.6 to 37.7 seconds in our tests.</p>
 
-  <div class="callout">
-    <span class="tag">Key takeaways</span>
-    <ul>
-      <li>Context packs cut turns by 30 to 45% with no measurable loss in caught issues.</li>
-      <li>Wall time improved most when fewer lookups combined with a fast model route.</li>
-      <li>Measure speed and caught issues together, on your own pull requests.</li>
-    </ul>
-  </div>
-
-  <h2 id="not-yet">What we have not measured yet</h2>
-  <ul>
-    <li><b>A full benchmark run.</b> Our project rules call for a larger benchmark before a default changes. We changed the default on the A/B evidence above and said so in the <a href="https://github.com/pgup-ai/jbot-review/pull/241">pull request</a>.</li>
-    <li><b>Push-to-posted over a full day.</b> The 11.1-minute baseline needs a matching after measurement.</li>
-    <li><b>Per-model tuning.</b> Packs help models that look things up and matter less for models that verify everything themselves. The right settings differ by model.</li>
-  </ul>
+  <h2 id="not-yet">What we haven’t measured yet</h2>
+  <p>A few things are still open. Our project rules call for a larger benchmark before a default changes. We changed this one on the A/B evidence above and said so in the <a href="https://github.com/pgup-ai/jbot-review/pull/241">pull request</a>. The 11.1-minute push-to-posted baseline still needs a matching number from a full day of production after the change. And the right settings differ by model. Packs help models that look things up and matter less for models that verify everything themselves, so per-model tuning is next.</p>
 
   <h2 id="faq">FAQ</h2>
   <details class="faq-item" open>
     <summary>How do you measure whether a faster review is still accurate?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>We replay real pull requests whose issues developers accepted and fixed, and count how many of those issues the review posts. Every speed change was checked against that count. Changes that cut turns but lost issues, such as prompts telling the model to skip lookups, did not ship.</p></div>
+    <div class="faq-a"><p>We replay real pull requests whose issues developers accepted and fixed, and count how many of those issues the review posts. We checked every speed change against that count. Changes that cut turns but lost issues, such as prompts telling the model to skip lookups, didn’t ship.</p></div>
   </details>
   <details class="faq-item">
     <summary>How long does a J-Bot Review run take now?<span class="faq-mark" aria-hidden="true">+</span></summary>
@@ -376,7 +364,7 @@
   </details>
   <details class="faq-item">
     <summary>Does a faster review mean a shallower one?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Not in our tests. The main review keeps its repository tools and decides what else to read; context packs remove predictable lookups rather than forbidding them. Across the A/B tests, the share of known issues posted stayed within run-to-run noise.</p></div>
+    <div class="faq-a"><p>Not in our tests. The main review keeps its repository tools and decides what else to read. Context packs hand it the predictable lookups up front, and it can still make any others it wants. Across the A/B tests, the share of known issues posted stayed within run-to-run noise.</p></div>
   </details>
   <details class="faq-item">
     <summary>What does J-Bot Review cost?<span class="faq-mark" aria-hidden="true">+</span></summary>

@@ -59,7 +59,7 @@ Every page on this site also serves Markdown to `Accept: text/markdown` at the s
 ## Docs
 
 - [Engineering: Why AI code review is slow](https://www.pgupai.com/guides/why-ai-code-review-is-slow): J-Bot Review production telemetry: two-thirds of main-review turns were lookups, tool work 1.8% of session time, a 20-fold spread between model routes, and failures that raised no error
-- [Engineering: 21 speed experiments](https://www.pgupai.com/guides/ai-code-review-speed-experiments): retrieval, caching, prompt nudges, session removal and prompt trimming tested on real pull requests, with outcomes
+- [Engineering: 23 speed experiments](https://www.pgupai.com/guides/ai-code-review-speed-experiments): retrieval, caching, prompt nudges, session removal and prompt trimming tested on real pull requests, with outcomes
 - [Engineering: Context packs](https://www.pgupai.com/guides/context-pack-ai-code-review): the default review preset since 2026-09-23: surrounding code, definitions, callers, related diffs and a directory map delivered before the first model turn
 - [Engineering: Guidelines the reviewer can see](https://www.pgupai.com/guides/ai-code-review-team-guidelines): guideline files load whole (128 KB each), sections are ranked by the changed paths, and routed sub-rules bring their parent defaults
 - [Engineering: Results](https://www.pgupai.com/guides/faster-ai-code-review-results): turns down 30 to 45% in A/B tests, caught issues within run-to-run noise, and production review times with their limits

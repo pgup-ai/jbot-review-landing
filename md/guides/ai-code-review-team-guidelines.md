@@ -4,14 +4,14 @@ Engineering notes · Making AI code review faster · Part 4 of 5
 
 Published September 24, 2026
 
-Yes, when it can see them. Until this release, J-Bot Review read each guideline file only up to its first 24 KB, and every review pass then took each file from the top. On one private repository with about 520 KB of applicable guidelines, the pass that hunts for cross-file problems saw 1 to 4% of the largest domain documents. Rules further down a long document reached no prompt at all.
+Yes, if it can see them. Until late September 2026, J-Bot Review read each guideline file only up to its first 24 KB, and every review pass then took each file from the top. On one private repository with about 520 KB of applicable guidelines, the focused lens passes saw 1 to 4% of the largest domain documents. Rules further down a long document never reached a prompt.
 
 J-Bot Review, an open-source agentic PR reviewer that runs in your own GitHub Actions, now loads guideline files whole and ranks each file’s sections by the files a pull request changes. On a pull request that added a database lock the team’s standards rule out, the reviewer went from missing the rule to quoting it.
 
 **In this article**
 
 - [What counts as a guideline](https://www.pgupai.com/guides/ai-code-review-team-guidelines#what-counts)
-- [Why the reviewer does not read everything](https://www.pgupai.com/guides/ai-code-review-team-guidelines#budgets)
+- [Why the reviewer doesn’t read everything](https://www.pgupai.com/guides/ai-code-review-team-guidelines#budgets)
 - [What the budgets were cutting](https://www.pgupai.com/guides/ai-code-review-team-guidelines#what-was-cut)
 - [What changed](https://www.pgupai.com/guides/ai-code-review-team-guidelines#what-changed)
 - [The rule that was one heading up](https://www.pgupai.com/guides/ai-code-review-team-guidelines#one-heading-up)
@@ -20,82 +20,79 @@ J-Bot Review, an open-source agentic PR reviewer that runs in your own GitHub Ac
 
 ## What counts as a guideline
 
-J-Bot Review treats a repository’s written instructions as review rules. That includes `AGENTS.md`, `REVIEW.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `ARCHITECTURE.md`, `TECHNICAL_STANDARDS.md`, `.cursor/rules`, `.cursorrules`, `.windsurfrules` and `.github/copilot-instructions.md`. Nested `AGENTS.md`, `CLAUDE.md`, `REVIEW.md` and rule files inside the changed folders count too, and so do Markdown documents linked from the top-level files.
+J-Bot Review treats a repository’s written instructions as review rules. At the root that means `AGENTS.md`, `REVIEW.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `ARCHITECTURE.md`, `DESIGN.md`, `DECISIONS.md` and `TECHNICAL_STANDARDS.md`, plus Cursor and Windsurf rule files and `.github/copilot-instructions.md`. The same kinds of files inside the changed folders count too, and so do Markdown documents the top-level files link to.
 
 A repository can also route rules by path. A `.pr-governance/review/rules-for-diff.yaml` file maps changed paths to specific numbered rules or document sections, and routed sections load ahead of everything else.
 
 A dedicated guideline-compliance pass checks the change against these rules. The main review and the focused lens passes get a smaller excerpt.
 
-## Why the reviewer does not read everything
+## Why the reviewer doesn’t read everything
 
-Two reasons: size and attention.
+There’s too much of it, and more text makes the model worse. The guidelines that applied to one pull request on that private repository came to about 520 KB, and every review pass would carry all of it on every page of the review. We’d also seen what a flood of rules does. In an earlier investigation, a main review with a 149 KB prompt, 58% of it guidelines, missed four bugs that the same model caught when we gave it the change alone.
 
-- **Size.** The guidelines that applied to one pull request on that private repository came to about 520 KB. Every review pass would carry that on every page of the review.
-- **Attention.** In an earlier investigation, a main review with a 149 KB prompt, 58% of it guidelines, missed four bugs that the same model found when given the change alone. More text diluted its attention.
-
-So each pass has a byte budget: 96 KB for the compliance pass, 24 KB for the main review, and 8 KB for each lens pass.
+So each pass gets a byte budget: 96 KB for the compliance pass, 24 KB for the main review, and 8 KB for each lens pass.
 
 ## What the budgets were cutting
 
-The budgets were reasonable. What filled them was not.
+This came up almost by accident. We were debating whether a lens pass’s 8 KB was too small, so we measured what was actually in it.
 
-- **Files were cut when they were loaded.** Every guideline file stopped at 24 KB. The largest documents on that repository ran from 47 to 81 KB, so their second halves reached no review session.
-- **Every budget took every file from the top.** Files shared a budget in small rotating chunks, starting from their first line. For a lens pass that meant about 360 bytes of each document per round: mostly titles and introductions.
-- **The share that arrived was small.** On two real pull requests, the lens pass received 1% of a 47 KB invariants document and 4% of a 12 KB design document. The main review received 8% and 24% of the same two documents.
-- **Sessions rarely went back for the rest.** Across 16 recorded reviews on one model, the main review opened a guideline file 4 times in 941 file reads. The compliance pass opened one in 8 of 16 runs. The lens passes had no tools to try.
+Every guideline file stopped at 24 KB when it was loaded. The biggest documents on that repository ran from 47 to 81 KB, so their second halves never reached a review session. Then every budget took each file from the top. Files shared a budget in small rotating chunks starting at line one, which for a lens pass meant about 360 bytes of each document per round. That’s a title and part of an introduction.
 
-> **The short version**
->
-> The reviewer can apply only the rules it can see. Most of ours were below the fold.
+On two real pull requests, the lens pass got 1% of a 47 KB invariants document and 4% of a 12 KB design document. The main review got 8% and 24% of the same two.
+
+And the sessions almost never went back for the rest. Across 16 recorded reviews on one model, the main review opened a guideline file 4 times in 941 file reads. The compliance pass opened one in 8 of the 16 runs. The lens passes had no tools, so they couldn’t have.
+
+None of this raised an error. The reviewer was checking code against the first pages of our rules, and from the outside it looked like it had all of them.
 
 ## What changed
 
-- **Guideline files load whole**, up to 128 KB each and 1 MB in total. The per-pass budgets did not grow.
-- **Sections are ranked by the change.** Each section scores on the changed folder and file names it mentions, weighted by how rare each word is across all sections. A match in a heading counts double, and a word found in more than a quarter of the sections is ignored because it cannot tell them apart.
-- **Short parent sections travel with their children.** When a `###` rule moves up, its `##` parent’s text comes along if it is 2 KB or less, so a rule keeps its topic and defaults. The document’s `#` overview stays where it is, so small budgets do not open on introductions again.
-- **Routed sub-rules bring their defaults.** When the routing file cites rule 13.1, the reviewer also loads rule 13’s own lead-in, up to 2 KB.
-- **The compliance pass sees what it skipped.** When its budget cannot hold every section, its note lists each file’s skipped section headings, so it can open the one that applies.
+We kept every per-pass budget the same size and changed what fills them:
 
-For an agent-runtime change, for example, the compliance pass now receives the seam and contract sections written about that runtime, where it used to receive each document’s opening sections.
+- **Guideline files load whole.** Each file can be up to 128 KB, and all of them together up to 1 MB.
+- **Sections are ranked by the change.** Each section scores on the changed folder and file names it mentions, weighted by how rare each word is across all sections. A match in a heading counts double. A word that shows up in more than a quarter of the sections is ignored, since it can’t tell them apart.
+- **Short parent sections travel with their children.** When a `###` rule moves up, its `##` parent’s text comes along if it’s 2 KB or less, so the rule keeps its topic and defaults. The document’s `#` overview stays put, so small budgets don’t open on introductions again.
+- **Routed sub-rules bring their defaults.** When the routing file cites rule 13.1, the reviewer also loads rule 13’s own lead-in, up to 2 KB.
+- **The compliance pass sees what it skipped.** When its budget can’t hold every section, its note lists each file’s skipped section headings, so it can open the one that applies.
+
+For a change to an agent runtime, for example, the compliance pass now gets the seam and contract sections written about that runtime. It used to get the opening sections of each document.
 
 ## The rule that was one heading up
 
-One test pull request added a pessimistic database lock to a payment update. The team’s standards cover this in a parent section on concurrency: do not add compare-and-set clauses or pessimistic locks. The repository’s routing file pointed reviews of those paths at a sub-rule about threading version numbers, 13.1, and not at its parent, 13.
+One test pull request added a pessimistic database lock to a payment update. The team’s standards cover exactly this in rule 13, a parent section on concurrency that says not to add compare-and-set clauses or pessimistic locks. But the repository’s routing file pointed reviews of those paths at sub-rule 13.1, about threading version numbers, and not at rule 13 itself.
 
-- **Before:** no review session saw the parent rule. The main review raised a concern near the lock, and verification left it unverified, so it was not posted.
-- **After:** the main review and the compliance pass both quoted the rule and suggested keeping the existing conditional update. The finding was verified and posted.
+So no review session ever saw rule 13. The main review raised a concern near the lock, verification couldn’t confirm it, and it never got posted. With parent rules loaded, the main review and the compliance pass both quoted rule 13 and suggested keeping the existing conditional update. Verification confirmed the finding, and it was posted.
 
-Across the two-PR check, the known issue was posted on both pull requests, against one of two before. That is one run each: a clear signal, but not a benchmark.
+Across the two-PR check, the known issue was posted on both pull requests, against one of two before. That’s one run per pull request, a small sample.
 
 ## What it costs
 
-- **Time:** ranking took 14 to 39 milliseconds per review. With 3,000 changed files, the most GitHub lists for one pull request, it took about 1.1 seconds.
-- **Prompt size:** unchanged. The budgets are the same, and only what fills them changed.
-- **Follow-up reviews:** a new ranking does not force a full re-review. The check for changed rules hashes the rules themselves, not the order a given diff put them in.
+Very little. Ranking took 14 to 39 milliseconds per review, and about 1.1 seconds with 3,000 changed files, the most GitHub lists for one pull request. Prompts didn’t grow, since the budgets are the same size.
+
+A new ranking also doesn’t force a full re-review of an open pull request, because the check for changed rules hashes the rules themselves and ignores the order a diff puts them in. The one exception is the first review after upgrading. Loading whole files changes what gets hashed, so each open pull request gets one full review.
 
 > **Tips for teams that write guidelines**
 >
 > - Name the module or folder in section headings. Heading matches count double.
-> - Put a numbered rule’s defaults in its first 2 KB, before its sub-rules.
+> - Keep a numbered rule’s defaults in a short lead-in, under 2 KB, before its first sub-rule.
 > - Route rules that must always apply to a path with `rules-for-diff.yaml`.
 
 ## FAQ
 
 ### Which files does J-Bot Review read as guidelines?
 
-`AGENTS.md`, `REVIEW.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `ARCHITECTURE.md`, `TECHNICAL_STANDARDS.md`, `DESIGN.md`, `DECISIONS.md`, `.cursor/rules`, `.cursorrules`, `.windsurfrules` and `.github/copilot-instructions.md`, plus the same files inside changed folders, the Markdown files they link to, and sections routed by `.pr-governance/review/rules-for-diff.yaml`.
+At the repository root: `AGENTS.md`, `REVIEW.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `ARCHITECTURE.md`, `DESIGN.md`, `DECISIONS.md`, `TECHNICAL_STANDARDS.md`, Cursor and Windsurf rule files, and `.github/copilot-instructions.md`. It also reads the same kinds of files inside changed folders, Markdown files the top-level ones link to, and sections routed by `.pr-governance/review/rules-for-diff.yaml`.
 
 ### Does J-Bot Review send all of my guidelines to the model?
 
-No. Each review pass has a byte budget: 96 KB for the guideline-compliance pass, 24 KB for the main review, and 8 KB for each focused lens pass. What changed is which sections fill that budget: the ones that name the changed files come first.
+No. Each review pass has a byte budget: 96 KB for the guideline-compliance pass, 24 KB for the main review, and 8 KB for each focused lens pass. What changed is which sections fill it. The ones that name the changed files now come first.
 
 ### How do I make sure a rule is always checked for certain files?
 
-Route it. A `rules-for-diff.yaml` file under `.pr-governance/review` maps changed paths to numbered rules or document headings, and routed sections load ahead of general documents. Keep a numbered rule’s defaults in the lead-in of its section: a routed sub-rule now brings that lead-in along when it is 2 KB or less.
+Route it. A `rules-for-diff.yaml` file under `.pr-governance/review` maps changed paths to numbered rules or document headings, and routed sections load ahead of general documents. Keep a numbered rule’s defaults in a short lead-in before its first sub-rule. A routed sub-rule now brings that lead-in along when it’s 2 KB or less.
 
 ### Why not give the reviewer a bigger guideline budget?
 
-Because attention is limited. In an earlier investigation, a main review with a 149 KB prompt, 58% of it guidelines, missed four bugs that the same model found when given the change alone. Picking the right sections helped more than adding bytes.
+Because attention is limited. In an earlier investigation, a main review with a 149 KB prompt, 58% of it guidelines, missed four bugs that the same model found when given the change alone. So we pick better sections and keep the budgets where they are.
 
 **Series: Making AI code review faster**
 
