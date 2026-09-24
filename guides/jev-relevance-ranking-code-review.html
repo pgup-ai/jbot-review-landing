@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>How we added Jev, a relevance model, to AI code review | J-Bot Review</title>
-<meta name="description" content="Jev scores which callers of changed code an AI reviewer should see. One HTTPS call, about 0.2 seconds and a fraction of a cent. Where it helped J-Bot Review, and where it didn’t." />
+<meta name="description" content="Jev, TypeSafe’s relevance model, scores which callers of changed code an AI reviewer should see. Each call took about 0.2 seconds and cost under $0.0004. It cut estimated cost 16% on one pull request and gained nothing on a small one." />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0a0b0a" />
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
@@ -17,7 +17,7 @@
 <meta property="og:url" content="https://www.pgupai.com/guides/jev-relevance-ranking-code-review" />
 <meta property="og:site_name" content="J-Bot Review" />
 <meta property="og:title" content="How we added Jev, a relevance model, to AI code review" />
-<meta property="og:description" content="Jev scores which callers of changed code an AI reviewer should see. One HTTPS call, about 0.2 seconds and a fraction of a cent. Where it helped J-Bot Review, and where it didn’t." />
+<meta property="og:description" content="Jev, TypeSafe’s relevance model, scores which callers of changed code an AI reviewer should see. Each call took about 0.2 seconds and cost under $0.0004. It cut estimated cost 16% on one pull request and gained nothing on a small one." />
 <meta property="og:image" content="https://www.pgupai.com/assets/og-jev-relevance-ranking-code-review-20260924.png" />
 <meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-jev-relevance-ranking-code-review-20260924.png" />
 <meta property="og:image:type" content="image/png" />
@@ -29,7 +29,7 @@
 <meta name="twitter:image:alt" content="How Jev ranks the code an AI reviewer sees. Engineering notes from J-Bot Review." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="How we added Jev, a relevance model, to AI code review" />
-<meta name="twitter:description" content="Jev scores which callers of changed code an AI reviewer should see. One HTTPS call, about 0.2 seconds and a fraction of a cent. Where it helped J-Bot Review, and where it didn’t." />
+<meta name="twitter:description" content="Jev, TypeSafe’s relevance model, scores which callers of changed code an AI reviewer should see. Each call took about 0.2 seconds and cost under $0.0004. It cut estimated cost 16% on one pull request and gained nothing on a small one." />
 <meta name="twitter:image" content="https://www.pgupai.com/assets/og-jev-relevance-ranking-code-review-20260924.png" />
 
 <script type="application/ld+json">
@@ -40,7 +40,7 @@
       "@type": "TechArticle",
       "@id": "https://www.pgupai.com/guides/jev-relevance-ranking-code-review#article",
       "headline": "How does Jev help AI code review?",
-      "description": "Jev scores which callers of changed code an AI reviewer should see. One HTTPS call, about 0.2 seconds and a fraction of a cent. Where it helped J-Bot Review, and where it didn’t.",
+      "description": "Jev, TypeSafe’s relevance model, scores which callers of changed code an AI reviewer should see. Each call took about 0.2 seconds and cost under $0.0004. It cut estimated cost 16% on one pull request and gained nothing on a small one.",
       "url": "https://www.pgupai.com/guides/jev-relevance-ranking-code-review",
       "mainEntityOfPage": "https://www.pgupai.com/guides/jev-relevance-ranking-code-review",
       "image": [
@@ -103,7 +103,7 @@
           "name": "Is Jev on by default?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. It’s the opt-in jev preset. On the pull request with the most candidates it cut estimated cost 16%, but it wasn’t reliably faster, and a smaller pull request showed no gain over plain ordering, so context packs stay the default."
+            "text": "No. It’s the opt-in jev preset. On the pull request with the most candidates it cut estimated cost 16%, but it wasn’t reliably faster, and on a smaller pull request plain ordering was faster on average, so context packs stay the default."
           }
         },
         {
@@ -291,8 +291,8 @@
   <h1>How does Jev help AI code review?</h1>
   <p class="updated">Published September 24, 2026</p>
 
-  <p class="lede">It picks which code the reviewer sees. When a pull request changes a function that other files use, J-Bot Review can find many places that mention it, and only a few fit in the prompt. Jev, a relevance model from TypeSafe, reads each candidate and scores how likely it is to matter for the change. The best few go to the reviewer. Each call took about 0.2 seconds and cost a fraction of a cent.</p>
-  <p>J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI, with the model you choose. Jev is available as the opt-in <code>jev</code> preset. On the pull request with the most candidates, it cut review cost 16%, and it caught a known bug in one of five runs, where ten runs without it never did. On smaller pull requests it made no measurable difference, which is why it isn’t the default.</p>
+  <p class="lede">It picks which callers of the changed code the reviewer sees first. When a pull request changes a function that other files use, J-Bot Review can find many places that mention it, and only a few fit in the prompt. Jev, a relevance model from TypeSafe, reads each candidate and scores how likely it is to matter for the change. The best few go to the reviewer. Each call took about 0.2 seconds and cost under $0.0004.</p>
+  <p>J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI, with the model you choose. Jev is available as the opt-in <code>jev</code> preset. On the pull request with the most candidates, it cut estimated review cost 16% and caught a known bug in one of five runs, where ten runs without it never did. On a smaller pull request it gained nothing, and the same candidates in plain order did better on average, which is why it isn’t the default.</p>
 
   <nav class="contents" aria-label="Article contents">
     <b>In this article</b>
@@ -300,8 +300,8 @@
       <li><a href="#what-jev-is">What Jev is</a></li>
       <li><a href="#integration">Adding it took one HTTPS call</a></li>
       <li><a href="#how-it-helps">How it helps a review</a></li>
-      <li><a href="#results">What it changed</a></li>
-      <li><a href="#lessons">What we’d tell anyone adding a relevance model</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#lessons">Lessons for adding a relevance model</a></li>
       <li><a href="#next">Where else it could help</a></li>
       <li><a href="#try-it">How to turn it on</a></li>
       <li><a href="#faq">FAQ</a></li>
@@ -309,59 +309,59 @@
   </nav>
 
   <h2 id="what-jev-is">What Jev is</h2>
-  <p>Jev is a relevance model from TypeSafe, which describes it as its flagship model. You don’t chat with it. You send it some material and a set of yes-or-no questions, and it answers each one with a number between 0 and 1, its estimate that the answer is yes. TypeSafe calls that number a noul.</p>
-  <p>That shape fits ranking. Ask the same question about 20 pieces of code, sort by score, and keep the top few. Input costs $0.042 per million tokens and output is free, according to TypeSafe’s <a href="https://docs.typesafe.ai/models">model page</a>. J-Bot Review pins version <code>jev-1.13.0</code>.</p>
+  <p>Jev is a relevance model from TypeSafe, which calls it its flagship model. Instead of chatting with it, you send it some material and a set of yes-or-no questions, and it answers each one with a number between 0 and 1, its estimate that the answer is yes. TypeSafe calls that number a noul.</p>
+  <p>That suits ranking. Ask the same question about 20 pieces of code, sort by score, and keep the top few. Input costs $0.042 per million tokens and output is free, according to TypeSafe’s <a href="https://docs.typesafe.ai/models">model page</a>. J-Bot Review pins version <code>jev-1.13.0</code>.</p>
 
   <h2 id="integration">Adding it took one HTTPS call</h2>
   <p>There’s no SDK to install. J-Bot Review sends one POST request to TypeSafe’s API with the diff around each changed function, the candidate excerpts, and one question per excerpt. The question asks whether the excerpt contains a concrete use or test of the changed function whose behavior the change could affect. An import, a declaration or a bare mention of the name counts as no.</p>
   <p>Jev returns one score per excerpt. J-Bot Review keeps the excerpts that score 0.5 or higher, takes the top four, and adds them to the reviewer’s prompt, up to 6,000 bytes, with a note naming anything it left out.</p>
-  <p>The call itself is short. Most of the work went into the limits around it:</p>
+  <p>Most of the integration work went into the limits around that call:</p>
   <ul>
     <li>A request covers at most 24 excerpts from 12 files and can’t exceed 30,000 bytes.</li>
     <li>Collecting and scoring share a five-second deadline, with no retries.</li>
-    <li>A missing key, a timeout or a malformed answer leaves the review exactly as it would have been without Jev.</li>
+    <li>A missing key, a timeout or a malformed answer leaves the review as it would have been without Jev.</li>
     <li>The TypeSafe key stays in J-Bot Review’s own process. The model sessions that read your code never see it.</li>
   </ul>
 
   <h2 id="how-it-helps">How it helps a review</h2>
-  <p>Jev never decides whether code is broken. J-Bot Review’s own code finds the candidates, reads the files and enforces the limits. Jev judges one narrow thing, whether each candidate is relevant to the change. The reviewer model, and after it a separate verifier, decide whether there’s a bug. No score can remove a finding or a file from the review.</p>
-  <p>Here’s the idea on a small test repository we built. The pull request changed <code>invoiceTotal</code> to return cents instead of dollars. One unchanged file still multiplied that result by 100 before charging, which would overcharge by 100×. Six other files mentioned <code>invoiceTotal</code> only in metadata strings. Jev put the payment code through and left the name mentions out, so the reviewer got a 913-byte excerpt with exactly the lines it needed.</p>
-  <p>Reviews caught that bug with or without Jev. A test this small shows that Jev picks the right code. It can’t show whether that makes reviews better, so we moved on to real pull requests.</p>
+  <p>Jev judges one narrow thing, whether each candidate is relevant to the change. J-Bot Review’s own code finds the candidates, reads the files and enforces the limits, and the reviewer model, then a separate verifier, decide whether there’s a bug. No score can remove a finding or a file from the review.</p>
+  <p>On a small test repository we built, the pull request changed <code>invoiceTotal</code> to return cents instead of dollars. One unchanged file still multiplied that result by 100 before charging, which would overcharge by 100×. Six other files mentioned <code>invoiceTotal</code> only in metadata strings. Jev put the payment code through and left the name mentions out, so the reviewer got a 913-byte excerpt containing the payment code.</p>
+  <p>Reviews caught that bug with or without Jev. A test this small shows Jev can pick the right code, and nothing about whether that makes reviews better, so we moved on to real pull requests.</p>
   <p>The same ranking can choose evidence for the verifier, the step that tries to disprove each finding before it’s posted. On a test repository where 15 excerpts competed for four slots, Jev swapped in two files that addressed the claims being checked more directly than the ones plain ordering picked. That was a research test. The <code>jev</code> preset never sends verifier evidence to Jev.</p>
 
-  <h2 id="results">What it changed</h2>
+  <h2 id="results">Results</h2>
   <p>We tested Jev five ways, each time against the same run without it. In four of the five we also ran a second control that sent the same candidates in their original order, so ranking was the only difference. The first three rows are whole reviews on DeepSeek V4 Flash through OpenCode. The last two time only the verification step, on Muse Spark through Command Code.</p>
   <div class="tbl-wrap" role="region" aria-label="Jev test results" tabindex="0">
     <table>
       <thead><tr><th scope="col">Test</th><th scope="col">What we measured</th><th scope="col">What it tells us</th></tr></thead>
       <tbody>
-        <tr><td>A small test pull request, 8 candidates, 3 runs per arm</td><td>Jev passed along the one caller that mattered. Median review 29.4&nbsp;s against 25.9&nbsp;s without it; the means were within 0.1&nbsp;s.</td><td>Right evidence, no speed change</td></tr>
-        <tr><td><a href="https://github.com/pgup-ai/jbot-review/pull/128">PR #128</a> from J-Bot Review’s history, 18 candidates, 5 runs per arm</td><td>Estimated cost −16.0%, cheaper in 5 of 5 runs. Mean time −15.8%, but faster in only 2 of 5. Main-review turns 10.2 → 7.4. A known bug found in 1 of 5 runs, against 0 of 10 without Jev.</td><td>Real savings when there’s a lot to choose from</td></tr>
-        <tr><td><a href="https://github.com/pgup-ai/jbot-review/pull/148">PR #148</a>, 4 candidates, 5 runs per arm</td><td>Mean time 12.7% lower than with no extra evidence, but 12.7% higher than the same candidates in plain order. Median almost unchanged, 41.2&nbsp;s against 41.8&nbsp;s.</td><td>Nothing to gain from ranking four items</td></tr>
-        <tr><td>Evidence for the verifier, 15 excerpts competing for 4 slots, 3 runs per arm</td><td>Mean verification 40.7&nbsp;s, against 58.6&nbsp;s with no extra evidence and 52.1&nbsp;s in plain order. Same turn counts as plain order in every pair.</td><td>Better picks; the speedup isn’t proven</td></tr>
-        <tr><td>Evidence for the verifier when all 9 excerpts fit, 3 runs per arm</td><td>Jev’s 0.5 cutoff kept 1, 3 and 1 of the 9. Mean 40.4&nbsp;s, against 24.6&nbsp;s for sending all nine.</td><td>Don’t rank what already fits</td></tr>
+        <tr><td>A small test pull request, 8 candidates, 3 runs per arm</td><td>Jev passed along the one caller that mattered. Median review 29.4&nbsp;s against 25.9&nbsp;s without it; the means were within 0.1&nbsp;s.</td><td>Picked the right caller, no speed change</td></tr>
+        <tr><td><a href="https://github.com/pgup-ai/jbot-review/pull/128">PR #128</a> from J-Bot Review’s history, 18 candidates, 5 runs per arm</td><td>Estimated cost −16.0%, cheaper in 5 of 5 runs. Mean time −15.8%, but faster in only 2 of 5. Main-review turns 10.2 → 7.4. A known bug found in 1 of 5 runs, against 0 of 10 without Jev.</td><td>Cheaper in all 5 runs, faster in 2</td></tr>
+        <tr><td><a href="https://github.com/pgup-ai/jbot-review/pull/148">PR #148</a>, 4 candidates, 5 runs per arm</td><td>Mean time 12.7% lower than with no extra evidence, but 12.7% higher than the same candidates in plain order. Median almost unchanged, 41.2&nbsp;s against 41.8&nbsp;s.</td><td>Plain order was faster on average</td></tr>
+        <tr><td>Evidence for the verifier, 15 excerpts competing for 4 slots, 3 runs per arm</td><td>Mean verification 40.7&nbsp;s, against 58.6&nbsp;s with no extra evidence and 52.1&nbsp;s in plain order. Same turn counts as plain order in every pair.</td><td>More relevant picks, speedup unproven</td></tr>
+        <tr><td>Evidence for the verifier when all 9 excerpts fit, 3 runs per arm</td><td>Jev’s 0.5 cutoff kept 1, 3 and 1 of the 9. Mean 40.4&nbsp;s, against 24.6&nbsp;s for sending all nine.</td><td>Slower than sending all nine</td></tr>
       </tbody>
     </table>
   </div>
   <p>Jev itself was never the slow part. In the real-PR test, each Jev call added 171 to 281 milliseconds, and all ten calls together cost $0.0025, against $0.86 for all 30 reviews. The swings came from the reviewer model: how much it explored, how long verification took, and in one run an unsupported comment that took 128 seconds of verification.</p>
-  <p>So Jev stays an opt-in preset. The savings on PR #128 were real, the speedup wasn’t consistent, and one bug caught in five runs is too thin to count as better recall. The audits have every run: the <a href="https://github.com/pgup-ai/jbot-review/blob/main/docs/audits/2026-09-19-jev-real-pr-comparison.md">real-PR comparison</a>, the <a href="https://github.com/pgup-ai/jbot-review/blob/main/docs/audits/2026-09-21-jev-handoff.md">verifier comparison</a> and the <a href="https://github.com/pgup-ai/jbot-review/blob/main/docs/audits/2026-09-21-handoff-packing.md">packing follow-up</a>.</p>
+  <p>Jev stays an opt-in preset. On PR #128 it was cheaper in all five runs but faster in only two, and one bug caught in five runs is too thin to count as better recall. The audits have every run: the <a href="https://github.com/pgup-ai/jbot-review/blob/main/docs/audits/2026-09-19-jev-real-pr-comparison.md">real-PR comparison</a>, the <a href="https://github.com/pgup-ai/jbot-review/blob/main/docs/audits/2026-09-21-jev-handoff.md">verifier comparison</a> and the <a href="https://github.com/pgup-ai/jbot-review/blob/main/docs/audits/2026-09-21-handoff-packing.md">packing follow-up</a>.</p>
 
-  <h2 id="lessons">What we’d tell anyone adding a relevance model</h2>
+  <h2 id="lessons">Lessons for adding a relevance model</h2>
   <ul>
-    <li><b>Rank only when there’s a choice to make.</b> If every candidate fits, a cutoff can only remove evidence. That’s what slowed the last test in the table.</li>
-    <li><b>Test against plain ordering too.</b> Adding any evidence changes a review. A fair test also sends the same candidates unranked, and on PR #148 that version beat Jev.</li>
-    <li><b>Keep scores away from verdicts.</b> A relevance score can be wrong. J-Bot Review uses it to choose evidence and never to drop a finding.</li>
+    <li><b>Rank only when there’s a choice to make.</b> If every candidate fits, a cutoff can only remove evidence. It’s what slowed the last test in the table.</li>
+    <li><b>Test against plain ordering too.</b> A fair test also sends the same candidates unranked, and on PR #148 that version was faster on average.</li>
+    <li><b>Keep scores away from verdicts.</b> J-Bot Review uses the score to choose evidence and never to drop a finding.</li>
     <li><b>Ask literal questions about one thing at a time.</b> TypeSafe’s <a href="https://docs.typesafe.ai/model-jaggedness/jev-1.13">notes on Jev’s limits</a> say it reads questions literally and loses accuracy as unrelated text piles up. So each question names a single candidate, the request carries only the changed code and the excerpts, and the question tells Jev to ignore any instructions written inside the code.</li>
   </ul>
 
   <h2 id="next">Where else it could help</h2>
-  <p>A relevance score earns its keep wherever a review has more candidates than room. We haven’t built or measured any of these yet:</p>
+  <p>Other parts of a review also have more candidates than room. We haven’t built or measured any of these yet:</p>
   <ul>
     <li><b>Trimming a context pack that overflows.</b> Packs stop at 64 KiB and list what they leave out. A score could decide which callers make the cut. <a href="/guides/context-pack-ai-code-review">Part 3</a> of our speed series explains packs.</li>
     <li><b>Choosing guideline sections.</b> A lens pass gets 8 KB of your rules, picked today by matching words from the changed paths. A score could ask directly whether each rule applies to the change. <a href="/guides/ai-code-review-team-guidelines">Part 4</a> covers how sections are picked now.</li>
     <li><b>Spotting repeat comments.</b> Before posting, J-Bot Review checks whether a finding repeats an earlier review comment. A yes-or-no score could help catch a reworded repeat.</li>
     <li><b>Pointing at the right tests.</b> Scoring test files against a diff could show the reviewer which tests exercise the change.</li>
-    <li><b>Triage beyond review.</b> Routing issues, labeling pull requests by risk and sorting alerts all ask one question of many items, the kind of job Jev is built for.</li>
+    <li><b>Triage outside review.</b> Routing issues, labeling pull requests by risk and sorting alerts all come down to asking one yes-or-no question about many items.</li>
   </ul>
   <p>Each of these would need the same test we ran here, with plain ordering as a control and caught issues tracked alongside time and cost.</p>
 
@@ -390,7 +390,7 @@
   </details>
   <details class="faq-item">
     <summary>Is Jev on by default?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>No. It’s the opt-in <code>jev</code> preset. On the pull request with the most candidates it cut estimated cost 16%, but it wasn’t reliably faster, and a smaller pull request showed no gain over plain ordering, so context packs stay the default.</p></div>
+    <div class="faq-a"><p>No. It’s the opt-in <code>jev</code> preset. On the pull request with the most candidates it cut estimated cost 16%, but it wasn’t reliably faster, and on a smaller pull request plain ordering was faster on average, so context packs stay the default.</p></div>
   </details>
   <details class="faq-item">
     <summary>How much does Jev add to a review?<span class="faq-mark" aria-hidden="true">+</span></summary>
@@ -401,8 +401,8 @@
 
   <h2>Related</h2>
   <div class="related">
-    <a class="rel-card" href="/guides/ai-code-review-speed-experiments"><span class="k2">Speed series</span>23 ways we tried to make AI code review faster<p>Jev was one of them. The full scoreboard, failures included.</p></a>
-    <a class="rel-card" href="/guides/context-pack-ai-code-review"><span class="k2">Speed series</span>Context packs: the fix that worked<p>The default preset, and how it hands the reviewer code up front.</p></a>
+    <a class="rel-card" href="/guides/ai-code-review-speed-experiments"><span class="k2">Speed series</span>What we tried before context packs<p>Jev was one of 23 ideas we tested, and all 23 are there, including the 15 we rejected.</p></a>
+    <a class="rel-card" href="/guides/context-pack-ai-code-review"><span class="k2">Speed series</span>Context packs: the fix that worked<p>The default preset, which hands the reviewer code before its first turn.</p></a>
     <a class="rel-card" href="https://github.com/pgup-ai/jbot-review/blob/main/docs/audits/2026-09-19-jev-real-pr-comparison.md"><span class="k2">Source</span>The Jev real-PR comparison<p>30 randomized reviews, per-run numbers and the adjudication.</p></a>
   </div>
 </article>
