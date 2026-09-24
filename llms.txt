@@ -63,6 +63,7 @@ Every page on this site also serves Markdown to `Accept: text/markdown` at the s
 - [Engineering: Context packs](https://www.pgupai.com/guides/context-pack-ai-code-review): the default review preset since 2026-09-23: surrounding code, definitions, callers, related diffs and a directory map delivered before the first model turn
 - [Engineering: Guidelines the reviewer can see](https://www.pgupai.com/guides/ai-code-review-team-guidelines): guideline files load whole (128 KB each), sections are ranked by the changed paths, and routed sub-rules bring their parent defaults
 - [Engineering: Results](https://www.pgupai.com/guides/faster-ai-code-review-results): turns down 30 to 45% in A/B tests, caught issues within run-to-run noise, and production review times with their limits
+- [Engineering: Jev relevance ranking](https://www.pgupai.com/guides/jev-relevance-ranking-code-review): TypeSafe’s Jev scores candidate caller excerpts in the opt-in jev preset: one HTTPS call of about 0.2 s and under $0.0004, 16% lower estimated cost on one PR, no reliable speedup, and the limits we found
 - [Engineering: OpenCode V2 migration](https://www.pgupai.com/guides/opencode-v2-migration): J-Bot’s migration to client/CLI 2.0.5, repository-plugin isolation, timeout recovery, usage accounting, and the limits of its validation
 - [Action repository and documentation](https://github.com/pgup-ai/jbot-review-action): install, providers, configuration, tuning
 - [GitHub Actions Marketplace listing](https://github.com/marketplace/actions/j-bot-code-review): official listing (v0.2.0+)
