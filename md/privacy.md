@@ -39,6 +39,8 @@ This is the part that matters most, and it is a property of the software rather 
 
 On the standard Action path, **PGUP AI never receives your code**. The reviewer is a container action that GitHub runs on your own runner. It reads your checkout read-only. The pull-request diff and the context the agent requests go to **the model provider whose key you configured**, under your own account and that provider's data-retention terms. There is no third-party reviewer service in the loop, and no J-Bot server that your diff passes through.
 
+One opt-in setting adds a second recipient. The experimental `jev` preset sends the diffs around changed functions and up to 24 candidate excerpts to TypeSafe, which ranks them by relevance, with at most 30,000 bytes per request. It stays off unless you turn it on, and the [Jev guide](https://www.pgupai.com/guides/jev-relevance-ranking-code-review) explains what it does.
+
 Two consequences follow from that:
 
 - **Your provider's terms are the ones that apply** to your code, not ours. That includes free model routes — some are explicitly feedback routes with no published zero-retention wording, and the guides say so where that is the case.

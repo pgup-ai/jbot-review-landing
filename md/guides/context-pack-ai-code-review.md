@@ -90,7 +90,7 @@ Yes. The main review keeps its read-only repository tools and decides for itself
 
 ### Does a context pack send more of my code to the model provider?
 
-Somewhat more. Each review page can carry up to 64 KiB of pack, and it goes to the model provider you configured. Nothing else changes. J-Bot Review runs in your own CI, and your code leaves the runner only for the model you bring.
+Somewhat more. Each review page can carry up to 64 KiB of pack, and it goes to the model provider you configured. Nothing else changes. J-Bot Review runs in your own CI, and with the default preset your code leaves the runner only for the model you bring.
 
 ### Is the context pack on by default?
 
