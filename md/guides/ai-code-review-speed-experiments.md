@@ -129,7 +129,7 @@ We tried one. A tool that returned definitions and callers for a given line was 
 
 ## Related
 
-- **Part 1** — [Why AI code review is slow](https://www.pgupai.com/guides/why-ai-code-review-is-slow): Two-thirds of the turns were lookups, and tools took 1.8% of the time.
+- **Part 1** — [Why AI code review is slow](https://www.pgupai.com/guides/why-ai-code-review-is-slow): Two-thirds of the turns were lookups, and tools took 1.8% of session time on the backend that measures it.
 - **Part 3** — [Context packs: the fix that worked](https://www.pgupai.com/guides/context-pack-ai-code-review): The code bundle that saves the reviewer many of its lookups.
 - **Source** — [The experiment-presets audit](https://github.com/pgup-ai/jbot-review/blob/main/docs/audits/2026-09-19-experiment-presets.md): Method, samples, and raw numbers behind the retrieval and caching experiments.
 
