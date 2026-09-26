@@ -78,6 +78,7 @@
       ui_host: 'https://us.posthog.com',
       defaults: '2026-05-30',
       cookieless_mode: 'always',
+      persistence: 'memory',
       person_profiles: 'never',
       autocapture: false,
       capture_pageview: true,
