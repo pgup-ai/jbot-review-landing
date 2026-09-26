@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>DeepSeek V4.1 Flash Code Review in GitHub Actions | J-Bot Review</title>
-<meta name="description" content="Run DeepSeek V4.1 Flash as an AI code reviewer in GitHub Actions, free through Cline or from $0.14 per million input tokens. Exact model ids for nine routes, measured review times, and why the route changes review time threefold." />
+<meta name="description" content="Run DeepSeek V4.1 Flash as an AI code reviewer in GitHub Actions, free through Cline or from $0.14 per million input tokens. Exact model ids for nine routes and measured review times by pull request size." />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0a0b0a" />
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
@@ -40,7 +40,7 @@
       "@type": "TechArticle",
       "@id": "https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-github-actions#article",
       "headline": "DeepSeek V4.1 Flash code review in GitHub Actions",
-      "description": "Run DeepSeek V4.1 Flash as an AI code reviewer in GitHub Actions, free through Cline or from $0.14 per million input tokens. Exact model ids for nine routes, measured review times, and why the route changes review time threefold.",
+      "description": "Run DeepSeek V4.1 Flash as an AI code reviewer in GitHub Actions, free through Cline or from $0.14 per million input tokens. Exact model ids for nine routes and measured review times by pull request size.",
       "url": "https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-github-actions",
       "mainEntityOfPage": "https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-github-actions",
       "image": [
@@ -103,7 +103,7 @@
           "name": "Why is DeepSeek V4.1 Flash slow at code review?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "It explores widely. On OpenCode Go a review averaged about 200 tool calls and 17 to 20 minutes, and even at low reasoning effort it produced about 44,000 reasoning tokens on a 25 KB diff. Through Command Code the same model took about six minutes per review."
+            "text": "It reads and searches a lot before it answers. On OpenCode Go it made 56 to 110 tool calls on small pull requests and up to about 330 on bigger ones. Even at low reasoning effort it produced about 44,000 reasoning tokens on a 25 KB diff. Small pull requests took 7 to 13 minutes and a 234 KB change took up to 29. Through Command Code, a 16 KB change took about six minutes."
           }
         },
         {
@@ -247,10 +247,16 @@
   .rel-card:hover { border-color: rgba(94,227,154,0.35); color: var(--text); }
   .rel-card .k2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 7px; }
   .rel-card p { margin: 6px 0 0; font-size: 13px; color: var(--text-3); }
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; min-width: 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; overflow-wrap: break-word; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--text); font-weight: 600; }
   footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
   .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
   .foot-inner a { color: var(--text-3); }
-  @media (max-width: 560px) { .nav-links a:not(.btn) { display: none; } .title-row { gap: 12px; } .spark-mark { width: 36px; height: 36px; } .route { grid-template-columns: 1fr; gap: 5px; } }
+  @media (max-width: 560px) { .nav-links a:not(.btn) { display: none; } .tbl-wrap table { min-width: 600px; } .title-row { gap: 12px; } .spark-mark { width: 36px; height: 36px; } .route { grid-template-columns: 1fr; gap: 5px; } }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .faq-mark { transition: none; } }
 </style>
 <link rel="stylesheet" href="/assets/analytics.css" />
@@ -277,7 +283,7 @@
     <h1>DeepSeek V4.1 Flash code review in GitHub Actions</h1>
   </div>
   <p class="updated">Published September 26, 2026 · routes and prices checked September 26, 2026 · applies to pgup-ai/jbot-review-action v0</p>
-  <p class="lede"><b>DeepSeek V4.1 Flash, released 2026-09-10, is free for code review through Cline’s free tier and costs $0.14 per million input tokens on OpenRouter.</b> It’s a thorough reviewer and a slow one. In our tests it made about 200 tool calls and took 17 to 20 minutes per review on OpenCode Go, and about six minutes per review through Command Code. The route you pick changes review time more than any setting does.</p>
+  <p class="lede"><b>DeepSeek V4.1 Flash, released 2026-09-10, is free for code review through Cline’s free tier and costs $0.14 per million input tokens on OpenRouter.</b> It’s a thorough reviewer and a slow one. On OpenCode Go, small pull requests took 7 to 13 minutes in our tests and a 234 KB change took up to 29. Through Command Code, a 16 KB change took about six minutes.</p>
 
   <div class="callout">
     <span class="tag">New model · new architecture · separate from V4 Flash</span>
@@ -348,13 +354,27 @@
   <p class="note-line">Command Code accepts <code>low</code>, <code>high</code> and <code>max</code> effort for this model, with no <code>medium</code>, and J-Bot maps its effort setting onto those tiers.</p>
 
   <h2 id="performance">How it performed</h2>
+  <p>Review time grows with the pull request. These are OpenCode Go runs from September 23 to 26, two to four per pull request. Some used J-Bot’s defaults and some used variants we were testing, so read the ranges as rough.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Pull request</th><th>Review time</th><th>Tool calls</th><th>Cost on OpenCode Go</th></tr></thead>
+      <tbody>
+        <tr><td>Small: 3 to 7 files, 12 to 30 KB of diff</td><td>7 to 13 min</td><td>56 to 110</td><td>$0.08 to $0.20</td></tr>
+        <tr><td>Medium: 11 or 12 files, 28 to 54 KB</td><td>10 to 21 min</td><td>190 to 330</td><td>$0.26 to $0.45</td></tr>
+        <tr><td>Large: 45 files, 234 KB</td><td>18 to 29 min</td><td>170 to 260</td><td>$0.42 to $0.74</td></tr>
+      </tbody>
+    </table>
+  </div>
   <ul>
-    <li><b>It explores everything.</b> On OpenCode Go, one review averaged about 200 tool calls, about 160 turns and about 16 million cached input tokens, and took 17 to 20 minutes. J-Bot’s context pack, which cut Space Bunny’s turns by 45%, cut DeepSeek’s by 8%.</li>
-    <li><b>The route sets the pace.</b> Through Command Code, the same model reviewed a change to J-Bot’s own repository in 339 to 380 seconds, with 12 to 22 tool calls per session.</li>
+    <li><b>Handing it context barely helps.</b> J-Bot’s context pack cut Space Bunny’s turns by 45% and DeepSeek’s by 8%.</li>
+    <li><b>Command Code was quicker.</b> Through Command Code, the same model reviewed a 4-file, 16 KB change to J-Bot’s own repository in 339 to 380 seconds, with 12 to 22 tool calls per session.</li>
+    <li><b>It went to the web.</b> A production review of a two-file frontend change took 12 minutes. Nine of them went mostly to web searches, page fetches and short scripts that pulled a grid library’s source from a CDN. The model wanted to know how the library groups rows. J-Bot now strips the web and code-execution tools from OpenCode review sessions and blocks <code>curl</code> and <code>wget</code> in their shell. A claim about a library’s internals has to come from Context7 or from the library’s code in the repository. Without either, the reviewer has to phrase it as an open question at advisory severity.</li>
+    <li><b>Reading less cost a finding.</b> We tried telling the guideline pass to read only the guidance J-Bot hands it. It made 41% fewer tool calls across two pull requests. On one of them it also missed a written testing rule in both runs, and the unchanged pass caught it both times. The rule was in its prompt the whole time. We kept the pass free to read.</li>
     <li><b>On Cline’s free tier it ran out of time verifying.</b> With Cline reading the checkout, a 12-file review took 706 seconds. Most of its tool calls were shell commands, and verification hit its 300-second budget, so its three findings were held back.</li>
     <li><b>Low effort still reasons a lot.</b> OpenCode passes the effort setting through and DeepSeek honors it, but at low effort it still produced about 44,000 reasoning tokens on a 25 KB diff.</li>
   </ul>
-  <p>If review time matters, use Command Code or cap the time budget. If you’re on the free Cline tier, expect a few tool-using reviews a day before the cap. For a free model that finishes in minutes, see <a href="/guides/space-bunny-code-review-github-actions">Space Bunny</a>.</p>
+  <p>If you need a review in minutes, run the model through Command Code or pick a faster free model such as <a href="/guides/space-bunny-code-review-github-actions">Space Bunny</a>. On OpenCode Go, give big changes room. The 234 KB change took up to 29 minutes, and J-Bot’s default budget is 30 minutes. A review that runs out of time fails instead of posting partial coverage, so raise <code>time-budget-minutes</code> for changes that size.</p>
+  <p>If your code reaches a library through your own wrappers, set <code>enable-context7: true</code> and pass <code>context7-api-key</code>. On <code>auto</code>, J-Bot turns Context7 on only when the diff touches dependencies, API clients or an ORM. On Cline’s free tier, expect a few tool-using reviews a day before the cap.</p>
 
   <h2 id="privacy">Where the diff goes</h2>
   <ul>
@@ -375,7 +395,7 @@
   </details>
   <details class="faq-item">
     <summary>Why is DeepSeek V4.1 Flash slow at code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>It explores widely. On OpenCode Go a review averaged about 200 tool calls and 17 to 20 minutes, and even at low reasoning effort it produced about 44,000 reasoning tokens on a 25 KB diff. Through Command Code the same model took about six minutes per review.</p></div>
+    <div class="faq-a"><p>It reads and searches a lot before it answers. On OpenCode Go it made 56 to 110 tool calls on small pull requests and up to about 330 on bigger ones. Even at low reasoning effort it produced about 44,000 reasoning tokens on a 25 KB diff. Small pull requests took 7 to 13 minutes and a 234 KB change took up to 29. Through Command Code, a 16 KB change took about six minutes.</p></div>
   </details>
   <details class="faq-item">
     <summary>Which DeepSeek V4.1 Flash route is cheapest?<span class="faq-mark" aria-hidden="true">+</span></summary>
