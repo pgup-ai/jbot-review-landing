@@ -2,15 +2,15 @@
 
 This page covers two separate things that are easy to confuse: **what this website does with your data**, and **where your code goes when you run J-Bot Review**. Website analytics are optional. On the standard GitHub Action path, your code never reaches PGUP AI.
 
-Last updated September 24, 2026
+Last updated September 26, 2026
 
 ## What this website collects
 
-We use **PostHog US Cloud** to understand which pages and links are useful. Its script loads only after you choose **Allow analytics**. Until then, or if you decline, we send no analytics events to PostHog.
+We use **PostHog US Cloud** to understand which pages and links are useful. We use cookieless analytics by default. You can turn it off through **Analytics preferences** in the footer. A previously saved decline still keeps analytics off.
 
 - **Usage events:** page views, page exits to estimate visit duration, and selected setup, contact, GitHub, and Marketplace link clicks.
-- **Traffic context:** page paths, referring websites, permitted campaign tags, browser and device information. PostHog processes your IP address when receiving requests, including for approximate geographic information.
-- **Browser identifiers:** after you accept, PostHog uses local storage and session storage to recognize the same browser and group visits. This does not tell us your name or email.
+- **Traffic context:** page paths, referring websites, permitted campaign tags, browser and device information. PostHog processes your IP address when receiving requests to generate a daily identifier, then discards the IP from cookieless events. Geographic breakdowns may be unavailable in this mode.
+- **Daily identifiers:** PostHog uses a server-generated hash of request information with a rotating daily salt. Its cookieless SDK does not store analytics identifiers in cookies, local storage, or session storage. We cannot reliably recognize the same visitor across days and do not send names or email addresses.
 - **No session replay or form capture:** we disable recordings, automatic interaction capture, heatmaps, and surveys. There are currently no accounts or enquiry forms on this site.
 - **No visitor identification service:** RB2B, advertising pixels, and third-party person-resolution tools are not installed.
 
@@ -18,9 +18,9 @@ We strip URL fragments and non-campaign query parameters from analytics URLs. Pl
 
 ## Your analytics choices
 
-Use **Analytics preferences** in the footer to allow or decline analytics at any time. We store your choice in your browser as `pgup_analytics_choice`, including when you decline, so we can remember it. If browser storage is unavailable, your choice applies only to the current page.
+Use **Analytics preferences** in the footer to turn cookieless analytics off or back on at any time. We store your choice in your browser as `pgup_analytics_choice`, including when you decline, so we can remember it. If browser storage is unavailable, your choice applies only to the current page.
 
-Declining stops future event collection and clears PostHog's analytics persistence on the current page when its SDK is loaded. It does not delete events already received. We also keep analytics off when your browser sends Global Privacy Control or Do Not Track. Clearing your browser's site data removes the stored preference and identifiers.
+Turning analytics off stops future event collection. It does not delete events already received. We also keep analytics off when your browser sends Global Privacy Control or Do Not Track. Clearing your browser's site data removes the stored preference, so cookieless analytics resumes unless your browser sends a privacy signal. Older versions used analytics storage after consent; clearing site data also removes those old identifiers, which this version does not use.
 
 ## Who sees a request anyway
 
@@ -29,7 +29,7 @@ Serving a web page is not free of third parties, these services process requests
 - **Vercel** hosts this site. Like any web host, its edge network processes the request in order to answer it and keeps standard operational logs — IP address, user agent, requested path, timestamp — under [Vercel's privacy policy](https://vercel.com/legal/privacy-policy). PGUP AI does not use those logs to build a profile of you.
 - **Google Fonts** serves the three typefaces this site uses. Your browser fetches them from `fonts.googleapis.com` and `fonts.gstatic.com`, which discloses your IP address and user agent to Google under [Google's privacy policy](https://policies.google.com/privacy). If that matters to you, blocking those two hosts degrades the site to system fonts and nothing else breaks.
 
-**PostHog** receives analytics only after you accept, under [PostHog’s privacy policy](https://posthog.com/privacy). The project uses US hosting. We use this data to improve the site, not to identify unnamed visitors for sales outreach.
+**PostHog** receives cookieless analytics unless you opt out or send a browser privacy signal, under [PostHog’s privacy policy](https://posthog.com/privacy). The project uses US hosting. We use this data to improve the site, not to identify unnamed visitors for sales outreach.
 
 Content negotiation on this site is stateless. Asking for the Markdown representation of a page with `Accept: text/markdown` is handled per request and stores nothing about you.
 

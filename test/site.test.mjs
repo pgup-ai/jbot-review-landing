@@ -60,7 +60,7 @@ test('/privacy states the third parties the site actually loads', () => {
   assert.match(text, /Vercel/);
   assert.match(text, /Google Fonts/);
   assert.match(text, /PostHog US Cloud/);
-  assert.match(text, /only after you choose Allow analytics/);
+  assert.match(text, /cookieless analytics by default/);
   assert.doesNotMatch(text, /No analytics\.|collects nothing/);
   const home = read('index.html');
   assert.match(home, /src="\/assets\/analytics\.js" defer/);

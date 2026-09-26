@@ -6,14 +6,12 @@ import vm from 'node:vm';
 const source = fs.readFileSync(new URL('../assets/analytics.js', import.meta.url), 'utf8');
 const choiceKey = 'pgup_analytics_choice';
 
-function harness({ stored, host = 'www.pgupai.com', signal = false, storageFails = false } = {}) {
+function harness({ stored, host = 'www.pgupai.com', signal = false, dnt = false, storageFails = false } = {}) {
   const storage = new Map(stored ? [[choiceKey, stored]] : []);
   const scripts = [];
   const events = [];
   const listeners = {};
   let config;
-  let optedOut = false;
-  let optOutCalls = 0;
   let panel;
   const element = () => ({
     dataset: {}, handlers: {}, children: new Map(), hidden: false,
@@ -34,11 +32,12 @@ function harness({ stored, host = 'www.pgupai.com', signal = false, storageFails
     addEventListener(name, callback) { listeners[`document:${name}`] = callback; },
   };
   const ph = {
-    init(token, options) { config = options; options.loaded(ph); },
-    opt_in_capturing() { optedOut = false; },
-    opt_out_capturing() { optedOut = true; optOutCalls++; },
-    capture(name, properties) {
-      if (optedOut) return;
+    init(token, options) {
+      config = options;
+      options.loaded(ph);
+      if (options.capture_pageview) ph.capture('$pageview');
+    },
+    capture(name, properties = {}) {
       const result = config.before_send({ event: name, properties });
       if (result) events.push(result);
     },
@@ -47,7 +46,7 @@ function harness({ stored, host = 'www.pgupai.com', signal = false, storageFails
   const context = vm.createContext({
     URL, document, window,
     location: new URL(`https://${host}/guides?utm_source=launch&email=private@example.org#secret`),
-    navigator: { globalPrivacyControl: signal },
+    navigator: { globalPrivacyControl: signal, doNotTrack: dnt ? '1' : null },
     localStorage: {
       getItem(key) { if (storageFails) throw Error('blocked'); return storage.get(key) || null; },
       setItem(key, value) { if (storageFails) throw Error('blocked'); storage.set(key, value); },
@@ -57,7 +56,6 @@ function harness({ stored, host = 'www.pgupai.com', signal = false, storageFails
   return {
     scripts, events, panel, context,
     config: () => config,
-    optOutCalls: () => optOutCalls,
     choose(value) {
       panel.handlers.click({ target: { closest: () => ({ dataset: { choice: value } }) } });
     },
@@ -70,13 +68,11 @@ function harness({ stored, host = 'www.pgupai.com', signal = false, storageFails
   };
 }
 
-test('no PostHog request before consent or after declining; acceptance captures once', () => {
+test('new visits start cookieless analytics without a prompt or preference write', () => {
   const h = harness();
-  assert.equal(h.scripts.length, 0);
-  h.choose('declined');
-  assert.equal(h.scripts.length, 0);
-  h.choose('accepted');
   assert.equal(h.scripts.length, 1);
+  assert.equal(h.panel.hidden, true);
+  assert.equal(h.context.localStorage.getItem(choiceKey), null);
   h.load();
   assert.equal(h.events.length, 1);
   assert.equal(h.events[0].event, '$pageview');
@@ -85,21 +81,25 @@ test('no PostHog request before consent or after declining; acceptance captures 
   assert.equal(h.events[0].properties.utm_source, 'launch');
   assert.equal(h.config().disable_session_recording, true);
   assert.equal(h.config().autocapture, false);
+  assert.equal(h.config().cookieless_mode, 'always');
+  assert.equal(h.config().persistence, undefined);
+  assert.equal(h.config().capture_pageview, true);
+  assert.equal(h.events[0].properties.analytics_mode, 'cookieless');
   assert.equal(h.config().capture_pageleave, true);
   h.choose('accepted');
   assert.equal(h.events.length, 1);
 });
 
 test('preview/local traffic and browser privacy signals never load PostHog', () => {
-  for (const options of [{ host: 'localhost' }, { host: 'preview.vercel.app' }, { signal: true }]) {
+  for (const options of [{ host: 'localhost' }, { host: 'preview.vercel.app' }, { signal: true }, { dnt: true }]) {
     const h = harness({ stored: 'accepted', ...options });
     h.choose('accepted');
     assert.equal(h.scripts.length, 0);
   }
-  const h = harness();
-  h.context.navigator.doNotTrack = '1';
-  h.choose('accepted');
+  const h = harness({ stored: 'declined' });
   assert.equal(h.scripts.length, 0);
+  h.choose('accepted');
+  assert.equal(h.scripts.length, 1);
 });
 
 test('withdrawal during SDK download prevents initialization and capture', () => {
@@ -113,32 +113,35 @@ test('withdrawal during SDK download prevents initialization and capture', () =>
   assert.equal(h.events.length, 1);
 });
 
-test('withdrawal in another tab or clearing storage suppresses queued and future events', () => {
+test('opt-out across tabs suppresses all future events; removing the preference restores the default', () => {
   const h = harness({ stored: 'accepted' });
   h.load();
   h.storageChoice('declined');
-  assert.equal(h.optOutCalls(), 1);
   assert.equal(h.config().before_send({ event: '$pageview', properties: {} }), null);
   h.click('https://github.com/pgup-ai/jbot-review-action');
   assert.equal(h.events.length, 1);
   h.storageChoice('accepted');
   assert.equal(h.events.length, 2);
   h.storageChoice(null);
-  assert.equal(h.optOutCalls(), 2);
+  assert.equal(h.events.length, 2);
+  h.storageChoice('declined');
+  h.storageChoice(null);
+  assert.equal(h.events.length, 3);
 });
 
-test('storage failures do not break the page or bypass explicit consent', () => {
+test('storage failures preserve the current-page opt-out', () => {
   const h = harness({ storageFails: true });
-  assert.equal(h.scripts.length, 0);
-  h.choose('accepted');
   h.load();
+  h.choose('declined');
+  h.click('https://github.com/pgup-ai/jbot-review-action');
   assert.equal(h.events.length, 1);
+  assert.equal(h.config().before_send({ event: '$pageleave', properties: {} }), null);
 });
 
 test('URL and initial attribution sanitization excludes sensitive parameters and ad IDs', () => {
   const h = harness({ stored: 'accepted' });
   h.load();
-  const event = h.config().before_send({ event: '$pageview', properties: {
+  const event = h.config().before_send({ event: '$pageleave', properties: {
     $current_url: 'https://www.pgupai.com/?token=secret&utm_source=docs#secret',
     utm_campaign: 'private@example.com', gclid: 'ad-id',
     $set_once: { $initial_current_url: 'https://www.pgupai.com/?email=private@example.com' },
@@ -160,4 +163,11 @@ test('only selected CTA links emit events and their URLs omit query strings', ()
   assert.equal(h.events[1].properties.cta_id, 'setup');
   assert.equal(h.events[2].properties.cta_id, 'marketplace');
   assert.equal(h.events[2].properties.destination, 'https://github.com/marketplace/actions/j-bot-code-review');
+});
+
+test('a privacy signal appearing after load suppresses automatic events', () => {
+  const h = harness();
+  h.load();
+  h.context.navigator.globalPrivacyControl = true;
+  assert.equal(h.config().before_send({ event: '$pageleave', properties: {} }), null);
 });

@@ -1,4 +1,4 @@
-/* Shared, consent-gated analytics for the static site. No build step required. */
+/* Shared, cookieless analytics for the static site. No build step required. */
 (function () {
   'use strict';
   var TOKEN = 'phc_nx4JaPniM3iFeyJbqskSL2mxjYHkCYJypnxjsWwmTanm'; // Public ingestion token, not an account credential.
@@ -16,7 +16,7 @@
   function privacySignal() {
     return navigator.globalPrivacyControl === true || navigator.doNotTrack === '1';
   }
-  function allowed() { return production && choice === 'accepted' && !privacySignal(); }
+  function allowed() { return production && choice !== 'declined' && !privacySignal(); }
   function campaignValue(value) {
     return value && /^[a-zA-Z0-9._~ -]{1,100}$/.test(value) ? value : null;
   }
@@ -50,12 +50,13 @@
   }
   function beforeSend(event) {
     if (!allowed()) return null;
+    if (event.event === '$pageview') Object.assign(event.properties, pageProperties());
     cleanProperties(event.properties);
     event.properties.site_id = 'pgup';
+    event.properties.analytics_mode = 'cookieless';
     return event;
   }
-  function pageview() {
-    if (!allowed() || !initialized) return;
+  function pageProperties() {
     var properties = {
       $current_url: cleanURL(location.href, true),
       $referrer: cleanURL(document.referrer, false),
@@ -68,7 +69,7 @@
       var value = campaignValue(url.searchParams.get(key));
       if (value) properties[key] = value;
     });
-    window.posthog.capture('$pageview', properties);
+    return properties;
   }
   function initialize() {
     if (!allowed() || initialized) return;
@@ -76,10 +77,10 @@
       api_host: 'https://us.i.posthog.com',
       ui_host: 'https://us.posthog.com',
       defaults: '2026-05-30',
-      persistence: 'localStorage',
+      cookieless_mode: 'always',
       person_profiles: 'never',
       autocapture: false,
-      capture_pageview: false,
+      capture_pageview: true,
       capture_pageleave: true,
       capture_dead_clicks: false,
       capture_exceptions: false,
@@ -94,19 +95,13 @@
       save_referrer: false,
       respect_dnt: true,
       before_send: beforeSend,
-      loaded: function (ph) {
-        initialized = true;
-        if (!allowed()) { ph.opt_out_capturing(); return; }
-        ph.opt_in_capturing({ captureEventName: false });
-        pageview();
-      }
+      loaded: function () { initialized = true; }
     });
   }
   function start() {
     if (!allowed()) return;
     if (initialized) {
-      window.posthog.opt_in_capturing({ captureEventName: false });
-      pageview();
+      window.posthog.capture('$pageview');
       return;
     }
     if (window.posthog && typeof window.posthog.init === 'function') { initialize(); return; }
@@ -124,7 +119,7 @@
   var panel = document.createElement('section');
   panel.className = 'analytics-choice';
   panel.setAttribute('aria-label', 'Analytics preferences');
-  panel.innerHTML = '<p><strong>Help improve J-Bot Review</strong><br>Allow optional page-view, visit-duration, and link-click analytics? No session recordings. <a href="/privacy#analytics-controls">Privacy details</a></p><p class="analytics-signal" hidden>Your browser requests no tracking. Analytics remain off.</p><div class="analytics-actions"><button type="button" data-choice="declined">Decline analytics</button><button type="button" data-choice="accepted">Allow analytics</button><button type="button" data-choice="close" hidden>Close</button></div>';
+  panel.innerHTML = '<p><strong>Cookieless analytics</strong><br>We measure page views, visit duration, and selected link clicks without storing analytics identifiers in your browser. You can turn this off at any time. No session recordings. <a href="/privacy#analytics-controls">Privacy details</a></p><p class="analytics-signal" hidden>Your browser requests no tracking. Analytics remain off.</p><div class="analytics-actions"><button type="button" data-choice="declined">Turn off analytics</button><button type="button" data-choice="accepted">Enable cookieless analytics</button><button type="button" data-choice="close">Close</button></div>';
   document.body.appendChild(panel);
   var settings = document.createElement('button');
   settings.type = 'button';
@@ -136,16 +131,15 @@
   function showPanel(show) {
     panel.hidden = !show;
     settings.setAttribute('aria-expanded', String(show));
-    panel.querySelector('[data-choice="accepted"]').disabled = privacySignal();
+    panel.querySelector('[data-choice="accepted"]').disabled = privacySignal() || choice !== 'declined';
     panel.querySelector('.analytics-signal').hidden = !privacySignal();
-    panel.querySelector('[data-choice="close"]').hidden = !choice;
+    panel.querySelector('[data-choice="declined"]').disabled = choice === 'declined';
   }
   function applyChoice(value) {
     var previous = choice;
     choice = value;
     try { localStorage.setItem(CHOICE_KEY, choice); } catch (_) { /* Still apply for this page. */ }
-    if (choice === 'accepted' && previous !== choice) start();
-    if (choice !== 'accepted' && initialized) window.posthog.opt_out_capturing();
+    if (choice === 'accepted' && previous === 'declined') start();
     showPanel(false);
     if (settingsOpened) settings.focus();
   }
@@ -162,11 +156,10 @@
   });
   window.addEventListener('storage', function (event) {
     if (event.key !== CHOICE_KEY && event.key !== null) return;
-    var previous = choice;
+    var wasAllowed = allowed();
     choice = readChoice();
-    if (allowed() && previous !== choice) start();
-    else if (!allowed() && initialized) window.posthog.opt_out_capturing();
-    showPanel(!choice && !privacySignal());
+    if (allowed() && !wasAllowed) start();
+    showPanel(false);
   });
   document.addEventListener('click', function (event) {
     if (!allowed() || !initialized) return;
@@ -179,6 +172,6 @@
     else if (url.hostname === 'github.com') cta = url.pathname.indexOf('/marketplace/') === 0 ? 'marketplace' : 'github';
     if (cta) window.posthog.capture('cta_clicked', { cta_id: cta, destination: url.origin + url.pathname });
   });
-  showPanel(!choice && !privacySignal());
+  showPanel(false);
   start();
 })();
