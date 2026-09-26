@@ -2,9 +2,9 @@
 
 Published September 26, 2026 · routes and prices checked September 26, 2026 · applies to pgup-ai/jbot-review-action v0
 
-**Space Bunny is an anonymous model with a 1M-token context window, listed at $0 on OpenCode Zen, OpenCode Go, Kilo, OpenRouter and Cline since 2026-09-23.** It’s the free model we’d start J-Bot Review on today. At the default high reasoning effort it found 6.5 of 27 known issues on our test pull requests, with a median review time of 251 seconds.
+**Space Bunny is an anonymous model with a 1M-token context window, listed at $0 on OpenCode Zen, OpenCode Go, Kilo, OpenRouter, Cline and Command Code since 2026-09-23.** It’s the free model we’d start J-Bot Review on today. At the default high reasoning effort it found 6.5 of 27 known issues on our test pull requests, with a median review time of 251 seconds.
 
-> **Anonymous lab · $0 on five gateways · no stated data policy**
+> **Anonymous lab · $0 on six gateways · no stated data policy**
 >
 > None of the catalogs that list Space Bunny name the lab behind it or say what happens to your prompts. That makes it a good default for open-source code and a poor one for private code, at least until someone publishes terms.
 
@@ -74,12 +74,12 @@ Pick the route where you already manage credentials. The first segment of each i
 `model: cline/stealth/space-bunny-alpha`
 `cline-auth`
 
-**Command Code** (Free in CLI catalog · plan caps)
+**Command Code** (Free · plan caps checked)
 
 `model: commandcode/stealth/space-bunny-alpha`
 `commandcode-access-key`
 
-J-Bot’s high-effort default for Space Bunny covers the two OpenCode routes and Command Code. On OpenRouter it runs at the global `low` default unless you set `model-options`. Kilo and Cline run through their own CLIs, which don’t take J-Bot’s effort option. Command Code marks Space Bunny free, but J-Bot still checks your plan’s 5-hour and weekly caps before each run.
+J-Bot’s high-effort default for Space Bunny covers the two OpenCode routes and Command Code. On OpenRouter it runs at the global `low` default unless you set `model-options`. Kilo and Cline run through their own CLIs, which don’t take J-Bot’s effort option. Space Bunny is free on Command Code, but J-Bot still checks your plan’s 5-hour and weekly caps before each run and stops if every key is exhausted.
 
 ## Reasoning effort is the setting that matters
 
@@ -122,7 +122,7 @@ Why effort helps, and what else we tested, is in [How do you get better code rev
 
 ### Is Space Bunny free for code review?
 
-Yes, as of 2026-09-26. OpenCode Zen and OpenCode Go list `space-bunny-free` at $0, Kilo and OpenRouter list `stealth/space-bunny-alpha` at $0, and Cline offers it in its free tier with a daily cap. Command Code’s CLI catalog also marks it free. J-Bot Review adds no charge, so your remaining cost is GitHub Actions minutes.
+Yes, as of 2026-09-26. OpenCode Zen and OpenCode Go list `space-bunny-free` at $0, Kilo and OpenRouter list `stealth/space-bunny-alpha` at $0, Cline offers it in its free tier with a daily cap, and Command Code offers it free on its plans. J-Bot Review adds no charge, so your remaining cost is GitHub Actions minutes.
 
 ### Who makes Space Bunny?
 
