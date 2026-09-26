@@ -34,14 +34,14 @@
   }
   function cleanProperties(properties) {
     Object.keys(properties).forEach(function (key) {
-      if (/current_url|referrer|pathname/i.test(key) && typeof properties[key] === 'string') {
+      if (/current_url|session_entry_url|referrer|pathname/i.test(key) && typeof properties[key] === 'string') {
         if (/pathname/i.test(key)) properties[key] = properties[key].split(/[?#]/)[0];
-        else properties[key] = cleanURL(properties[key], /current_url/i.test(key));
-      } else if (/^(\$initial_)?utm_/.test(key)) {
+        else properties[key] = cleanURL(properties[key], /current_url|session_entry_url/i.test(key));
+      } else if (/^(\$initial_|\$session_entry_)?utm_/.test(key)) {
         var value = campaignValue(properties[key]);
         if (value) properties[key] = value;
         else delete properties[key];
-      } else if (/^(\$initial_)?(gclid|fbclid|msclkid|dclid|gbraid|wbraid|gad_source|mc_cid|twclid|li_fat_id|ttclid)$/.test(key)) {
+      } else if (/^(\$initial_|\$session_entry_)?(gclid|fbclid|msclkid|dclid|gbraid|wbraid|gad_source|mc_cid|twclid|li_fat_id|ttclid)$/.test(key)) {
         delete properties[key];
       } else if (properties[key] && typeof properties[key] === 'object' && !Array.isArray(properties[key])) {
         cleanProperties(properties[key]);

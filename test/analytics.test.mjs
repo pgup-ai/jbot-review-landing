@@ -144,12 +144,20 @@ test('URL and initial attribution sanitization excludes sensitive parameters and
   const event = h.config().before_send({ event: '$pageleave', properties: {
     $current_url: 'https://www.pgupai.com/?token=secret&utm_source=docs#secret',
     utm_campaign: 'private@example.com', gclid: 'ad-id',
+    $session_entry_url: 'https://www.pgupai.com/?token=secret&utm_source=docs#gclid=ad-id',
+    $session_entry_utm_campaign: 'private@example.com',
+    $session_entry_utm_source: 'docs',
+    $session_entry_gclid: 'ad-id',
     $set_once: { $initial_current_url: 'https://www.pgupai.com/?email=private@example.com' },
   } });
   assert.equal(event.properties.$current_url, 'https://www.pgupai.com/?utm_source=docs');
   assert.equal(event.properties.$set_once.$initial_current_url, 'https://www.pgupai.com/');
   assert.equal(event.properties.utm_campaign, undefined);
   assert.equal(event.properties.gclid, undefined);
+  assert.equal(event.properties.$session_entry_url, 'https://www.pgupai.com/?utm_source=docs');
+  assert.equal(event.properties.$session_entry_utm_campaign, undefined);
+  assert.equal(event.properties.$session_entry_utm_source, 'docs');
+  assert.equal(event.properties.$session_entry_gclid, undefined);
   assert.equal(event.properties.site_id, 'pgup');
 });
 
