@@ -109,6 +109,7 @@ Yes. It became J-Bot Review’s default review preset on September 23, 2026, in 
 - **Part 2** — [What we tried before context packs](https://www.pgupai.com/guides/ai-code-review-speed-experiments): The ideas that looked good, and the data that ruled them out.
 - **Part 4** — [Making the reviewer read your rules](https://www.pgupai.com/guides/ai-code-review-team-guidelines): How the reviewer now finds the rules that matter to each change.
 - **Source** — [The context-pack pull request](https://github.com/pgup-ai/jbot-review/pull/241): The implementation, prompts, and A/B tables behind this article.
+- **Follow-up** — [Does a repository map help?](https://www.pgupai.com/guides/repository-map-ai-code-review): A map of every file, and what the pack should drop first when space runs out.
 
 ---
 

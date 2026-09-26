@@ -150,7 +150,7 @@ Meta says 1.3 completes coding tasks with about 20% fewer tool calls and about 2
 
 ## Related
 
-- **Guide** — [DeepSeek V4 Flash code review](https://www.pgupai.com/guides/deepseek-v4-flash-code-review-github-actions): Compare the $0 routes when the free contributor window is not open to you.
+- **Guide** — [Which free model to use](https://www.pgupai.com/guides/free-ai-models-code-review): Muse Spark 1.3 against the other free models, with their quotas and data terms.
 - **Guide** — [Command Code code review](https://www.pgupai.com/guides/command-code-review-github-actions): Run Muse Spark 1.3 through a seat you already pay for, with no per-token bill.
 - **Docs** — [Action reference](https://github.com/pgup-ai/jbot-review-action#readme): Every input, provider id, and tuning knob.
 

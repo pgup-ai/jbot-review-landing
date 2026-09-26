@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>How to get better AI code reviews from free models | J-Bot Review</title>
+<meta name="description" content="Raising reasoning effort took a free model from 2.5 to 6.5 of 27 known issues, and a second review pass doubled recall again. Prompt changes, extra context and comment filters didn’t help. Our tests, checked against the research." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/guides/free-model-code-review-quality" />
+<link rel="alternate" type="text/markdown" href="/md/guides/free-model-code-review-quality.md" title="Markdown representation" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/guides/free-model-code-review-quality" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="How do you get better code reviews from free AI models?" />
+<meta property="og:description" content="Reasoning effort took a free model from 2.5 to 6.5 of 27 known issues, and a second pass doubled recall. Prompts, context and filters didn’t move it." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-free-model-code-review-quality-20260926.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-free-model-code-review-quality-20260926.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Better code reviews from free AI models: reasoning effort took known issues from 2.5 to 6.5 of 27, and a second pass doubled recall." />
+<meta property="article:published_time" content="2026-09-26" />
+<meta property="article:section" content="Engineering" />
+<meta name="twitter:image:alt" content="Better code reviews from free AI models: reasoning effort took known issues from 2.5 to 6.5 of 27, and a second pass doubled recall." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="How do you get better code reviews from free AI models?" />
+<meta name="twitter:description" content="Reasoning effort took a free model from 2.5 to 6.5 of 27 known issues, and a second pass doubled recall. Prompts, context and filters didn’t move it." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-free-model-code-review-quality-20260926.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/guides/free-model-code-review-quality#article",
+      "headline": "How do you get better code reviews from free AI models?",
+      "description": "Raising reasoning effort took a free model from 2.5 to 6.5 of 27 known issues, and a second review pass doubled recall again. Prompt changes, extra context and comment filters didn’t help. Our tests, checked against the research.",
+      "url": "https://www.pgupai.com/guides/free-model-code-review-quality",
+      "mainEntityOfPage": "https://www.pgupai.com/guides/free-model-code-review-quality",
+      "image": [
+        "https://www.pgupai.com/assets/og-free-model-code-review-quality-20260926.png"
+      ],
+      "datePublished": "2026-09-26",
+      "dateModified": "2026-09-26",
+      "keywords": "free AI code review, free LLM code review quality, AI code review recall, reasoning effort, test-time compute, repeated sampling, LLM code review false positives, cheap LLM code reviewer",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "AI code review"
+        },
+        {
+          "@type": "Thing",
+          "name": "Large language model"
+        },
+        {
+          "@type": "Thing",
+          "name": "Software quality"
+        }
+      ],
+      "author": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.pgupai.com/assets/icon-512.png"
+        }
+      },
+      "citation": [
+        {
+          "@type": "ScholarlyArticle",
+          "name": "Scaling LLM Test-Time Compute Optimally can be More Effective than Scaling Model Parameters",
+          "url": "https://arxiv.org/abs/2408.03314"
+        },
+        {
+          "@type": "ScholarlyArticle",
+          "name": "Large Language Monkeys: Scaling Inference Compute with Repeated Sampling",
+          "url": "https://arxiv.org/abs/2407.21787"
+        },
+        {
+          "@type": "ScholarlyArticle",
+          "name": "Self-Consistency Improves Chain of Thought Reasoning in Language Models",
+          "url": "https://arxiv.org/abs/2203.11171"
+        },
+        {
+          "@type": "ScholarlyArticle",
+          "name": "Towards Practical Defect-Focused Automated Code Review",
+          "url": "https://arxiv.org/abs/2505.17928"
+        },
+        {
+          "@type": "ScholarlyArticle",
+          "name": "LLM Critics Help Catch LLM Bugs",
+          "url": "https://arxiv.org/abs/2407.00215"
+        },
+        {
+          "@type": "ScholarlyArticle",
+          "name": "Automated Code Review In Practice",
+          "url": "https://arxiv.org/abs/2412.18531"
+        },
+        {
+          "@type": "ScholarlyArticle",
+          "name": "Understanding the Limits of Automated Evaluation for Code Review Bots in Practice",
+          "url": "https://arxiv.org/abs/2604.24525"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.pgupai.com/guides/free-model-code-review-quality#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can a free AI model do useful code review?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, within limits. At high reasoning effort, the free Space Bunny model found 6.5 of 27 known issues on our test pull requests at about four minutes per review, and developers acted on 84% of the comments J-Bot Review posted in production. Free routes have daily quotas, and some free models return empty reviews at low effort."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does reasoning effort matter for AI code review?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It was the biggest lever we found. Space Bunny found 2.5 of 27 known issues at low effort, 3.0 at medium and 6.5 at high, while the median review time rose from 68 to 251 seconds. It didn’t help every model. Muse Spark 1.3 found no more at medium than at low."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should you run an AI code reviewer twice on the same pull request?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "At high effort, yes, if you merge the findings instead of voting on them. A second independent pass per page took known issues from 4.5 to 9.0 per run, because the two passes rarely found the same issues. Expect about 58% more review time, and deduplicate near-identical findings."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can an LLM filter out bad AI code review comments?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not from the comment and the diff alone. A zero-shot relevance model separated comments developers acted on from the ones they declined with an AUC of 0.56, barely better than chance. Most declines depended on context outside the hunk, such as a fix made elsewhere or behavior that was intentional. A verifier that can read the repository did better."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "J-Bot Review",
+          "item": "https://www.pgupai.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://www.pgupai.com/guides"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Better reviews from free models",
+          "item": "https://www.pgupai.com/guides/free-model-code-review-quality"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #0a0b0a; --surface: #0e100e; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --blue: #7aa2ff;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --border-code: rgba(255,255,255,0.09);
+    --code-text: #c8cdc7;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 740px; overflow-wrap: anywhere; }
+  article a { text-decoration: underline; text-underline-offset: 3px; }
+  h2[id] { scroll-margin-top: 90px; }
+  .contents { border-block: 1px solid var(--hairline); padding: 18px 0; margin: 28px 0; }
+  .contents b { font-size: 14px; }
+  .contents ul { margin-bottom: 0; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  .topic { font-family: var(--mono); font-size: 11px; color: var(--blue); letter-spacing: 0.07em; text-transform: uppercase; margin: 0 0 10px; }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  h3 { font-family: var(--display); font-weight: 600; font-size: 17px; letter-spacing: -0.01em; margin: 26px 0 8px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+  code { font-family: var(--mono); font-size: 12.5px; color: var(--code-text); background: var(--surface); border: 1px solid var(--border-code); border-radius: 5px; padding: 1px 6px; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 22px 0; }
+  .stats > div { border: 1px solid var(--border-card); border-radius: 11px; padding: 14px 16px; background: var(--surface-subtle); }
+  .stats .n { font-family: var(--display); font-size: 27px; font-weight: 600; letter-spacing: -0.01em; color: var(--accent); line-height: 1.1; }
+  .stats .l { color: var(--text-3); font-size: 13px; line-height: 1.45; margin-top: 7px; }
+
+  .callout { border: 1px solid rgba(94,227,154,0.28); background: rgba(94,227,154,0.045); border-radius: 12px; padding: 16px 18px; margin: 24px 0; }
+  .callout .tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 4px; }
+  .callout p, .callout li { color: var(--text-2); }
+  .callout p { margin: 6px 0 0; }
+  .callout ul { margin: 6px 0 0; }
+
+  .series { border: 1px solid var(--border-card); border-radius: 12px; padding: 16px 20px; margin: 28px 0; background: var(--surface-subtle); }
+  .series b { font-size: 14px; }
+  .series ol { margin: 8px 0 0; }
+  .series li { font-size: 14px; margin: 4px 0; }
+  .series li[aria-current] { color: var(--text); font-weight: 600; }
+
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; min-width: 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; overflow-wrap: break-word; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--text); font-weight: 600; }
+
+  .faq-item { border-bottom: 1px solid var(--hairline); }
+  .faq-item:first-of-type { border-top: 1px solid var(--hairline); }
+  .faq-item summary { display: flex; align-items: baseline; justify-content: space-between; gap: 22px; list-style: none; cursor: pointer; padding: 17px 2px; font-weight: 600; font-size: 15.5px; color: var(--text); line-height: 1.45; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-mark { font-family: var(--mono); font-size: 15px; color: var(--text-4); flex: none; transition: transform 0.2s var(--ease), color 0.2s var(--ease); }
+  .faq-item[open] .faq-mark { transform: rotate(45deg); color: var(--accent); }
+  .faq-a { padding: 0 2px 20px; font-size: 14.5px; color: var(--text-2); }
+  .faq-a p { margin: 0; }
+
+  .related { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0 0; }
+  .rel-card { display: block; border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 18px; color: var(--text); text-decoration: none; }
+  .rel-card:hover { border-color: rgba(94,227,154,0.35); color: var(--text); }
+  .rel-card .k2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 7px; }
+  .rel-card p { margin: 6px 0 0; font-size: 13px; color: var(--text-3); }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+
+  @media (max-width: 560px) {
+    .nav-links a:not(.btn) { display: none; }
+    main { padding-inline: 20px; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stats .n { font-size: 21px; }
+    .tbl-wrap table { min-width: 600px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .faq-mark { transition: none; }
+  }
+  .code-card { background: var(--surface); border: 1px solid var(--border-code); border-radius: 12px; overflow: hidden; margin: 18px 0; }
+  .code-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--hairline); }
+  .code-head .file { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+  pre { margin: 0; padding: 16px 18px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.7; color: var(--code-text); }
+  .k { color: var(--blue); } .s { color: var(--accent); }
+</style>
+<link rel="stylesheet" href="/assets/analytics.css" />
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides">Guides</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<article>
+  <p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / Better reviews from free models</p>
+  <p class="topic">Engineering notes · Experiment</p>
+  <h1>How do you get better code reviews from free AI models?</h1>
+  <p class="updated">Published September 26, 2026</p>
+  <p class="lede">Give the model more room to think, then give it a second look. On a fixed set of real pull requests, raising Space Bunny’s reasoning effort from low to high took it from 2.5 to 6.5 of 27 known issues. In a separate test, a second review pass on each page doubled what it found, from 4.5 to 9.0 issues per run. Prompt changes, extra context and comment filters didn’t move the count.</p>
+  <p>J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI, with the model you choose. The cheapest way to run it is on a free model, so we spent a week of experiments on what makes free models review better. Below is what held up, what didn’t, and the research we checked it against.</p>
+
+  <nav class="contents" aria-label="Article contents">
+    <b>In this article</b>
+    <ul>
+      <li><a href="#recall">The problem is recall</a></li>
+      <li><a href="#effort">Reasoning effort was the lever that worked</a></li>
+      <li><a href="#prompts">Asking for more didn’t work</a></li>
+      <li><a href="#second-pass">A second pass pays, at high effort</a></li>
+      <li><a href="#context">More context didn’t help</a></li>
+      <li><a href="#filters">Filters can’t tell good comments from bad</a></li>
+      <li><a href="#what-to-do">What we’d do with a free model</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+  </nav>
+
+  <div class="stats" aria-label="What we measured">
+    <div><div class="n">2.5 → 6.5</div><div class="l">known issues of 27, low versus high reasoning effort</div></div>
+    <div><div class="n">4.5 → 9.0</div><div class="l">known issues per run with a second pass on each page</div></div>
+    <div><div class="n">84%</div><div class="l">of J-Bot Review’s posted comments that developers acted on</div></div>
+    <div><div class="n">0.56</div><div class="l">AUC for a comment filter, where 0.5 is a coin flip</div></div>
+  </div>
+
+  <h2 id="recall">The problem is recall</h2>
+  <p>On one busy production repository, developers acted on 86% of the AI review comments that reached their pull requests, and on 84% of J-Bot Review’s. That’s close to the 73.8% resolution rate <a href="https://arxiv.org/abs/2412.18531">Cihan et al. (2024)</a> reported for an LLM reviewer across 4,335 industrial pull requests.</p>
+  <p>The same audit showed the gap. Counting every valid issue that a human or any reviewer raised on those pull requests, J-Bot Review had caught 17 of 82. What it posted was mostly right, but it missed most issues, so the work below goes after recall.</p>
+  <p>One caution about the labels. <a href="https://arxiv.org/abs/2604.24525">Karakaya et al. (2026)</a> found that developers fix or ignore bot comments for reasons beyond comment quality, such as deadline pressure, and that LLM judges agreed with developer labels only 44 to 62% of the time. We score against issues developers accepted, and we treat those labels as imperfect.</p>
+
+  <h2 id="effort">Reasoning effort was the lever that worked</h2>
+  <p>We ran Space Bunny, a free model from an anonymous lab, on four pull requests with 27 known issues, two runs per setting:</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Reasoning effort</th><th>Known issues found, of 27</th><th>Median review time</th></tr></thead>
+      <tbody>
+        <tr><td>Low</td><td>2.5</td><td>68 s</td></tr>
+        <tr><td>Medium</td><td>3.0</td><td>94 s</td></tr>
+        <tr><td>High</td><td>6.5</td><td>251 s</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>At low effort Space Bunny reasoned for about a thousand tokens per session and posted about one candidate finding, whatever we asked of it. At high effort it reasoned far longer and found more than twice as many issues. J-Bot Review now runs Space Bunny at high effort <a href="https://github.com/pgup-ai/jbot-review#readme">by default</a>, and verification runs one tier lower.</p>
+  <p>The result fits the test-time compute research. <a href="https://arxiv.org/abs/2408.03314">Snell et al. (2024)</a> found that on some problems, a model given more compute at inference beats one 14 times its size. There are two catches. Review time went up 3.7 times, and effort didn’t help every model. Muse Spark 1.3 found 1.0 of 15 known issues at low effort and 0.5 at medium, on two pull requests.</p>
+
+  <h2 id="prompts">Asking for more didn’t work</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Change, at low effort</th><th>Known issues found, of 27</th></tr></thead>
+      <tbody>
+        <tr><td>None (control)</td><td>2.5</td></tr>
+        <tr><td>Tell the model recall matters more than precision</td><td>2.5</td></tr>
+        <tr><td>Split the diff across 8 review pages</td><td>3.0</td></tr>
+        <tr><td>Swap a focused lens pass for a second main pass</td><td>2.0</td></tr>
+        <tr><td>Give each page a checklist of the rules mapped to its files</td><td>1.5</td></tr>
+        <tr><td>Cap the team guidelines at 24 KB</td><td>2.5</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>None of them moved it. A model reasoning at low effort posted about one finding per session no matter what the prompt said. We now treat prompt wording as a way to shape what a model reports, not how much it finds.</p>
+
+  <h2 id="second-pass">A second pass pays, at high effort</h2>
+  <p>At low effort, a second main pass added nothing (2.0 of 27, above). At high effort it doubled recall. We gave every page a second, independent review by the same model and merged the two sets of findings. Known issues went from 4.5 to 9.0 per run, across four pull requests and two runs each. The second pass won 6 of 8 pairs and tied the other 2, and review time went up 58%.</p>
+  <p>The two passes barely overlapped. In a calibration run on 12 pull requests with 54 known issues, two identical passes found 4 each, with none in common. Detections behaved like independent draws, so a second draw adds nearly its full count.</p>
+  <p><a href="https://arxiv.org/abs/2407.21787">Brown et al. (2024)</a> describe the same shape for code generation: the share of problems solved by at least one sample keeps rising as you draw more samples. The part that doesn’t carry over is voting. Self-consistency (<a href="https://arxiv.org/abs/2203.11171">Wang et al., 2022</a>) keeps the answer most samples agree on, which suits a math problem with one right answer. Review findings rarely agree, so a vote would throw away most of what the second pass found. We merge by union and let the verifier judge each finding.</p>
+  <p>The second pass isn’t shipped yet. Merging by exact file and line let near-duplicates through, and one run posted 7 comments about the same cluster of lines.</p>
+
+  <h2 id="context">More context didn’t help</h2>
+  <p><a href="https://arxiv.org/abs/2505.17928">Lu et al. (ICML 2025)</a> doubled defect detection in an industrial C++ reviewer by giving the model code slices that follow data and control flow through each changed function. We built a flow slice for TypeScript and used it in place of whole enclosing functions. Across four pull requests it found 5 known issues against the control’s 6, inside run-to-run noise, while reviews ran about 19% faster on 16% less reasoning. The speed-up reproduced. The recall gain didn’t.</p>
+  <p>We tried four more context changes: a short generated summary of the change, signature-only definitions, a leaner prompt with no context pack, and a second pass that saw only the diff. None beat the current <a href="/guides/context-pack-ai-code-review">context pack</a>. One looked like a win, 7 known issues against 4 over eight paired reviews, and a confirmation round erased it. Pooled over 12 paired reviews, the control found 8 and the change 9. With about one known issue per pass per review, a four-review round can only detect effects of roughly double. We no longer trust a single round.</p>
+
+  <h2 id="filters">Filters can’t tell good comments from bad</h2>
+  <p>If most posted comments are right, a filter could remove the rest. We tested one. An off-the-shelf relevance model, used zero-shot, scored 300 real review comments that developers had either acted on or declined, each with its diff hunk. Its scores separated the two groups with an AUC of 0.56, where 0.5 is a coin flip. It rated about 77% of both groups as supported by the code. A keyword heuristic did no better, at 0.54.</p>
+  <p>The reasons developers declined comments explain why: the fix was handled elsewhere or the claim was wrong (33), the behavior was by design (30), the comment was unclear (29), or the issue wasn’t worth fixing (18). Most of that lives outside the hunk, so a filter that reads only the comment and the hunk can’t judge it.</p>
+  <p>Verification works because the verifier can read the repository. We tested softening its default stance, which assumes each finding is wrong until the code proves it right. A neutral verifier confirmed the same 8 of 9 known issues, plus 2 extra findings that were both false. OpenAI’s CriticGPT work reported the same tension in trained critics, between catching more bugs and producing hallucinated bugs and nitpicks (<a href="https://arxiv.org/abs/2407.00215">McAleese et al., 2024</a>). We kept the skeptical verifier.</p>
+
+  <h2 id="what-to-do">What we’d do with a free model</h2>
+  <ol>
+    <li><b>Pick a model that reasons, and let it.</b> High effort is J-Bot Review’s default for Space Bunny. For other models, set <code>model-options</code>. The option below restates Space Bunny’s default.</li>
+    <li><b>Check that the model posts anything.</b> Some free models return empty reviews at low effort. If yours has posted nothing after a week of pull requests, raise its effort or switch models.</li>
+    <li><b>Keep the verifier skeptical.</b> Don’t swap it for a filter that can’t see the repository.</li>
+    <li><b>Budget the time.</b> High effort took Space Bunny from about a minute per review to about four. The default 30-minute <code>time-budget-minutes</code> covers that.</li>
+  </ol>
+  <div class="code-card">
+    <div class="code-head"><span class="file">.github/workflows/jbot-review.yml · review step</span></div>
+<pre>      - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
+        <span class="k">with</span>:
+          <span class="k">model</span>: opencode/space-bunny-free
+          <span class="k">model-options</span>: '{"reasoningEffort":"high"}'
+          <span class="k">opencode-api-key</span>: ${{ secrets.OPENCODE_API_KEY }}
+          <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
+  </div>
+  <p>The pull requests in these tests come from private repositories, so the raw logs stay private. The defaults they led to are in the <a href="https://github.com/pgup-ai/jbot-review#readme">J-Bot Review README</a>.</p>
+  <h2 id="faq">FAQ</h2>
+  <details class="faq-item" open>
+    <summary>Can a free AI model do useful code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Yes, within limits. At high reasoning effort, the free Space Bunny model found 6.5 of 27 known issues on our test pull requests at about four minutes per review, and developers acted on 84% of the comments J-Bot Review posted in production. Free routes have daily quotas, and some free models return empty reviews at low effort.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Does reasoning effort matter for AI code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>It was the biggest lever we found. Space Bunny found 2.5 of 27 known issues at low effort, 3.0 at medium and 6.5 at high, while the median review time rose from 68 to 251 seconds. It didn’t help every model. Muse Spark 1.3 found no more at medium than at low.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Should you run an AI code reviewer twice on the same pull request?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>At high effort, yes, if you merge the findings instead of voting on them. A second independent pass per page took known issues from 4.5 to 9.0 per run, because the two passes rarely found the same issues. Expect about 58% more review time, and deduplicate near-identical findings.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Can an LLM filter out bad AI code review comments?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Not from the comment and the diff alone. A zero-shot relevance model separated comments developers acted on from the ones they declined with an AUC of 0.56, barely better than chance. Most declines depended on context outside the hunk, such as a fix made elsewhere or behavior that was intentional. A verifier that can read the repository did better.</p></div>
+  </details>
+  <h2>References</h2>
+  <ul>
+    <li>Snell, Lee, Xu and Kumar. <a href="https://arxiv.org/abs/2408.03314">Scaling LLM Test-Time Compute Optimally can be More Effective than Scaling Model Parameters</a>. arXiv:2408.03314, 2024.</li>
+    <li>Brown, Juravsky, Ehrlich, Clark, Le, Ré and Mirhoseini. <a href="https://arxiv.org/abs/2407.21787">Large Language Monkeys: Scaling Inference Compute with Repeated Sampling</a>. arXiv:2407.21787, 2024.</li>
+    <li>Wang et al. <a href="https://arxiv.org/abs/2203.11171">Self-Consistency Improves Chain of Thought Reasoning in Language Models</a>. arXiv:2203.11171, 2022.</li>
+    <li>Lu, Jiang, Li, Fang, Zhang, Yang and Zuo. <a href="https://arxiv.org/abs/2505.17928">Towards Practical Defect-Focused Automated Code Review</a>. ICML 2025, arXiv:2505.17928.</li>
+    <li>McAleese, Pokorny, Ceron Uribe, Nitishinskaya, Trebacz and Leike. <a href="https://arxiv.org/abs/2407.00215">LLM Critics Help Catch LLM Bugs</a>. arXiv:2407.00215, 2024.</li>
+    <li>Cihan et al. <a href="https://arxiv.org/abs/2412.18531">Automated Code Review In Practice</a>. ICSE SEIP 2025, arXiv:2412.18531.</li>
+    <li>Karakaya, Torun, Uçar and Tüzün. <a href="https://arxiv.org/abs/2604.24525">Understanding the Limits of Automated Evaluation for Code Review Bots in Practice</a>. arXiv:2604.24525, 2026.</li>
+  </ul>
+
+  <h2>Related</h2>
+  <div class="related">
+    <a class="rel-card" href="/guides/free-ai-models-code-review"><span class="k2">Guide</span>Which free model to use<p>Free models for code review, where they’re $0, and the quotas you’ll hit.</p></a>
+    <a class="rel-card" href="/guides/space-bunny-code-review-github-actions"><span class="k2">Guide</span>Space Bunny code review<p>Setup, exact model ids and the effort trade-off.</p></a>
+    <a class="rel-card" href="/guides/repository-map-ai-code-review"><span class="k2">Engineering</span>Repository maps<p>A map of every file didn’t save the reviewer any lookups.</p></a>
+  </div>
+</article>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/privacy">Privacy</a> · <a href="https://github.com/pgup-ai/jbot-review" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

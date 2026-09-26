@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Does a repository map help AI code review? We tested it | J-Bot Review</title>
+<meta name="description" content="We gave our AI code reviewer a 12.5 KB map of every tracked file and counted tool calls on two free models. The map didn’t cut them. Most reads went to files the pull request had already changed." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/guides/repository-map-ai-code-review" />
+<link rel="alternate" type="text/markdown" href="/md/guides/repository-map-ai-code-review.md" title="Markdown representation" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/guides/repository-map-ai-code-review" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="Does a repository map help an AI code reviewer?" />
+<meta property="og:description" content="A 12.5 KB repository map didn’t cut tool calls on two free models. 75 to 82% of reads went to files the pull request had already changed." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-repository-map-ai-code-review-20260926.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-repository-map-ai-code-review-20260926.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Does a repository map help AI code review? A 12.5 KB map cut no tool calls, and 75 to 82% of reads were changed files." />
+<meta property="article:published_time" content="2026-09-26" />
+<meta property="article:section" content="Engineering" />
+<meta name="twitter:image:alt" content="Does a repository map help AI code review? A 12.5 KB map cut no tool calls, and 75 to 82% of reads were changed files." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Does a repository map help an AI code reviewer?" />
+<meta name="twitter:description" content="A 12.5 KB repository map didn’t cut tool calls on two free models. 75 to 82% of reads went to files the pull request had already changed." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-repository-map-ai-code-review-20260926.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/guides/repository-map-ai-code-review#article",
+      "headline": "Does a repository map help an AI code reviewer?",
+      "description": "We gave our AI code reviewer a 12.5 KB map of every tracked file and counted tool calls on two free models. The map didn’t cut them. Most reads went to files the pull request had already changed.",
+      "url": "https://www.pgupai.com/guides/repository-map-ai-code-review",
+      "mainEntityOfPage": "https://www.pgupai.com/guides/repository-map-ai-code-review",
+      "image": [
+        "https://www.pgupai.com/assets/og-repository-map-ai-code-review-20260926.png"
+      ],
+      "datePublished": "2026-09-26",
+      "dateModified": "2026-09-26",
+      "keywords": "repository map, repo map, AI code review context, LLM code review tool calls, context window budget, Aider repo map, Agentless localization, AI code reviewer",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "AI code review"
+        },
+        {
+          "@type": "Thing",
+          "name": "Large language model"
+        },
+        {
+          "@type": "Thing",
+          "name": "Context window"
+        }
+      ],
+      "author": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.pgupai.com/assets/icon-512.png"
+        }
+      },
+      "citation": [
+        {
+          "@type": "ScholarlyArticle",
+          "name": "Agentless: Demystifying LLM-based Software Engineering Agents",
+          "url": "https://arxiv.org/abs/2407.01489"
+        },
+        {
+          "@type": "ScholarlyArticle",
+          "name": "SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering",
+          "url": "https://arxiv.org/abs/2405.15793"
+        },
+        {
+          "@type": "ScholarlyArticle",
+          "name": "Lost in the Middle: How Language Models Use Long Contexts",
+          "url": "https://arxiv.org/abs/2307.03172"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.pgupai.com/guides/repository-map-ai-code-review#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Should you give an AI code reviewer a map of the repository?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not to save tool calls, in our tests. A 12.5 KB map of every tracked file didn’t reduce tool calls on Gemini 3.8 Flash or Muse Spark 1.3, and it added 37% to Muse’s input tokens. Muse listed folders zero to three times per review with or without it. Maps help agents that have to find the right file, like bug fixers. A reviewer already knows which files changed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does an AI code reviewer re-read files that are already in the diff?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because the diff shows too little of them. A hunk has three lines of context on each side, and the model wants the whole function or file before it judges a change. In our Muse tests 75 to 82% of file reads went to changed files, usually one full read followed by several range reads of the same file."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What should an AI code reviewer keep when its context budget is tight?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The code around each change first, then the definitions it uses. With the context pack capped at 12 KB, that order used 17 tool calls across two pull requests. Putting folder listings first used 25 calls, and putting callers first used 42."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Aider-style repository mapping apply to code review?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Less than it does to editing. Aider and Agentless send a map so the model can pick which files to open. In code review the changed files are given, so a map mostly repeats what the diff already says about where to look."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "J-Bot Review",
+          "item": "https://www.pgupai.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://www.pgupai.com/guides"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Repository maps in AI code review",
+          "item": "https://www.pgupai.com/guides/repository-map-ai-code-review"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #0a0b0a; --surface: #0e100e; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --blue: #7aa2ff;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --border-code: rgba(255,255,255,0.09);
+    --code-text: #c8cdc7;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 740px; overflow-wrap: anywhere; }
+  article a { text-decoration: underline; text-underline-offset: 3px; }
+  h2[id] { scroll-margin-top: 90px; }
+  .contents { border-block: 1px solid var(--hairline); padding: 18px 0; margin: 28px 0; }
+  .contents b { font-size: 14px; }
+  .contents ul { margin-bottom: 0; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  .topic { font-family: var(--mono); font-size: 11px; color: var(--blue); letter-spacing: 0.07em; text-transform: uppercase; margin: 0 0 10px; }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  h3 { font-family: var(--display); font-weight: 600; font-size: 17px; letter-spacing: -0.01em; margin: 26px 0 8px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+  code { font-family: var(--mono); font-size: 12.5px; color: var(--code-text); background: var(--surface); border: 1px solid var(--border-code); border-radius: 5px; padding: 1px 6px; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 22px 0; }
+  .stats > div { border: 1px solid var(--border-card); border-radius: 11px; padding: 14px 16px; background: var(--surface-subtle); }
+  .stats .n { font-family: var(--display); font-size: 27px; font-weight: 600; letter-spacing: -0.01em; color: var(--accent); line-height: 1.1; }
+  .stats .l { color: var(--text-3); font-size: 13px; line-height: 1.45; margin-top: 7px; }
+
+  .callout { border: 1px solid rgba(94,227,154,0.28); background: rgba(94,227,154,0.045); border-radius: 12px; padding: 16px 18px; margin: 24px 0; }
+  .callout .tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 4px; }
+  .callout p, .callout li { color: var(--text-2); }
+  .callout p { margin: 6px 0 0; }
+  .callout ul { margin: 6px 0 0; }
+
+  .series { border: 1px solid var(--border-card); border-radius: 12px; padding: 16px 20px; margin: 28px 0; background: var(--surface-subtle); }
+  .series b { font-size: 14px; }
+  .series ol { margin: 8px 0 0; }
+  .series li { font-size: 14px; margin: 4px 0; }
+  .series li[aria-current] { color: var(--text); font-weight: 600; }
+
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; min-width: 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; overflow-wrap: break-word; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--text); font-weight: 600; }
+
+  .faq-item { border-bottom: 1px solid var(--hairline); }
+  .faq-item:first-of-type { border-top: 1px solid var(--hairline); }
+  .faq-item summary { display: flex; align-items: baseline; justify-content: space-between; gap: 22px; list-style: none; cursor: pointer; padding: 17px 2px; font-weight: 600; font-size: 15.5px; color: var(--text); line-height: 1.45; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-mark { font-family: var(--mono); font-size: 15px; color: var(--text-4); flex: none; transition: transform 0.2s var(--ease), color 0.2s var(--ease); }
+  .faq-item[open] .faq-mark { transform: rotate(45deg); color: var(--accent); }
+  .faq-a { padding: 0 2px 20px; font-size: 14.5px; color: var(--text-2); }
+  .faq-a p { margin: 0; }
+
+  .related { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0 0; }
+  .rel-card { display: block; border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 18px; color: var(--text); text-decoration: none; }
+  .rel-card:hover { border-color: rgba(94,227,154,0.35); color: var(--text); }
+  .rel-card .k2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 7px; }
+  .rel-card p { margin: 6px 0 0; font-size: 13px; color: var(--text-3); }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+
+  @media (max-width: 560px) {
+    .nav-links a:not(.btn) { display: none; }
+    main { padding-inline: 20px; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stats .n { font-size: 21px; }
+    .tbl-wrap table { min-width: 600px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .faq-mark { transition: none; }
+  }
+</style>
+<link rel="stylesheet" href="/assets/analytics.css" />
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides">Guides</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<article>
+  <p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / Repository maps in AI code review</p>
+  <p class="topic">Engineering notes · Experiment</p>
+  <h1>Does a repository map help an AI code reviewer?</h1>
+  <p class="updated">Published September 26, 2026</p>
+  <p class="lede">Not in our tests. We gave J-Bot Review a 12.5 KB map of the repository’s tracked files and counted tool calls on two free models. The map didn’t cut them, and neither model listed folders much in the first place. Most of their reads went to files the pull request had already changed, the files the reviewer was already looking at.</p>
+  <p>J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI. A map of the repository is a common idea for coding agents, so we tested whether one would save our reviewer its lookups. It also raised a second question. When the context budget runs out, is the reviewer dropping the right things?</p>
+
+  <nav class="contents" aria-label="Article contents">
+    <b>In this article</b>
+    <ul>
+      <li><a href="#why-a-map">Why we expected a map to help</a></li>
+      <li><a href="#the-test">The test</a></li>
+      <li><a href="#results">What happened</a></li>
+      <li><a href="#rereads">The reviewer wasn’t lost. It was re-reading</a></li>
+      <li><a href="#dropping">What to drop when the budget runs out</a></li>
+      <li><a href="#readings">What we think is going on</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+  </nav>
+
+  <div class="stats" aria-label="What we measured">
+    <div><div class="n">0–3</div><div class="l">folder listings per Muse review, with or without the map</div></div>
+    <div><div class="n">75–82%</div><div class="l">of file reads went to files the pull request changed</div></div>
+    <div><div class="n">+37%</div><div class="l">input tokens with the map, on Muse Spark 1.3</div></div>
+    <div><div class="n">27%</div><div class="l">of main-review pages drop some context to fit their budget</div></div>
+  </div>
+
+  <h2 id="why-a-map">Why we expected a map to help</h2>
+  <p>In <a href="/guides/why-ai-code-review-is-slow">Part 1 of our speed series</a>, 11.9% of the reviewer’s tool calls in production listed folders. That’s the lookup a map should remove. Research systems lean on the same idea. Agentless, which fixes GitHub issues without an agent loop, starts by giving the model “a concise representation of the repository’s file and directory structure, similar to the Linux tree command” and asking which files to change (<a href="https://arxiv.org/abs/2407.01489">Xia et al., 2024</a>). The Aider coding assistant sends a <a href="https://aider.chat/docs/repomap.html">map of the repository’s files and key symbols</a> with its requests.</p>
+  <p>J-Bot Review already sends a partial map. Each review page gets a <a href="/guides/context-pack-ai-code-review">context pack</a>, and its last section lists the folders that hold the changed files and their parent folders, one level deep and up to 40 names per folder. Because that section comes last, it’s the first one cut when a page runs short of room.</p>
+
+  <h2 id="the-test">The test</h2>
+  <p>We took two pull requests from a production TypeScript monorepo with 4,611 tracked files. One changes 4 files and the other 8. Both have issues that developers had already accepted, so we could check that a review still caught them.</p>
+  <p>The map arm added a 12.5 KB tree to every main-review page. Folders on the path to a changed file were listed in full. Every other folder collapsed to a name and a file count, like <code>apps/ (2601)</code>, and the tree opened the collapsed folders nearest the change first until it reached its byte budget.</p>
+  <p>We ran it on two free models through Cline’s free tier, Gemini 3.8 Flash and Muse Spark 1.3, with the Cline CLI reading the checkout, as it does in J-Bot Review today. Each arm ran once per pull request. Verification and the guideline pass were off, so only the main review varied. One run per arm is a screen, not proof. We’ve seen the same page swing from 8 to 27 tool calls between runs.</p>
+
+  <h2 id="results">What happened</h2>
+  <p>On Muse Spark 1.3, summed over both pull requests:</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Setup</th><th>Tool calls</th><th>Turns</th><th>Input tokens</th><th>Known issues found</th></tr></thead>
+      <tbody>
+        <tr><td>Control</td><td>20</td><td>21</td><td>754K</td><td>0</td></tr>
+        <tr><td>With the map</td><td>24</td><td>22</td><td>1,036K</td><td>0</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Gemini 3.8 Flash split. On the first pull request, one page went from 20 tool calls to 11 with the map, and the other went from 8 to 27. On the second, the control run spent 34 calls on web searches and page fetches and then hit Cline’s daily free limit, so there was nothing clean to compare.</p>
+  <p>Muse listed folders zero to three times per review, map or no map. Outside the one Gemini run that went off into web searches, Gemini did the same. On Gemini, both arms read about 1.1 files per read call. A map can’t get a model to batch reads it doesn’t batch anyway.</p>
+
+  <h2 id="rereads">The reviewer wasn’t lost. It was re-reading</h2>
+  <p>On Muse, depending on the setup, 75 to 82% of all file reads went to files the pull request had changed. A typical session read a changed file whole, then read it again in slices: lines 91 to 425, then 165 to 342, then 243 to 280.</p>
+  <p>That’s the opposite of being lost. The reviewer knows exactly which file matters, and it wants more of that file than the diff shows. A diff hunk carries three lines of context on each side, and the context pack adds the enclosing definition of each change, up to 150 lines. The models still went back for the whole file.</p>
+  <p>This is where our result and Agentless part ways. A bug-fixing agent starts from an issue report and has to find the file, so a tree of the repository is what it needs first. A reviewer starts from the diff. The files are already chosen, and the work left is understanding them.</p>
+  <p>SWE-agent’s authors found that the interface an agent uses to read and search files, such as a windowed file viewer and search commands built for the model, changed how many tasks it solved (<a href="https://arxiv.org/abs/2405.15793">Yang et al., 2024</a>). Our reviewers worked the same way, one window of a changed file at a time.</p>
+
+  <h2 id="dropping">What to drop when the budget runs out</h2>
+  <p>If the reviewer has a limited context budget, is it dropping the right things? Across 804 earlier experiment logs, 466 of 1,725 main-review pages (27%) had to leave some pack items out.</p>
+  <p>The pack fills in a fixed order: the code around each change, then the definitions that code uses, callers of the changed functions, other pages’ changes to files this page imports, and finally the folder listings. An item that doesn’t fit is skipped, and smaller items further down can still use the room left.</p>
+  <p>Our two test pull requests fit whole, so we capped every pack at 12 KB to force a choice and compared three orders on Muse Spark 1.3:</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Order, pack capped at 12 KB</th><th>Tool calls</th><th>Turns</th><th>Input tokens</th><th>Known issues found</th></tr></thead>
+      <tbody>
+        <tr><td>Current order</td><td>17</td><td>19</td><td>653K</td><td>1</td></tr>
+        <tr><td>Folder listings first</td><td>25</td><td>26</td><td>961K</td><td>0</td></tr>
+        <tr><td>Callers first</td><td>42</td><td>38</td><td>1,738K</td><td>0</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The current order came out cheapest, and it was the only arm to post a known issue. Moving the folder listings up bought nothing. Moving callers up cost the most, and one of its runs went on 11 web lookups. Whatever the model doesn’t see of the changed code, it goes and reads, so the code around the change belongs at the front.</p>
+  <p>The capped current order also used fewer calls than the uncapped control, 17 against 20. That’s inside run-to-run noise, but it hints that a smaller pack doesn’t cost the reviewer much.</p>
+  <p>Position in the prompt matters too. <a href="https://arxiv.org/abs/2307.03172">Liu et al. (2023)</a> found that language models use information at the start and end of a long context better than information in the middle. That’s one more reason not to pad the prompt with material the model doesn’t reach for.</p>
+
+  <h2 id="readings">What we think is going on</h2>
+  <p>These are our readings of the data, not results:</p>
+  <ul>
+    <li><b>Reviewers search, they don’t browse.</b> On Gemini, code searches were about half of all tool calls. A model that wants a symbol searches for it by name, and a folder tree answers a question it wasn’t asking.</li>
+    <li><b>The diff is narrower than the model wants.</b> Three lines of context rarely hold a whole function, so the models fetch the rest. Sending small changed files whole, instead of letting the model fetch and page through them, is our next test.</li>
+    <li><b>Everything in the prompt is paid for on every turn.</b> Each tool turn resends the whole prompt, so the map’s 12.5 KB cost Muse 37% more input tokens across a review. On a free tier, that uses up the daily quota sooner.</li>
+  </ul>
+  <p>We changed nothing. The folder listing stays last in the pack, and the pack order stays as it is. The pull requests come from a private repository, so the raw logs stay private and the experiment code isn’t merged. The reviewer and its context pack are open source in the <a href="https://github.com/pgup-ai/jbot-review">J-Bot Review repository</a>.</p>
+  <h2 id="faq">FAQ</h2>
+  <details class="faq-item" open>
+    <summary>Should you give an AI code reviewer a map of the repository?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Not to save tool calls, in our tests. A 12.5 KB map of every tracked file didn’t reduce tool calls on Gemini 3.8 Flash or Muse Spark 1.3, and it added 37% to Muse’s input tokens. Muse listed folders zero to three times per review with or without it. Maps help agents that have to find the right file, like bug fixers. A reviewer already knows which files changed.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Why does an AI code reviewer re-read files that are already in the diff?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Because the diff shows too little of them. A hunk has three lines of context on each side, and the model wants the whole function or file before it judges a change. In our Muse tests 75 to 82% of file reads went to changed files, usually one full read followed by several range reads of the same file.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>What should an AI code reviewer keep when its context budget is tight?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>The code around each change first, then the definitions it uses. With the context pack capped at 12 KB, that order used 17 tool calls across two pull requests. Putting folder listings first used 25 calls, and putting callers first used 42.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Does Aider-style repository mapping apply to code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Less than it does to editing. Aider and Agentless send a map so the model can pick which files to open. In code review the changed files are given, so a map mostly repeats what the diff already says about where to look.</p></div>
+  </details>
+  <h2>References</h2>
+  <ul>
+    <li>Xia, Deng, Dunn and Zhang. <a href="https://arxiv.org/abs/2407.01489">Agentless: Demystifying LLM-based Software Engineering Agents</a>. arXiv:2407.01489, 2024.</li>
+    <li>Yang, Jimenez, Wettig, Lieret, Yao, Narasimhan and Press. <a href="https://arxiv.org/abs/2405.15793">SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering</a>. arXiv:2405.15793, 2024.</li>
+    <li>Liu, Lin, Hewitt, Paranjape, Bevilacqua, Petroni and Liang. <a href="https://arxiv.org/abs/2307.03172">Lost in the Middle: How Language Models Use Long Contexts</a>. arXiv:2307.03172, 2023.</li>
+    <li>Aider. <a href="https://aider.chat/docs/repomap.html">Repository map</a> documentation.</li>
+  </ul>
+
+  <h2>Related</h2>
+  <div class="related">
+    <a class="rel-card" href="/guides/context-pack-ai-code-review"><span class="k2">Engineering</span>Context packs<p>What the reviewer gets before its first turn, and in what order.</p></a>
+    <a class="rel-card" href="/guides/free-model-code-review-quality"><span class="k2">Engineering</span>Better reviews from free models<p>Reasoning effort and a second pass moved recall. Prompts and filters didn’t.</p></a>
+    <a class="rel-card" href="/guides/why-ai-code-review-is-slow"><span class="k2">Engineering</span>Why AI code review is slow<p>Where the reviewer’s time went in production.</p></a>
+  </div>
+</article>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/privacy">Privacy</a> · <a href="https://github.com/pgup-ai/jbot-review" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

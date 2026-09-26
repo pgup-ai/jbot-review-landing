@@ -3,7 +3,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.pgupai.com/</loc>
-    <lastmod>2026-08-29</lastmod>
+    <lastmod>2026-09-26</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/about</loc>
@@ -19,7 +19,7 @@
   </url>
   <url>
     <loc>https://www.pgupai.com/guides</loc>
-    <lastmod>2026-09-24</lastmod>
+    <lastmod>2026-09-26</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/cli-subscription-code-review</loc>
@@ -71,7 +71,7 @@
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/deepseek-v4-flash-code-review-github-actions</loc>
-    <lastmod>2026-08-01</lastmod>
+    <lastmod>2026-09-26</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/openai-compatible-code-review-github-actions</loc>
@@ -128,5 +128,29 @@
   <url>
     <loc>https://www.pgupai.com/guides/jev-relevance-ranking-code-review</loc>
     <lastmod>2026-09-24</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/repository-map-ai-code-review</loc>
+    <lastmod>2026-09-26</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/free-model-code-review-quality</loc>
+    <lastmod>2026-09-26</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/free-ai-models-code-review</loc>
+    <lastmod>2026-09-26</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/space-bunny-code-review-github-actions</loc>
+    <lastmod>2026-09-26</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/mimo-v2-6-flash-code-review-github-actions</loc>
+    <lastmod>2026-09-26</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-github-actions</loc>
+    <lastmod>2026-09-26</lastmod>
   </url>
 </urlset>
