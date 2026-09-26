@@ -2,11 +2,11 @@
 
 Published September 26, 2026 · routes and prices checked September 26, 2026 · applies to pgup-ai/jbot-review-action v0
 
-**Space Bunny is an anonymous model with a 1M-token context window, listed at $0 on OpenCode Zen, OpenCode Go, Kilo, OpenRouter, Cline and Command Code since 2026-09-23.** It’s the free model we’d start J-Bot Review on today. At the default high reasoning effort it found 6.5 of 27 known issues on our test pull requests, with a median review time of 251 seconds.
+**Space Bunny is an anonymous model with a 1M-token context window, listed at $0 on OpenCode Zen, OpenCode Go, Kilo, OpenRouter and Cline since 2026-09-23, and free of credits on every Command Code plan.** It’s the free model we’d start J-Bot Review on today. At the default high reasoning effort it found 6.5 of 27 known issues on our test pull requests, with a median review time of 251 seconds.
 
-> **Anonymous lab · $0 on six gateways · no stated data policy**
+> **Anonymous lab · $0 on five gateways · retained, not trained on (OpenRouter)**
 >
-> None of the catalogs that list Space Bunny name the lab behind it or say what happens to your prompts. That makes it a good default for open-source code and a poor one for private code, at least until someone publishes terms.
+> No catalog names the lab behind Space Bunny. OpenRouter’s stealth-model listings say the provider retains prompts and completions but doesn’t train on them, under OpenRouter’s Stealth Model Terms. The other gateways state nothing. That makes it a good default for open-source code and a harder call for private code.
 
 ## OpenCode setup in three steps
 
@@ -74,12 +74,12 @@ Pick the route where you already manage credentials. The first segment of each i
 `model: cline/stealth/space-bunny-alpha`
 `cline-auth`
 
-**Command Code** (Free · plan caps checked)
+**Command Code** (No credits · plan from $1/mo)
 
 `model: commandcode/stealth/space-bunny-alpha`
 `commandcode-access-key`
 
-J-Bot’s high-effort default for Space Bunny covers the two OpenCode routes and Command Code. On OpenRouter it runs at the global `low` default unless you set `model-options`. Kilo and Cline run through their own CLIs, which don’t take J-Bot’s effort option. Space Bunny is free on Command Code, but J-Bot still checks your plan’s 5-hour and weekly caps before each run and stops if every key is exhausted.
+J-Bot’s high-effort default for Space Bunny covers the two OpenCode routes and Command Code. On OpenRouter it runs at the global `low` default unless you set `model-options`. Kilo and Cline run through their own CLIs, which don’t take J-Bot’s effort option. Command Code charges no credits for Space Bunny on any plan, and its cheapest plan is $1 a month. J-Bot still checks your plan’s 5-hour, weekly and monthly limits before each run, and stops if no key has room.
 
 ## Reasoning effort is the setting that matters
 
@@ -113,20 +113,21 @@ Why effort helps, and what else we tested, is in [How do you get better code rev
 
 ## Where the diff goes
 
-- **An unnamed lab serves the model.** No listing states a retention or training policy. Treat anything you send as possibly kept and used, and keep private code on a route whose terms you’ve read.
+- **An unnamed lab serves the model.** OpenRouter says the provider retains prompts and completions but doesn’t use them for training. The other listings state no policy, so treat what you send there as possibly kept and used.
 - **Cline’s free tier adds its own terms.** Cline’s documentation says free-model usage may be used to improve model performance and quality.
-- **Your runner stays in control.** The review runs headless on your GitHub Actions runner with read-only repository access, and J-Bot sends the diff only to the provider you configure.
+- **Your runner stays in control.** On the OpenCode route the review session runs read-only on your GitHub Actions runner, and J-Bot sends the diff only to the provider you configure.
+- **On Cline, every tool is approved.** Cline works in the checkout in plan mode with its shell and write tools auto-approved, and a checkout’s `.cline/hooks` and `.clinerules` load. J-Bot documents this as an accepted risk on CI runners, so use the Cline route on repositories where you trust the people opening pull requests.
 - **Fork pull requests can’t read the key.** GitHub doesn’t pass repository secrets to `pull_request` workflows from forks.
 
 ## FAQ
 
 ### Is Space Bunny free for code review?
 
-Yes, as of 2026-09-26. OpenCode Zen and OpenCode Go list `space-bunny-free` at $0, Kilo and OpenRouter list `stealth/space-bunny-alpha` at $0, Cline offers it in its free tier with a daily cap, and Command Code offers it free on its plans. J-Bot Review adds no charge, so your remaining cost is GitHub Actions minutes.
+Yes, as of 2026-09-26. OpenCode Zen and OpenCode Go list `space-bunny-free` at $0, Kilo and OpenRouter list `stealth/space-bunny-alpha` at $0, Cline offers it in its free tier with a daily cap. On those routes J-Bot Review adds no charge, so your remaining cost is GitHub Actions minutes. Command Code charges no credits for it, but you need one of its plans, from $1 a month.
 
 ### Who makes Space Bunny?
 
-No catalog says. OpenCode, OpenRouter, Kilo, Cline and Command Code list it as a stealth or anonymous model, first listed on 2026-09-23, and none names the lab or a data policy.
+No catalog says. OpenCode, OpenRouter, Kilo, Cline and Command Code list it as a stealth or anonymous model, first listed on 2026-09-23. OpenRouter’s listing says the provider retains prompts and completions but doesn’t train on them.
 
 ### Which reasoning effort should Space Bunny use for code review?
 

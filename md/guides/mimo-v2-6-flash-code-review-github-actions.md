@@ -110,7 +110,8 @@ For a free model that finishes in minutes, see [Space Bunny](https://www.pgupai.
 ## Where the diff goes
 
 - **The free routes are the gateways’ services.** Open weights don’t make a hosted route private. OpenCode and Cline apply their own data policies, and Cline says free-model usage may be used to improve models.
-- **Your runner stays in control.** The review runs headless on your GitHub Actions runner with read-only repository access, and J-Bot sends the diff only to the provider you configure.
+- **Your runner stays in control.** On the OpenCode route the review session runs read-only on your GitHub Actions runner, and J-Bot sends the diff only to the provider you configure.
+- **On Cline, every tool is approved.** Cline works in the checkout in plan mode with its shell and write tools auto-approved, and a checkout’s `.cline/hooks` and `.clinerules` load. J-Bot documents this as an accepted risk on CI runners, so use the Cline route on repositories where you trust the people opening pull requests.
 - **Fork pull requests can’t read the key.** GitHub doesn’t pass repository secrets to `pull_request` workflows from forks.
 
 ## FAQ
