@@ -60,7 +60,7 @@ The first segment of each id selects the provider. Prices are per million input 
 `model: cline/cline-free/mimo-v2.6-flash`
 `cline-auth`
 
-**OpenCode Go** (Catalog · $0.14 / $0.28)
+**OpenCode Go** (Go plan · $0.14 / $0.28)
 
 `model: opencode-go/mimo-v2.6-flash`
 `opencode-api-key`
@@ -111,7 +111,7 @@ For a free model that finishes in minutes, see [Space Bunny](https://www.pgupai.
 
 - **The free routes are the gateways’ services.** Open weights don’t make a hosted route private. OpenCode and Cline apply their own data policies, and Cline says free-model usage may be used to improve models.
 - **Your runner stays in control.** On the OpenCode route the review session runs read-only on your GitHub Actions runner, and J-Bot sends the diff only to the provider you configure.
-- **On Cline, every tool is approved.** Cline works in the checkout in plan mode with its shell and write tools auto-approved, and a checkout’s `.cline/hooks` and `.clinerules` load. J-Bot documents this as an accepted risk on CI runners, so use the Cline route on repositories where you trust the people opening pull requests.
+- **On Cline, every tool is approved.** Cline works in the checkout in plan mode with its shell and write tools auto-approved, and a checkout’s `.cline/hooks` and `.clinerules` load. Its tools include web search, so the model can send search queries of its own. J-Bot documents this as an accepted risk on CI runners, so use the Cline route on repositories where you trust the people opening pull requests.
 - **Fork pull requests can’t read the key.** GitHub doesn’t pass repository secrets to `pull_request` workflows from forks.
 
 ## FAQ

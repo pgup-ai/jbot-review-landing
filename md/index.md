@@ -62,7 +62,7 @@ Muse Spark 1.3 · MiMo V2.6 Flash · Space Bunny · DeepSeek V4.1 Flash
 
 **MiMo V2.6 Flash:** $0 on OpenCode (`mimo-v2.6-flash-free`, 200K context) and in Cline’s free tier as of 2026-09-26. Open weights, but slow: it repeats tool calls and spends about 40 seconds a turn. [Setup and timings →](https://www.pgupai.com/guides/mimo-v2-6-flash-code-review-github-actions)
 
-**Space Bunny:** $0 on OpenCode Zen and Go (`space-bunny-free`), Kilo and OpenRouter (`stealth/space-bunny-alpha`), and Cline’s free tier as of 2026-09-26, and no credits on Command Code plans. The lab is anonymous. OpenRouter says the provider retains prompts but doesn’t train on them. [Setup →](https://www.pgupai.com/guides/space-bunny-code-review-github-actions)
+**Space Bunny:** $0 on OpenCode Zen (`space-bunny-free`), Kilo and OpenRouter (`stealth/space-bunny-alpha`), and Cline’s free tier as of 2026-09-26, and included in OpenCode Go and Command Code plans. The lab is anonymous. OpenRouter says the provider retains prompts but doesn’t train on them. [Setup →](https://www.pgupai.com/guides/space-bunny-code-review-github-actions)
 
 **DeepSeek V4.1 Flash:** $0 in Cline’s free tier (`cline-free/deepseek-v4.1-flash`), metered from $0.14 per million input tokens elsewhere. Thorough, but a review can take 6 to 20 minutes. [Compare routes →](https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-github-actions)
 

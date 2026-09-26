@@ -17,7 +17,7 @@
 <meta property="og:url" content="https://www.pgupai.com/guides/space-bunny-code-review-github-actions" />
 <meta property="og:site_name" content="J-Bot Review" />
 <meta property="og:title" content="Space Bunny code review in GitHub Actions" />
-<meta property="og:description" content="$0 on five gateways and no credits on Command Code, 6.5 of 27 known issues at high effort, and exact model ids for six routes." />
+<meta property="og:description" content="$0 on four gateways with no plan, included in OpenCode Go and Command Code plans, 6.5 of 27 known issues at high effort, and exact model ids for six routes." />
 <meta property="og:image" content="https://www.pgupai.com/assets/og-guide-space-bunny-20260926.png" />
 <meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-guide-space-bunny-20260926.png" />
 <meta property="og:image:type" content="image/png" />
@@ -29,7 +29,7 @@
 <meta name="twitter:image:alt" content="Space Bunny: $0 AI code review in GitHub Actions. 1M context, tool calling, high reasoning effort by default." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Space Bunny code review in GitHub Actions" />
-<meta name="twitter:description" content="$0 on five gateways and no credits on Command Code, 6.5 of 27 known issues at high effort, and exact model ids for six routes." />
+<meta name="twitter:description" content="$0 on four gateways with no plan, included in OpenCode Go and Command Code plans, 6.5 of 27 known issues at high effort, and exact model ids for six routes." />
 <meta name="twitter:image" content="https://www.pgupai.com/assets/og-guide-space-bunny-20260926.png" />
 
 <script type="application/ld+json">
@@ -87,7 +87,7 @@
           "name": "Is Space Bunny free for code review?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes, as of 2026-09-26. OpenCode Zen and OpenCode Go list space-bunny-free at $0, Kilo and OpenRouter list stealth/space-bunny-alpha at $0, Cline offers it in its free tier with a daily cap. On those routes J-Bot Review adds no charge, so your remaining cost is GitHub Actions minutes. Command Code charges no credits for it, but you need one of its plans, from $1 a month."
+            "text": "Yes, as of 2026-09-26. OpenCode Zen lists space-bunny-free at $0, Kilo and OpenRouter list stealth/space-bunny-alpha at $0, and Cline offers it in its free tier with a daily cap. On those routes J-Bot Review adds no charge, so your remaining cost is GitHub Actions minutes. OpenCode Go and Command Code charge nothing per token for it, but you need their plans: $10 a month for Go, and from $1 a month for Command Code."
           }
         },
         {
@@ -277,10 +277,10 @@
     <h1>Space Bunny code review in GitHub Actions</h1>
   </div>
   <p class="updated">Published September 26, 2026 · routes and prices checked September 26, 2026 · applies to pgup-ai/jbot-review-action v0</p>
-  <p class="lede"><b>Space Bunny is an anonymous model with a 1M-token context window, listed at $0 on OpenCode Zen, OpenCode Go, Kilo, OpenRouter and Cline since 2026-09-23, and free of credits on every Command Code plan.</b> It’s the free model we’d start J-Bot Review on today. At the default high reasoning effort it found 6.5 of 27 known issues on our test pull requests, with a median review time of 251 seconds.</p>
+  <p class="lede"><b>Space Bunny is an anonymous model with a 1M-token context window, listed at $0 on OpenCode Zen, Kilo, OpenRouter and Cline since 2026-09-23.</b> OpenCode Go ($10 a month) and Command Code (from $1 a month) also include it at no per-token cost. It’s the free model we’d start J-Bot Review on today. At the default high reasoning effort it found 6.5 of 27 known issues on our test pull requests, with a median review time of 251 seconds.</p>
 
   <div class="callout">
-    <span class="tag">Anonymous lab · $0 on five gateways · retained, not trained on (OpenRouter)</span>
+    <span class="tag">Anonymous lab · $0 on four gateways · retained, not trained on (OpenRouter)</span>
     <p>No catalog names the lab behind Space Bunny. OpenRouter’s stealth-model listings say the provider retains prompts and completions but doesn’t train on them, under OpenRouter’s Stealth Model Terms. The other gateways state nothing. That makes it a good default for open-source code and a harder call for private code.</p>
   </div>
 
@@ -325,7 +325,7 @@
   <p>Pick the route where you already manage credentials. The first segment of each id selects the provider. Prices are per million tokens from each live catalog on 2026-09-26, and quotas stay under each provider’s control.</p>
   <div class="routes">
     <div class="route"><div><b>OpenCode Zen</b><span class="verified">Catalog · $0 / $0</span></div><p><code>model: opencode/space-bunny-free</code><br><code>opencode-api-key</code></p></div>
-    <div class="route"><div><b>OpenCode Go</b><span class="verified">Catalog · $0 / $0</span></div><p><code>model: opencode-go/space-bunny-free</code><br><code>opencode-api-key</code></p></div>
+    <div class="route"><div><b>OpenCode Go</b><span class="verified">Go plan $10/mo · $0 per token</span></div><p><code>model: opencode-go/space-bunny-free</code><br><code>opencode-api-key</code></p></div>
     <div class="route"><div><b>Kilo</b><span class="verified">Catalog · $0 / $0</span></div><p><code>model: kilo/stealth/space-bunny-alpha</code><br><code>kilo-auth</code></p></div>
     <div class="route"><div><b>OpenRouter</b><span class="verified">Catalog · $0 / $0</span></div><p><code>model: openrouter/stealth/space-bunny-alpha</code><br><code>openrouter-api-key</code></p></div>
     <div class="route"><div><b>Cline</b><span class="verified">Free tier · daily cap</span></div><p><code>model: cline/stealth/space-bunny-alpha</code><br><code>cline-auth</code></p></div>
@@ -367,13 +367,13 @@
     <li><b>An unnamed lab serves the model.</b> OpenRouter says the provider retains prompts and completions but doesn’t use them for training. The other listings state no policy, so treat what you send there as possibly kept and used.</li>
     <li><b>Cline’s free tier adds its own terms.</b> Cline’s documentation says free-model usage may be used to improve model performance and quality.</li>
     <li><b>Your runner stays in control.</b> On the OpenCode route the review session runs read-only on your GitHub Actions runner, and J-Bot sends the diff only to the provider you configure.</li>
-    <li><b>On Cline, every tool is approved.</b> Cline works in the checkout in plan mode with its shell and write tools auto-approved, and a checkout’s <code>.cline/hooks</code> and <code>.clinerules</code> load. J-Bot documents this as an accepted risk on CI runners, so use the Cline route on repositories where you trust the people opening pull requests.</li>
+    <li><b>On Cline, every tool is approved.</b> Cline works in the checkout in plan mode with its shell and write tools auto-approved, and a checkout’s <code>.cline/hooks</code> and <code>.clinerules</code> load. Its tools include web search, so the model can send search queries of its own. J-Bot documents this as an accepted risk on CI runners, so use the Cline route on repositories where you trust the people opening pull requests.</li>
     <li><b>Fork pull requests can’t read the key.</b> GitHub doesn’t pass repository secrets to <code>pull_request</code> workflows from forks.</li>
   </ul>
   <h2 id="faq">FAQ</h2>
   <details class="faq-item" open>
     <summary>Is Space Bunny free for code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Yes, as of 2026-09-26. OpenCode Zen and OpenCode Go list <code>space-bunny-free</code> at $0, Kilo and OpenRouter list <code>stealth/space-bunny-alpha</code> at $0, Cline offers it in its free tier with a daily cap. On those routes J-Bot Review adds no charge, so your remaining cost is GitHub Actions minutes. Command Code charges no credits for it, but you need one of its plans, from $1 a month.</p></div>
+    <div class="faq-a"><p>Yes, as of 2026-09-26. OpenCode Zen lists <code>space-bunny-free</code> at $0, Kilo and OpenRouter list <code>stealth/space-bunny-alpha</code> at $0, and Cline offers it in its free tier with a daily cap. On those routes J-Bot Review adds no charge, so your remaining cost is GitHub Actions minutes. OpenCode Go and Command Code charge nothing per token for it, but you need their plans: $10 a month for Go, and from $1 a month for Command Code.</p></div>
   </details>
   <details class="faq-item">
     <summary>Who makes Space Bunny?<span class="faq-mark" aria-hidden="true">+</span></summary>

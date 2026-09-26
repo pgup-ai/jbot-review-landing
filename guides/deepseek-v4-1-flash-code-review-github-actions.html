@@ -337,7 +337,7 @@
   <div class="routes">
     <div class="route"><div><b>Cline free</b><span class="verified">Free tier · daily cap</span></div><p><code>model: cline/cline-free/deepseek-v4.1-flash</code><br><code>cline-auth</code></p></div>
     <div class="route"><div><b>OpenRouter</b><span class="verified">Catalog · $0.14 / $0.42</span></div><p><code>model: openrouter/deepseek/deepseek-v4.1-flash</code><br><code>openrouter-api-key</code></p></div>
-    <div class="route"><div><b>OpenCode Go</b><span class="verified">Catalog · $0.15 / $0.60</span></div><p><code>model: opencode-go/deepseek-v4.1-flash</code><br><code>opencode-api-key</code></p></div>
+    <div class="route"><div><b>OpenCode Go</b><span class="verified">Go plan · $0.15 / $0.60</span></div><p><code>model: opencode-go/deepseek-v4.1-flash</code><br><code>opencode-api-key</code></p></div>
     <div class="route"><div><b>Fireworks</b><span class="verified">Catalog · $0.22 / $0.66</span></div><p><code>model: fireworks-ai/accounts/fireworks/models/deepseek-v4p1-flash</code><br><code>fireworks-api-key</code></p></div>
     <div class="route"><div><b>OpenCode Zen</b><span class="verified">Catalog · $0.30 / $1.20</span></div><p><code>model: opencode/deepseek-v4.1-flash</code><br><code>opencode-api-key</code></p></div>
     <div class="route"><div><b>Kilo</b><span class="verified">Catalog · $0.30 / $1.20</span></div><p><code>model: kilo/deepseek/deepseek-v4.1-flash</code><br><code>kilo-auth</code></p></div>
@@ -360,7 +360,7 @@
   <ul>
     <li><b>The free route runs under Cline’s terms.</b> Cline’s documentation says free-model usage may be used to improve model performance and quality. Keep private code on a metered route whose data policy you’ve read.</li>
     <li><b>Open weights, hosted routes.</b> The weights are public, so you can serve the model yourself and connect J-Bot through the <a href="/guides/openai-compatible-code-review-github-actions">OpenAI-compatible provider</a>.</li>
-    <li><b>On Cline, every tool is approved.</b> Cline works in the checkout in plan mode with its shell and write tools auto-approved, and a checkout’s <code>.cline/hooks</code> and <code>.clinerules</code> load. J-Bot documents this as an accepted risk on CI runners, so use the Cline route on repositories where you trust the people opening pull requests.</li>
+    <li><b>On Cline, every tool is approved.</b> Cline works in the checkout in plan mode with its shell and write tools auto-approved, and a checkout’s <code>.cline/hooks</code> and <code>.clinerules</code> load. Its tools include web search, so the model can send search queries of its own. J-Bot documents this as an accepted risk on CI runners, so use the Cline route on repositories where you trust the people opening pull requests.</li>
     <li><b>The diff goes only where you point it.</b> The review runs on your GitHub Actions runner, and J-Bot sends the diff only to the provider you configure.</li>
     <li><b>Fork pull requests can’t read the key.</b> GitHub doesn’t pass repository secrets to <code>pull_request</code> workflows from forks.</li>
   </ul>

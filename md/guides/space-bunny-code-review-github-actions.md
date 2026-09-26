@@ -2,9 +2,9 @@
 
 Published September 26, 2026 · routes and prices checked September 26, 2026 · applies to pgup-ai/jbot-review-action v0
 
-**Space Bunny is an anonymous model with a 1M-token context window, listed at $0 on OpenCode Zen, OpenCode Go, Kilo, OpenRouter and Cline since 2026-09-23, and free of credits on every Command Code plan.** It’s the free model we’d start J-Bot Review on today. At the default high reasoning effort it found 6.5 of 27 known issues on our test pull requests, with a median review time of 251 seconds.
+**Space Bunny is an anonymous model with a 1M-token context window, listed at $0 on OpenCode Zen, Kilo, OpenRouter and Cline since 2026-09-23.** OpenCode Go ($10 a month) and Command Code (from $1 a month) also include it at no per-token cost. It’s the free model we’d start J-Bot Review on today. At the default high reasoning effort it found 6.5 of 27 known issues on our test pull requests, with a median review time of 251 seconds.
 
-> **Anonymous lab · $0 on five gateways · retained, not trained on (OpenRouter)**
+> **Anonymous lab · $0 on four gateways · retained, not trained on (OpenRouter)**
 >
 > No catalog names the lab behind Space Bunny. OpenRouter’s stealth-model listings say the provider retains prompts and completions but doesn’t train on them, under OpenRouter’s Stealth Model Terms. The other gateways state nothing. That makes it a good default for open-source code and a harder call for private code.
 
@@ -54,7 +54,7 @@ Pick the route where you already manage credentials. The first segment of each i
 `model: opencode/space-bunny-free`
 `opencode-api-key`
 
-**OpenCode Go** (Catalog · $0 / $0)
+**OpenCode Go** (Go plan $10/mo · $0 per token)
 
 `model: opencode-go/space-bunny-free`
 `opencode-api-key`
@@ -116,14 +116,14 @@ Why effort helps, and what else we tested, is in [How do you get better code rev
 - **An unnamed lab serves the model.** OpenRouter says the provider retains prompts and completions but doesn’t use them for training. The other listings state no policy, so treat what you send there as possibly kept and used.
 - **Cline’s free tier adds its own terms.** Cline’s documentation says free-model usage may be used to improve model performance and quality.
 - **Your runner stays in control.** On the OpenCode route the review session runs read-only on your GitHub Actions runner, and J-Bot sends the diff only to the provider you configure.
-- **On Cline, every tool is approved.** Cline works in the checkout in plan mode with its shell and write tools auto-approved, and a checkout’s `.cline/hooks` and `.clinerules` load. J-Bot documents this as an accepted risk on CI runners, so use the Cline route on repositories where you trust the people opening pull requests.
+- **On Cline, every tool is approved.** Cline works in the checkout in plan mode with its shell and write tools auto-approved, and a checkout’s `.cline/hooks` and `.clinerules` load. Its tools include web search, so the model can send search queries of its own. J-Bot documents this as an accepted risk on CI runners, so use the Cline route on repositories where you trust the people opening pull requests.
 - **Fork pull requests can’t read the key.** GitHub doesn’t pass repository secrets to `pull_request` workflows from forks.
 
 ## FAQ
 
 ### Is Space Bunny free for code review?
 
-Yes, as of 2026-09-26. OpenCode Zen and OpenCode Go list `space-bunny-free` at $0, Kilo and OpenRouter list `stealth/space-bunny-alpha` at $0, Cline offers it in its free tier with a daily cap. On those routes J-Bot Review adds no charge, so your remaining cost is GitHub Actions minutes. Command Code charges no credits for it, but you need one of its plans, from $1 a month.
+Yes, as of 2026-09-26. OpenCode Zen lists `space-bunny-free` at $0, Kilo and OpenRouter list `stealth/space-bunny-alpha` at $0, and Cline offers it in its free tier with a daily cap. On those routes J-Bot Review adds no charge, so your remaining cost is GitHub Actions minutes. OpenCode Go and Command Code charge nothing per token for it, but you need their plans: $10 a month for Go, and from $1 a month for Command Code.
 
 ### Who makes Space Bunny?
 

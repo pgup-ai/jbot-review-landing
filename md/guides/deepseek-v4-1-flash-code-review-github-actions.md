@@ -71,7 +71,7 @@ The first segment of each id selects the provider. Prices are per million input 
 `model: openrouter/deepseek/deepseek-v4.1-flash`
 `openrouter-api-key`
 
-**OpenCode Go** (Catalog · $0.15 / $0.60)
+**OpenCode Go** (Go plan · $0.15 / $0.60)
 
 `model: opencode-go/deepseek-v4.1-flash`
 `opencode-api-key`
@@ -121,7 +121,7 @@ If review time matters, use Command Code or cap the time budget. If you’re on 
 
 - **The free route runs under Cline’s terms.** Cline’s documentation says free-model usage may be used to improve model performance and quality. Keep private code on a metered route whose data policy you’ve read.
 - **Open weights, hosted routes.** The weights are public, so you can serve the model yourself and connect J-Bot through the [OpenAI-compatible provider](https://www.pgupai.com/guides/openai-compatible-code-review-github-actions).
-- **On Cline, every tool is approved.** Cline works in the checkout in plan mode with its shell and write tools auto-approved, and a checkout’s `.cline/hooks` and `.clinerules` load. J-Bot documents this as an accepted risk on CI runners, so use the Cline route on repositories where you trust the people opening pull requests.
+- **On Cline, every tool is approved.** Cline works in the checkout in plan mode with its shell and write tools auto-approved, and a checkout’s `.cline/hooks` and `.clinerules` load. Its tools include web search, so the model can send search queries of its own. J-Bot documents this as an accepted risk on CI runners, so use the Cline route on repositories where you trust the people opening pull requests.
 - **The diff goes only where you point it.** The review runs on your GitHub Actions runner, and J-Bot sends the diff only to the provider you configure.
 - **Fork pull requests can’t read the key.** GitHub doesn’t pass repository secrets to `pull_request` workflows from forks.
 
