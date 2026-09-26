@@ -152,22 +152,22 @@
 <p class="crumbs"><a href="/">Home</a> / Privacy</p>
   <h1>Privacy</h1>
   <p class="lede">This page covers two separate things that are easy to confuse: <b>what this website does with your data</b>, and <b>where your code goes when you run J-Bot Review</b>. Website analytics are optional. On the standard GitHub Action path, your code never reaches PGUP AI.</p>
-  <p class="updated">Last updated September 24, 2026</p>
+  <p class="updated">Last updated September 26, 2026</p>
 
   <h2>What this website collects</h2>
-  <p>We use <b>PostHog US Cloud</b> to understand which pages and links are useful. Its script loads only after you choose <b>Allow analytics</b>. Until then, or if you decline, we send no analytics events to PostHog.</p>
+  <p>We use <b>PostHog US Cloud</b> to understand which pages and links are useful. We use cookieless analytics by default. You can turn it off through <b>Analytics preferences</b> in the footer. A previously saved decline still keeps analytics off.</p>
   <ul>
     <li><b>Usage events:</b> page views, page exits to estimate visit duration, and selected setup, contact, GitHub, and Marketplace link clicks.</li>
-    <li><b>Traffic context:</b> page paths, referring websites, permitted campaign tags, browser and device information. PostHog processes your IP address when receiving requests, including for approximate geographic information.</li>
-    <li><b>Browser identifiers:</b> after you accept, PostHog uses local storage and session storage to recognize the same browser and group visits. This does not tell us your name or email.</li>
+    <li><b>Traffic context:</b> page paths, referring websites, permitted campaign tags, browser and device information. PostHog processes your IP address when receiving requests to generate a daily identifier, then discards the IP from cookieless events. Geographic breakdowns may be unavailable in this mode.</li>
+    <li><b>Daily identifiers:</b> PostHog uses a server-generated hash of request information with a rotating daily salt. Its cookieless SDK does not store analytics identifiers in cookies, local storage, or session storage. We cannot reliably recognize the same visitor across days and do not send names or email addresses.</li>
     <li><b>No session replay or form capture:</b> we disable recordings, automatic interaction capture, heatmaps, and surveys. There are currently no accounts or enquiry forms on this site.</li>
     <li><b>No visitor identification service:</b> RB2B, advertising pixels, and third-party person-resolution tools are not installed.</li>
   </ul>
   <p>We strip URL fragments and non-campaign query parameters from analytics URLs. Please do not put personal data in campaign tags or website URLs.</p>
 
   <h2 id="analytics-controls">Your analytics choices</h2>
-  <p>Use <b>Analytics preferences</b> in the footer to allow or decline analytics at any time. We store your choice in your browser as <code>pgup_analytics_choice</code>, including when you decline, so we can remember it. If browser storage is unavailable, your choice applies only to the current page.</p>
-  <p>Declining stops future event collection and clears PostHog's analytics persistence on the current page when its SDK is loaded. It does not delete events already received. We also keep analytics off when your browser sends Global Privacy Control or Do Not Track. Clearing your browser's site data removes the stored preference and identifiers.</p>
+  <p>Use <b>Analytics preferences</b> in the footer to turn cookieless analytics off or back on at any time. We store your choice in your browser as <code>pgup_analytics_choice</code>, including when you decline, so we can remember it. If browser storage is unavailable, your choice applies only to the current page.</p>
+  <p>Turning analytics off stops future event collection. It does not delete events already received. We also keep analytics off when your browser sends Global Privacy Control or Do Not Track. Clearing your browser's site data removes the stored preference, so cookieless analytics resumes unless your browser sends a privacy signal. Older versions used analytics storage after consent; clearing site data also removes those old identifiers, which this version does not use.</p>
 
   <h2>Who sees a request anyway</h2>
   <p>Serving a web page is not free of third parties, these services process requests:</p>
@@ -175,7 +175,7 @@
     <li><b>Vercel</b> hosts this site. Like any web host, its edge network processes the request in order to answer it and keeps standard operational logs — IP address, user agent, requested path, timestamp — under <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Vercel's privacy policy</a>. PGUP AI does not use those logs to build a profile of you.</li>
     <li><b>Google Fonts</b> serves the three typefaces this site uses. Your browser fetches them from <code>fonts.googleapis.com</code> and <code>fonts.gstatic.com</code>, which discloses your IP address and user agent to Google under <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's privacy policy</a>. If that matters to you, blocking those two hosts degrades the site to system fonts and nothing else breaks.</li>
   </ul>
-  <p><b>PostHog</b> receives analytics only after you accept, under <a href="https://posthog.com/privacy" target="_blank" rel="noopener noreferrer">PostHog’s privacy policy</a>. The project uses US hosting. We use this data to improve the site, not to identify unnamed visitors for sales outreach.</p>
+  <p><b>PostHog</b> receives cookieless analytics unless you opt out or send a browser privacy signal, under <a href="https://posthog.com/privacy" target="_blank" rel="noopener noreferrer">PostHog’s privacy policy</a>. The project uses US hosting. We use this data to improve the site, not to identify unnamed visitors for sales outreach.</p>
   <p>Content negotiation on this site is stateless. Asking for the Markdown representation of a page with <code>Accept: text/markdown</code> is handled per request and stores nothing about you.</p>
 
   <h2>Where your code goes when you run J-Bot Review</h2>
