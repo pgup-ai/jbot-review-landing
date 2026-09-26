@@ -12,7 +12,8 @@
 // issue_comment-triggered, etc.) is excluded and reported.
 //
 // Usage:  node scripts/refresh-proof-stats.mjs
-// Needs:  gh CLI authenticated with read access to both repos.
+// Needs:  local/proof-stats-sources.json and gh CLI with read access to
+//         the repos it lists.
 //
 // The numbers this prints are pasted into index.html by hand — the site is
 // static and the repos are private, so nothing is fetched at page load.
@@ -27,10 +28,9 @@ const execFileAsync = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CACHE_PATH = join(ROOT, "local", "proof-stats-cache.json");
 
-const SOURCES = [
-  { repo: "integral-xyz/fms", workflowId: 291509931 },
-  { repo: "integral-xyz/fms-frontend", workflowId: 291435248 },
-];
+// The dogfooding repos are private, so their names live in a gitignored file:
+// [{ "repo": "owner/name", "workflowId": 123 }, ...]
+const SOURCES = JSON.parse(readFileSync(join(ROOT, "local", "proof-stats-sources.json"), "utf8"));
 
 // The runs API returns at most 1000 results per filtered query, so windows
 // must each stay below that. A week of runs is comfortably under it today;

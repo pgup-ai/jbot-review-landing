@@ -63,8 +63,9 @@ The dogfooding numbers in the `#proof` stat band are static text with two
 sources. All three band totals — review runs, diff lines across runs, and
 tokens — are read off the engines' run telemetry and pasted in by hand.
 The narrower GitHub-derived baseline quoted in `llms.txt` and `about.html`
-comes from the GitHub API (needs `gh` authenticated with access to the
-source repos):
+comes from the GitHub API. It needs `gh` authenticated with access to the
+source repos, which are private, so list them in gitignored
+`local/proof-stats-sources.json` as `[{"repo": "owner/name", "workflowId": 123}]`:
 
 ```bash
 node scripts/refresh-proof-stats.mjs
