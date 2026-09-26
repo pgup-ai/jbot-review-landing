@@ -23,7 +23,7 @@ J-Bot Review is an open-source AI code reviewer that runs as a GitHub Action in 
 | --- | --- | --- |
 | [Space Bunny](https://www.pgupai.com/guides/space-bunny-code-review-github-actions) | OpenCode Zen, Kilo, OpenRouter, Cline. Included in OpenCode Go and Command Code plans. | 6.5 of 27 known issues at high effort, 251 s median review. 2.5 at low effort, 68 s. |
 | [Muse Spark 1.3](https://www.pgupai.com/guides/muse-spark-code-review-github-actions) | OpenCode Zen and Cline, contributor terms | Fast, but its main review often posted nothing at low effort: 1.0 of 15 known issues on two pull requests, and no better at medium. |
-| [DeepSeek V4.1 Flash](https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-github-actions) | Cline | Thorough and slow. On OpenCode Go, about 200 tool calls and 17 to 20 minutes per review. |
+| [DeepSeek V4.1 Flash](https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-github-actions) | Cline | Thorough and slow. On OpenCode Go, 7 to 13 minutes for a small pull request and up to 29 for a 234 KB one. |
 | [MiMo V2.6 Flash](https://www.pgupai.com/guides/mimo-v2-6-flash-code-review-github-actions) | OpenCode Zen, Cline | About 24 minutes per review on the free OpenCode route, where Space Bunny took under a minute. It re-read the same files over and over, and each turn took about 40 seconds. 2 of 4 reviews ran out of time. |
 | Gemini 3.8 Flash | Cline | Reviewed a 12-file change in 460 s, reading the checkout. Hit Cline’s daily cap after 363 requests. |
 
@@ -77,7 +77,7 @@ Our rule is to treat a $0 route as a data exchange unless its terms say otherwis
 
 ### What is the best free AI model for code review?
 
-Space Bunny, in our September 2026 tests. It’s $0 on OpenCode Zen, Kilo, OpenRouter and Cline, and at high reasoning effort it found 6.5 of 27 known issues on real pull requests in about four minutes per review. Muse Spark 1.3 is fast but often posted nothing, DeepSeek V4.1 Flash is thorough but takes 17 to 20 minutes, and MiMo V2.6 Flash’s free route was the slowest we ran.
+Space Bunny, in our September 2026 tests. It’s $0 on OpenCode Zen, Kilo, OpenRouter and Cline, and at high reasoning effort it found 6.5 of 27 known issues on real pull requests in about four minutes per review. Muse Spark 1.3 is fast but often posted nothing, DeepSeek V4.1 Flash is thorough but takes 7 to 13 minutes on a small pull request, and MiMo V2.6 Flash’s free route was the slowest we ran.
 
 ### Is free AI code review really free?
 
