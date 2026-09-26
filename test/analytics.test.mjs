@@ -82,7 +82,7 @@ test('new visits start cookieless analytics without a prompt or preference write
   assert.equal(h.config().disable_session_recording, true);
   assert.equal(h.config().autocapture, false);
   assert.equal(h.config().cookieless_mode, 'always');
-  assert.equal(h.config().persistence, undefined);
+  assert.equal(h.config().persistence, 'memory');
   assert.equal(h.config().capture_pageview, true);
   assert.equal(h.events[0].properties.analytics_mode, 'cookieless');
   assert.equal(h.config().capture_pageleave, true);
