@@ -56,13 +56,17 @@ LiteLLM · vLLM · Ollama · + any OpenAI-compatible
 
 ### Or start at $0 — free models
 
-Muse Spark 1.3 · Muse Spark 1.2 · DeepSeek V4 Flash · MiniMax M3 · MiMo v2.5
+Muse Spark 1.3 · MiMo V2.6 Flash · Space Bunny · DeepSeek V4.1 Flash
 
-**Muse Spark 1.3 / 1.2:** OpenCode lists a $0 contributor route for both; only 1.2 also has a metered OpenCode route as of 2026-09-03. The contributor tier lets Meta train on your prompts and completions, so keep private code on a standard route such as Kilo or OpenRouter. [Exact model ids →](https://www.pgupai.com/guides/muse-spark-code-review-github-actions)
+**Muse Spark 1.3:** $0 contributor routes on OpenCode (`muse-spark-1.3-contributor-free`) and in Cline’s free tier. The contributor tier lets Meta train on your prompts and completions, so keep private code on a standard route such as Kilo or OpenRouter. [Exact model ids →](https://www.pgupai.com/guides/muse-spark-code-review-github-actions)
 
-**DeepSeek V4 Flash:** official 0731 is free through OpenCode and InferX. Cline, OpenRouter, Kenari, and UnoRouter also list $0 routes; snapshots and availability vary. [Compare routes →](https://www.pgupai.com/guides/deepseek-v4-flash-code-review-github-actions)
+**MiMo V2.6 Flash:** $0 on OpenCode (`mimo-v2.6-flash-free`, 200K context) and in Cline’s free tier as of 2026-09-26. Open weights, but slow: it repeats tool calls and spends about 40 seconds a turn. [Setup and timings →](https://www.pgupai.com/guides/mimo-v2-6-flash-code-review-github-actions)
 
-**MiniMax M3:** $0 routes listed on OpenCode (`minimax-m3-free`), Vercel (`minimax/minimax-m3-free`), and Kilo and OpenRouter (`minimax/minimax-m3:free`) as of 2026-09-03; Cline and Command Code carry it under their own plans. Availability and quotas vary by provider.
+**Space Bunny:** $0 on OpenCode Zen (`space-bunny-free`), Kilo and OpenRouter (`stealth/space-bunny-alpha`), and Cline’s free tier as of 2026-09-26, and included in OpenCode Go and Command Code plans. The lab is anonymous. OpenRouter says the provider retains prompts but doesn’t train on them. [Setup →](https://www.pgupai.com/guides/space-bunny-code-review-github-actions)
+
+**DeepSeek V4.1 Flash:** $0 in Cline’s free tier (`cline-free/deepseek-v4.1-flash`), metered from $0.14 per million input tokens elsewhere. Thorough, but a review can take 6 to 20 minutes. [Compare routes →](https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-github-actions)
+
+Free routes have daily quotas and change often. [Which free model to pick, and the limits you’ll hit →](https://www.pgupai.com/guides/free-ai-models-code-review)
 
 ACP gateway · private beta
 

@@ -1,8 +1,12 @@
 # DeepSeek V4 Flash code review in GitHub Actions
 
-Published July 31, 2026 · updated August 1, 2026 · applies to pgup-ai/jbot-review-action v0
+Published July 31, 2026 · updated September 26, 2026 · applies to pgup-ai/jbot-review-action v0
 
 **The official DeepSeek V4 Flash 0731 can review pull requests through multiple $0 provider routes—or directly through DeepSeek at roughly 11× lower uncached input and 27× lower output list prices than Gemini 3.6 Flash.** The exact free route matters: provider catalogs do not all identify the same snapshot, and their capacity and data terms differ.
+
+Newer model · DeepSeek V4.1 Flash
+
+DeepSeek released V4.1 Flash on 2026-09-10 under its own `deepseek-v4.1-flash` id. Cline’s free tier now carries V4.1 Flash instead of the V4 Flash route listed below. Its routes and measured review times are in the [DeepSeek V4.1 Flash guide](https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-github-actions). This page covers V4 Flash 0731.
 
 Official replaces Preview · same API id
 
