@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Do prioritized rules make AI code review faster? We tested it | J-Bot Review</title>
-<meta name="description" content="We ranked the rules our AI code reviewer reads by relevance and priority and cut them by about 40%. On three models the review wasn’t faster, and the main review found fewer known issues. The research explains why." />
+<title>Do fewer, prioritized rules speed up AI code review? | J-Bot Review</title>
+<meta name="description" content="We cut our AI code reviewer’s rules by 40% and ranked them by priority. Review time didn’t change beyond noise, and the main review caught fewer bugs." />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0a0b0a" />
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
@@ -16,8 +16,8 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://www.pgupai.com/guides/prioritized-rules-ai-code-review" />
 <meta property="og:site_name" content="J-Bot Review" />
-<meta property="og:title" content="Do prioritized rules make an AI code reviewer faster?" />
-<meta property="og:description" content="We cut the reviewer’s rules by about 40% and ranked them by priority. Review time didn’t move beyond noise, and the main review found 4 known issues instead of 6." />
+<meta property="og:title" content="Do fewer, prioritized rules make an AI code reviewer faster?" />
+<meta property="og:description" content="We cut the reviewer’s AGENTS.md-style rules by 40% and ranked them by priority. On three models review time stayed within noise, and the main review caught 4 known issues instead of 6." />
 <meta property="og:image" content="https://www.pgupai.com/assets/og-prioritized-rules-ai-code-review-20260926.png" />
 <meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-prioritized-rules-ai-code-review-20260926.png" />
 <meta property="og:image:type" content="image/png" />
@@ -28,8 +28,8 @@
 <meta property="article:section" content="Engineering" />
 <meta name="twitter:image:alt" content="Do prioritized rules make AI code review faster? About 40% less rule text, 0.96 times the review time, within noise." />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Do prioritized rules make an AI code reviewer faster?" />
-<meta name="twitter:description" content="We cut the reviewer’s rules by about 40% and ranked them by priority. Review time didn’t move beyond noise, and the main review found 4 known issues instead of 6." />
+<meta name="twitter:title" content="Do fewer, prioritized rules make an AI code reviewer faster?" />
+<meta name="twitter:description" content="We cut the reviewer’s AGENTS.md-style rules by 40% and ranked them by priority. On three models review time stayed within noise, and the main review caught 4 known issues instead of 6." />
 <meta name="twitter:image" content="https://www.pgupai.com/assets/og-prioritized-rules-ai-code-review-20260926.png" />
 
 <script type="application/ld+json">
@@ -39,8 +39,8 @@
     {
       "@type": "TechArticle",
       "@id": "https://www.pgupai.com/guides/prioritized-rules-ai-code-review#article",
-      "headline": "Do prioritized rules make an AI code reviewer faster?",
-      "description": "We ranked the rules our AI code reviewer reads by relevance and priority and cut them by about 40%. On three models the review wasn’t faster, and the main review found fewer known issues. The research explains why.",
+      "headline": "Do fewer, prioritized rules make an AI code reviewer faster?",
+      "description": "We cut our AI code reviewer’s rules by 40% and ranked them by priority. Review time didn’t change beyond noise, and the main review caught fewer bugs.",
       "url": "https://www.pgupai.com/guides/prioritized-rules-ai-code-review",
       "mainEntityOfPage": "https://www.pgupai.com/guides/prioritized-rules-ai-code-review",
       "image": [
@@ -48,7 +48,7 @@
       ],
       "datePublished": "2026-09-26",
       "dateModified": "2026-09-26",
-      "keywords": "AI code review guidelines, prioritized rules, rule prioritization, LLM instruction following, reasoning tokens, AI code review speed, AGENTS.md, prompt caching, context engineering",
+      "keywords": "AGENTS.md, AI code review rules, prompt length and latency, LLM instruction following, reasoning tokens, prompt caching, AI code review speed, context engineering, coding agent guidelines",
       "about": [
         {
           "@type": "Thing",
@@ -61,6 +61,10 @@
         {
           "@type": "Thing",
           "name": "Prompt engineering"
+        },
+        {
+          "@type": "Thing",
+          "name": "Context engineering"
         }
       ],
       "author": {
@@ -131,26 +135,34 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "Does giving an AI code reviewer fewer rules make it faster?",
+          "name": "Do fewer rules make an AI code reviewer faster?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Not by itself, in our tests. Cutting the main review’s rules by about 40%, with the most relevant and critical ones in full and the rest as one-line summaries, left review time about where it was: 0.96 times as long, with a 95% interval of 0.70 to 1.32. An earlier test that loaded only the rule sections mapped to the changed files also left review time unchanged."
+            "text": "Not in our tests. Cutting the main review’s rules by 40% and ranking them by priority left review time at 0.96 times the original, with a 95% interval of 0.70 to 1.32, which is within run-to-run noise. An earlier test that loaded only the rule sections mapped to the changed files also left review time unchanged."
           }
         },
         {
           "@type": "Question",
-          "name": "Why didn’t shorter rules speed up the review?",
+          "name": "Does a long AGENTS.md slow down coding agents?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "The rules weren’t where the time went. They were a quarter to a third of each page’s first prompt and came from the provider’s prompt cache after the first turn. The time went into reasoning and tool turns, and telling a reasoning model which rules to check can add reasoning. Space Bunny spent 51% and 79% more reasoning tokens with the prioritized rules."
+            "text": "Somewhat, and mostly in cost. One study found AGENTS.md files raised coding agents’ inference cost by more than 20% without generally raising success rates. With prompt caching, a fixed block of rules is cheap after the first turn, so in our tests the time went into reasoning and tool calls, not into reading the rules."
           }
         },
         {
           "@type": "Question",
-          "name": "Should an AI code reviewer rank repository rules by priority?",
+          "name": "Why can prioritizing rules make a reasoning model slower?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "By relevance, yes. J-Bot Review already fills each pass’s budget with the sections that name the changed files first. By guessed priority, no. In our tests keyword priority misfired, and the main review found 4 known issues instead of 6. How often developers act on a rule’s comments is a better signal than the words in its title."
+            "text": "Because it tends to act on the list. Reasoning models such as DeepSeek R1 have been observed checking each given instruction one by one. When we headed the top rules as rules to check, Space Bunny used 51% and 79% more reasoning tokens on our two pull requests."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should an AI code reviewer rank repository rules at all?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "By relevance, yes. J-Bot Review fills each pass’s budget with the sections that name the changed files first. By a guessed priority, no: keyword priority misfired, and the main review caught 4 known bugs instead of 6. How often developers act on a rule’s comments is a better signal than its title."
           }
         },
         {
@@ -158,7 +170,7 @@
           "name": "How many rules can an AI code reviewer follow?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "More than a typical review sends. On a benchmark of up to 500 simultaneous instructions, the best models still reached 68% at 500. What hurts more is rules that look alike but don’t apply, and conditional rules, which caused more than 30% of errors in the AgentIF benchmark."
+            "text": "More than a typical review sends. On a benchmark of up to 500 simultaneous instructions, the best models still reached 68% at 500. Rules that look alike but don’t apply, and conditional rules, cause more trouble than the count. Conditional rules caused more than 30% of errors in the AgentIF benchmark."
           }
         }
       ]
@@ -327,51 +339,52 @@
 <article>
   <p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / Prioritized rules in AI code review</p>
   <p class="topic">Engineering notes · Experiment</p>
-  <h1>Do prioritized rules make an AI code reviewer faster?</h1>
+  <h1>Do fewer, prioritized rules make an AI code reviewer faster?</h1>
   <p class="updated">Published September 26, 2026</p>
-  <p class="lede">Not in our tests. We ranked the repository rules our reviewer reads by how closely they relate to the change and how critical they are. The top rules went in whole, the next ones as one-line summaries, and the rule text shrank by about 40%. On three models the main review took about as long as before, and it found 4 known issues instead of 6.</p>
-  <p>J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI. It reviews against your team’s written rules, such as AGENTS.md, REVIEW.md and the documents they point to. Each review pass gets a byte budget for those rules: 96 KB for the guideline-compliance pass and 24 KB for the main review, filled with the sections that name the changed files first (see <a href="/guides/ai-code-review-team-guidelines">Guidelines the reviewer can see</a>). We wanted to know whether the main review would go faster if it spent less attention on the rules that matter least.</p>
+  <p class="lede">Short answer: no. We trimmed the rules our AI code reviewer reads by 40% and put the critical ones first. Review time didn’t move beyond run-to-run noise, and the main review caught 4 known bugs instead of 6.</p>
+  <p>The idea sounded obvious. A reviewer carrying 24 KB of house rules has to wade through style notes to find the invariants that matter, so give it less to read and point it at what counts. We expected a modest speedup, somewhere around 10 to 20%. We didn’t get one.</p>
+  <p>J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI. It reads your team’s written rules, such as AGENTS.md, REVIEW.md and the docs they link to. The dedicated guideline-compliance pass gets up to 96 KB of them, and the main review gets 24 KB, starting with the sections that name the changed files (<a href="/guides/ai-code-review-team-guidelines">how that works</a>). This test only touched the main review’s 24 KB.</p>
 
   <nav class="contents" aria-label="Article contents">
     <b>In this article</b>
     <ul>
       <li><a href="#the-idea">What we changed</a></li>
-      <li><a href="#the-test">The test</a></li>
-      <li><a href="#results">What happened</a></li>
-      <li><a href="#why-not-faster">Why it wasn’t faster</a></li>
+      <li><a href="#the-test">How we tested it</a></li>
+      <li><a href="#results">Did it get faster?</a></li>
+      <li><a href="#why-not-faster">Why shorter rules didn’t save time</a></li>
       <li><a href="#research">What the research says about rule count</a></li>
-      <li><a href="#readings">What we think is going on</a></li>
+      <li><a href="#readings">What we’d do instead</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
   </nav>
 
   <div class="stats" aria-label="What we measured">
-    <div><div class="n">24.5 → 14.6 KB</div><div class="l">rule text in the main review, control against prioritized</div></div>
-    <div><div class="n">0.96×</div><div class="l">main-review time with prioritized rules (95% interval 0.70 to 1.32)</div></div>
-    <div><div class="n">+51–79%</div><div class="l">reasoning tokens on Space Bunny with prioritized rules</div></div>
-    <div><div class="n">6 → 4</div><div class="l">known issues found by the main review, of 13</div></div>
+    <div><div class="n">24.5 → 14.6 KB</div><div class="l">rule text sent to the main review</div></div>
+    <div><div class="n">0.96×</div><div class="l">review time with prioritized rules, 95% interval 0.70 to 1.32</div></div>
+    <div><div class="n">+51–79%</div><div class="l">more reasoning tokens on Space Bunny</div></div>
+    <div><div class="n">6 → 4</div><div class="l">of 13 known bugs caught by the main review</div></div>
   </div>
 
   <h2 id="the-idea">What we changed</h2>
-  <p>The main review normally gets a 24 KB slice of the repository’s rules, ordered by how closely each section names the changed files. For the test we replaced that slice with three tiers, ranked by relevance times priority:</p>
+  <p>Normally the main review gets 24 KB of rule sections, ordered by how closely each one names the changed files. We swapped that for three tiers, ranked by relevance times priority:</p>
   <ul>
-    <li><b>Full text</b>, up to 10 KB, for the highest-ranked sections.</li>
-    <li><b>One line each</b>, up to 4 KB, for the next ones: the section title and its first sentence.</li>
-    <li><b>A count</b> of everything else, with a note that the guideline-compliance pass still checks every rule.</li>
+    <li><b>Full text</b> for the top sections, up to 10 KB.</li>
+    <li><b>One line each</b> for the next ones, up to 4 KB. That’s the section title plus its first sentence.</li>
+    <li><b>A count</b> of the rest, with a note that the compliance pass still checks every rule.</li>
   </ul>
-  <p>Priority came from keywords in each document’s name and section title. Words like invariant, security, money, transaction and migration doubled a section’s weight. Words like style, comment, naming and formatting halved it. The block asked the model to check the full-text rules against the change and to cite a one-line rule only for a clear violation.</p>
-  <p>The repository didn’t mark which individual rules matter most. It had a document of invariants, a document of coding standards and a list of blockers in its review rubric, so the keywords had to guess. Sometimes they guessed wrong. A section about moving old code to a new API counted as critical because its title contains the word migration.</p>
+  <p>Priority came from keywords in the document name and section title. Invariant, security, money, transaction and migration doubled a section’s weight. Style, comment, naming and formatting halved it. The block told the model to check the full-text rules against the change and to cite a one-liner only for a clear violation.</p>
+  <p>We had to guess priority because the repository never states it rule by rule. It has a doc of invariants, a doc of coding standards and a list of blockers in its review rubric, and that’s it. The keywords guessed wrong at least once. A section about moving old code to a new API scored as critical because its title has the word migration in it.</p>
 
-  <h2 id="the-test">The test</h2>
-  <p>We used the same two pull requests as our <a href="/guides/repository-map-ai-code-review">repository-map test</a>, from a production TypeScript monorepo. One changes 4 files and the other 8. Between them they have 13 issues that developers had already accepted, so we could check whether a review still caught them.</p>
-  <p>Four models ran through OpenCode at high reasoning effort: Space Bunny, Muse Spark 1.3, LongCat 2.5 Preview and DeepSeek V4.1 Flash. Each arm ran once per pull request, 16 reviews in all. Verification was off, so we scored the reviewer’s raw findings, and the guideline-compliance pass ran unchanged in both arms. DeepSeek was metered and cost $0.57 for its four reviews. The other three models had no per-token cost.</p>
-  <p>One run per arm is a screen, not proof. Timing swings a lot between identical runs, and we come back to how much below.</p>
+  <h2 id="the-test">How we tested it</h2>
+  <p>We reused the two pull requests from our <a href="/guides/repository-map-ai-code-review">repository-map test</a>. They come from a production TypeScript monorepo, one touching 4 files and the other 8, and developers had already accepted 13 issues in them. That gave us a way to check whether a review still caught what it should.</p>
+  <p>Four models ran through OpenCode at high reasoning effort: Space Bunny, Muse Spark 1.3, LongCat 2.5 Preview and DeepSeek V4.1 Flash. Each setup ran once per pull request, 16 reviews in all. Verification was off, so we scored raw findings, and the compliance pass was identical in both setups. DeepSeek cost $0.57 for its four reviews. The other models had no per-token cost.</p>
+  <p>One run each is a quick screen, not a verdict. Review times wander a lot from run to run, and that turns out to matter.</p>
 
-  <h2 id="results">What happened</h2>
-  <p>We summed main-review time and reasoning tokens over both pull requests.</p>
+  <h2 id="results">Did it get faster?</h2>
+  <p>Totals for both pull requests:</p>
   <div class="tbl-wrap">
     <table>
-      <thead><tr><th>Model</th><th>Main-review time, control → prioritized</th><th>Reasoning tokens</th><th>Known issues found by the main review</th></tr></thead>
+      <thead><tr><th>Model</th><th>Main-review time, before → after</th><th>Reasoning tokens</th><th>Known bugs caught by the main review</th></tr></thead>
       <tbody>
         <tr><td>Space Bunny</td><td>296 s → 413 s</td><td>32K → 55K</td><td>3 → 2</td></tr>
         <tr><td>Muse Spark 1.3</td><td>396 s → 287 s</td><td>30K → 22K</td><td>1 → 0</td></tr>
@@ -379,49 +392,53 @@
       </tbody>
     </table>
   </div>
-  <p>Each model went its own way. Prioritized rules made Space Bunny slower on both pull requests and Muse Spark faster on both, and DeepSeek split. Pairing each control run with its prioritized twin, the prioritized arm took 0.96 times as long on average, with a 95% interval from 0.70 to 1.32. That’s no measurable effect. A single review swings by about 40% between identical runs, and seeing a 15% change through that noise would take about 47 pairs of pull requests.</p>
-  <p>Counting every pass, both arms caught 8 known issues. Counting only the main review, the pass we changed, the prioritized arm caught 4 against 6. That’s too few to call, but it points the wrong way.</p>
-  <p>LongCat 2.5 Preview isn’t in the table. It posted no findings in any of its four runs, took 6 to 29 minutes each, and one run hit the time limit before finishing, so its timings say nothing about the rules.</p>
+  <p>No pattern. Space Bunny got slower on both pull requests, Muse Spark got faster on both, and DeepSeek went one each way. Pair every run with its twin and the prioritized version took 0.96 times as long, with a 95% interval from 0.70 to 1.32. In plain terms, we can’t tell it apart from zero. A single review swings about 40% between identical runs, so spotting a real 15% gain would take roughly 47 pairs of pull requests.</p>
+  <p>Quality moved the wrong way, if it moved at all. Across every pass both setups caught 8 known bugs. In the main review, the only pass we changed, prioritized rules caught 4 against 6. Too few runs to be sure, but not encouraging.</p>
+  <p>We left LongCat 2.5 Preview out of the table. It posted nothing in any of its four runs, took 6 to 29 minutes each, and one run hit the time limit.</p>
 
-  <h2 id="why-not-faster">Why it wasn’t faster</h2>
-  <p>The rules weren’t where the time went. In these runs they were a quarter to a third of each main-review page’s first prompt, and after the first turn the provider serves that prompt from its cache. A study of prompt caching across OpenAI, Anthropic and Google found it cut API cost by 41 to 80% but time to first token by only 13 to 31% (<a href="https://arxiv.org/abs/2601.06007">Lumer et al., 2026</a>). The review’s time goes into reasoning and tool turns.</p>
-  <p>We’d seen this before. In our <a href="/guides/ai-code-review-speed-experiments">speed experiments</a>, loading only the rule sections mapped to the changed files cut the rules from 24.6 KB to 13.5 KB, and review time stayed at about 33 seconds.</p>
-  <p>The framing may have cost more than the cut saved. Space Bunny spent 79% more reasoning tokens on one pull request and 51% more on the other. Studying how models follow many instructions at once, Harada et al. saw DeepSeek R1 “explicitly check each given instruction one by one” (<a href="https://arxiv.org/abs/2509.21051">2025</a>). A block headed “rules to check against this diff” invites exactly that.</p>
+  <h2 id="why-not-faster">Why shorter rules didn’t save time</h2>
+  <p>The rules just weren’t where the time went. They made up a quarter to a third of each page’s first prompt, and after the first turn the provider serves that prompt from cache. One study of prompt caching on OpenAI, Anthropic and Google found it cut API cost by 41 to 80% but time to first token by only 13 to 31% (<a href="https://arxiv.org/abs/2601.06007">Lumer et al., 2026</a>). The minutes go into reasoning and tool calls.</p>
+  <p>We had a hint of this already. In our <a href="/guides/ai-code-review-speed-experiments">speed experiments</a>, loading only the rule sections mapped to the changed files took the rules from 24.6 KB to 13.5 KB, and the review still took about 33 seconds.</p>
+  <p>The wording probably hurt. Space Bunny burned 79% more reasoning tokens on one pull request and 51% more on the other. Studying models that follow many instructions at once, Harada et al. watched DeepSeek R1 “explicitly check each given instruction one by one” (<a href="https://arxiv.org/abs/2509.21051">2025</a>). Head a block “rules to check against this diff” and a reasoning model will do exactly that, rule by rule.</p>
 
   <h2 id="research">What the research says about rule count</h2>
-  <p>We checked the idea against recent papers before and after the test. Four findings matter here:</p>
+  <p>We read the recent papers before and after running this. Four findings bear on it:</p>
   <ul>
-    <li><b>Instruction following degrades with count, but slowly at our scale.</b> On a benchmark of up to 500 simultaneous instructions, the best models reached only 68% accuracy at 500, and the authors report trade-offs between accuracy and latency (<a href="https://arxiv.org/abs/2507.11538">Jaroslawicz et al., 2025</a>). A review’s few dozen rule sections is far below that.</li>
-    <li><b>Rules that look alike confuse models.</b> On RuleArena, models struggled to pick the rules that applied and were often confused by similar but distinct regulations (<a href="https://arxiv.org/abs/2412.08972">Zhou et al., 2024</a>). With distracting context, reasoning models dropped by up to 80%, and prompting or context engineering didn’t fix it (<a href="https://arxiv.org/abs/2601.07226">Lee et al., 2026</a>).</li>
-    <li><b>The rules models miss are the conditional ones.</b> In AgentIF, built from 707 real agent instructions, more than 30% of errors came from misjudging whether a conditional rule applied (<a href="https://arxiv.org/abs/2505.16944">Qi et al., 2025</a>). Code review rules are mostly conditional, and they’re the ones a keyword ranking tends to demote.</li>
-    <li><b>Summaries lose what makes a rule usable.</b> The authors of the ACE framework call it brevity bias. Condensing context drops domain detail, and their detailed, growing playbooks beat concise ones by 10.6% on agent tasks (<a href="https://arxiv.org/abs/2510.04618">Zhang et al., 2025</a>). A one-line rule tells the model the rule exists, not what it requires.</li>
+    <li><b>More instructions do hurt, but slowly at this scale.</b> On a benchmark of up to 500 simultaneous instructions, the best models hit only 68% accuracy at 500, and the authors note a trade-off between accuracy and latency (<a href="https://arxiv.org/abs/2507.11538">Jaroslawicz et al., 2025</a>). A review’s few dozen rule sections sits far below that.</li>
+    <li><b>Similar-looking rules confuse models.</b> On RuleArena, models struggled to pick the rules that applied and mixed up similar but distinct ones (<a href="https://arxiv.org/abs/2412.08972">Zhou et al., 2024</a>). Distracting context cut reasoning models’ scores by up to 80%, and prompting or context engineering didn’t fix it (<a href="https://arxiv.org/abs/2601.07226">Lee et al., 2026</a>).</li>
+    <li><b>Conditional rules are the ones that slip.</b> In AgentIF, built from 707 real agent instructions, more than 30% of errors came from misjudging whether a conditional rule applied (<a href="https://arxiv.org/abs/2505.16944">Qi et al., 2025</a>). Most code review rules are conditional, and those are the ones a keyword ranking pushes down.</li>
+    <li><b>One-line summaries throw away the useful part.</b> The ACE authors call it brevity bias. Condensed context drops domain detail, and their detailed playbooks beat concise ones by 10.6% on agent tasks (<a href="https://arxiv.org/abs/2510.04618">Zhang et al., 2025</a>). A one-liner tells the model a rule exists, not what it asks for.</li>
   </ul>
-  <p>The closest study to ours measured AGENTS.md files on coding agents. The files didn’t generally raise success rates, and they raised inference cost by more than 20% (<a href="https://arxiv.org/abs/2602.11988">Gloaguen et al., 2026</a>). That’s about the most a trim of the rules could save, and it’s smaller than our run-to-run noise.</p>
+  <p>The closest study to ours looked at AGENTS.md files for coding agents. They didn’t generally raise success rates, and they pushed inference cost up by more than 20% (<a href="https://arxiv.org/abs/2602.11988">Gloaguen et al., 2026</a>). So even deleting the rules outright would save something like that, which is still inside our noise.</p>
 
-  <h2 id="readings">What we think is going on</h2>
-  <p>These are our readings of the data, not results:</p>
+  <h2 id="readings">What we’d do instead</h2>
+  <p>This is our read of the data, not a result:</p>
   <ul>
-    <li><b>Relevance ranking already did the useful part.</b> The main review’s 24 KB already leads with the sections that name the changed files. Priority tiers on top mostly moved text around.</li>
-    <li><b>Telling a model what matters makes it act on it.</b> Our speed experiments found the same pattern: every idea that worked removed turns, and none worked by telling the model what not to do.</li>
-    <li><b>Priority belongs in data, not keywords.</b> ByteDance’s production reviewer keeps a taxonomy of review rules and improves it through a feedback loop on how its comments land, reaching 75.0% precision (<a href="https://arxiv.org/abs/2501.15134">Sun et al., 2025</a>). How often developers act on a rule’s comments is a better priority signal than the words in its title.</li>
+    <li><b>Relevance ranking already does the useful part.</b> The main review’s 24 KB starts with the sections that name the changed files. Priority tiers on top mostly shuffled text around.</li>
+    <li><b>Telling a model what matters makes it do more work.</b> Our speed experiments showed the same thing. Everything that worked removed turns, and nothing worked by instructing the model.</li>
+    <li><b>Learn priority from outcomes, not titles.</b> ByteDance’s production reviewer keeps a taxonomy of review rules and tunes it from feedback on its comments, reaching 75.0% precision (<a href="https://arxiv.org/abs/2501.15134">Sun et al., 2025</a>). Which rules developers actually act on is a better signal than which words a heading uses.</li>
   </ul>
-  <p>We changed nothing. The main review keeps its 24 KB ranked slice, and the compliance pass keeps its 96 KB. The pull requests come from a private repository, so the raw logs stay private and the experiment code isn’t merged. For speed, reasoning effort, the model and the number of tool turns matter far more, as <a href="/guides/why-ai-code-review-is-slow">Why AI code review is slow</a> shows. The reviewer is open source in the <a href="https://github.com/pgup-ai/jbot-review">J-Bot Review repository</a>.</p>
+  <p>So we changed nothing. The main review keeps its 24 KB ranked slice and the compliance pass keeps its 96 KB. If you want a faster AI reviewer, reasoning effort, model choice and the number of tool calls matter far more, as we found in <a href="/guides/why-ai-code-review-is-slow">Why AI code review is slow</a>. The pull requests are from a private repository, so the logs stay private and the experiment code isn’t merged. The reviewer itself is open source in the <a href="https://github.com/pgup-ai/jbot-review">J-Bot Review repository</a>.</p>
   <h2 id="faq">FAQ</h2>
   <details class="faq-item" open>
-    <summary>Does giving an AI code reviewer fewer rules make it faster?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Not by itself, in our tests. Cutting the main review’s rules by about 40%, with the most relevant and critical ones in full and the rest as one-line summaries, left review time about where it was: 0.96 times as long, with a 95% interval of 0.70 to 1.32. An earlier test that loaded only the rule sections mapped to the changed files also left review time unchanged.</p></div>
+    <summary>Do fewer rules make an AI code reviewer faster?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Not in our tests. Cutting the main review’s rules by 40% and ranking them by priority left review time at 0.96 times the original, with a 95% interval of 0.70 to 1.32, which is within run-to-run noise. An earlier test that loaded only the rule sections mapped to the changed files also left review time unchanged.</p></div>
   </details>
   <details class="faq-item">
-    <summary>Why didn’t shorter rules speed up the review?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>The rules weren’t where the time went. They were a quarter to a third of each page’s first prompt and came from the provider’s prompt cache after the first turn. The time went into reasoning and tool turns, and telling a reasoning model which rules to check can add reasoning. Space Bunny spent 51% and 79% more reasoning tokens with the prioritized rules.</p></div>
+    <summary>Does a long AGENTS.md slow down coding agents?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Somewhat, and mostly in cost. One study found AGENTS.md files raised coding agents’ inference cost by more than 20% without generally raising success rates. With prompt caching, a fixed block of rules is cheap after the first turn, so in our tests the time went into reasoning and tool calls, not into reading the rules.</p></div>
   </details>
   <details class="faq-item">
-    <summary>Should an AI code reviewer rank repository rules by priority?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>By relevance, yes. J-Bot Review already fills each pass’s budget with the sections that name the changed files first. By guessed priority, no. In our tests keyword priority misfired, and the main review found 4 known issues instead of 6. How often developers act on a rule’s comments is a better signal than the words in its title.</p></div>
+    <summary>Why can prioritizing rules make a reasoning model slower?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Because it tends to act on the list. Reasoning models such as DeepSeek R1 have been observed checking each given instruction one by one. When we headed the top rules as rules to check, Space Bunny used 51% and 79% more reasoning tokens on our two pull requests.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Should an AI code reviewer rank repository rules at all?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>By relevance, yes. J-Bot Review fills each pass’s budget with the sections that name the changed files first. By a guessed priority, no: keyword priority misfired, and the main review caught 4 known bugs instead of 6. How often developers act on a rule’s comments is a better signal than its title.</p></div>
   </details>
   <details class="faq-item">
     <summary>How many rules can an AI code reviewer follow?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>More than a typical review sends. On a benchmark of up to 500 simultaneous instructions, the best models still reached 68% at 500. What hurts more is rules that look alike but don’t apply, and conditional rules, which caused more than 30% of errors in the AgentIF benchmark.</p></div>
+    <div class="faq-a"><p>More than a typical review sends. On a benchmark of up to 500 simultaneous instructions, the best models still reached 68% at 500. Rules that look alike but don’t apply, and conditional rules, cause more trouble than the count. Conditional rules caused more than 30% of errors in the AgentIF benchmark.</p></div>
   </details>
   <h2>References</h2>
   <ul>
