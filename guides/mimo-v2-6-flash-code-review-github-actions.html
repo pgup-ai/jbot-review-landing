@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>MiMo V2.6 Flash Code Review in GitHub Actions | J-Bot Review</title>
-<meta name="description" content="Run Xiaomi MiMo V2.6 Flash as a free AI code reviewer in GitHub Actions through OpenCode Zen or Cline. Exact model ids for seven routes, why its reviews run slow (repeated tool calls and 40-second turns), and when to pick a metered route." />
+<meta name="description" content="Run Xiaomi MiMo V2.6 Flash as a free AI code reviewer in GitHub Actions through OpenCode Zen or Cline. Exact model ids for seven routes, our retest after Xiaomi fixed its repeated tool calls, and why reviews still take over 20 minutes." />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0a0b0a" />
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
@@ -17,7 +17,7 @@
 <meta property="og:url" content="https://www.pgupai.com/guides/mimo-v2-6-flash-code-review-github-actions" />
 <meta property="og:site_name" content="J-Bot Review" />
 <meta property="og:title" content="MiMo V2.6 Flash code review in GitHub Actions" />
-<meta property="og:description" content="Free on OpenCode Zen and Cline, open weights, and slow: repeated tool calls and 40-second turns. Exact model ids for seven routes." />
+<meta property="og:description" content="Free on OpenCode Zen and Cline, with open weights. Xiaomi fixed the repeated tool calls, but reviews still take 23 to 27 minutes. Exact model ids for seven routes." />
 <meta property="og:image" content="https://www.pgupai.com/assets/og-guide-mimo-v2-6-flash-20260926.png" />
 <meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-guide-mimo-v2-6-flash-20260926.png" />
 <meta property="og:image:type" content="image/png" />
@@ -25,11 +25,12 @@
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="Xiaomi MiMo V2.6 Flash: free AI code review in GitHub Actions. Open weights, 309B total and 15B active parameters." />
 <meta property="article:published_time" content="2026-09-26" />
+<meta property="article:modified_time" content="2026-09-27" />
 <meta property="article:section" content="Guides" />
 <meta name="twitter:image:alt" content="Xiaomi MiMo V2.6 Flash: free AI code review in GitHub Actions. Open weights, 309B total and 15B active parameters." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="MiMo V2.6 Flash code review in GitHub Actions" />
-<meta name="twitter:description" content="Free on OpenCode Zen and Cline, open weights, and slow: repeated tool calls and 40-second turns. Exact model ids for seven routes." />
+<meta name="twitter:description" content="Free on OpenCode Zen and Cline, with open weights. Xiaomi fixed the repeated tool calls, but reviews still take 23 to 27 minutes. Exact model ids for seven routes." />
 <meta name="twitter:image" content="https://www.pgupai.com/assets/og-guide-mimo-v2-6-flash-20260926.png" />
 
 <script type="application/ld+json">
@@ -40,15 +41,15 @@
       "@type": "TechArticle",
       "@id": "https://www.pgupai.com/guides/mimo-v2-6-flash-code-review-github-actions#article",
       "headline": "MiMo V2.6 Flash code review in GitHub Actions",
-      "description": "Run Xiaomi MiMo V2.6 Flash as a free AI code reviewer in GitHub Actions through OpenCode Zen or Cline. Exact model ids for seven routes, why its reviews run slow (repeated tool calls and 40-second turns), and when to pick a metered route.",
+      "description": "Run Xiaomi MiMo V2.6 Flash as a free AI code reviewer in GitHub Actions through OpenCode Zen or Cline. Exact model ids for seven routes, our retest after Xiaomi fixed its repeated tool calls, and why reviews still take over 20 minutes.",
       "url": "https://www.pgupai.com/guides/mimo-v2-6-flash-code-review-github-actions",
       "mainEntityOfPage": "https://www.pgupai.com/guides/mimo-v2-6-flash-code-review-github-actions",
       "image": [
         "https://www.pgupai.com/assets/og-guide-mimo-v2-6-flash-20260926.png"
       ],
       "datePublished": "2026-09-26",
-      "dateModified": "2026-09-26",
-      "keywords": "MiMo V2.6 Flash, Xiaomi MiMo, MiMo code review, free AI code review, GitHub Actions AI code review, OpenCode Zen free model, open-weight code review model",
+      "dateModified": "2026-09-27",
+      "keywords": "MiMo V2.6 Flash, Xiaomi MiMo, MiMo code review, MiMo tool call repetition, MiMo reasoning effort, free AI code review, GitHub Actions AI code review, OpenCode Zen free model, open-weight code review model",
       "about": [
         {
           "@type": "Thing",
@@ -95,7 +96,15 @@
           "name": "Why is MiMo V2.6 Flash slow at code review?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "It makes too many tool calls, repeats them, and takes a long time on each turn. On a 12-file change its main review made 59 tool calls on 13 distinct files, 21 of them re-reads of files it had already read, across 34 turns of about 41 seconds each. Lowering the effort setting doesn’t help, because Xiaomi says every reasoning level other than none enables the same thinking."
+            "text": "It reasons a lot, and the free route serves those tokens slowly. Across a review of a 7-file change it wrote about 60,000 reasoning tokens, served at 25 to 35 tokens a second, and the main review alone took 1,369 seconds. Lowering the effort setting doesn’t help, because low reasons as much as the default."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Did Xiaomi fix MiMo V2.6’s repeated tool calls?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, in our retest. Xiaomi shipped updated weights on September 25, 2026, under the same model names. On September 27, exact repeats were 0 to 12% of each session’s tool calls, close to DeepSeek V4.1 Flash, and no session looped. Reviews still took 23 and 27 minutes."
           }
         },
         {
@@ -276,8 +285,8 @@
     <svg class="spark-mark" viewBox="10.35 12.78 19.25 14.4" aria-hidden="true"><path d="M21.0617 14.3854C22.386 14.6964 23.0281 15.1378 23.4494 16.0407C23.8808 16.9637 23.951 17.7262 23.951 21.8896V25.8022L22.5264 25.7721L21.0918 25.742L21.0417 21.9297C20.9915 17.7663 20.9714 17.6359 20.3895 17.1844C19.8679 16.7731 19.4264 16.7229 16.5772 16.7129H13.8685L13.8183 21.2275L13.7682 25.742H10.9591L10.929 20.0336C10.909 15.5291 10.939 14.2951 11.0293 14.2349C11.0996 14.1847 13.2365 14.1647 15.7747 14.1847C19.4967 14.2249 20.52 14.265 21.0617 14.3854ZM28.9472 14.3252C29.0174 14.4657 29.0475 25.3708 28.9773 25.722C28.9773 25.7621 28.3252 25.7822 27.5426 25.7721L26.108 25.742L26.0779 20.0838C26.0679 15.9906 26.0879 14.3854 26.1682 14.2951C26.2585 14.1847 26.6096 14.1546 27.5727 14.1546C28.6964 14.1546 28.8669 14.1747 28.9472 14.3252ZM18.9349 22.2307V25.8022L17.4601 25.7721L15.9753 25.742L15.9452 22.331C15.9352 20.455 15.9452 18.8598 15.9753 18.7996C16.0054 18.6993 16.3967 18.6692 17.4802 18.6692H18.9349V22.2307Z"></path></svg>
     <h1>MiMo V2.6 Flash code review in GitHub Actions</h1>
   </div>
-  <p class="updated">Published September 26, 2026 · routes and prices checked September 26, 2026 · applies to pgup-ai/jbot-review-action v0</p>
-  <p class="lede"><b>Xiaomi’s MiMo V2.6 Flash, released 2026-09-22, is free for code review on OpenCode Zen and in Cline’s free tier.</b> It’s an open-weight mixture-of-experts model with 309B total and 15B active parameters. It’s also the slowest free model we’ve run in J-Bot Review. On the free OpenCode route, reviews took about 24 minutes where Space Bunny took under a minute, and 2 of 4 test reviews ran out of time. J-Bot’s telemetry shows why: it makes far more tool calls than the change needs, many of them repeats, and each turn takes about 40 seconds. Use it for small pull requests, or pick a metered route for large ones.</p>
+  <p class="updated">Published September 26, 2026 · retested September 27, 2026 after Xiaomi’s repetition fix · routes and prices checked September 26, 2026 · applies to pgup-ai/jbot-review-action v0</p>
+  <p class="lede"><b>Xiaomi’s MiMo V2.6 Flash, released 2026-09-22, is free for code review on OpenCode Zen and in Cline’s free tier.</b> It’s an open-weight mixture-of-experts model with 309B total and 15B active parameters. In our first runs it kept repeating tool calls, and Xiaomi has since shipped a fix. We retested on September 27. The loops are gone, but it’s still the slowest free model we’ve run in J-Bot Review. Two reviews took 23 and 27 minutes. At high effort, Space Bunny’s main review of the same change took under 3 minutes. The time now goes into reasoning, and no setting turns that down. Use MiMo for small pull requests, or pick a faster model.</p>
 
   <div class="callout">
     <span class="tag">Free route · 200K context · 32K output</span>
@@ -287,7 +296,7 @@
   <h2 id="setup">OpenCode setup in three steps</h2>
   <ol>
     <li><b>Create an OpenCode API key.</b> Save it as the repository secret <code>OPENCODE_API_KEY</code> (<em>Settings → Secrets and variables → Actions</em>).</li>
-    <li><b>Commit the workflow.</b> Add the file below as <code>.github/workflows/jbot-review.yml</code>. The workflow raises <code>time-budget-minutes</code> from its default of 30 to 45. With 30, the main review gets 24.5 minutes, and MiMo ran out of that on 2 of our 4 test pull requests.</li>
+    <li><b>Commit the workflow.</b> Add the file below as <code>.github/workflows/jbot-review.yml</code>. The workflow raises <code>time-budget-minutes</code> from its default of 30 to 45. With 30, the main review gets 24.5 minutes. MiMo ran out of that on 2 of our first 4 test pull requests, and one of the two retests needed 26.6.</li>
     <li><b>Open a pull request.</b> J-Bot reads the base…head diff and posts diff-anchored findings with a verdict. A second session checks blocking findings before they post.</li>
   </ol>
 
@@ -335,19 +344,33 @@
   </div>
   <p class="note-line">Xiaomi Token Plan keys are tied to a region. J-Bot’s <code>xiaomi-token-plan-sgp</code> provider takes a Singapore key. On Command Code, MiMo V2.6 Flash has no adjustable reasoning effort, so J-Bot omits the effort flag.</p>
 
-  <h2 id="speed">Why it was slow</h2>
-  <p>On a 12-file change, the free OpenCode route’s main review ran for about 1,410 seconds and returned a partial result, so the run failed. J-Bot’s session telemetry shows where the time went:</p>
+  <h2 id="repetition">Xiaomi’s repetition fix, retested</h2>
+  <p>In our first runs, on September 23 and 25, MiMo kept calling the same tools. On one 12-file change its main review made 59 tool calls that touched only 13 files. 21 of them re-read a file it had already read, and 4 repeated an earlier call exactly. The review ran for 1,410 seconds and returned a partial result, so the run failed.</p>
+  <p>Xiaomi’s <a href="https://mimo.xiaomi.com/blog/mimo-v2-6-tool-call-repetition" target="_blank" rel="noopener noreferrer">postmortem</a> explains the cause. Training only penalized a turn once it passed 32 tool calls, so smaller loops went unpunished and grew as training scaled. Xiaomi trained a small teacher model on about 7,000 repetition examples and merged it into MiMo. The new weights reached Xiaomi’s API on September 25 at 06:00 UTC+8 under the same model names. We can’t tell when OpenCode’s free route switched over, so our September 25 run may have used either version.</p>
+  <p>On September 27 we ran one review each on two changes from a production TypeScript backend, on the free OpenCode route:</p>
   <ul>
-    <li><b>Too many tool calls.</b> It made 59 calls, and they touched only 13 distinct files.</li>
-    <li><b>Duplicate calls.</b> 21 of the 59 re-read a file it had already read, and 4 repeated an earlier call exactly.</li>
-    <li><b>Slow turns.</b> The review took 34 turns, about 41 seconds each. Most of that is the model reasoning before its next call, so every extra call costs about 40 seconds.</li>
+    <li><b>4 files, split into 2 pages.</b> The two main-review sessions made 4 and 33 tool calls. 0 and 2 were exact repeats. The whole review took 1,599 seconds.</li>
+    <li><b>7 files.</b> The main review made 50 tool calls, and 6 were exact repeats. It took 1,369 seconds of the review’s 1,372.</li>
   </ul>
-  <p>The same pattern showed up on four smaller pull requests. The reviews took 163 turns between them, about 41 each, and two of the four hit J-Bot’s 24.5-minute limit for the main review and posted nothing. J-Bot’s context pack, which hands the model code before its first turn, cut the turns to 129 but not the time. Its first turn grew from 86 to 394 seconds as the reasoning moved to the start.</p>
-  <p>Lowering the reasoning effort won’t fix it. Xiaomi’s API documentation says every reasoning level other than none enables the same thinking, so <code>low</code> doesn’t select a smaller budget. On the free route, the levers are a longer <code>time-budget-minutes</code> and smaller pull requests.</p>
+  <p>That’s a normal rate. DeepSeek V4.1 Flash repeated 7 of 66 calls on the same 7-file change, and none of MiMo’s sessions looped. The fix works.</p>
+
+  <h2 id="speed">Why it’s still slow</h2>
+  <p>Almost all the time goes to reasoning. Across the 7-file review MiMo wrote about 60,000 reasoning tokens. Space Bunny wrote about 8,000 on the same change, and DeepSeek V4.1 Flash about 75,000. The free route is also slow to serve them, at 25 to 35 tokens a second once you count each turn’s prompt processing. DeepSeek wrote more tokens than MiMo and still finished its main review in about half the time.</p>
+  <p>Tool calls cost almost nothing now. Grep and read return right away, and the gaps between turns added up to 2 or 3 seconds per session.</p>
+  <p>Turning the effort down doesn’t help. Models.dev lists no effort levels for MiMo, and Xiaomi’s API documentation says every level other than none turns on the same thinking. We checked with a hard math question sent through OpenCode, twice per setting:</p>
+  <ul>
+    <li><b>No effort set.</b> 2,357 and 2,582 reasoning tokens.</li>
+    <li><b>Low.</b> 2,470. The second run returned nothing.</li>
+    <li><b>High.</b> 2,690 and 3,859.</li>
+  </ul>
+  <p>Low reasons as much as the default. On the free route, the levers are a longer <code>time-budget-minutes</code> and smaller pull requests.</p>
+
+  <h2 id="quality">What it caught</h2>
+  <p>The findings were worth reading. On the 4-file change, MiMo matched 3 of the 7 issues on our answer key. It also caught a fourth, a P1 where a record could supersede itself, which our matcher missed because MiMo worded it differently. On the 7-file change it found 1 of 6: a storage check that crashes startup under the repository’s own documented local setup. It also flagged new helper functions with no callers, which the repository’s standards discourage.</p>
 
   <h2 id="when">When to use it</h2>
   <ul>
-    <li><b>Small pull requests on a $0 budget.</b> Fewer changed files mean fewer calls, and with 40-second turns that decides whether a review finishes. The free route’s 200K window points the same way.</li>
+    <li><b>Small pull requests on a $0 budget.</b> Fewer changed files mean fewer turns, and at 30 to 40 seconds a turn that decides whether a review finishes. The free route’s 200K window points the same way.</li>
     <li><b>A second opinion from a different lab.</b> A model pool can mix MiMo with a faster free model, and each rerun of the workflow moves to the next entry.</li>
     <li><b>Open weights, when that matters to you.</b> The weights are public, so you can run the model on your own servers and point J-Bot at it through the <a href="/guides/openai-compatible-code-review-github-actions">OpenAI-compatible provider</a>.</li>
   </ul>
@@ -367,7 +390,11 @@
   </details>
   <details class="faq-item">
     <summary>Why is MiMo V2.6 Flash slow at code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>It makes too many tool calls, repeats them, and takes a long time on each turn. On a 12-file change its main review made 59 tool calls on 13 distinct files, 21 of them re-reads of files it had already read, across 34 turns of about 41 seconds each. Lowering the effort setting doesn’t help, because Xiaomi says every reasoning level other than none enables the same thinking.</p></div>
+    <div class="faq-a"><p>It reasons a lot, and the free route serves those tokens slowly. Across a review of a 7-file change it wrote about 60,000 reasoning tokens, served at 25 to 35 tokens a second, and the main review alone took 1,369 seconds. Lowering the effort setting doesn’t help, because low reasons as much as the default.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Did Xiaomi fix MiMo V2.6’s repeated tool calls?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Yes, in our retest. Xiaomi shipped updated weights on September 25, 2026, under the same model names. On September 27, exact repeats were 0 to 12% of each session’s tool calls, close to DeepSeek V4.1 Flash, and no session looped. Reviews still took 23 and 27 minutes.</p></div>
   </details>
   <details class="faq-item">
     <summary>Which MiMo V2.6 Flash route should I use for large pull requests?<span class="faq-mark" aria-hidden="true">+</span></summary>
