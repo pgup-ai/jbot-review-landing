@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Do fewer, prioritized rules speed up AI code review? | J-Bot Review</title>
+<meta name="description" content="We cut our AI code reviewer’s rules by 40% and ranked them by priority. Review time didn’t change beyond noise, and the main review caught fewer bugs." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/guides/prioritized-rules-ai-code-review" />
+<link rel="alternate" type="text/markdown" href="/md/guides/prioritized-rules-ai-code-review.md" title="Markdown representation" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/guides/prioritized-rules-ai-code-review" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="Do fewer, prioritized rules make an AI code reviewer faster?" />
+<meta property="og:description" content="We cut the reviewer’s AGENTS.md-style rules by 40% and ranked them by priority. On three models review time stayed within noise, and the main review caught 4 known issues instead of 6." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-prioritized-rules-ai-code-review-20260926.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-prioritized-rules-ai-code-review-20260926.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Do prioritized rules make AI code review faster? About 40% less rule text, 0.96 times the review time, within noise." />
+<meta property="article:published_time" content="2026-09-26" />
+<meta property="article:section" content="Engineering" />
+<meta name="twitter:image:alt" content="Do prioritized rules make AI code review faster? About 40% less rule text, 0.96 times the review time, within noise." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Do fewer, prioritized rules make an AI code reviewer faster?" />
+<meta name="twitter:description" content="We cut the reviewer’s AGENTS.md-style rules by 40% and ranked them by priority. On three models review time stayed within noise, and the main review caught 4 known issues instead of 6." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-prioritized-rules-ai-code-review-20260926.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/guides/prioritized-rules-ai-code-review#article",
+      "headline": "Do fewer, prioritized rules make an AI code reviewer faster?",
+      "description": "We cut our AI code reviewer’s rules by 40% and ranked them by priority. Review time didn’t change beyond noise, and the main review caught fewer bugs.",
+      "url": "https://www.pgupai.com/guides/prioritized-rules-ai-code-review",
+      "mainEntityOfPage": "https://www.pgupai.com/guides/prioritized-rules-ai-code-review",
+      "image": [
+        "https://www.pgupai.com/assets/og-prioritized-rules-ai-code-review-20260926.png"
+      ],
+      "datePublished": "2026-09-26",
+      "dateModified": "2026-09-26",
+      "keywords": "AGENTS.md, AI code review rules, prompt length and latency, LLM instruction following, reasoning tokens, prompt caching, AI code review speed, context engineering, coding agent guidelines",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "AI code review"
+        },
+        {
+          "@type": "Thing",
+          "name": "Large language model"
+        },
+        {
+          "@type": "Thing",
+          "name": "Prompt engineering"
+        },
+        {
+          "@type": "Thing",
+          "name": "Context engineering"
+        }
+      ],
+      "author": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.pgupai.com/assets/icon-512.png"
+        }
+      },
+      "citation": [
+        {
+          "@type": "ScholarlyArticle",
+          "name": "How Many Instructions Can LLMs Follow at Once?",
+          "url": "https://arxiv.org/abs/2507.11538"
+        },
+        {
+          "@type": "ScholarlyArticle",
+          "name": "When Instructions Multiply: Measuring and Estimating LLM Capabilities of Multiple Instructions Following",
+          "url": "https://arxiv.org/abs/2509.21051"
+        },
+        {
+          "@type": "ScholarlyArticle",
+          "name": "AgentIF: Benchmarking Instruction Following of Large Language Models in Agentic Scenarios",
+          "url": "https://arxiv.org/abs/2505.16944"
+        },
+        {
+          "@type": "ScholarlyArticle",
+          "name": "RuleArena: A Benchmark for Rule-Guided Reasoning with LLMs in Real-World Scenarios",
+          "url": "https://arxiv.org/abs/2412.08972"
+        },
+        {
+          "@type": "ScholarlyArticle",
+          "name": "Lost in the Noise: How Reasoning Models Fail with Contextual Distractors",
+          "url": "https://arxiv.org/abs/2601.07226"
+        },
+        {
+          "@type": "ScholarlyArticle",
+          "name": "Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models",
+          "url": "https://arxiv.org/abs/2510.04618"
+        },
+        {
+          "@type": "ScholarlyArticle",
+          "name": "Don’t Break the Cache: An Evaluation of Prompt Caching for Long-Horizon Agentic Tasks",
+          "url": "https://arxiv.org/abs/2601.06007"
+        },
+        {
+          "@type": "ScholarlyArticle",
+          "name": "Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?",
+          "url": "https://arxiv.org/abs/2602.11988"
+        },
+        {
+          "@type": "ScholarlyArticle",
+          "name": "BitsAI-CR: Automated Code Review via LLM in Practice",
+          "url": "https://arxiv.org/abs/2501.15134"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.pgupai.com/guides/prioritized-rules-ai-code-review#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do fewer rules make an AI code reviewer faster?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not in our tests. Cutting the main review’s rules by 40% and ranking them by priority left review time at 0.96 times the original, with a 95% interval of 0.70 to 1.32, which is within run-to-run noise. An earlier test that loaded only the rule sections mapped to the changed files also left review time unchanged."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does a long AGENTS.md slow down coding agents?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Somewhat, and mostly in cost. One study found AGENTS.md files raised coding agents’ inference cost by more than 20% without generally raising success rates. With prompt caching, a fixed block of rules is cheap after the first turn, so in our tests the time went into reasoning and tool calls, not into reading the rules."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why can prioritizing rules make a reasoning model slower?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because it tends to act on the list. Reasoning models such as DeepSeek R1 have been observed checking each given instruction one by one. When we headed the top rules as rules to check, Space Bunny used 51% and 79% more reasoning tokens on our two pull requests."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should an AI code reviewer rank repository rules at all?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "By relevance, yes. J-Bot Review fills each pass’s budget with the sections that name the changed files first. By a guessed priority, no: keyword priority misfired, and the main review caught 4 known bugs instead of 6. How often developers act on a rule’s comments is a better signal than its title."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How many rules can an AI code reviewer follow?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "More than a typical review sends. On a benchmark of up to 500 simultaneous instructions, the best models still reached 68% at 500. Rules that look alike but don’t apply, and conditional rules, cause more trouble than the count. Conditional rules caused more than 30% of errors in the AgentIF benchmark."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "J-Bot Review",
+          "item": "https://www.pgupai.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://www.pgupai.com/guides"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Prioritized rules in AI code review",
+          "item": "https://www.pgupai.com/guides/prioritized-rules-ai-code-review"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #0a0b0a; --surface: #0e100e; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --blue: #7aa2ff;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --border-code: rgba(255,255,255,0.09);
+    --code-text: #c8cdc7;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 740px; overflow-wrap: anywhere; }
+  article a { text-decoration: underline; text-underline-offset: 3px; }
+  h2[id] { scroll-margin-top: 90px; }
+  .contents { border-block: 1px solid var(--hairline); padding: 18px 0; margin: 28px 0; }
+  .contents b { font-size: 14px; }
+  .contents ul { margin-bottom: 0; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  .topic { font-family: var(--mono); font-size: 11px; color: var(--blue); letter-spacing: 0.07em; text-transform: uppercase; margin: 0 0 10px; }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  h3 { font-family: var(--display); font-weight: 600; font-size: 17px; letter-spacing: -0.01em; margin: 26px 0 8px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+  code { font-family: var(--mono); font-size: 12.5px; color: var(--code-text); background: var(--surface); border: 1px solid var(--border-code); border-radius: 5px; padding: 1px 6px; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 22px 0; }
+  .stats > div { border: 1px solid var(--border-card); border-radius: 11px; padding: 14px 16px; background: var(--surface-subtle); }
+  .stats .n { font-family: var(--display); font-size: 27px; font-weight: 600; letter-spacing: -0.01em; color: var(--accent); line-height: 1.1; }
+  .stats .l { color: var(--text-3); font-size: 13px; line-height: 1.45; margin-top: 7px; }
+
+  .callout { border: 1px solid rgba(94,227,154,0.28); background: rgba(94,227,154,0.045); border-radius: 12px; padding: 16px 18px; margin: 24px 0; }
+  .callout .tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 4px; }
+  .callout p, .callout li { color: var(--text-2); }
+  .callout p { margin: 6px 0 0; }
+  .callout ul { margin: 6px 0 0; }
+
+  .series { border: 1px solid var(--border-card); border-radius: 12px; padding: 16px 20px; margin: 28px 0; background: var(--surface-subtle); }
+  .series b { font-size: 14px; }
+  .series ol { margin: 8px 0 0; }
+  .series li { font-size: 14px; margin: 4px 0; }
+  .series li[aria-current] { color: var(--text); font-weight: 600; }
+
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; min-width: 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; overflow-wrap: break-word; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--text); font-weight: 600; }
+
+  .faq-item { border-bottom: 1px solid var(--hairline); }
+  .faq-item:first-of-type { border-top: 1px solid var(--hairline); }
+  .faq-item summary { display: flex; align-items: baseline; justify-content: space-between; gap: 22px; list-style: none; cursor: pointer; padding: 17px 2px; font-weight: 600; font-size: 15.5px; color: var(--text); line-height: 1.45; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-mark { font-family: var(--mono); font-size: 15px; color: var(--text-4); flex: none; transition: transform 0.2s var(--ease), color 0.2s var(--ease); }
+  .faq-item[open] .faq-mark { transform: rotate(45deg); color: var(--accent); }
+  .faq-a { padding: 0 2px 20px; font-size: 14.5px; color: var(--text-2); }
+  .faq-a p { margin: 0; }
+
+  .related { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0 0; }
+  .rel-card { display: block; border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 18px; color: var(--text); text-decoration: none; }
+  .rel-card:hover { border-color: rgba(94,227,154,0.35); color: var(--text); }
+  .rel-card .k2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 7px; }
+  .rel-card p { margin: 6px 0 0; font-size: 13px; color: var(--text-3); }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+
+  @media (max-width: 560px) {
+    .nav-links a:not(.btn) { display: none; }
+    main { padding-inline: 20px; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stats .n { font-size: 21px; }
+    .tbl-wrap table { min-width: 600px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .faq-mark { transition: none; }
+  }
+</style>
+<link rel="stylesheet" href="/assets/analytics.css" />
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides">Guides</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<article>
+  <p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / Prioritized rules in AI code review</p>
+  <p class="topic">Engineering notes · Experiment</p>
+  <h1>Do fewer, prioritized rules make an AI code reviewer faster?</h1>
+  <p class="updated">Published September 26, 2026</p>
+  <p class="lede">Short answer: no. We trimmed the rules our AI code reviewer reads by 40% and put the critical ones first. Review time didn’t move beyond run-to-run noise, and the main review caught 4 known bugs instead of 6.</p>
+  <p>The idea sounded obvious. A reviewer carrying 24 KB of house rules has to wade through style notes to find the invariants that matter, so give it less to read and point it at what counts. We expected a modest speedup, somewhere around 10 to 20%. We didn’t get one.</p>
+  <p>J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI. It reads your team’s written rules, such as AGENTS.md, REVIEW.md and the docs they link to. The dedicated guideline-compliance pass gets up to 96 KB of them, and the main review gets 24 KB, starting with the sections that name the changed files (<a href="/guides/ai-code-review-team-guidelines">how that works</a>). This test only touched the main review’s 24 KB.</p>
+
+  <nav class="contents" aria-label="Article contents">
+    <b>In this article</b>
+    <ul>
+      <li><a href="#the-idea">What we changed</a></li>
+      <li><a href="#the-test">How we tested it</a></li>
+      <li><a href="#results">Did it get faster?</a></li>
+      <li><a href="#why-not-faster">Why shorter rules didn’t save time</a></li>
+      <li><a href="#research">What the research says about rule count</a></li>
+      <li><a href="#readings">What we’d do instead</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+  </nav>
+
+  <div class="stats" aria-label="What we measured">
+    <div><div class="n">24.5 → 14.6 KB</div><div class="l">rule text sent to the main review</div></div>
+    <div><div class="n">0.96×</div><div class="l">review time with prioritized rules, 95% interval 0.70 to 1.32</div></div>
+    <div><div class="n">+51–79%</div><div class="l">more reasoning tokens on Space Bunny</div></div>
+    <div><div class="n">6 → 4</div><div class="l">of 13 known bugs caught by the main review</div></div>
+  </div>
+
+  <h2 id="the-idea">What we changed</h2>
+  <p>Normally the main review gets 24 KB of rule sections, ordered by how closely each one names the changed files. We swapped that for three tiers, ranked by relevance times priority:</p>
+  <ul>
+    <li><b>Full text</b> for the top sections, up to 10 KB.</li>
+    <li><b>One line each</b> for the next ones, up to 4 KB. That’s the section title plus its first sentence.</li>
+    <li><b>A count</b> of the rest, with a note that the compliance pass still checks every rule.</li>
+  </ul>
+  <p>Priority came from keywords in the document name and section title. Invariant, security, money, transaction and migration doubled a section’s weight. Style, comment, naming and formatting halved it. The block told the model to check the full-text rules against the change and to cite a one-liner only for a clear violation.</p>
+  <p>We had to guess priority because the repository never states it rule by rule. It has a doc of invariants, a doc of coding standards and a list of blockers in its review rubric, and that’s it. The keywords guessed wrong at least once. A section about moving old code to a new API scored as critical because its title has the word migration in it.</p>
+
+  <h2 id="the-test">How we tested it</h2>
+  <p>We reused the two pull requests from our <a href="/guides/repository-map-ai-code-review">repository-map test</a>. They come from a production TypeScript monorepo, one touching 4 files and the other 8, and developers had already accepted 13 issues in them. That gave us a way to check whether a review still caught what it should.</p>
+  <p>Four models ran through OpenCode at high reasoning effort: Space Bunny, Muse Spark 1.3, LongCat 2.5 Preview and DeepSeek V4.1 Flash. Each setup ran once per pull request, 16 reviews in all. Verification was off, so we scored raw findings, and the compliance pass was identical in both setups. DeepSeek cost $0.57 for its four reviews. The other models had no per-token cost.</p>
+  <p>One run each is a quick screen, not a verdict. Review times wander a lot from run to run, and that turns out to matter.</p>
+
+  <h2 id="results">Did it get faster?</h2>
+  <p>Totals for both pull requests:</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Model</th><th>Main-review time, before → after</th><th>Reasoning tokens</th><th>Known bugs caught by the main review</th></tr></thead>
+      <tbody>
+        <tr><td>Space Bunny</td><td>296 s → 413 s</td><td>32K → 55K</td><td>3 → 2</td></tr>
+        <tr><td>Muse Spark 1.3</td><td>396 s → 287 s</td><td>30K → 22K</td><td>1 → 0</td></tr>
+        <tr><td>DeepSeek V4.1 Flash</td><td>1,265 s → 1,168 s</td><td>163K → 161K</td><td>2 → 2</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>No pattern. Space Bunny got slower on both pull requests, Muse Spark got faster on both, and DeepSeek went one each way. Pair every run with its twin and the prioritized version took 0.96 times as long, with a 95% interval from 0.70 to 1.32. In plain terms, we can’t tell it apart from zero. A single review swings about 40% between identical runs, so spotting a real 15% gain would take roughly 47 pairs of pull requests.</p>
+  <p>Quality moved the wrong way, if it moved at all. Across every pass both setups caught 8 known bugs. In the main review, the only pass we changed, prioritized rules caught 4 against 6. Too few runs to be sure, but not encouraging.</p>
+  <p>We left LongCat 2.5 Preview out of the table. It posted nothing in any of its four runs, took 6 to 29 minutes each, and one run hit the time limit.</p>
+
+  <h2 id="why-not-faster">Why shorter rules didn’t save time</h2>
+  <p>The rules just weren’t where the time went. They made up a quarter to a third of each page’s first prompt, and after the first turn the provider serves that prompt from cache. One study of prompt caching on OpenAI, Anthropic and Google found it cut API cost by 41 to 80% but time to first token by only 13 to 31% (<a href="https://arxiv.org/abs/2601.06007">Lumer et al., 2026</a>). The minutes go into reasoning and tool calls.</p>
+  <p>We had a hint of this already. In our <a href="/guides/ai-code-review-speed-experiments">speed experiments</a>, loading only the rule sections mapped to the changed files took the rules from 24.6 KB to 13.5 KB, and the review still took about 33 seconds.</p>
+  <p>The wording probably hurt. Space Bunny burned 79% more reasoning tokens on one pull request and 51% more on the other. Studying models that follow many instructions at once, Harada et al. watched DeepSeek R1 “explicitly check each given instruction one by one” (<a href="https://arxiv.org/abs/2509.21051">2025</a>). Head a block “rules to check against this diff” and a reasoning model will do exactly that, rule by rule.</p>
+
+  <h2 id="research">What the research says about rule count</h2>
+  <p>We read the recent papers before and after running this. Four findings bear on it:</p>
+  <ul>
+    <li><b>More instructions do hurt, but slowly at this scale.</b> On a benchmark of up to 500 simultaneous instructions, the best models hit only 68% accuracy at 500, and the authors note a trade-off between accuracy and latency (<a href="https://arxiv.org/abs/2507.11538">Jaroslawicz et al., 2025</a>). A review’s few dozen rule sections sits far below that.</li>
+    <li><b>Similar-looking rules confuse models.</b> On RuleArena, models struggled to pick the rules that applied and mixed up similar but distinct ones (<a href="https://arxiv.org/abs/2412.08972">Zhou et al., 2024</a>). Distracting context cut reasoning models’ scores by up to 80%, and prompting or context engineering didn’t fix it (<a href="https://arxiv.org/abs/2601.07226">Lee et al., 2026</a>).</li>
+    <li><b>Conditional rules are the ones that slip.</b> In AgentIF, built from 707 real agent instructions, more than 30% of errors came from misjudging whether a conditional rule applied (<a href="https://arxiv.org/abs/2505.16944">Qi et al., 2025</a>). Most code review rules are conditional, and those are the ones a keyword ranking pushes down.</li>
+    <li><b>One-line summaries throw away the useful part.</b> The ACE authors call it brevity bias. Condensed context drops domain detail, and their detailed playbooks beat concise ones by 10.6% on agent tasks (<a href="https://arxiv.org/abs/2510.04618">Zhang et al., 2025</a>). A one-liner tells the model a rule exists, not what it asks for.</li>
+  </ul>
+  <p>The closest study to ours looked at AGENTS.md files for coding agents. They didn’t generally raise success rates, and they pushed inference cost up by more than 20% (<a href="https://arxiv.org/abs/2602.11988">Gloaguen et al., 2026</a>). So even deleting the rules outright would save something like that, which is still inside our noise.</p>
+
+  <h2 id="readings">What we’d do instead</h2>
+  <p>This is our read of the data, not a result:</p>
+  <ul>
+    <li><b>Relevance ranking already does the useful part.</b> The main review’s 24 KB starts with the sections that name the changed files. Priority tiers on top mostly shuffled text around.</li>
+    <li><b>Telling a model what matters makes it do more work.</b> Our speed experiments showed the same thing. Everything that worked removed turns, and nothing worked by instructing the model.</li>
+    <li><b>Learn priority from outcomes, not titles.</b> ByteDance’s production reviewer keeps a taxonomy of review rules and tunes it from feedback on its comments, reaching 75.0% precision (<a href="https://arxiv.org/abs/2501.15134">Sun et al., 2025</a>). Which rules developers actually act on is a better signal than which words a heading uses.</li>
+  </ul>
+  <p>So we changed nothing. The main review keeps its 24 KB ranked slice and the compliance pass keeps its 96 KB. If you want a faster AI reviewer, reasoning effort, model choice and the number of tool calls matter far more, as we found in <a href="/guides/why-ai-code-review-is-slow">Why AI code review is slow</a>. The pull requests are from a private repository, so the logs stay private and the experiment code isn’t merged. The reviewer itself is open source in the <a href="https://github.com/pgup-ai/jbot-review">J-Bot Review repository</a>.</p>
+  <h2 id="faq">FAQ</h2>
+  <details class="faq-item" open>
+    <summary>Do fewer rules make an AI code reviewer faster?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Not in our tests. Cutting the main review’s rules by 40% and ranking them by priority left review time at 0.96 times the original, with a 95% interval of 0.70 to 1.32, which is within run-to-run noise. An earlier test that loaded only the rule sections mapped to the changed files also left review time unchanged.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Does a long AGENTS.md slow down coding agents?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Somewhat, and mostly in cost. One study found AGENTS.md files raised coding agents’ inference cost by more than 20% without generally raising success rates. With prompt caching, a fixed block of rules is cheap after the first turn, so in our tests the time went into reasoning and tool calls, not into reading the rules.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Why can prioritizing rules make a reasoning model slower?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Because it tends to act on the list. Reasoning models such as DeepSeek R1 have been observed checking each given instruction one by one. When we headed the top rules as rules to check, Space Bunny used 51% and 79% more reasoning tokens on our two pull requests.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Should an AI code reviewer rank repository rules at all?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>By relevance, yes. J-Bot Review fills each pass’s budget with the sections that name the changed files first. By a guessed priority, no: keyword priority misfired, and the main review caught 4 known bugs instead of 6. How often developers act on a rule’s comments is a better signal than its title.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>How many rules can an AI code reviewer follow?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>More than a typical review sends. On a benchmark of up to 500 simultaneous instructions, the best models still reached 68% at 500. Rules that look alike but don’t apply, and conditional rules, cause more trouble than the count. Conditional rules caused more than 30% of errors in the AgentIF benchmark.</p></div>
+  </details>
+  <h2>References</h2>
+  <ul>
+    <li>Jaroslawicz, Whiting, Shah and Maamari. <a href="https://arxiv.org/abs/2507.11538">How Many Instructions Can LLMs Follow at Once?</a> arXiv:2507.11538, 2025.</li>
+    <li>Harada, Yamazaki, Taniguchi, Marrese-Taylor, Kojima, Iwasawa and Matsuo. <a href="https://arxiv.org/abs/2509.21051">When Instructions Multiply: Measuring and Estimating LLM Capabilities of Multiple Instructions Following</a>. arXiv:2509.21051, 2025.</li>
+    <li>Qi, Peng, Wang, Xin, Liu, Xu, Hou and Li. <a href="https://arxiv.org/abs/2505.16944">AgentIF: Benchmarking Instruction Following of Large Language Models in Agentic Scenarios</a>. arXiv:2505.16944, 2025.</li>
+    <li>Zhou, Hua, Pan, Cheng, Wu, Yu and Wang. <a href="https://arxiv.org/abs/2412.08972">RuleArena: A Benchmark for Rule-Guided Reasoning with LLMs in Real-World Scenarios</a>. arXiv:2412.08972, 2024.</li>
+    <li>Lee, Jo, Seo, Lee and Seo. <a href="https://arxiv.org/abs/2601.07226">Lost in the Noise: How Reasoning Models Fail with Contextual Distractors</a>. arXiv:2601.07226, 2026.</li>
+    <li>Zhang et al. <a href="https://arxiv.org/abs/2510.04618">Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models</a>. arXiv:2510.04618, 2025.</li>
+    <li>Lumer, Nizar, Jangiti, Frank, Gulati, Phadate and Subbiah. <a href="https://arxiv.org/abs/2601.06007">Don’t Break the Cache: An Evaluation of Prompt Caching for Long-Horizon Agentic Tasks</a>. arXiv:2601.06007, 2026.</li>
+    <li>Gloaguen, Mündler, Müller, Raychev and Vechev. <a href="https://arxiv.org/abs/2602.11988">Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?</a> arXiv:2602.11988, 2026.</li>
+    <li>Sun et al. <a href="https://arxiv.org/abs/2501.15134">BitsAI-CR: Automated Code Review via LLM in Practice</a>. arXiv:2501.15134, 2025.</li>
+  </ul>
+
+  <h2>Related</h2>
+  <div class="related">
+    <a class="rel-card" href="/guides/ai-code-review-team-guidelines"><span class="k2">Engineering</span>Guidelines the reviewer can see<p>How rule files load and which sections fill each pass’s budget.</p></a>
+    <a class="rel-card" href="/guides/ai-code-review-speed-experiments"><span class="k2">Engineering</span>23 speed experiments<p>What cut review time on real pull requests, and what didn’t.</p></a>
+    <a class="rel-card" href="/guides/repository-map-ai-code-review"><span class="k2">Engineering</span>Repository maps<p>A map of every file cut no tool calls. Most reads went to changed files.</p></a>
+  </div>
+</article>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/privacy">Privacy</a> · <a href="https://github.com/pgup-ai/jbot-review" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
