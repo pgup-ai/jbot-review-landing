@@ -60,7 +60,7 @@ Muse Spark 1.3 · MiMo V2.6 Flash · Space Bunny · DeepSeek V4.1 Flash
 
 **Muse Spark 1.3:** $0 contributor routes on OpenCode (`muse-spark-1.3-contributor-free`) and in Cline’s free tier. The contributor tier lets Meta train on your prompts and completions, so keep private code on a standard route such as Kilo or OpenRouter. [Exact model ids →](https://www.pgupai.com/guides/muse-spark-code-review-github-actions)
 
-**MiMo V2.6 Flash:** $0 on OpenCode (`mimo-v2.6-flash-free`, 200K context) and in Cline’s free tier as of 2026-09-26. Open weights, but slow: it repeats tool calls and spends about 40 seconds a turn. [Setup and timings →](https://www.pgupai.com/guides/mimo-v2-6-flash-code-review-github-actions)
+**MiMo V2.6 Flash:** $0 on OpenCode (`mimo-v2.6-flash-free`, 200K context) and in Cline’s free tier as of 2026-09-26. Open weights, but slow. Xiaomi fixed its repeated tool calls, but reviews still take 23 to 27 minutes because it reasons at length. [Setup and timings →](https://www.pgupai.com/guides/mimo-v2-6-flash-code-review-github-actions)
 
 **Space Bunny:** $0 on OpenCode Zen (`space-bunny-free`), Kilo and OpenRouter (`stealth/space-bunny-alpha`), and Cline’s free tier as of 2026-09-26, and included in OpenCode Go and Command Code plans. The lab is anonymous. OpenRouter says the provider retains prompts but doesn’t train on them. [Setup →](https://www.pgupai.com/guides/space-bunny-code-review-github-actions)
 
