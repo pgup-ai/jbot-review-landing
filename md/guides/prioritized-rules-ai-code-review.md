@@ -133,6 +133,8 @@ More than a typical review sends. On a benchmark of up to 500 simultaneous instr
 - **Engineering** — [23 speed experiments](https://www.pgupai.com/guides/ai-code-review-speed-experiments): What cut review time on real pull requests, and what didn’t.
 - **Engineering** — [Repository maps](https://www.pgupai.com/guides/repository-map-ai-code-review): A map of every file cut no tool calls. Most reads went to changed files.
 
+We later tested whether extra search context and slimmer compliance could improve this baseline. Read the [DeepSeek V4.1 Flash optimization results](https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization).
+
 ---
 
 _Markdown representation of [https://www.pgupai.com/guides/prioritized-rules-ai-code-review](https://www.pgupai.com/guides/prioritized-rules-ai-code-review). Site map: [https://www.pgupai.com/sitemap.xml](https://www.pgupai.com/sitemap.xml) · Fact sheet for agents: [https://www.pgupai.com/llms.txt](https://www.pgupai.com/llms.txt)._

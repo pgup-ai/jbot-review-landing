@@ -208,6 +208,7 @@ test('deploy excludes tooling but keeps what the middleware imports', () => {
   const ignore = read('.vercelignore');
   assert.match(ignore, /^scripts\/$/m);
   assert.match(ignore, /^test\/$/m);
+  assert.match(ignore, /^local\/$/m, 'local audit files must not be deployed');
   assert.doesNotMatch(ignore, /^lib\/$/m, 'middleware.ts imports lib/');
   assert.doesNotMatch(ignore, /^md\/$/m, 'middleware.ts fetches md/');
 });
