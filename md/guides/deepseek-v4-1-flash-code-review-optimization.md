@@ -57,7 +57,7 @@ Scroll the table horizontally to see every column.
 | Corrected search recognition · C | 379.1 → 498.6 s | 337 → 274 | 1/3 |
 | Slim compliance · C | 366.9 → 387.3 s | 326 → 299 | 2/3 |
 
-On large case C, the initial main-only treatment was slower in all three pairs. After fixing search recognition, median total calls fell from 337 to 274, yet median time rose from 379.1 to 498.6 seconds. Main calls actually increased across the repetitions; much of the total-call reduction occurred in unchanged auxiliary passes. We cannot attribute that auxiliary variation to better main-stage retrieval.
+On large case C, the initial main-only treatment was slower in all three pairs. After fixing search recognition, median total calls fell from 337 to 274, yet median time rose from 379.1 to 498.6 seconds. Main calls rose in two of three pairs and fell in the third; the median increased from 185 to 189. Call counts also varied in the unchanged auxiliary passes, so the overall reduction isn’t evidence of better main-stage retrieval.
 
 ## One shard versus three
 

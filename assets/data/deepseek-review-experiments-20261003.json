@@ -34,7 +34,7 @@
     "Search-recognition changes command eligibility; slim-compliance changes only page-specific scoped rule delivery.",
     "Private PR code and full transcripts are not public. This sanitized export supports arithmetic checks, not independent bug adjudication or full replay.",
     "Observed supported concerns are not complete ground truth. No complete recall or independent blind evaluation is claimed.",
-    "The earlier compliance-ablation treatment disables compliance only, with the normal main-prompt omitted-guidance scheduling notice. Main and verification remain native. It was not adopted; all six runs missed the predefined concern.",
+    "In the compliance-ablation study, the arm labeled selective-compliance means compliance is disabled, with the normal main-prompt omitted-guidance scheduling notice. Main and verification remain native. It was not adopted; all six runs missed the predefined concern.",
     "Exact diff sizes, private finding details and internal report identifiers are omitted."
   ],
   "repeatedRuns": [
@@ -835,7 +835,8 @@
       "mainCandidates": 1,
       "complianceCandidates": 1,
       "retained": 1,
-      "estimatedCostUsd": 0.34250541
+      "estimatedCostUsd": 0.34250541,
+      "collectorSourceLoads": 0
     },
     {
       "name": "Treatment: main only (capped)",
@@ -846,7 +847,8 @@
       "mainCandidates": 4,
       "complianceCandidates": 3,
       "retained": 7,
-      "estimatedCostUsd": 0.398436126
+      "estimatedCostUsd": 0.398436126,
+      "collectorSourceLoads": 40
     },
     {
       "name": "Treatment: compliance",
@@ -857,7 +859,8 @@
       "mainCandidates": 2,
       "complianceCandidates": 1,
       "retained": 3,
-      "estimatedCostUsd": 0.368914386
+      "estimatedCostUsd": 0.368914386,
+      "collectorSourceLoads": 74
     },
     {
       "name": "Treatment: compliance + verification",
@@ -868,7 +871,8 @@
       "mainCandidates": 0,
       "complianceCandidates": 3,
       "retained": 2,
-      "estimatedCostUsd": 0.38705028
+      "estimatedCostUsd": 0.38705028,
+      "collectorSourceLoads": 90
     },
     {
       "name": "Treatment: main + compliance + verification",
@@ -879,7 +883,8 @@
       "mainCandidates": 1,
       "complianceCandidates": 0,
       "retained": 1,
-      "estimatedCostUsd": 0.36463269000000004
+      "estimatedCostUsd": 0.36463269000000004,
+      "collectorSourceLoads": 178
     },
     {
       "name": "Native: 1 shard",
@@ -890,7 +895,8 @@
       "mainCandidates": 1,
       "complianceCandidates": 1,
       "retained": 2,
-      "estimatedCostUsd": 0.14540404799999998
+      "estimatedCostUsd": 0.14540404799999998,
+      "collectorSourceLoads": 0
     },
     {
       "name": "Native: 3 shards",
@@ -901,7 +907,8 @@
       "mainCandidates": 1,
       "complianceCandidates": 4,
       "retained": 5,
-      "estimatedCostUsd": 0.332011578
+      "estimatedCostUsd": 0.332011578,
+      "collectorSourceLoads": 0
     }
   ],
   "excludedAttempt": {
