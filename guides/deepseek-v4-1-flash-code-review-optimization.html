@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DeepSeek V4.1 Flash Code Review: Optimization Experiments | J-Bot Review</title>
+<meta name="description" content="DeepSeek V4.1 Flash experiments on tool calls, context, parallel reviews and slim compliance. Compare review speed, cost and source-assessed finding quality." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization" />
+<link rel="alternate" type="text/markdown" href="/md/guides/deepseek-v4-1-flash-code-review-optimization.md" title="Markdown representation" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="DeepSeek V4.1 Flash Code Review: Optimization Experiments" />
+<meta property="og:description" content="DeepSeek V4.1 Flash experiments on tool calls, context, parallel reviews and slim compliance. Compare review speed, cost and source-assessed finding quality." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-deepseek-review-optimization-20261003.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-deepseek-review-optimization-20261003.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="DeepSeek V4.1 Flash Code Review: Optimization Experiments" />
+<meta property="article:published_time" content="2026-10-03" />
+<meta property="article:modified_time" content="2026-10-03" />
+<meta property="article:section" content="Engineering" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="DeepSeek V4.1 Flash Code Review: Optimization Experiments" />
+<meta name="twitter:description" content="DeepSeek V4.1 Flash experiments on tool calls, context, parallel reviews and slim compliance. Compare review speed, cost and source-assessed finding quality." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-deepseek-review-optimization-20261003.png" />
+<meta name="twitter:image:alt" content="DeepSeek V4.1 Flash Code Review: Optimization Experiments" />
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization#article",
+      "headline": "Can fewer tool calls improve DeepSeek V4.1 Flash code review?",
+      "description": "DeepSeek V4.1 Flash experiments on tool calls, context, parallel reviews and slim compliance. Compare review speed, cost and source-assessed finding quality.",
+      "url": "https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization",
+      "mainEntityOfPage": "https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization",
+      "image": [
+        "https://www.pgupai.com/assets/og-deepseek-review-optimization-20261003.png"
+      ],
+      "datePublished": "2026-10-03",
+      "dateModified": "2026-10-03",
+      "author": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/about"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.pgupai.com/assets/icon-512.png"
+        }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://www.pgupai.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://www.pgupai.com/guides"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "DeepSeek V4.1 Flash optimization",
+          "item": "https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization"
+        }
+      ]
+    }
+  ]
+}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #0a0b0a; --surface: #0e100e; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --blue: #7aa2ff;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --border-code: rgba(255,255,255,0.09);
+    --code-text: #c8cdc7;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 740px; overflow-wrap: anywhere; }
+  article a { text-decoration: underline; text-underline-offset: 3px; }
+  h2[id] { scroll-margin-top: 90px; }
+  .contents { border-block: 1px solid var(--hairline); padding: 18px 0; margin: 28px 0; }
+  .contents b { font-size: 14px; }
+  .contents ul { margin-bottom: 0; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  .topic { font-family: var(--mono); font-size: 11px; color: var(--blue); letter-spacing: 0.07em; text-transform: uppercase; margin: 0 0 10px; }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+  code { font-family: var(--mono); font-size: 12.5px; color: var(--code-text); background: var(--surface); border: 1px solid var(--border-code); border-radius: 5px; padding: 1px 6px; }
+
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  .table-hint { display: none; }
+  table { border-collapse: collapse; width: 100%; min-width: 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; overflow-wrap: break-word; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tr:last-child td, tr:last-child th { border-bottom: none; }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+
+  @media (max-width: 560px) {
+    .nav-links a:not(.btn) { display: none; }
+    main { padding-inline: 20px; }
+    .tbl-wrap table { min-width: 600px; }
+    .table-hint { display: block; font-size: 13px; color: var(--text-2); margin-bottom: 8px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+  tbody th[scope="row"] { font-family: var(--sans); font-size: 13.5px; letter-spacing: normal; text-transform: none; color: var(--text); font-weight: 600; background: transparent; }
+</style>
+<link rel="stylesheet" href="/assets/analytics.css" />
+<script src="/assets/analytics.js" defer></script>
+</head><body>
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides">Guides</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+<main><article>
+<p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / DeepSeek V4.1 Flash optimization</p>
+<p class="topic">Engineering notes · Experiment</p>
+<h1>Can fewer tool calls improve DeepSeek V4.1 Flash code review?</h1>
+<p class="updated">By <a href="/about">PGUP AI</a> · Published October 3, 2026</p>
+
+<p class="lede">We tried to speed up DeepSeek V4.1 Flash code review by giving it more context and less reason to search the repository. It didn’t reliably help. The final experiment cut median compliance tool calls by 17.4%, but median review time rose 5.6%, and the findings changed. We kept the native pipeline.</p>
+<p>The starting question was reasonable: we already supply the diff and surrounding code, so why does the model keep reading files? We tested extra context in search results, applied it at different review stages, changed parallel grouping, and trimmed compliance rules. Several single runs looked faster. The repeated comparisons were much less convincing.</p>
+<p>The experiments changed how J-Bot Review supplies context and runs its review passes. <a href="https://api-docs.deepseek.com/news/news260910/">DeepSeek’s release notes</a> identify V4.1 Flash as the model behind the API alias <code>deepseek-flash</code> at the time of these runs.</p>
+<nav class="contents" aria-label="Article contents"><b>In this article</b><ul>
+<li><a href="#baseline">What “native” means</a></li><li><a href="#context">Why the reviewer still explored</a></li><li><a href="#experiments">The experiments and repeated results</a></li><li><a href="#shards">One shard versus three</a></li><li><a href="#ablation">The compliance-off ablation</a></li><li><a href="#compliance">Slim compliance: fewer calls, different findings</a></li><li><a href="#small-prs">Small versus large pull requests</a></li><li><a href="#decision">What we kept</a></li></ul></nav>
+<h2 id="baseline">The baseline and test setup</h2>
+<p><b>Native already included context packs.</b> It supplied the diff and selected surrounding code, ran main review and a separate check against repository guidelines, then verified candidate findings. These experiments built on the existing <a href="/guides/context-pack-ai-code-review">context-pack approach</a>.</p>
+<p>The repeated studies used direct DeepSeek V4.1 Flash throughout, low reasoning effort, automatic grouping and a maximum of 10 concurrent sessions. Full PR reviews ran one after another. We used two small PRs, A and B, and a larger PR, C. A and B used one main and one compliance page; C used four of each. Every review received its complete selected diff. We’ve omitted source details because the PRs are private.</p>
+<p>We froze each PR snapshot and ran three repetitions per arm and case: 18 reviews for the size comparison, six after correcting search recognition, six for a compliance-off ablation, and six for slim compliance. Each study has its own native controls; we compare within those groups. The <a href="/guides/deepseek-v4-1-flash-experiment-results">results appendix</a> contains all 36 valid repeated runs, the exploratory screens and the excluded attempt.</p>
+<h2 id="context">Why did DeepSeek keep making repository tool calls?</h2>
+<p>A complete diff still leaves out unchanged code. A helper or caller outside the supplied excerpt can decide whether a suspected bug is real. Seeing a file mentioned in the prompt wasn’t enough to call a later read redundant.</p>
+<p>Our search-context treatment appended source excerpts to search results, hoping to save the next file read. The model could still look up anything else it needed. In the repeated main-only studies, an eight-attempt allowance limited automatic augmentation, not the model’s own tool calls.</p>
+<p>We also found a delivery bug in the experiment: a search prefixed with a literal change-directory command bypassed the hook. The slowest page in the large case received zero packets in all three initial treatment repetitions. We kept those runs in the results, fixed recognition, and ran fresh controls. The corrected page received 5, 5 and 4 packets, but still took longer than its native counterpart in all three pairs.</p>
+<p>Fixing the hook got the excerpts into the prompt. It didn’t make that page faster.</p>
+<h2 id="experiments">What held up after repeated runs</h2>
+<p>Early staged experiments moved retrieval into controller-driven batches. Later search-context experiments kept native sessions and enriched their search outputs. Those are different interventions. The older gateway runs also used different concurrency from the later direct-API runs. We did not treat their lower model-call counts as an equivalent reduction in total repository work: controller retrieval was outside that counter.</p>
+<p>We screened augmentation on main only, compliance only, compliance plus verification, and all three stages. Some full reviews finished sooner, but the untouched main pass also varied substantially. Those single observations were leads for further testing, not proof that the changed stage caused the speedup.</p>
+<p>Each median below comes from three runs. “Treatment faster” counts how often it beat its paired native run. Small case B shows why both matter: a lower median can still mean losing two of three pairs.</p>
+<p class="table-hint">Scroll the table horizontally to see every column.</p>
+<div class="tbl-wrap" role="region" aria-label="Repeated review comparisons" tabindex="0"><table><thead><tr><th scope="col">Matched comparison</th><th scope="col">Median review time, native → treatment</th><th scope="col">Median total tool calls</th><th scope="col">Treatment faster</th></tr></thead><tbody><tr><th scope="row">Search context · small A</th><td>143.6 → 167.7 s</td><td>65 → 71</td><td>1/3</td></tr><tr><th scope="row">Search context · small B</th><td>352.3 → 255.4 s</td><td>76 → 76</td><td>1/3</td></tr><tr><th scope="row">Search context · large C</th><td>438.2 → 678.6 s</td><td>287 → 323</td><td>0/3</td></tr><tr><th scope="row">Corrected search recognition · C</th><td>379.1 → 498.6 s</td><td>337 → 274</td><td>1/3</td></tr><tr><th scope="row">Slim compliance · C</th><td>366.9 → 387.3 s</td><td>326 → 299</td><td>2/3</td></tr></tbody></table></div>
+<p>On large case C, the initial main-only treatment was slower in all three pairs. After fixing search recognition, median total calls fell from 337 to 274, yet median time rose from 379.1 to 498.6 seconds. Main calls actually increased across the repetitions; much of the total-call reduction occurred in unchanged auxiliary passes. We cannot attribute that auxiliary variation to better main-stage retrieval.</p>
+<h2 id="shards">One shard versus three</h2>
+<p>More shards didn’t help in this single comparison. One shard finished in 378.6 seconds with 119 model tool calls; three finished in 403.3 seconds with 284 calls. Main wall time was almost identical: 340.9 versus 341.4 seconds.</p>
+<p>This setting changed both main and compliance grouping, from one plus one page to three plus three. It also changed which supporting context fitted each page. It was not an isolated test of main parallelism. More retained comments included useful concerns and questionable claims, so this screen established neither a speed nor a quality winner.</p>
+<h2 id="ablation">Removing compliance didn’t establish quality parity</h2>
+<p>An earlier six-run ablation on small case B switched compliance off while keeping native main review and verification. Calls and estimated cost fell in every pair, but review time improved in only one of three pairs. All six runs missed a reference concern we had identified in the source beforehand. Zero findings in both arms did not establish adequate recall or equivalent quality. We abandoned skipping compliance and moved to slimming it while keeping the pass enabled.</p>
+<h2 id="compliance">Slim compliance cut calls, but changed the findings</h2>
+<p>For the final experiment, each compliance page received only the scoped rules selected for its files, plus the unchanged global and required rules. The prompt listed omissions, and the model could still read the full guidance. We kept pagination and code context fixed, so removing rules didn’t add room for extra code. Rule bytes fell 8.53%; one of the four pages was unchanged. Main review and verification stayed native.</p>
+<p class="table-hint">Scroll the table horizontally to see every column.</p>
+<div class="tbl-wrap" role="region" aria-label="Slim compliance results" tabindex="0"><table><thead><tr><th scope="col">Metric · median of three</th><th scope="col">Native</th><th scope="col">Slim compliance</th></tr></thead><tbody><tr><th scope="row">Full review</th><td>366.9 s</td><td>387.3 s</td></tr><tr><th scope="row">Compliance</th><td>232.2 s</td><td>258.7 s</td></tr><tr><th scope="row">Compliance tool calls</th><td>144</td><td>119</td></tr><tr><th scope="row">Total tool calls</th><td>326</td><td>299</td></tr><tr><th scope="row">Estimated cost per review</th><td>$0.3821</td><td>$0.3800</td></tr></tbody></table></div>
+<p>Compliance used fewer calls in all three pairs, but finished faster in only one. Whole-review times were 346.3 → 387.3, 581.5 → 425.0 and 366.9 → 340.8 seconds. The unusually slow second native run matters. We report all pairs rather than choosing the average or median that looks best.</p>
+<p>Native found three distinct concerns supported by our source checks; slim found four. Only one was shared. A reference concern caught in two native runs was missed in every slim run, even though its rule remained in the prompt. Some of slim’s additional findings came from main review, whose prompt hadn’t changed. We couldn’t credit those to slimmer compliance.</p>
+<p>Across the three runs, each arm would have published four findings supported by our source checks, counting repeated detections separately. Native would also have published two unsupported findings; slim, two unsupported and two unresolved findings. These were dry runs: nothing was posted to GitHub.</p>
+<p>One assessor checked the source and knew the earlier findings. That limits the quality comparison: we didn’t have blind adjudication or a complete bug inventory. The private finding details aren’t included here.</p>
+<h2 id="small-prs">Should optimization depend on pull request size?</h2>
+<p>The size study gave us no basis for a small-PR or large-PR policy. The treatment was faster in only one of three pairs on each small case, and none on the large one.</p>
+<p>For page-specific slim compliance, case B’s one-page input was byte-identical to native in preflight. We did not pay for a no-op rerun. The routing algorithm had nothing to trim on that case. We haven’t tested whether dependencies, applicable rules or page boundaries would be useful inputs to an adaptive policy.</p>
+<h2 id="decision">Why we kept native review</h2>
+<p>We kept native main review, native compliance and native verification on top of the existing context packs. We wanted the same useful findings sooner, or better findings at an acceptable time cost. None of these changes met that bar consistently enough to ship.</p>
+<p>An audit of earlier runs also found useful concerns contributed only by compliance. We kept that pass. Dynamically changing its depth, or asking an LLM to choose the effort, would need a separate experiment.</p>
+<p>Our earlier <a href="/guides/faster-ai-code-review-results">context-pack results</a> concern different interventions and workloads. Those gains were already in the baseline we tested here.</p>
+<p>One native attempt failed a predeclared cleanliness check after a shell command wrote an untracked diff cache. We preserved its record, restored the fixture and retried with unchanged source and settings. It is excluded from paired effects but included in reported spend. The final six valid runs cost an estimated $2.3434; the extra attempt added $0.3983. These are recorded provider-rate estimates, not current price quotes or invoices.</p>
+<p>For your own reviewer, start with <a href="/guides/evaluate-ai-code-review">our evaluation method and worksheet</a>. To try the same model with J-Bot, follow the <a href="/guides/deepseek-v4-1-flash-code-review-github-actions">DeepSeek V4.1 Flash setup guide</a>.</p>
+
+</article></main>
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/privacy">Privacy</a> · <a href="https://github.com/pgup-ai/jbot-review" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+</body></html>

@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>How to Evaluate AI Code Review: Accuracy, Speed, and Cost | J-Bot Review</title>
+<meta name="description" content="A practical AI code review evaluation method: freeze PRs, assess false positives and missed bugs, repeat comparisons, and measure full-review time and cost." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/guides/evaluate-ai-code-review" />
+<link rel="alternate" type="text/markdown" href="/md/guides/evaluate-ai-code-review.md" title="Markdown representation" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/guides/evaluate-ai-code-review" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="How to Evaluate AI Code Review: Accuracy, Speed, and Cost" />
+<meta property="og:description" content="A practical AI code review evaluation method: freeze PRs, assess false positives and missed bugs, repeat comparisons, and measure full-review time and cost." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-evaluate-ai-code-review-20261003.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-evaluate-ai-code-review-20261003.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="How to Evaluate AI Code Review: Accuracy, Speed, and Cost" />
+<meta property="article:published_time" content="2026-10-03" />
+<meta property="article:modified_time" content="2026-10-03" />
+<meta property="article:section" content="Engineering" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="How to Evaluate AI Code Review: Accuracy, Speed, and Cost" />
+<meta name="twitter:description" content="A practical AI code review evaluation method: freeze PRs, assess false positives and missed bugs, repeat comparisons, and measure full-review time and cost." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-evaluate-ai-code-review-20261003.png" />
+<meta name="twitter:image:alt" content="How to Evaluate AI Code Review: Accuracy, Speed, and Cost" />
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/guides/evaluate-ai-code-review#article",
+      "headline": "How to evaluate AI code review: accuracy, speed and cost",
+      "description": "A practical AI code review evaluation method: freeze PRs, assess false positives and missed bugs, repeat comparisons, and measure full-review time and cost.",
+      "url": "https://www.pgupai.com/guides/evaluate-ai-code-review",
+      "mainEntityOfPage": "https://www.pgupai.com/guides/evaluate-ai-code-review",
+      "image": [
+        "https://www.pgupai.com/assets/og-evaluate-ai-code-review-20261003.png"
+      ],
+      "datePublished": "2026-10-03",
+      "dateModified": "2026-10-03",
+      "author": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/about"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.pgupai.com/assets/icon-512.png"
+        }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://www.pgupai.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://www.pgupai.com/guides"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Evaluate AI code review",
+          "item": "https://www.pgupai.com/guides/evaluate-ai-code-review"
+        }
+      ]
+    }
+  ]
+}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #0a0b0a; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --blue: #7aa2ff;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 740px; overflow-wrap: anywhere; }
+  article a { text-decoration: underline; text-underline-offset: 3px; }
+  h2[id] { scroll-margin-top: 90px; }
+  .contents { border-block: 1px solid var(--hairline); padding: 18px 0; margin: 28px 0; }
+  .contents b { font-size: 14px; }
+  .contents ul { margin-bottom: 0; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  .topic { font-family: var(--mono); font-size: 11px; color: var(--blue); letter-spacing: 0.07em; text-transform: uppercase; margin: 0 0 10px; }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  .table-hint { display: none; }
+  table { border-collapse: collapse; width: 100%; min-width: 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; overflow-wrap: break-word; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tr:last-child td, tr:last-child th { border-bottom: none; }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+
+  @media (max-width: 560px) {
+    .nav-links a:not(.btn) { display: none; }
+    main { padding-inline: 20px; }
+    .tbl-wrap table { min-width: 600px; }
+    .table-hint { display: block; font-size: 13px; color: var(--text-2); margin-bottom: 8px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+  tbody th[scope="row"] { font-family: var(--sans); font-size: 13.5px; letter-spacing: normal; text-transform: none; color: var(--text); font-weight: 600; background: transparent; }
+</style>
+<link rel="stylesheet" href="/assets/analytics.css" />
+<script src="/assets/analytics.js" defer></script>
+</head><body>
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides">Guides</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+<main><article>
+<p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / Evaluate AI code review</p>
+<p class="topic">Engineering notes · Methodology</p>
+<h1>How to evaluate AI code review: accuracy, speed and cost</h1>
+<p class="updated">By <a href="/about">PGUP AI</a> · Published October 3, 2026</p>
+
+<p class="lede">Run both reviewers on the same frozen pull requests. Check what they found against the code, then compare the time and cost of the complete review. In our experiments, fewer tool calls and faster single runs weren’t enough to justify changing the default.</p>
+<p>This guide is for engineers comparing tools or changing a review pipeline. It grew out of our <a href="/guides/deepseek-v4-1-flash-code-review-optimization">DeepSeek V4.1 Flash optimization experiments</a>, where promising single runs did not hold up in repeated comparisons. The examples below come from that study; the evaluation method works for other models and tools too.</p>
+<nav class="contents" aria-label="Article contents"><b>In this guide</b><ul><li><a href="#quality">Define a useful finding</a></li><li><a href="#controls">Freeze the comparison</a></li><li><a href="#accuracy">Measure accuracy and missed bugs</a></li><li><a href="#performance">Measure speed and cost</a></li><li><a href="#repeat">Repeat before adopting</a></li><li><a href="#worksheet">Use the evaluation worksheet</a></li></ul></nav>
+<h2 id="quality">What counts as a useful AI code review finding?</h2>
+<p>Start with a claim a maintainer could check: an affected code path, a concrete trigger, a consequence and evidence. Record whether it is introduced by the change, already present at the base revision, contradicted by source, or still unresolved.</p>
+<p>Keep runtime defects separate from test gaps, maintainability concerns and cosmetic suggestions. A valid test improvement is useful, but it should not silently replace a missed runtime bug in an aggregate score. Deduplicate comments about the same underlying concern before counting them.</p>
+<p>In our final compliance experiment, one arm found three distinct supported concerns and the other found four. Only one concern was shared. The four-finding arm missed a reference concern caught twice by native. A higher count hid that loss.</p>
+<h2 id="controls">Freeze the comparison</h2>
+<p>For a pipeline experiment, change one intended variable and record the rest. For a comparison between products, each product may use its own native workflow; describe those differences and compare complete outputs rather than claiming to isolate a model effect.</p>
+<ul><li><b>Source:</b> freeze the base and head revisions, full diff, policy documents and prior-comment state. Include routine changes, cross-file changes and sensitive paths relevant to your team.</li><li><b>Execution:</b> record provider, model version or alias and date, reasoning settings, time limits, concurrency, grouping and retry behavior.</li><li><b>Passes:</b> state whether main review, guideline compliance, supplementary passes and finding verification run. A shard setting may change more than the main pass.</li><li><b>Delivery:</b> confirm every mandatory diff page completes and that the intended treatment actually reaches the model.</li></ul>
+<p>Check a new retrieval hook offline before buying more runs. Ours initially missed searches prefixed by a change-directory command. We retained the zero-packet runs as results for that implementation, then evaluated the fix with fresh native controls. Removing those runs after seeing their results would have favored the treatment.</p>
+<p>A frozen diff alone does not freeze the service. Provider load and cache state can still change. Alternate the order of the two arms, avoid competing full-review processes when measuring isolated latency, and record conditions you cannot control. Test production throughput separately if shared queue contention is part of the question.</p>
+<h2 id="accuracy">Check accuracy against the code</h2>
+<p><b>Review the source, not just the verifier’s verdict.</b> Preserve candidates, verification outcomes and final publication decisions separately. Verification can reject a valid concern or accept an unsupported one. Both happened in our experiments.</p>
+<p>Where possible, hide the arm or vendor from whoever judges the findings. Have them record the code evidence and resolve disagreements. Different wording can describe the same defect; unresolved claims should stay unresolved.</p>
+<p class="table-hint">Scroll the table horizontally to see every column.</p>
+<div class="tbl-wrap" role="region" aria-label="Review quality measures" tabindex="0"><table><thead><tr><th scope="col">Measure</th><th scope="col">Meaning</th><th scope="col">Boundary</th></tr></thead><tbody><tr><th scope="row">Publication precision</th><td>Supported published findings ÷ (supported + unsupported published findings), after deduplication.</td><td>Report unresolved findings and adjudication coverage separately; do not silently drop them to improve the rate.</td></tr><tr><th scope="row">Reference recall</th><td>Reference defects detected ÷ relevant defects in a predefined reference set.</td><td>This is recall on that set. A union of model outputs is not a complete inventory of real bugs.</td></tr><tr><th scope="row">False-positive burden</th><td>Unsupported published findings per PR, plus human time spent dismissing them.</td><td>Precision’s complement is a false-discovery proportion, not automatically a statistical false-positive rate.</td></tr><tr><th scope="row">Severity and concern coverage</th><td>Which runtime, test and maintainability concerns each arm detects and publishes.</td><td>Several small suggestions do not compensate automatically for one serious missed defect.</td></tr></tbody></table></div>
+<p>An empty result can mean a clean change, a missed bug or an incomplete review. Check completion and known references before deciding. A run with no candidates may need no verification call even when verification is enabled.</p>
+<p>Our study had neither blind adjudication nor a complete bug inventory. We reported which concerns each arm caught, without claiming an overall recall percentage.</p>
+<h2 id="performance">Measure the whole review</h2>
+<p>Time the complete review, including verification and relevant recovery. Also record queue delay and process overhead if developers experience them. Preserve per-phase times to diagnose the result, but do not add them when phases overlap.</p>
+<p>Count model tool calls and controller work separately. Moving a read into an orchestrator can make model-call counts look excellent while leaving total retrieval work unchanged. Track model turns, tool failures, added context, uncached input, cache reads and output usage where your telemetry supports them. Keep reasoning-token accounting consistent with the provider so it is not counted twice.</p>
+<p>Costs should include billed retries and failed attempts. Label estimates separately from invoices and record the pricing basis. Cost per supported finding can be informative, but report cost per PR and severity too; do not report zero cost per finding when a run found nothing.</p>
+<p>In our slim-compliance study, median compliance calls fell from 144 to 119. Median compliance time rose from 232.2 to 258.7 seconds. Fewer calls were an observed result; faster review was not a consistent consequence.</p>
+<h2 id="repeat">How many runs do you need before changing the default?</h2>
+<p>We started with three repetitions per condition. That was enough to see promising results reverse, but too little to establish equivalent quality or a general speedup. The sample you need depends on the variation and the cost of getting the decision wrong.</p>
+<p>Show individual paired results, medians, ranges and failures. A ratio of arm medians is not the same calculation as the median paired change. If the result is close to normal variation, use a larger, representative sample and a predefined quality tolerance before making an adoption claim. Keep fresh holdout PRs separate from the cases used to tune prompts.</p>
+<p>Choose exclusion rules before inspecting outcomes. A timeout is usually part of reliability performance, not a result to erase. If a fixture is contaminated, retain the incident, explain the retry, and account for its cost. Our final study excluded one native attempt under its predeclared cleanliness rule and reran it without changing reviewer settings.</p>
+<p>Write the adoption rule before you run the comparison. Ours was the same useful quality in less time, or better quality for an acceptable increase in time. An inconclusive result didn’t qualify.</p>
+<h2 id="worksheet">A practical AI code review evaluation worksheet</h2>
+<p><a href="/assets/data/ai-code-review-evaluation-worksheet.csv" download>Download the CSV worksheet</a>. Use one row per run and a separate concern sheet for source assessments. Keep source revisions and raw traces private if they contain proprietary code. Publish sanitized measurements and describe what an outside reader can verify.</p>
+<ol><li>Select representative PR snapshots and build a reference concern set before showing it to the reviewer.</li><li>Freeze configurations and write the intended difference, exclusion rules and adoption criteria.</li><li>Run matched comparisons in alternating order; verify complete diff delivery and treatment delivery.</li><li>Assess the union of findings against source, ideally with independent blinded reviewers, and map each candidate to one underlying concern.</li><li>Compare concern coverage and unsupported publications first, then full-review time, cost and diagnostic metrics.</li><li>Try the surviving change on fresh PRs before changing the default.</li></ol>
+<p>The <a href="/guides/deepseek-v4-1-flash-experiment-results">worked results appendix</a> shows where our own study meets this method and where it falls short. To run J-Bot on your repository, start with the <a href="/#setup">setup instructions</a> or the <a href="https://github.com/pgup-ai/jbot-review-action#readme">Action reference</a>. Judge J-Bot by the same standard.</p>
+
+</article></main>
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/privacy">Privacy</a> · <a href="https://github.com/pgup-ai/jbot-review" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+</body></html>

@@ -1,7 +1,9 @@
 # Guides
 
-Setup and architecture guides for an **agentic PR reviewer you control** — with a direct model API, gateway, CLI subscription, or optional local-agent companion. Released paths include exact configuration; private-beta guides state the trust boundaries and current limits.
+Setup, evaluation and engineering guides for an **agentic PR reviewer you control** — with a direct model API, gateway, CLI subscription, or optional local-agent companion. Released paths include exact configuration; private-beta guides state the trust boundaries and current limits.
 
+- **Engineering · DeepSeek experiments** — [DeepSeek V4.1 Flash Code Review: Optimization Experiments](https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization): DeepSeek V4.1 Flash experiments on tool calls, context, parallel reviews and slim compliance. Compare review speed, cost and source-assessed finding quality. (Published Oct 3, 2026)
+- **Engineering · Evaluation** — [How to Evaluate AI Code Review: Accuracy, Speed, and Cost](https://www.pgupai.com/guides/evaluate-ai-code-review): A practical AI code review evaluation method: freeze PRs, assess false positives and missed bugs, repeat comparisons, and measure full-review time and cost. (Published Oct 3, 2026)
 - **Engineering · Faster reviews, part 1 of 5** — [Why AI code review is slow](https://www.pgupai.com/guides/why-ai-code-review-is-slow): Two-thirds of the reviewer’s turns were lookups. On the backend that measures it, running the tools took 1.8% of the time. (Published Sep 24, 2026)
 - **Engineering · Faster reviews, part 2 of 5** — [23 ways we tried to make AI code review faster](https://www.pgupai.com/guides/ai-code-review-speed-experiments): Removing whole sessions and predictable lookups worked. Fifteen of the 23 ideas didn’t make it. (Published Sep 24, 2026)
 - **Engineering · Faster reviews, part 3 of 5** — [Context packs: how we made AI code review faster](https://www.pgupai.com/guides/context-pack-ai-code-review): The code a reviewer would look up anyway, handed over before its first turn. (Published Sep 24, 2026)
@@ -35,6 +37,7 @@ Setup and architecture guides for an **agentic PR reviewer you control** — wit
 
 ## More resources
 
+- **Data** — [DeepSeek experiment results](https://www.pgupai.com/guides/deepseek-v4-1-flash-experiment-results): All repeated runs, exploratory screens and comparison limits.
 - **Docs** — [Action reference](https://github.com/pgup-ai/jbot-review-action#readme): Every input, provider id, and tuning knob.
 - **Example** — [See a real review](https://www.pgupai.com/#proof): A verified blocking finding, on a real diff.
 - **Compare** — [CodeRabbit alternative](https://www.pgupai.com/compare/coderabbit-alternative): Per-seat SaaS vs $0/seat in your CI, side by side.

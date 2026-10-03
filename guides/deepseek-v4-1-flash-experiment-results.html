@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DeepSeek V4.1 Flash Experiments: Results and Methodology | J-Bot Review</title>
+<meta name="description" content="Sanitized results from 36 repeated DeepSeek V4.1 Flash reviews, exploratory screens and an excluded attempt, with exact comparison boundaries and limits." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/guides/deepseek-v4-1-flash-experiment-results" />
+<link rel="alternate" type="text/markdown" href="/md/guides/deepseek-v4-1-flash-experiment-results.md" title="Markdown representation" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/guides/deepseek-v4-1-flash-experiment-results" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="DeepSeek V4.1 Flash Experiments: Results and Methodology" />
+<meta property="og:description" content="Sanitized results from 36 repeated DeepSeek V4.1 Flash reviews, exploratory screens and an excluded attempt, with exact comparison boundaries and limits." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-deepseek-review-optimization-20261003.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-deepseek-review-optimization-20261003.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="DeepSeek V4.1 Flash Experiments: Results and Methodology" />
+<meta property="article:published_time" content="2026-10-03" />
+<meta property="article:modified_time" content="2026-10-03" />
+<meta property="article:section" content="Engineering" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="DeepSeek V4.1 Flash Experiments: Results and Methodology" />
+<meta name="twitter:description" content="Sanitized results from 36 repeated DeepSeek V4.1 Flash reviews, exploratory screens and an excluded attempt, with exact comparison boundaries and limits." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-deepseek-review-optimization-20261003.png" />
+<meta name="twitter:image:alt" content="DeepSeek V4.1 Flash Experiments: Results and Methodology" />
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/guides/deepseek-v4-1-flash-experiment-results#article",
+      "headline": "DeepSeek V4.1 Flash experiment results and methodology",
+      "description": "Sanitized results from 36 repeated DeepSeek V4.1 Flash reviews, exploratory screens and an excluded attempt, with exact comparison boundaries and limits.",
+      "url": "https://www.pgupai.com/guides/deepseek-v4-1-flash-experiment-results",
+      "mainEntityOfPage": "https://www.pgupai.com/guides/deepseek-v4-1-flash-experiment-results",
+      "image": [
+        "https://www.pgupai.com/assets/og-deepseek-review-optimization-20261003.png"
+      ],
+      "datePublished": "2026-10-03",
+      "dateModified": "2026-10-03",
+      "author": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/about"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.pgupai.com/assets/icon-512.png"
+        }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://www.pgupai.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://www.pgupai.com/guides"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "DeepSeek experiment results",
+          "item": "https://www.pgupai.com/guides/deepseek-v4-1-flash-experiment-results"
+        }
+      ]
+    }
+  ]
+}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #0a0b0a; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --blue: #7aa2ff;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 740px; overflow-wrap: anywhere; }
+  article a { text-decoration: underline; text-underline-offset: 3px; }
+  h2[id] { scroll-margin-top: 90px; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  .topic { font-family: var(--mono); font-size: 11px; color: var(--blue); letter-spacing: 0.07em; text-transform: uppercase; margin: 0 0 10px; }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  h3 { font-family: var(--display); font-weight: 600; font-size: 17px; letter-spacing: -0.01em; margin: 26px 0 8px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  .table-hint { display: none; }
+  table { border-collapse: collapse; width: 100%; min-width: 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; overflow-wrap: break-word; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tr:last-child td, tr:last-child th { border-bottom: none; }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+
+  @media (max-width: 560px) {
+    .nav-links a:not(.btn) { display: none; }
+    main { padding-inline: 20px; }
+    .tbl-wrap table { min-width: 600px; }
+    .table-hint { display: block; font-size: 13px; color: var(--text-2); margin-bottom: 8px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+  tbody th[scope="row"] { font-family: var(--sans); font-size: 13.5px; letter-spacing: normal; text-transform: none; color: var(--text); font-weight: 600; background: transparent; }
+</style>
+<link rel="stylesheet" href="/assets/analytics.css" />
+<script src="/assets/analytics.js" defer></script>
+</head><body>
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides">Guides</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+<main><article>
+<p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / DeepSeek experiment results</p>
+<p class="topic">Engineering notes · Experiment</p>
+<h1>DeepSeek V4.1 Flash experiment results and methodology</h1>
+<p class="updated">By <a href="/about">PGUP AI</a> · Published October 3, 2026</p>
+
+<p class="lede">The data behind our DeepSeek V4.1 Flash code-review experiments: 36 valid repeated reviews, separate exploratory screens and one excluded slim-compliance attempt. They support comparisons within each study, not a pooled model benchmark.</p>
+<p><a href="/assets/data/deepseek-review-experiments-20261003.json" download>Download the sanitized JSON results</a> or read the <a href="/guides/deepseek-v4-1-flash-code-review-optimization">experiment narrative</a>. The source PRs are private. We publish anonymous case labels, review settings and measurements. Repository identities, exact diff sizes, code, finding details, prompts and internal report identifiers are omitted. You can check the arithmetic, but you can’t independently verify the findings from this export.</p>
+<h2 id="setup">Study definitions and controls</h2>
+<p>All rows below use direct DeepSeek V4.1 Flash, low reasoning and at most 10 concurrent sessions. Full reviews ran sequentially, in local dry-run mode. Native includes existing context packs, compliance and the normal supplied-evidence-first verifier with repository fallback. Zero-candidate runs naturally have nothing to verify.</p>
+<ul><li><b>Search context:</b> three frozen cases × two arms × three repetitions. Main-only source augmentation with eight attempts per main session.</li><li><b>Search recognition:</b> fresh case C controls after fixing eligibility for searches prefixed by a literal change-directory command. Other augmentation limits remain.</li><li><b>Compliance ablation:</b> six fresh case B reviews, native versus compliance disabled. Main receives its normal scheduling notice to inspect omitted guidance when applicable. Neither arm detected the reference concern identified before the experiment.</li><li><b>Slim compliance:</b> fresh case C controls; scoped-rule removal after native pagination and code-context assembly. No search augmentation and no new lookup caps.</li></ul>
+<p class="table-hint">Scroll the table horizontally to see every column.</p>
+<div class="tbl-wrap" role="region" aria-label="Case grouping" tabindex="0"><table><thead><tr><th scope="col">Case</th><th scope="col">Size group</th><th scope="col">Main / compliance pages</th></tr></thead><tbody><tr><th scope="row">A</th><td>Small</td><td>1 / 1</td></tr><tr><th scope="row">B</th><td>Small</td><td>1 / 1</td></tr><tr><th scope="row">C</th><td>Large</td><td>4 / 4</td></tr></tbody></table></div>
+<p>Elapsed times below cover the review pipeline, excluding small process startup and teardown overhead. Phases can overlap. Costs are estimated USD from saved SDK/provider usage. Provider cache state was not reset. Local shell behavior and dry-run prior-thread handling limit transfer to GitHub CI timings.</p>
+<h2 id="repeated">Every valid repeated run</h2>
+<p>N = native. T = main-only search context in the first two studies, slim compliance in the third, or compliance disabled in the ablation. M/C counts are raw main/compliance candidates before filtering. Published means the pipeline would publish in dry-run mode; no comments were sent, and this count is not a count of independently confirmed bugs.</p>
+<h3>Main-only search context</h3><p class="table-hint">Scroll the table horizontally to see every column.</p>
+<div class="tbl-wrap" role="region" aria-label="Main-only search context complete runs" tabindex="0"><table><thead><tr><th scope="col">Case / pair / arm</th><th scope="col">Review seconds</th><th scope="col">Model tool calls</th><th scope="col">M / C candidates</th><th scope="col">Would publish</th><th scope="col">Est. USD</th></tr></thead><tbody><tr><th scope="row">A / 1 / N</th><td>143.592</td><td>60</td><td>0 / 0</td><td>0</td><td>$0.0592</td></tr><tr><th scope="row">A / 1 / T</th><td>167.749</td><td>80</td><td>0 / 0</td><td>0</td><td>$0.0659</td></tr><tr><th scope="row">B / 1 / T</th><td>253.832</td><td>73</td><td>0 / 0</td><td>0</td><td>$0.0842</td></tr><tr><th scope="row">B / 1 / N</th><td>514.775</td><td>97</td><td>2 / 1</td><td>1</td><td>$0.1470</td></tr><tr><th scope="row">C / 1 / N</th><td>438.188</td><td>287</td><td>2 / 2</td><td>1</td><td>$0.3506</td></tr><tr><th scope="row">C / 1 / T</th><td>480.160</td><td>285</td><td>3 / 1</td><td>4</td><td>$0.3415</td></tr><tr><th scope="row">C / 2 / T</th><td>678.609</td><td>323</td><td>3 / 3</td><td>2</td><td>$0.4101</td></tr><tr><th scope="row">C / 2 / N</th><td>619.606</td><td>329</td><td>2 / 1</td><td>3</td><td>$0.3805</td></tr><tr><th scope="row">A / 2 / T</th><td>184.978</td><td>69</td><td>0 / 2</td><td>2</td><td>$0.0748</td></tr><tr><th scope="row">A / 2 / N</th><td>136.166</td><td>65</td><td>0 / 0</td><td>0</td><td>$0.0596</td></tr><tr><th scope="row">B / 2 / N</th><td>352.312</td><td>76</td><td>1 / 0</td><td>0</td><td>$0.0867</td></tr><tr><th scope="row">B / 2 / T</th><td>411.064</td><td>84</td><td>0 / 0</td><td>0</td><td>$0.0992</td></tr><tr><th scope="row">B / 3 / T</th><td>255.417</td><td>76</td><td>1 / 0</td><td>0</td><td>$0.1022</td></tr><tr><th scope="row">B / 3 / N</th><td>248.571</td><td>65</td><td>0 / 0</td><td>0</td><td>$0.0782</td></tr><tr><th scope="row">C / 3 / N</th><td>434.826</td><td>280</td><td>2 / 3</td><td>5</td><td>$0.3622</td></tr><tr><th scope="row">C / 3 / T</th><td>691.786</td><td>380</td><td>2 / 2</td><td>2</td><td>$0.4447</td></tr><tr><th scope="row">A / 3 / N</th><td>191.046</td><td>67</td><td>0 / 2</td><td>2</td><td>$0.0699</td></tr><tr><th scope="row">A / 3 / T</th><td>150.391</td><td>71</td><td>0 / 1</td><td>1</td><td>$0.0611</td></tr></tbody></table></div><h3>Corrected search recognition</h3><p class="table-hint">Scroll the table horizontally to see every column.</p>
+<div class="tbl-wrap" role="region" aria-label="Corrected search recognition complete runs" tabindex="0"><table><thead><tr><th scope="col">Case / pair / arm</th><th scope="col">Review seconds</th><th scope="col">Model tool calls</th><th scope="col">M / C candidates</th><th scope="col">Would publish</th><th scope="col">Est. USD</th></tr></thead><tbody><tr><th scope="row">C / 1 / N</th><td>342.220</td><td>274</td><td>1 / 1</td><td>2</td><td>$0.3541</td></tr><tr><th scope="row">C / 1 / T</th><td>498.579</td><td>356</td><td>0 / 4</td><td>4</td><td>$0.3988</td></tr><tr><th scope="row">C / 2 / T</th><td>567.584</td><td>274</td><td>1 / 0</td><td>1</td><td>$0.3611</td></tr><tr><th scope="row">C / 2 / N</th><td>379.109</td><td>337</td><td>1 / 2</td><td>3</td><td>$0.4038</td></tr><tr><th scope="row">C / 3 / N</th><td>431.750</td><td>371</td><td>0 / 2</td><td>1</td><td>$0.4160</td></tr><tr><th scope="row">C / 3 / T</th><td>419.816</td><td>244</td><td>3 / 1</td><td>4</td><td>$0.3354</td></tr></tbody></table></div><h3>Slim compliance</h3><p class="table-hint">Scroll the table horizontally to see every column.</p>
+<div class="tbl-wrap" role="region" aria-label="Slim compliance complete runs" tabindex="0"><table><thead><tr><th scope="col">Case / pair / arm</th><th scope="col">Review seconds</th><th scope="col">Model tool calls</th><th scope="col">M / C candidates</th><th scope="col">Would publish</th><th scope="col">Est. USD</th></tr></thead><tbody><tr><th scope="row">C / 1 / N</th><td>346.334</td><td>322</td><td>1 / 1</td><td>2</td><td>$0.3821</td></tr><tr><th scope="row">C / 1 / T</th><td>387.311</td><td>335</td><td>1 / 1</td><td>1</td><td>$0.3897</td></tr><tr><th scope="row">C / 2 / T</th><td>425.003</td><td>299</td><td>0 / 4</td><td>3</td><td>$0.3800</td></tr><tr><th scope="row">C / 2 / N</th><td>581.479</td><td>410</td><td>1 / 2</td><td>3</td><td>$0.4725</td></tr><tr><th scope="row">C / 3 / N</th><td>366.937</td><td>326</td><td>0 / 1</td><td>1</td><td>$0.3797</td></tr><tr><th scope="row">C / 3 / T</th><td>340.796</td><td>298</td><td>3 / 1</td><td>4</td><td>$0.3393</td></tr></tbody></table></div>
+<h3>Compliance-off ablation · not adopted</h3><p>Verification stayed enabled but had no candidates to check. The quality reference was missed in all six runs.</p><p class="table-hint">Scroll the table horizontally to see every column.</p>
+<div class="tbl-wrap" role="region" aria-label="Compliance ablation complete runs" tabindex="0"><table><thead><tr><th scope="col">Case / pair / arm</th><th scope="col">Review seconds</th><th scope="col">Model tool calls</th><th scope="col">M / C candidates</th><th scope="col">Would publish</th><th scope="col">Est. USD</th></tr></thead><tbody><tr><th scope="row">B / 1 / N</th><td>465.736</td><td>92</td><td>0 / 0</td><td>0</td><td>$0.1140</td></tr><tr><th scope="row">B / 1 / T</th><td>155.451</td><td>33</td><td>0 / 0</td><td>0</td><td>$0.0328</td></tr><tr><th scope="row">B / 2 / T</th><td>530.167</td><td>58</td><td>0 / 0</td><td>0</td><td>$0.0769</td></tr><tr><th scope="row">B / 2 / N</th><td>311.073</td><td>132</td><td>0 / 0</td><td>0</td><td>$0.1257</td></tr><tr><th scope="row">B / 3 / N</th><td>184.255</td><td>65</td><td>0 / 0</td><td>0</td><td>$0.0768</td></tr><tr><th scope="row">B / 3 / T</th><td>196.104</td><td>39</td><td>0 / 0</td><td>0</td><td>$0.0425</td></tr></tbody></table></div>
+<h2 id="screens">Exploratory pass-placement and shard screens</h2>
+<p>One observation per configuration on case C. These are separate from the repeated comparisons. The main-only screen has the earlier eight-attempt augmentation allowance; newer auxiliary and all-stage screens remove attempt, match-count and source-count caps, while byte budgets and collection deadlines remain. Do not infer a placement-only causal effect across those variants.</p>
+<p class="table-hint">Scroll the table horizontally to see every column.</p>
+<div class="tbl-wrap" role="region" aria-label="Exploratory screens" tabindex="0"><table><thead><tr><th scope="col">Configuration</th><th scope="col">Main / compliance pages</th><th scope="col">Seconds</th><th scope="col">Model tool calls</th><th scope="col">Est. USD</th></tr></thead><tbody><tr><th scope="row">Native</th><td>4 / 4</td><td>585.3</td><td>260</td><td>$0.3425</td></tr><tr><th scope="row">Treatment: main only (capped)</th><td>4 / 4</td><td>393.4</td><td>314</td><td>$0.3984</td></tr><tr><th scope="row">Treatment: compliance</th><td>4 / 4</td><td>368.6</td><td>273</td><td>$0.3689</td></tr><tr><th scope="row">Treatment: compliance + verification</th><td>4 / 4</td><td>512.4</td><td>309</td><td>$0.3871</td></tr><tr><th scope="row">Treatment: main + compliance + verification</th><td>4 / 4</td><td>343.4</td><td>272</td><td>$0.3646</td></tr><tr><th scope="row">Native: 1 shard</th><td>1 / 1</td><td>378.6</td><td>119</td><td>$0.1454</td></tr><tr><th scope="row">Native: 3 shards</th><td>3 / 3</td><td>403.3</td><td>284</td><td>$0.3320</td></tr></tbody></table></div>
+<p>Augmented screens also perform controller source loads outside the model tool-call counter. The all-stage screen used 178 extra source loads and 272 model tool calls, versus 260 model tool calls for its native observation. Its 343.4-second review did not demonstrate equivalent finding coverage. The shard setting changes both main and compliance grouping, so it is a whole-pipeline comparison.</p>
+<h2 id="quality">What the final slim-compliance quality counts mean</h2>
+<p class="table-hint">Scroll the table horizontally to see every column.</p>
+<div class="tbl-wrap" role="region" aria-label="Source-assessed slim compliance quality" tabindex="0"><table><thead><tr><th scope="col">Across three runs per arm</th><th scope="col">Native</th><th scope="col">Slim</th></tr></thead><tbody><tr><th scope="row">Distinct supported concerns detected</th><td>3</td><td>4</td></tr><tr><th scope="row">Supported finding occurrences that would publish</th><td>4</td><td>4</td></tr><tr><th scope="row">Unsupported occurrences that would publish</th><td>2</td><td>2</td></tr><tr><th scope="row">Unresolved occurrences that would publish</th><td>0</td><td>2</td></tr><tr><th scope="row">Reference concern detected</th><td>2 / 3</td><td>0 / 3</td></tr></tbody></table></div>
+<p>Only one supported concern was shared between arms. One assessor checked findings against source with knowledge of earlier results. The counts describe those assessments, not full recall or independent blind grades. The rule for the reference concern in the last row was present in both arms.</p>
+<h2 id="excluded">Excluded, historical and untested work</h2>
+<p>The original second native attempt in the slim study took 503.665 seconds and cost an estimated $0.3983. It wrote an untracked diff cache, violating the predeclared clean-fixture condition. Tracked source was unchanged. We preserved the failure, restored the fixture and retried with identical source and configuration. Six valid slim-study runs cost $2.3434; including that attempt, $2.7416. The JSON retains its reason, time and cost.</p>
+<p>Earlier staged-hybrid runs used OpenCode Go, including a concurrency-three setup. Later gateway attempts included quota failures. A superseded direct-API pilot used one page, while the requested automatic grouping produced four. The original GitHub job also used a different auxiliary model and prior-thread behavior. Those records informed the investigation but are not numerical controls in this public matched table.</p>
+<p>An offline contribution audit covered 24 earlier completed reviews; it added no paid runs. It found useful compliance-only concerns on the large case. A six-run skip-compliance ablation produced no findings in either arm and missed the predefined reference concern every time. It reduced cost but did not establish quality parity; we abandoned that direction in favor of keeping the pass. The slim study’s single-page case B was a byte-identical no-op in preflight and was not rerun. Dynamic compliance depth and LLM-directed effort were not tested.</p>
+<p>Settings were fixed within each comparison. The reviewer changed between studies, so their native runs shouldn’t be pooled into one baseline.</p>
+<p>For the interpretation, read <a href="/guides/deepseek-v4-1-flash-code-review-optimization">the DeepSeek optimization case study</a>. For the evaluation method, read <a href="/guides/evaluate-ai-code-review">how to evaluate AI code review</a>.</p>
+
+</article></main>
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/privacy">Privacy</a> · <a href="https://github.com/pgup-ai/jbot-review" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+</body></html>
