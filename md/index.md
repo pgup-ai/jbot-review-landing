@@ -4,7 +4,7 @@ Bring your own model — $0 per seat, not ~~$40/mo~~
 
 An open-source agentic PR reviewer as a single GitHub Action. It runs on your runner, reviews with the model you already pay for, and posts diff-anchored findings back — no SaaS, no per-seat bill.
 
-[Add to your repo](https://www.pgupai.com/#setup) [View source](https://github.com/pgup-ai/jbot-review-action)
+[Add to your repo](https://www.pgupai.com/#setup) [View source](https://github.com/pgup-ai/jbot-review)
 
 [On GitHub Marketplace · **MIT licensed**](https://github.com/marketplace/actions/j-bot-code-review)
 
