@@ -8,6 +8,8 @@ It picks which callers of the changed code the reviewer sees first. When a pull 
 
 J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI, with the model you choose. Jev is available as the opt-in `jev` preset. On the pull request with the most candidates, it cut estimated review cost 16% and caught a known bug in one of five runs, where ten runs without it never did. On a smaller pull request it gained nothing, and the same candidates in plain order did better on average, which is why it isn’t the default.
 
+**October 4, 2026 update:** Our follow-up on [evidence handoffs and review quality](https://www.pgupai.com/guides/evidence-handoffs-ai-code-review) covers later ranking, grouping and verifier-budget experiments, the fixes that shipped, and the remaining limits. The results below describe the earlier studies.
+
 **In this article**
 
 - [What Jev is](https://www.pgupai.com/guides/jev-relevance-ranking-code-review#what-jev-is)

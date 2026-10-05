@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Where evidence gets lost in AI code review | J-Bot Review</title>
+<meta name="description" content="What J-Bot Review learned from Jev ranking, grouped context, uncapped investigation and verifier handoffs—and which fixes shipped." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/guides/evidence-handoffs-ai-code-review" />
+<link rel="alternate" type="text/markdown" href="/md/guides/evidence-handoffs-ai-code-review.md" title="Markdown representation" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/guides/evidence-handoffs-ai-code-review" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="Where evidence gets lost in AI code review" />
+<meta property="og:description" content="What J-Bot Review learned from Jev ranking, grouped context, uncapped investigation and verifier handoffs—and which fixes shipped." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-evidence-handoffs-20261004.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-evidence-handoffs-20261004.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Where evidence gets lost in AI code review" />
+<meta property="article:published_time" content="2026-10-04" />
+<meta property="article:modified_time" content="2026-10-04" />
+<meta property="article:section" content="Engineering" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Where evidence gets lost in AI code review" />
+<meta name="twitter:description" content="What J-Bot Review learned from Jev ranking, grouped context, uncapped investigation and verifier handoffs—and which fixes shipped." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-evidence-handoffs-20261004.png" />
+<meta name="twitter:image:alt" content="Where evidence gets lost in AI code review" />
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/guides/evidence-handoffs-ai-code-review#article",
+      "headline": "Where evidence gets lost in AI code review",
+      "description": "What J-Bot Review learned from Jev ranking, grouped context, uncapped investigation and verifier handoffs—and which fixes shipped.",
+      "url": "https://www.pgupai.com/guides/evidence-handoffs-ai-code-review",
+      "mainEntityOfPage": "https://www.pgupai.com/guides/evidence-handoffs-ai-code-review",
+      "image": [
+        "https://www.pgupai.com/assets/og-evidence-handoffs-20261004.png"
+      ],
+      "datePublished": "2026-10-04",
+      "dateModified": "2026-10-04",
+      "author": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/about"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.pgupai.com/assets/icon-512.png"
+        }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://www.pgupai.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://www.pgupai.com/guides"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Evidence handoffs",
+          "item": "https://www.pgupai.com/guides/evidence-handoffs-ai-code-review"
+        }
+      ]
+    }
+  ]
+}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #0a0b0a; --surface: #0e100e; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.55);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --blue: #7aa2ff;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --border-code: rgba(255,255,255,0.09);
+    --code-text: #c8cdc7;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 960px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 840px; overflow-wrap: anywhere; }
+  article a { text-decoration: underline; text-underline-offset: 3px; }
+  [id] { scroll-margin-top: 90px; }
+  .contents { border-block: 1px solid var(--hairline); padding: 18px 0; margin: 28px 0; }
+  .contents b { font-size: 14px; }
+  .contents ul { margin-bottom: 0; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  .topic { font-family: var(--mono); font-size: 11px; color: var(--blue); letter-spacing: 0.07em; text-transform: uppercase; margin: 0 0 10px; }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(36px, 5vw, 56px); max-width: 780px; letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 21px; color: var(--text); line-height: 1.6; }
+  article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  p, li { color: var(--text-2); font-size: 17px; line-height: 1.75; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+  code { font-family: var(--mono); font-size: 12.5px; color: var(--code-text); background: var(--surface); border: 1px solid var(--border-code); border-radius: 5px; padding: 1px 6px; }
+
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  .table-hint { display: none; }
+  table { border-collapse: collapse; width: 100%; min-width: 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; overflow-wrap: break-word; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tr:last-child td, tr:last-child th { border-bottom: none; }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+
+  @media (max-width: 560px) {
+    .nav-links a:not(.btn) { display: none; }
+    main { padding-inline: 20px; }
+    .tbl-wrap table { min-width: 600px; }
+    .table-hint { display: block; font-size: 13px; color: var(--text-2); margin-bottom: 8px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+  tbody th[scope="row"] { font-family: var(--sans); font-size: 13.5px; letter-spacing: normal; text-transform: none; color: var(--text); font-weight: 600; background: transparent; }
+
+  .film { margin: 32px 0; }
+  .film video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #071914; border: 1px solid var(--border-card); border-radius: 12px; }
+  figcaption { margin-top: 12px; color: var(--text-3); font-size: 13px; line-height: 1.6; }
+  .causal-chain { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; padding: 0; list-style: none; background: var(--hairline); border: 1px solid var(--hairline); border-radius: 10px; overflow: hidden; margin: 26px 0; }
+  .causal-chain li { background: var(--surface); padding: 18px; margin: 0; font-size: 14px; line-height: 1.6; }
+  .causal-chain b { display: block; margin-bottom: 8px; color: var(--accent); }
+  details { margin-top: 36px; border-block: 1px solid var(--hairline); padding: 20px 0; }
+  summary { cursor: pointer; color: var(--text); }
+  details h3 { font-size: 17px; margin-top: 26px; }
+  @media (max-width: 560px) { .causal-chain { grid-template-columns: 1fr 1fr; } .lede { font-size: 19px; } }
+</style>
+<link rel="stylesheet" href="/assets/analytics.css" />
+<script src="/assets/analytics.js" defer></script>
+</head><body>
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides">Guides</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+<main><article>
+<p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / Evidence handoffs</p>
+<p class="topic">Engineering notes · Review quality</p>
+<h1>Where evidence gets lost in AI code review</h1>
+<p class="updated">By <a href="/about">PGUP AI</a> · October 4, 2026 · 11 merged PRs</p>
+<p class="lede">Our reviewer could read the relevant code, identify a real concern, and still lose it during verification. We tried ranking the evidence, grouping related code, and giving the model more time. The clearest fixes came from tracing what each stage actually received.</p>
+<p>This work started with a practical goal: catch more legitimate issues without filling a pull request with speculative comments. It led to changes in context delivery, verification and reporting. It has not yet demonstrated a general increase in bug detection.</p>
+<figure class="film">
+<video controls playsinline preload="none" width="1920" height="1080" poster="/assets/evidence-journey-poster-20261004.jpg" aria-label="J-Bot Review evidence experiments, two minutes and twenty-one seconds" aria-describedby="film-caption" src="/assets/video/evidence-journey-20261004.mp4"><p><a href="/assets/video/evidence-journey-20261004.mp4">Watch the evidence journey video (MP4)</a>.</p></video>
+<figcaption id="film-caption">A 2:21 visual account of the changes and experiments. Music and on-screen text; no narration. <a href="#video-transcript">Read the text version</a> or <a href="/assets/video/evidence-journey-20261004.mp4">download the MP4</a>.</figcaption>
+</figure>
+<p>The video covers <a href="#changes">PRs #272–#282</a>. The final PR has now merged: its context-handoff and step-accounting fixes are enabled in the default preset on <code>main</code>. The additional state-retrieval and proof policies remain opt-in. A running installation needs a build containing those changes.</p>
+<nav class="contents" aria-label="Article contents"><b>In this note</b><ul><li><a href="#missing-link">The missing link between a state and its producer</a></li><li><a href="#retrieval">What ranking and grouping changed</a></li><li><a href="#limits">When more investigation helped</a></li><li><a href="#handoff">Two runtime defects in the handoff</a></li><li><a href="#proof">Why we rejected a better-looking result</a></li><li><a href="#changes">What shipped</a></li><li><a href="#method">How we tested, and what remains open</a></li></ul></nav>
+<h2 id="missing-link">The verifier was missing part of the argument</h2>
+<p>J-Bot reviews a pull request in stages. The first reviewer receives the diff and a context pack: selected surrounding code, definitions and callers. It can use read-only repository tools to investigate further. A separate verification stage checks the candidates before they become review comments.</p>
+<p>In one historical case, the first reviewer identified a guard that might allow a prohibited operation. The verifier read the guard but could not establish that the problematic state was reachable. It returned “uncertain.” The code that produced that state existed elsewhere in the repository. The investigation had stopped before connecting it.</p>
+<p>Here is a simplified illustration of the kind of relationship it needed to establish. This is not source code from the private test case:</p>
+<ol class="causal-chain"><li><b>Starting state</b> <span>An object retains an older finalized entry.</span></li><li><b>State change</b> <span>An adjustment creates a newer draft entry.</span></li><li><b>Guard</b> <span>The operation checks only the current state.</span></li><li><b>Effect</b> <span>The older finalized entry remains relevant to whether the operation is allowed.</span></li></ol>
+<p>A list of enum values would not establish this path. Neither would comparing two guard expressions. The verifier needed to connect the state-producing write, the selection rule and the downstream operation. A fresh verifier also needed access to the useful context collected by the first reviewer.</p>
+<p>This distinction changed what we measured. Delivering more source is one outcome. Discovering a concern is another. Confirming it with a complete argument is a third. We tracked them separately.</p>
+<h2 id="retrieval">Ranking did not solve missing evidence</h2>
+<p>We first explored whether the problem was selection or ordering. Jev, TypeSafe’s relevance model, can rank candidate excerpts before the review model sees them. That is useful machinery when more candidates are available than the prompt can hold. It cannot select a definition the collector never found.</p>
+<p>Our <a href="/guides/jev-relevance-ranking-code-review">earlier Jev experiments</a> had mixed results. In a later isolated ordering study, we compared the original order, Jev-ranked evidence placed last, and a shuffled control. Across 36 completed runs—four cases, three arms and three repetitions—no arm retained a predefined target at medium or higher severity (P0–P2), the study’s primary scoring threshold. Four runs retained exact target findings at low severity (P3): two with the original order, one with Jev and one with shuffled order. All four matched the same concern. Jev also produced a borderline P3 target mention and some other source-supported concerns. The study did not establish an ordering advantage; its zero primary score must not be confused with zero detection.</p>
+<p>We also tried “grouped contracts”: collecting a function together with its callers, guards and dependent behavior. The idea was to keep relationships visible rather than presenting disconnected excerpts. An early standalone screen looked promising. It did not carry over to the tool-enabled reviewer.</p>
+<p>The direct-DeepSeek comparison ran 16 reviews: two collectors, two repetitions, three historical cases and one clean fixture. The current collector discovered two of 12 known-concern opportunities; the grouped collector discovered none. A concern tested twice contributes two opportunities. Grouping also took longer on average in that batch. We kept the current collector.</p>
+<p>The failure was more specific than “the model needs context.” Long functions could still be represented by their opening and closing lines, leaving a decisive branch out of the middle. Tools sometimes recovered those lines. Even when selected relevant code had been read, the model often did not connect it into a concrete failure case.</p>
+<h2 id="limits">Removing limits helped one investigation, not overall detection</h2>
+<p>Next we removed collection-distance and count limits, along with the verifier’s model-step cap. This did not make the entire system unlimited: prompt-byte budgets and run deadlines remained. The collector could find much more code than would fit in the context pack.</p>
+<p>Across the full-review diagnostic, each arm confirmed one of 12 known-concern opportunities at any severity. Mean historical review time was 397 seconds with the limits and 379 seconds without them. That small difference did not establish a repeatable speed improvement. Broader collection frequently displaced the small definitions needed to finish an argument.</p>
+<p>A focused replay gave a different answer. For the missed guard described above, two six-step verifier trials both ended without confirmation. Two uncapped trials both confirmed it, each after 21 model turns. The longer investigations traced the missing state transition. False controls stayed rejected.</p>
+<p>That result justified testing the verifier’s allowance more carefully. It did not justify removing every limit. We later separated extra retrieval from the optional proof requirement and compared six and eight steps on two cases:</p>
+<p class="table-hint">Scroll horizontally to see every column.</p>
+<div class="tbl-wrap" role="region" aria-label="Six versus eight step verifier replay" tabindex="0"><table><thead><tr><th scope="col">Configuration</th><th scope="col">Known concerns recovered</th><th scope="col">Combined replay time</th></tr></thead><tbody><tr><th scope="row">Default context, six steps</th><td>2 / 3</td><td>88 seconds</td></tr><tr><th scope="row">Extra retrieval, six steps</th><td>1 / 3</td><td>83 seconds</td></tr><tr><th scope="row">Extra retrieval, eight steps</th><td>2 / 3</td><td>100 seconds</td></tr></tbody></table></div>
+<p>This was one run per configuration per case, using frozen candidates, direct DeepSeek and low reasoning effort. It tested verification, not fresh discovery. Both false controls were rejected by every configuration. Eight steps matched default recovery and took longer in this pilot; we kept six as the default. A step is a model turn and can contain several tool calls.</p>
+<h2 id="handoff">The handoff exposed two runtime defects</h2>
+<p>The API is stateless, but the review runtime maintains a session by sending prior messages and tool results with subsequent requests. Adding another persistent server would not automatically give a fresh verifier the evidence from the main review. That transfer has to be explicit.</p>
+<p>We prototyped a revision-scoped ledger of successful source reads and supplied it alongside the original main pack. The larger handoff increased prompt size roughly fivefold. Across six comparable sessions, mean time rose from 30.8 to 48.5 seconds, without an overall quality win. More importantly, one attempt exposed a conflict at the step limit.</p>
+<p>On the final allowed turn, the runtime instructed the model to produce a prose summary. Our verifier expected structured JSON. Recovery then forked the session and received a fresh step allowance. An apparent six-step verification had actually taken nine steps. We rejected that attempt from the fixed-budget comparison and stopped the batch.</p>
+<p>Synthetic transport probes preserved prior reasoning and tool results on the tested native-adapter paths. They reproduced the final-turn conflict. We fixed the existing runtime:</p>
+<ul><li>Both verification passes retain relevant main-page packs and cited rules within their budgets. Duplicates and omissions are handled explicitly.</li><li>The capped final turn asks for the required verdict format.</li><li>Recovery consumes only the remaining steps from the original allowance. Unknown accounting does not grant extra investigation.</li><li>Each corrected finding is checked against its own delivered evidence. One source failure does not discard every other verdict in the batch.</li></ul>
+<p>These fixes shipped in <a href="https://github.com/pgup-ai/jbot-review/pull/282">PR #282</a>. They repair delivery and accounting contracts. They do not establish a broad improvement in recall. The shipped change also does not include the prototype’s bulk transfer of every retained read.</p>
+<h2 id="proof">Better source delivery still left an investigation gap</h2>
+<p>We then added retrieval for the code that creates a claimed state: writers, preparation guards, imported mappings, related methods and registered exception handlers. A dependency-focused revision improved targeted delivery checks from two of five source landmarks to all five in one case, and from zero of two to both in another.</p>
+<p>The verdicts did not improve. In one replay, the verifier found the location of a needed downstream method, spent its remaining investigative turns elsewhere, and finished without reading the method body. In another, supplying the registered error handler moved the unresolved question to the concurrency scenario that could produce the error.</p>
+<p>We also tested a proof requirement: a consequential confirmation should cite the trigger, state producer, guard and effect. Checking file paths, lines and quotes can establish that a citation matches the revision. It cannot establish that the cited lines form a valid causal argument.</p>
+<p>A later trial appeared to raise confirmations from two of three concerns to three of three. On inspection, the additional confirmation relied on a test that manually created the state. It had not demonstrated an application path that could create it. The broader traversal also displaced useful source excerpts. We rejected the apparent gain and reverted that candidate change.</p>
+<p>Retrieval and proof policy are now separate opt-ins: <code>state-evidence</code> adds source retrieval; <code>state-proof</code> adds the proof requirement as well. Producer indexing supports JavaScript and TypeScript. When citations are valid but a producer cannot be indexed, validation is reported as unavailable rather than silently treated as a disproved concern. A valid source quote remains insufficient by itself.</p>
+<h2 id="changes">What changed for users</h2>
+<p>The research ran alongside smaller fixes with clearer acceptance criteria. A source-index limit had left large changed files without context packs. Raising it from 256 KiB to 1 MiB made packs available on all four pages in one screen, instead of two. DeepSeek’s tool calls fell from 234 to 160 in that single comparison; finding quality was mixed. The larger index shipped, with prompt excerpt budgets unchanged.</p>
+<p>Uncertain concerns are also easier to inspect. A collapsed section in the GitHub review preserves hypotheses and source links separately from confirmed inline findings and severity counts. The video shows that actual interface.</p>
+<p>The complete set covered here is:</p>
+<div class="tbl-wrap" role="region" aria-label="Merged changes covered by this note" tabindex="0"><table><thead><tr><th scope="col">PR</th><th scope="col">Change</th></tr></thead><tbody>
+<tr><th scope="row"><a href="https://github.com/pgup-ai/jbot-review/pull/272">#272</a></th><td>Remove the unproven pi engine and unused binary; harden Cline file reads against a symlink-swap race.</td></tr>
+<tr><th scope="row"><a href="https://github.com/pgup-ai/jbot-review/pull/273">#273</a></th><td>Index larger source files while preserving excerpt budgets.</td></tr>
+<tr><th scope="row"><a href="https://github.com/pgup-ai/jbot-review/pull/274">#274</a></th><td>Add optional evidence traces that distinguish new, supplied and repeated source reads.</td></tr>
+<tr><th scope="row"><a href="https://github.com/pgup-ai/jbot-review/pull/275">#275</a>, <a href="https://github.com/pgup-ai/jbot-review/pull/276">#276</a></th><td>Update security dependencies; correct timeout diagnostics and flaky tests.</td></tr>
+<tr><th scope="row"><a href="https://github.com/pgup-ai/jbot-review/pull/277">#277</a>, <a href="https://github.com/pgup-ai/jbot-review/pull/279">#279</a></th><td>Add a focused OpenCode image, then align its supported provider routes and update CLI pins.</td></tr>
+<tr><th scope="row"><a href="https://github.com/pgup-ai/jbot-review/pull/278">#278</a></th><td>Show unverified concerns in a collapsed review section.</td></tr>
+<tr><th scope="row"><a href="https://github.com/pgup-ai/jbot-review/pull/280">#280</a>, <a href="https://github.com/pgup-ai/jbot-review/pull/281">#281</a></th><td>Simplify setup documentation and sanitize current public material; ship updated Git without its build dependencies.</td></tr>
+<tr><th scope="row"><a href="https://github.com/pgup-ai/jbot-review/pull/282">#282</a></th><td>Fix verifier context transfer, per-finding isolation and total step accounting; add optional state retrieval and proof checks.</td></tr>
+</tbody></table></div>
+<p>The context-pack preset and six-step verification allowance remain the defaults. Jev, state retrieval and the proof policy remain experimental. Raw evidence tracing is opt-in and can contain prompts and complete tool output; it is not a sanitized usage log.</p>
+<h2 id="method">What these experiments can tell us</h2>
+<p>The historical cases were selected because they contained known concerns. Several were reused to diagnose failures. They are development cases, not untouched holdouts, and their results should not be read as a model leaderboard or a production accuracy estimate.</p>
+<p>The later historical studies pinned repository revisions in independent Git databases, excluded future-fix objects and reference answers, and checked the fixtures before and after inference. Native tools were isolated from other checkouts and study artifacts. Earlier standalone, contaminated or protocol-invalid attempts are not evidence for the tool-enabled comparisons reported here.</p>
+<p>The grouped, cap and later verifier studies used DeepSeek’s own API with OpenCode providing the session and tool runtime. The ordering study used the earlier OpenCode route. These are separate comparisons. We did not pool their runs into a single baseline. Low effort was held fixed in the direct studies; a medium/high or complexity-adaptive effort policy remains unproven here.</p>
+<p>Most quality judgments came from source inspection by one operator. The private code and raw traces are not published. The <a href="/assets/data/review-evidence-studies-20261004.json">sanitized study summary</a> records the counts, scopes and decisions used in this note, but it does not let an external reader independently reproduce the finding judgments. Our <a href="/guides/deepseek-v4-1-flash-experiment-results">earlier results appendix</a> covers different search-context and compliance experiments.</p>
+<p>We still have three problems to measure separately: discovering the issue, judging its severity, and preserving it through verification. One real amount-allocation concern was rated P3 at discovery. Better evidence transfer would not, on its own, correct that judgment.</p>
+<p>The next useful test is a compact, source-grounded causal chain on fresh cases, scored for legitimate detections, false confirmations and time. We want to know whether the reviewer retrieves the missing premise and uses it correctly. Counting extra context bytes or accepting the model’s “confirmed” label would miss the failure that brought us here.</p>
+<h2 id="further-reading">Related work</h2>
+<ul><li><a href="/guides/jev-relevance-ranking-code-review">Earlier Jev relevance-ranking experiments</a></li><li><a href="/guides/context-pack-ai-code-review">How context packs are assembled</a></li><li><a href="/guides/deepseek-v4-1-flash-code-review-optimization">Search-context, sharding and compliance experiments</a></li><li><a href="/guides/evaluate-ai-code-review">Our evaluation method and worksheet</a></li></ul>
+<details id="video-transcript"><summary>Video text version and chapter descriptions</summary><h3>0:00 · Better evidence</h3><p>Eleven merged PRs cover changes in review delivery and a research program. The film distinguishes shipped fixes from hypotheses.</p><h3>0:06 · Less friction</h3><p>Clearer setup, direct-provider support in the OpenCode image, leaner packaging, safer reads, dependency updates, accurate timeout labels and less flaky testing. Packaging size is not a review-speed benchmark.</p><h3>0:16 · Larger-file indexing</h3><p>Source index cap: 256 KiB to 1 MiB. One selected PR: context on 2 of 4 pages before, 4 of 4 after; DeepSeek tool calls 234 to 160. One run per arm, discovery only; quality mixed.</p><h3>0:26 · Unverified concerns</h3><p>The actual GitHub interface expands a collapsed concern. Unresolved hypotheses and source links remain separate from confirmed inline findings and severity counts.</p><h3>0:38 · Four explanations</h3><p>We tested too little context, wrong evidence order, too little investigation time, and lost connections between review stages.</p><h3>0:47 · Jev ordering</h3><p>Original, Jev-last and shuffled order in 36 isolated runs retained no predefined target at P0–P2. Four runs retained exact target findings at P3, all matching the same concern, with one additional borderline P3 mention. There was no demonstrated ordering advantage.</p><h3>0:57 · Grouped contracts</h3><p>Related callers, guards and effects were bundled together. Sixteen direct-DeepSeek tool-enabled reviews: current collector discovered 2 of 12 known opportunities; grouped discovered 0 of 12. Grouping stayed off.</p><h3>1:08 · Removing caps</h3><p>Full-review confirmations were 1 of 12 in each arm; mean historical times 397 versus 379 seconds. One focused verifier case improved from 0 of 2 confirmations with six steps to 2 of 2 without the step cap, taking 21 turns each. Byte budgets and deadlines remained.</p><h3>1:19 · Six versus eight</h3><p>Two-case frozen verifier replay: default/six recovered 2 of 3 in 88 seconds; retrieval/six 1 of 3 in 83 seconds; retrieval/eight 2 of 3 in 100 seconds. All arms rejected both false controls. Default stayed six.</p><h3>1:30 · Evidence handoff</h3><p>The first reviewer passes relevant, revision-consistent context and rules to a fresh verifier. The verifier investigates missing premises independently. Bulk read transfer was experimental.</p><h3>1:41 · Causal proof</h3><p>A trigger, a state-producing path, a guard and an effect must connect. An apparent 3-of-3 confirmation result was rejected because the additional confirmation used manually prepared test state rather than an established application transition. The candidate change was reverted.</p><h3>1:51 · Runtime reliability</h3><p>Corrections use their own evidence, source failures are isolated, and recovery shares the total six-step allowance with the final verdict. Tracing distinguishes new evidence from repeated reads and remains opt-in.</p><h3>2:02 · Release status</h3><p>PRs 272 through 281 are merged. PR 282 is also merged, with evidence transfer and accounting fixes enabled in the default preset on main. State retrieval and proof policy remain opt-in. General bug-detection and severity gains are unproven.</p><h3>2:13 · Next test</h3><p>Retrieve the missing link, isolate historical fixtures from future fixes, and measure legitimate catches rather than confidence alone.</p></details></article></main>
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/privacy">Privacy</a> · <a href="https://github.com/pgup-ai/jbot-review" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+</body></html>

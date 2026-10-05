@@ -8,6 +8,8 @@ A context pack is a bundle of code that J-Bot Review puts in front of its AI rev
 
 J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI, with the model you choose. Context packs became its default on September 23, 2026, after five weeks of experiments. Whether it helped came down to four details, and most of this page is about those.
 
+**October 4, 2026 update:** Our follow-up on [evidence handoffs and review quality](https://www.pgupai.com/guides/evidence-handoffs-ai-code-review) covers later ranking, grouping and verifier-budget experiments, the fixes that shipped, and the remaining limits. The results below describe the earlier studies.
+
 **In this article**
 
 - [The scavenger hunt](https://www.pgupai.com/guides/context-pack-ai-code-review#scavenger-hunt)

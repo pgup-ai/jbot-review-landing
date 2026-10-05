@@ -205,3 +205,8 @@ test('URL mapping matches the clean URLs vercel.json serves', () => {
   assert.equal(urlPathFor('about.html'), '/about');
   assert.equal(markdownPathFor('guides/index.html'), 'md/guides/index.md');
 });
+
+test('preserves a video fallback link and its caption in the Markdown twin', () => {
+  const md = convert('<figure><video controls src="/assets/demo.mp4"><p><a href="/assets/demo.mp4">Watch the demo</a></p></video><figcaption>Caption-led film. <a href="#transcript">Read the transcript</a>.</figcaption></figure>', { origin: ORIGIN, canonical: `${ORIGIN}/guides/demo` });
+  assert.equal(md, `[Watch the demo](${ORIGIN}/assets/demo.mp4)\n\nCaption-led film. [Read the transcript](${ORIGIN}/guides/demo#transcript).\n`);
+});

@@ -23,7 +23,7 @@
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="DeepSeek V4.1 Flash Code Review: Optimization Experiments" />
 <meta property="article:published_time" content="2026-10-03" />
-<meta property="article:modified_time" content="2026-10-03" />
+<meta property="article:modified_time" content="2026-10-04" />
 <meta property="article:section" content="Engineering" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="DeepSeek V4.1 Flash Code Review: Optimization Experiments" />
@@ -44,7 +44,7 @@
         "https://www.pgupai.com/assets/og-deepseek-review-optimization-20261003.png"
       ],
       "datePublished": "2026-10-03",
-      "dateModified": "2026-10-03",
+      "dateModified": "2026-10-04",
       "author": {
         "@type": "Organization",
         "name": "PGUP AI",
@@ -189,6 +189,7 @@
 <p class="lede">We tried to speed up DeepSeek V4.1 Flash code review by giving it more context and less reason to search the repository. It didn’t reliably help. The final experiment cut median compliance tool calls by 17.4%, but median review time rose 5.6%, and the findings changed. We kept the native pipeline.</p>
 <p>The starting question was reasonable: we already supply the diff and surrounding code, so why does the model keep reading files? We tested extra context in search results, applied it at different review stages, changed parallel grouping, and trimmed compliance rules. Several single runs looked faster. The repeated comparisons were much less convincing.</p>
 <p>The experiments changed how J-Bot Review supplies context and runs its review passes. <a href="https://api-docs.deepseek.com/news/news260910/">DeepSeek’s release notes</a> identify V4.1 Flash as the model behind the API alias <code>deepseek-flash</code> at the time of these runs.</p>
+<p><b>October 4, 2026 update:</b> Our follow-up on <a href="/guides/evidence-handoffs-ai-code-review">evidence handoffs and review quality</a> covers later ranking, grouping and verifier-budget experiments, the fixes that shipped, and the remaining limits. The results below describe the earlier studies.</p>
 <nav class="contents" aria-label="Article contents"><b>In this article</b><ul>
 <li><a href="#baseline">What “native” means</a></li><li><a href="#context">Why the reviewer still explored</a></li><li><a href="#experiments">The experiments and repeated results</a></li><li><a href="#shards">One shard versus three</a></li><li><a href="#ablation">The compliance-off ablation</a></li><li><a href="#compliance">Slim compliance: fewer calls, different findings</a></li><li><a href="#small-prs">Small versus large pull requests</a></li><li><a href="#decision">What we kept</a></li></ul></nav>
 <h2 id="baseline">The baseline and test setup</h2>
