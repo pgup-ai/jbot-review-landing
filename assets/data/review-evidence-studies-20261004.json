@@ -1,0 +1,231 @@
+{
+  "published": "2026-10-04",
+  "scope": "Separate selected development studies; do not pool the rows or infer general accuracy. Private source and raw findings are not included.",
+  "definitions": {
+    "opportunity": "One predefined concern tested in one repetition.",
+    "recovery": "Verification of a frozen candidate, not fresh discovery.",
+    "step": "One model turn, which can contain several tool calls."
+  },
+  "studies": [
+    {
+      "id": "ordering",
+      "runs": 36,
+      "design": "Four cases, three arms, three repetitions; isolated tools-enabled reviews via the earlier OpenCode route.",
+      "arms": [
+        "original",
+        "jev-last",
+        "shuffle"
+      ],
+      "other_supported_concerns": [
+        1,
+        3,
+        1
+      ],
+      "decision": "No demonstrated ordering advantage; zero primary credit is not zero detection.",
+      "retained_target_runs_p0_p2": [
+        0,
+        0,
+        0
+      ],
+      "exact_retained_target_runs_p3": [
+        2,
+        1,
+        1
+      ],
+      "borderline_retained_target_runs_p3": [
+        0,
+        1,
+        0
+      ],
+      "primary_credit_definition": "A retained predefined target rated P0, P1 or P2; P3 detections do not earn primary credit."
+    },
+    {
+      "id": "grouped",
+      "runs": 16,
+      "design": "Direct DeepSeek, native tools, low effort; two collectors \u00d7 two repetitions \u00d7 three historical cases plus one synthetic clean case.",
+      "arms": [
+        "current",
+        "grouped"
+      ],
+      "known_opportunities_per_arm": 12,
+      "discovered": [
+        2,
+        0
+      ],
+      "confirmed_any_severity": [
+        1,
+        0
+      ],
+      "mean_historical_minutes": [
+        6.14,
+        6.77
+      ],
+      "decision": "Keep current collector."
+    },
+    {
+      "id": "caps-full",
+      "runs": 16,
+      "design": "Direct DeepSeek, low main/aux effort, full review; prompt byte budgets and deadlines retained.",
+      "arms": [
+        "capped",
+        "uncapped_collection_and_verifier"
+      ],
+      "known_opportunities_per_arm": 12,
+      "discovered": [
+        2,
+        1
+      ],
+      "confirmed_any_severity": [
+        1,
+        1
+      ],
+      "mean_historical_seconds": [
+        397.0,
+        379.1
+      ],
+      "decision": "No general detection gain."
+    },
+    {
+      "id": "caps-verifier",
+      "design": "One selected positive candidate, two repetitions per arm; separate false controls.",
+      "arms": [
+        "six_steps",
+        "no_step_cap"
+      ],
+      "positive_confirmations": [
+        0,
+        2
+      ],
+      "positive_trials_per_arm": 2,
+      "uncapped_positive_turns": [
+        21,
+        21
+      ],
+      "false_controls_confirmed": [
+        0,
+        0
+      ],
+      "decision": "Specific cap bottleneck; not general evidence for unlimited investigation."
+    },
+    {
+      "id": "budget-awareness",
+      "design": "Two-case frozen-candidate check; explicit prompt notice, six steps retained.",
+      "result": "No correct behavioral confirmation gain; one source-supported confirmation lost.",
+      "decision": "Stopped; notice not shipped."
+    },
+    {
+      "id": "bulk-handoff",
+      "registered": 8,
+      "attempted": 7,
+      "comparable": 6,
+      "invalid_cap_recovery": 1,
+      "not_started": 1,
+      "mean_comparable_seconds": [
+        30.8,
+        48.5
+      ],
+      "result": "Prompt size roughly fivefold; no overall quality gain. Cap/output conflict exposed.",
+      "decision": "Fix runtime; no bulk read dump shipped.",
+      "arms": [
+        "baseline",
+        "bulk-evidence-handoff"
+      ]
+    },
+    {
+      "id": "handoff-cap-fix",
+      "runs": 4,
+      "design": "Two-case direct-API frozen-candidate replay, one baseline/patched pair per case.",
+      "result": "All completed in six steps with valid JSON. One supported concern recovered; another raw confirmation lacked producer proof and was not credited.",
+      "decision": "Ship delivery and accounting fixes, no broad recall claim."
+    },
+    {
+      "id": "state-proof",
+      "runs": 4,
+      "design": "Two-case direct-API verifier replay; one pair per case.",
+      "confirmed_counts": [
+        2,
+        1
+      ],
+      "known_candidates": 3,
+      "combined_seconds": [
+        57.95,
+        86.475
+      ],
+      "result": "False controls rejected; lost confirmation was model uncertainty, not a raw confirmation rejected by the source gate.",
+      "decision": "Keep opt-in.",
+      "arms": [
+        "baseline",
+        "state-proof"
+      ]
+    },
+    {
+      "id": "dependency-retrieval",
+      "runs": 4,
+      "design": "Two-case frozen-candidate replay; proof policy held fixed.",
+      "targeted_landmarks": [
+        {
+          "before": 2,
+          "after": 5,
+          "total": 5
+        },
+        {
+          "before": 0,
+          "after": 2,
+          "total": 2
+        }
+      ],
+      "result": "Delivery improved, verification recovery did not.",
+      "decision": "Keep opt-in."
+    },
+    {
+      "id": "retrieval-steps",
+      "runs": 6,
+      "design": "Two cases \u00d7 three arms; one draw per arm/case, direct DeepSeek low effort, proof gate off.",
+      "arms": [
+        "default-six",
+        "retrieval-six",
+        "retrieval-eight"
+      ],
+      "known_candidates": 3,
+      "recovered": [
+        2,
+        1,
+        2
+      ],
+      "combined_replay_seconds": [
+        87.971,
+        82.8,
+        99.883
+      ],
+      "false_controls_refuted_per_arm": [
+        2,
+        2,
+        2
+      ],
+      "decision": "Keep default context and six steps."
+    },
+    {
+      "id": "causal-traversal",
+      "runs": 4,
+      "design": "Two-case frozen verifier replay, one pair per case.",
+      "raw_confirmed_counts": [
+        2,
+        3
+      ],
+      "known_candidates": 3,
+      "credited_additional_gain": 0,
+      "result": "Extra confirmation used manually staged test state instead of an application transition. Needed excerpts were displaced.",
+      "decision": "Candidate change rejected and reverted.",
+      "arms": [
+        "baseline",
+        "broader-causal-traversal"
+      ]
+    },
+    {
+      "id": "reasoning-effort",
+      "design": "Low main/aux effort used as a control in direct studies.",
+      "result": "No conclusive isolated medium/high or complexity-adaptive comparison established in this note.",
+      "decision": "Open hypothesis."
+    }
+  ]
+}

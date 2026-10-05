@@ -2,6 +2,7 @@
 
 Setup, evaluation and engineering guides for an **agentic PR reviewer you control** — with a direct model API, gateway, CLI subscription, or optional local-agent companion. Released paths include exact configuration; private-beta guides state the trust boundaries and current limits.
 
+- **Engineering · Evidence and verification** — [Where evidence gets lost in AI code review](https://www.pgupai.com/guides/evidence-handoffs-ai-code-review): What J-Bot Review learned from Jev ranking, grouped context, uncapped investigation and verifier handoffs—and which fixes shipped. (Published Oct 4, 2026)
 - **Engineering · DeepSeek experiments** — [DeepSeek V4.1 Flash Code Review: Optimization Experiments](https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization): DeepSeek V4.1 Flash experiments on tool calls, context, parallel reviews and slim compliance. Compare review speed, cost and source-assessed finding quality. (Published Oct 3, 2026)
 - **Engineering · Evaluation** — [How to Evaluate AI Code Review: Accuracy, Speed, and Cost](https://www.pgupai.com/guides/evaluate-ai-code-review): A practical AI code review evaluation method: freeze PRs, assess false positives and missed bugs, repeat comparisons, and measure full-review time and cost. (Published Oct 3, 2026)
 - **Engineering · Faster reviews, part 1 of 5** — [Why AI code review is slow](https://www.pgupai.com/guides/why-ai-code-review-is-slow): Two-thirds of the reviewer’s turns were lookups. On the backend that measures it, running the tools took 1.8% of the time. (Published Sep 24, 2026)

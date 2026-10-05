@@ -47,7 +47,7 @@
         "https://www.pgupai.com/assets/og-jev-relevance-ranking-code-review-20260924.png"
       ],
       "datePublished": "2026-09-24",
-      "dateModified": "2026-09-24",
+      "dateModified": "2026-10-04",
       "keywords": "TypeSafe Jev, relevance model, reranking for code review, AI code review context, LLM reranker, agentic code review",
       "about": [
         {
@@ -294,7 +294,8 @@
   <p class="lede">It picks which callers of the changed code the reviewer sees first. When a pull request changes a function that other files use, J-Bot Review can find many places that mention it, and only a few fit in the prompt. Jev, a relevance model from TypeSafe, reads each candidate and scores how likely it is to matter for the change. The best few go to the reviewer. Each call took about 0.2 seconds and cost under $0.0004.</p>
   <p>J-Bot Review is an open-source agentic PR reviewer that runs as a GitHub Action in your own CI, with the model you choose. Jev is available as the opt-in <code>jev</code> preset. On the pull request with the most candidates, it cut estimated review cost 16% and caught a known bug in one of five runs, where ten runs without it never did. On a smaller pull request it gained nothing, and the same candidates in plain order did better on average, which is why it isn’t the default.</p>
 
-  <nav class="contents" aria-label="Article contents">
+  <p><b>October 4, 2026 update:</b> Our follow-up on <a href="/guides/evidence-handoffs-ai-code-review">evidence handoffs and review quality</a> covers later ranking, grouping and verifier-budget experiments, the fixes that shipped, and the remaining limits. The results below describe the earlier studies.</p>
+<nav class="contents" aria-label="Article contents">
     <b>In this article</b>
     <ul>
       <li><a href="#what-jev-is">What Jev is</a></li>

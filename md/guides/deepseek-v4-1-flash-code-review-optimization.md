@@ -10,6 +10,8 @@ The starting question was reasonable: we already supply the diff and surrounding
 
 The experiments changed how J-Bot Review supplies context and runs its review passes. [DeepSeek’s release notes](https://api-docs.deepseek.com/news/news260910/) identify V4.1 Flash as the model behind the API alias `deepseek-flash` at the time of these runs.
 
+**October 4, 2026 update:** Our follow-up on [evidence handoffs and review quality](https://www.pgupai.com/guides/evidence-handoffs-ai-code-review) covers later ranking, grouping and verifier-budget experiments, the fixes that shipped, and the remaining limits. The results below describe the earlier studies.
+
 **In this article**
 
 - [What “native” means](https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization#baseline)

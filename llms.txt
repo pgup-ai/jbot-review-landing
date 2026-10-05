@@ -61,6 +61,7 @@ Every page on this site also serves Markdown to `Accept: text/markdown` at the s
 
 ## Docs
 
+- [Where evidence gets lost in AI code review](https://www.pgupai.com/guides/evidence-handoffs-ai-code-review): Evidence handoff fixes, Jev ordering, grouped context and verifier-budget studies. Includes video, study limits, and merged versus experimental behavior.
 - [DeepSeek V4.1 Flash Code Review: Optimization Experiments](https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization): DeepSeek V4.1 Flash experiments on tool calls, context, parallel reviews and slim compliance. Compare review speed, cost and source-assessed finding quality.
 - [How to Evaluate AI Code Review: Accuracy, Speed, and Cost](https://www.pgupai.com/guides/evaluate-ai-code-review): A practical AI code review evaluation method: freeze PRs, assess false positives and missed bugs, repeat comparisons, and measure full-review time and cost.
 - [DeepSeek V4.1 Flash Experiments: Results and Methodology](https://www.pgupai.com/guides/deepseek-v4-1-flash-experiment-results): Sanitized results from 36 repeated DeepSeek V4.1 Flash reviews, exploratory screens and an excluded attempt, with exact comparison boundaries and limits.

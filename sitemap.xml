@@ -19,7 +19,7 @@
   </url>
   <url>
     <loc>https://www.pgupai.com/guides</loc>
-    <lastmod>2026-10-03</lastmod>
+    <lastmod>2026-10-04</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/cli-subscription-code-review</loc>
@@ -115,7 +115,7 @@
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/context-pack-ai-code-review</loc>
-    <lastmod>2026-09-24</lastmod>
+    <lastmod>2026-10-04</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/ai-code-review-team-guidelines</loc>
@@ -127,7 +127,7 @@
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/jev-relevance-ranking-code-review</loc>
-    <lastmod>2026-09-24</lastmod>
+    <lastmod>2026-10-04</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/repository-map-ai-code-review</loc>
@@ -159,7 +159,7 @@
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization</loc>
-    <lastmod>2026-10-03</lastmod>
+    <lastmod>2026-10-04</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/evaluate-ai-code-review</loc>
@@ -168,5 +168,9 @@
   <url>
     <loc>https://www.pgupai.com/guides/deepseek-v4-1-flash-experiment-results</loc>
     <lastmod>2026-10-03</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/evidence-handoffs-ai-code-review</loc>
+    <lastmod>2026-10-04</lastmod>
   </url>
 </urlset>
