@@ -210,3 +210,10 @@ test('preserves a video fallback link and its caption in the Markdown twin', () 
   const md = convert('<figure><video controls src="/assets/demo.mp4"><p><a href="/assets/demo.mp4">Watch the demo</a></p></video><figcaption>Caption-led film. <a href="#transcript">Read the transcript</a>.</figcaption></figure>', { origin: ORIGIN, canonical: `${ORIGIN}/guides/demo` });
   assert.equal(md, `[Watch the demo](${ORIGIN}/assets/demo.mp4)\n\nCaption-led film. [Read the transcript](${ORIGIN}/guides/demo#transcript).\n`);
 });
+
+test('preserves video reachability with src or source metadata', () => {
+  assert.equal(convert('<video src="/film.mp4"></video>'), `[Video](${ORIGIN}/film.mp4)\n`);
+  assert.equal(convert('<video><source src="/film.mp4"><track src="/captions.vtt"></video>'), `[Video](${ORIGIN}/film.mp4)\n`);
+  assert.equal(convert('<video><source src="/film.mp4"><p>Film transcript follows.</p></video>'), 'Film transcript follows.\n');
+  assert.throws(() => convert('<video></video>'), /no fallback content or media source/);
+});

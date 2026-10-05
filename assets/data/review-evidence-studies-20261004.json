@@ -125,7 +125,11 @@
         48.5
       ],
       "result": "Prompt size roughly fivefold; no overall quality gain. Cap/output conflict exposed.",
-      "decision": "Fix runtime; no bulk read dump shipped."
+      "decision": "Fix runtime; no bulk read dump shipped.",
+      "arms": [
+        "baseline",
+        "bulk-evidence-handoff"
+      ]
     },
     {
       "id": "handoff-cap-fix",
@@ -148,7 +152,11 @@
         86.475
       ],
       "result": "False controls rejected; lost confirmation was model uncertainty, not a raw confirmation rejected by the source gate.",
-      "decision": "Keep opt-in."
+      "decision": "Keep opt-in.",
+      "arms": [
+        "baseline",
+        "state-proof"
+      ]
     },
     {
       "id": "dependency-retrieval",
@@ -207,7 +215,11 @@
       "known_candidates": 3,
       "credited_additional_gain": 0,
       "result": "Extra confirmation used manually staged test state instead of an application transition. Needed excerpts were displaced.",
-      "decision": "Candidate change rejected and reverted."
+      "decision": "Candidate change rejected and reverted.",
+      "arms": [
+        "baseline",
+        "broader-causal-traversal"
+      ]
     },
     {
       "id": "reasoning-effort",

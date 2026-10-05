@@ -8,9 +8,9 @@ Our reviewer could read the relevant code, identify a real concern, and still lo
 
 This work started with a practical goal: catch more legitimate issues without filling a pull request with speculative comments. It led to changes in context delivery, verification and reporting. It has not yet demonstrated a general increase in bug detection.
 
-[Watch the evidence journey video (MP4)](https://www.pgupai.com/assets/video/evidence-journey-20261004.mp4).
+[Watch the evidence journey video (MP4)](https://www.pgupai.com/assets/video/evidence-journey-20261004-v2.mp4).
 
-A 2:21 visual account of the changes and experiments. Music and on-screen text; no narration. [Read the text version](https://www.pgupai.com/guides/evidence-handoffs-ai-code-review#video-transcript) or [download the MP4](https://www.pgupai.com/assets/video/evidence-journey-20261004.mp4).
+A 1:47 visual account of the changes and experiments. Music and on-screen text; no narration. [Read the text version](https://www.pgupai.com/guides/evidence-handoffs-ai-code-review#video-transcript) or [download the MP4](https://www.pgupai.com/assets/video/evidence-journey-20261004-v2.mp4).
 
 The video covers [PRs #272–#282](https://www.pgupai.com/guides/evidence-handoffs-ai-code-review#changes). The final PR has now merged: its context-handoff and step-accounting fixes are enabled in the default preset on `main`. The additional state-retrieval and proof policies remain opt-in. A running installation needs a build containing those changes.
 
@@ -61,7 +61,7 @@ Across the full-review diagnostic, each arm confirmed one of 12 known-concern op
 
 A focused replay gave a different answer. For the missed guard described above, two six-step verifier trials both ended without confirmation. Two uncapped trials both confirmed it, each after 21 model turns. The longer investigations traced the missing state transition. False controls stayed rejected.
 
-That result justified testing the verifier’s allowance more carefully. It did not justify removing every limit. We later separated extra retrieval from the optional proof requirement and compared six and eight steps on two cases:
+That result justified testing the verifier’s allowance more carefully. It did not justify removing every limit. We later separated extra retrieval from the optional proof requirement and compared six and eight steps on two cases with the proof gate off:
 
 Scroll horizontally to see every column.
 
@@ -110,6 +110,8 @@ Uncertain concerns are also easier to inspect. A collapsed section in the GitHub
 
 The complete set covered here is:
 
+Scroll horizontally to see every column.
+
 | PR | Change |
 | --- | --- |
 | [\#272](https://github.com/pgup-ai/jbot-review/pull/272) | Remove the unproven pi engine and unused binary; harden Cline file reads against a symlink-swap race. |
@@ -144,63 +146,65 @@ The next useful test is a compact, source-grounded causal chain on fresh cases, 
 - [Search-context, sharding and compliance experiments](https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization)
 - [Our evaluation method and worksheet](https://www.pgupai.com/guides/evaluate-ai-code-review)
 
-### Video text version and chapter descriptions
+## Video text version
+
+### Open chapter descriptions
 
 ### 0:00 · Better evidence
 
-Eleven merged PRs cover changes in review delivery and a research program. The film distinguishes shipped fixes from hypotheses.
+Follow the evidence through eleven merged PRs: what changed, what the experiments showed, and which questions remain open.
 
 ### 0:06 · Less friction
 
 Clearer setup, direct-provider support in the OpenCode image, leaner packaging, safer reads, dependency updates, accurate timeout labels and less flaky testing. Packaging size is not a review-speed benchmark.
 
-### 0:16 · Larger-file indexing
+### 0:12 · Larger-file indexing
 
 Source index cap: 256 KiB to 1 MiB. One selected PR: context on 2 of 4 pages before, 4 of 4 after; DeepSeek tool calls 234 to 160. One run per arm, discovery only; quality mixed.
 
-### 0:26 · Unverified concerns
+### 0:20 · Unverified concerns
 
 The actual GitHub interface expands a collapsed concern. Unresolved hypotheses and source links remain separate from confirmed inline findings and severity counts.
 
-### 0:38 · Four explanations
+### 0:30 · Four explanations
 
 We tested too little context, wrong evidence order, too little investigation time, and lost connections between review stages.
 
-### 0:47 · Jev ordering
+### 0:34 · Jev ordering
 
 Original, Jev-last and shuffled order in 36 isolated runs retained no predefined target at P0–P2. Four runs retained exact target findings at P3, all matching the same concern, with one additional borderline P3 mention. There was no demonstrated ordering advantage.
 
-### 0:57 · Grouped contracts
+### 0:42 · Grouped contracts
 
 Related callers, guards and effects were bundled together. Sixteen direct-DeepSeek tool-enabled reviews: current collector discovered 2 of 12 known opportunities; grouped discovered 0 of 12. Grouping stayed off.
 
-### 1:08 · Removing caps
+### 0:50 · Removing caps
 
 Full-review confirmations were 1 of 12 in each arm; mean historical times 397 versus 379 seconds. One focused verifier case improved from 0 of 2 confirmations with six steps to 2 of 2 without the step cap, taking 21 turns each. Byte budgets and deadlines remained.
 
-### 1:19 · Six versus eight
+### 0:59 · Six versus eight
 
 Two-case frozen verifier replay: default/six recovered 2 of 3 in 88 seconds; retrieval/six 1 of 3 in 83 seconds; retrieval/eight 2 of 3 in 100 seconds. All arms rejected both false controls. Default stayed six.
 
-### 1:30 · Evidence handoff
+### 1:08 · Evidence handoff
 
 The first reviewer passes relevant, revision-consistent context and rules to a fresh verifier. The verifier investigates missing premises independently. Bulk read transfer was experimental.
 
-### 1:41 · Causal proof
+### 1:16 · Causal proof
 
 A trigger, a state-producing path, a guard and an effect must connect. An apparent 3-of-3 confirmation result was rejected because the additional confirmation used manually prepared test state rather than an established application transition. The candidate change was reverted.
 
-### 1:51 · Runtime reliability
+### 1:24 · Runtime reliability
 
 Corrections use their own evidence, source failures are isolated, and recovery shares the total six-step allowance with the final verdict. Tracing distinguishes new evidence from repeated reads and remains opt-in.
 
-### 2:02 · Release status
+### 1:32 · Release status
 
 PRs 272 through 281 are merged. PR 282 is also merged, with evidence transfer and accounting fixes enabled in the default preset on main. State retrieval and proof policy remain opt-in. General bug-detection and severity gains are unproven.
 
-### 2:13 · Next test
+### 1:40 · Next test
 
-Retrieve the missing link, isolate historical fixtures from future fixes, and measure legitimate catches rather than confidence alone.
+Find the missing link, build complete causal chains, test fresh cases and measure legitimate catches.
 
 ---
 
