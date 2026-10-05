@@ -30,12 +30,12 @@ J-Bot reviews a pull request in stages. The first reviewer receives the diff and
 
 In one historical case, the first reviewer identified a guard that might allow a prohibited operation. The verifier read the guard but could not establish that the problematic state was reachable. It returned “uncertain.” The code that produced that state existed elsewhere in the repository. The investigation had stopped before connecting it.
 
-Here is a simplified illustration of the kind of relationship it needed to establish. This is not source code from the private test case:
+Consider a fictional example that illustrates the reasoning task, without reproducing a private application’s workflow:
 
-1. **Starting state** An object retains an older finalized entry.
-2. **State change** An adjustment creates a newer draft entry.
-3. **Guard** The operation checks only the current state.
-4. **Effect** The older finalized entry remains relevant to whether the operation is allowed.
+1. **Starting state** A record has an active restriction.
+2. **State change** An update changes the record’s status.
+3. **Guard** A check reads only the new status.
+4. **Effect** An operation ignores the restriction.
 
 A list of enum values would not establish this path. Neither would comparing two guard expressions. The verifier needed to connect the state-producing write, the selection rule and the downstream operation. A fresh verifier also needed access to the useful context collected by the first reviewer.
 
@@ -133,7 +133,7 @@ The grouped, cap and later verifier studies used DeepSeek’s own API with OpenC
 
 Most quality judgments came from source inspection by one operator. The private code and raw traces are not published. The [sanitized study summary](https://www.pgupai.com/assets/data/review-evidence-studies-20261004.json) records the counts, scopes and decisions used in this note, but it does not let an external reader independently reproduce the finding judgments. Our [earlier results appendix](https://www.pgupai.com/guides/deepseek-v4-1-flash-experiment-results) covers different search-context and compliance experiments.
 
-We still have three problems to measure separately: discovering the issue, judging its severity, and preserving it through verification. One real amount-allocation concern was rated P3 at discovery. Better evidence transfer would not, on its own, correct that judgment.
+We still have three problems to measure separately: discovering the issue, judging its severity, and preserving it through verification. One known concern was rated P3 at discovery. Better evidence transfer would not, on its own, correct that judgment.
 
 The next useful test is a compact, source-grounded causal chain on fresh cases, scored for legitimate detections, false confirmations and time. We want to know whether the reviewer retrieves the missing premise and uses it correctly. Counting extra context bytes or accepting the model’s “confirmed” label would miss the failure that brought us here.
 
