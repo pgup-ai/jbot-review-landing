@@ -4,15 +4,15 @@ Engineering notes · Review quality
 
 By [PGUP AI](https://www.pgupai.com/about) · October 4, 2026 · 11 merged PRs
 
-Our reviewer could read the relevant code, identify a real concern, and still lose it during verification. We tried ranking the evidence, grouping related code, and giving the model more time. The clearest fixes came from tracing what each stage actually received.
+J-Bot Review sometimes found a real concern that its verifier could not confirm. We traced those failures through evidence collection, model reasoning and the handoff between review stages.
 
-This work started with a practical goal: catch more legitimate issues without filling a pull request with speculative comments. It led to changes in context delivery, verification and reporting. It has not yet demonstrated a general increase in bug detection.
+In these selected tests, Jev ranking showed no clear ordering advantage, and grouped context missed targets the current collector found. More investigation time helped one verifier case. The fixes we shipped preserve relevant context between stages and enforce one total step allowance; a general increase in bug detection remains unproven.
 
 [Watch the evidence journey video (MP4)](https://www.pgupai.com/assets/video/evidence-journey-20261004-v2.mp4).
 
 A 1:47 visual account of the changes and experiments. Music and on-screen text; no narration. [Read the text version](https://www.pgupai.com/guides/evidence-handoffs-ai-code-review#video-transcript) or [download the MP4](https://www.pgupai.com/assets/video/evidence-journey-20261004-v2.mp4).
 
-The video covers [PRs #272–#282](https://www.pgupai.com/guides/evidence-handoffs-ai-code-review#changes). The final PR has now merged: its context-handoff and step-accounting fixes are enabled in the default preset on `main`. The additional state-retrieval and proof policies remain opt-in. A running installation needs a build containing those changes.
+The video covers [PRs #272–#282](https://www.pgupai.com/guides/evidence-handoffs-ai-code-review#changes). The delivery and step-accounting fixes in [PR #282](https://github.com/pgup-ai/jbot-review/pull/282) are enabled in the default preset. The additional state-retrieval and proof policies remain opt-in. A running installation needs a build containing those changes.
 
 **In this note**
 
@@ -39,19 +39,23 @@ Consider a fictional example that illustrates the reasoning task, without reprod
 
 A list of enum values would not establish this path. Neither would comparing two guard expressions. The verifier needed to connect the state-producing write, the selection rule and the downstream operation. A fresh verifier also needed access to the useful context collected by the first reviewer.
 
-This distinction changed what we measured. Delivering more source is one outcome. Discovering a concern is another. Confirming it with a complete argument is a third. We tracked them separately.
+We measured source delivery, discovery and confirmation separately. More code in the prompt did not necessarily mean more issues found or correctly verified.
 
 ## Ranking did not solve missing evidence
 
+The [study data (JSON)](https://www.pgupai.com/assets/data/review-evidence-studies-20261004.json) records the comparison arms, counts and decisions below. Each study has its own baseline and scoring rules.
+
 We first explored whether the problem was selection or ordering. Jev, TypeSafe’s relevance model, can rank candidate excerpts before the review model sees them. That is useful machinery when more candidates are available than the prompt can hold. It cannot select a definition the collector never found.
 
-Our [earlier Jev experiments](https://www.pgupai.com/guides/jev-relevance-ranking-code-review) had mixed results. In a later isolated ordering study, we compared the original order, Jev-ranked evidence placed last, and a shuffled control. Across 36 completed runs—four cases, three arms and three repetitions—no arm retained a predefined target at medium or higher severity (P0–P2), the study’s primary scoring threshold. Four runs retained exact target findings at low severity (P3): two with the original order, one with Jev and one with shuffled order. All four matched the same concern. Jev also produced a borderline P3 target mention and some other source-supported concerns. The study did not establish an ordering advantage; its zero primary score must not be confused with zero detection.
+Our [earlier Jev experiments](https://www.pgupai.com/guides/jev-relevance-ranking-code-review) had mixed results. In a later isolated ordering study, we compared the original order, Jev-ranked evidence placed last, and a shuffled control. Across 36 completed runs—four cases, three arms and three repetitions—no arm retained a predefined target at medium or higher severity (P0–P2), the study’s primary scoring threshold.
+
+Four runs retained exact target findings at low severity (P3): two with the original order, one with Jev and one with shuffled order. All four matched the same concern. Jev also produced a borderline P3 target mention and some other source-supported concerns. These low-severity detections earned no primary credit. The study did not establish an ordering advantage.
 
 We also tried “grouped contracts”: collecting a function together with its callers, guards and dependent behavior. The idea was to keep relationships visible rather than presenting disconnected excerpts. An early standalone screen looked promising. It did not carry over to the tool-enabled reviewer.
 
-The direct-DeepSeek comparison ran 16 reviews: two collectors, two repetitions, three historical cases and one clean fixture. The current collector discovered two of 12 known-concern opportunities; the grouped collector discovered none. A concern tested twice contributes two opportunities. Grouping also took longer on average in that batch. We kept the current collector.
+The comparison used DeepSeek V4.1 Flash through its direct API and ran 16 reviews: two collectors, two repetitions, three historical cases and one clean fixture. The current collector discovered two of 12 known-concern opportunities; the grouped collector discovered none. A concern tested twice contributes two opportunities. Grouping also took longer on average in that batch. We kept the current collector.
 
-The failure was more specific than “the model needs context.” Long functions could still be represented by their opening and closing lines, leaving a decisive branch out of the middle. Tools sometimes recovered those lines. Even when selected relevant code had been read, the model often did not connect it into a concrete failure case.
+The failure was more specific than “the model needs context.” Long functions could still be represented by their opening and closing lines, leaving a decisive branch out of the middle. Tools sometimes recovered those lines. Even after reading relevant code, the model often did not connect it into a concrete failure case.
 
 ## Removing limits helped one investigation, not overall detection
 
@@ -75,20 +79,20 @@ This was one run per configuration per case, using frozen candidates, direct Dee
 
 ## The handoff exposed two runtime defects
 
-The API is stateless, but the review runtime maintains a session by sending prior messages and tool results with subsequent requests. Adding another persistent server would not automatically give a fresh verifier the evidence from the main review. That transfer has to be explicit.
+The API is stateless, but the review runtime maintains a session by sending prior messages and tool results with subsequent requests. A fresh verifier needs the relevant evidence passed explicitly.
 
-We prototyped a revision-scoped ledger of successful source reads and supplied it alongside the original main pack. The larger handoff increased prompt size roughly fivefold. Across six comparable sessions, mean time rose from 30.8 to 48.5 seconds, without an overall quality win. More importantly, one attempt exposed a conflict at the step limit.
+We prototyped a revision-scoped ledger of successful source reads and supplied it alongside the original main pack. The larger handoff increased prompt size roughly fivefold. Across six comparable sessions, mean time rose from 30.8 to 48.5 seconds, without an overall quality win. One attempt also exposed a conflict at the step limit.
 
 On the final allowed turn, the runtime instructed the model to produce a prose summary. Our verifier expected structured JSON. Recovery then forked the session and received a fresh step allowance. An apparent six-step verification had actually taken nine steps. We rejected that attempt from the fixed-budget comparison and stopped the batch.
 
-Synthetic transport probes preserved prior reasoning and tool results on the tested native-adapter paths. They reproduced the final-turn conflict. We fixed the existing runtime:
+Controlled tests showed that the native adapters preserved prior reasoning and tool results on the paths we checked. They also reproduced the final-turn conflict. We fixed the existing runtime:
 
 - Both verification passes retain relevant main-page packs and cited rules within their budgets. Duplicates and omissions are handled explicitly.
 - The capped final turn asks for the required verdict format.
 - Recovery consumes only the remaining steps from the original allowance. Unknown accounting does not grant extra investigation.
 - Each corrected finding is checked against its own delivered evidence. One source failure does not discard every other verdict in the batch.
 
-These fixes shipped in [PR #282](https://github.com/pgup-ai/jbot-review/pull/282). They repair delivery and accounting contracts. They do not establish a broad improvement in recall. The shipped change also does not include the prototype’s bulk transfer of every retained read.
+These fixes shipped in [PR #282](https://github.com/pgup-ai/jbot-review/pull/282). They ensure that verification receives the intended context and stays within its total step allowance. The bulk-read prototype was not shipped, and these runtime fixes do not establish a general detection gain.
 
 ## Better source delivery still left an investigation gap
 
@@ -108,7 +112,7 @@ The research ran alongside smaller fixes with clearer acceptance criteria. A sou
 
 Uncertain concerns are also easier to inspect. A collapsed section in the GitHub review preserves hypotheses and source links separately from confirmed inline findings and severity counts. The video shows that actual interface.
 
-The complete set covered here is:
+The video covers these eleven merged PRs, including the accompanying packaging and maintenance work:
 
 Scroll horizontally to see every column.
 
@@ -137,7 +141,7 @@ Most quality judgments came from source inspection by one operator. The private 
 
 We still have three problems to measure separately: discovering the issue, judging its severity, and preserving it through verification. One known concern was rated P3 at discovery. Better evidence transfer would not, on its own, correct that judgment.
 
-The next useful test is a compact, source-grounded causal chain on fresh cases, scored for legitimate detections, false confirmations and time. We want to know whether the reviewer retrieves the missing premise and uses it correctly. Counting extra context bytes or accepting the model’s “confirmed” label would miss the failure that brought us here.
+The next experiment should test compact causal chains on fresh cases and score legitimate detections, false confirmations and time separately. The question is whether the reviewer can find the missing premise and use it correctly. Extra context bytes and a “confirmed” label are not enough to answer it.
 
 ## Related work
 
