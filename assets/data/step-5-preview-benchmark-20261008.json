@@ -161,7 +161,7 @@
       "A",
       "B"
     ],
-    "settings": "High effort, one review pass, verification off. One run per model; J-Bot builds differ between September 26 and October 8.",
+    "settings": "High effort, one review pass, verification off. One run per model, except LongCat 2.5 Preview with two runs on A; J-Bot builds differ between September 26 and October 8.",
     "known_issues": {
       "A": 7,
       "B": 5,

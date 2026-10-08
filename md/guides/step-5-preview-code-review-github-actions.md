@@ -131,7 +131,7 @@ On the six pull requests it finished, Step 5 found 8 of 31 known issues. The med
 
 ## Step 5 Preview vs DeepSeek, MiMo, GLM and other models
 
-We also ran J-Bot with other models on two of these pull requests, A and B, with the same settings as above: high effort, one review pass and verification off. A has 7 known issues and B has 5, so each row is scored out of 12. Every model ran once, between September 26 and October 8.
+We also ran J-Bot with other models on two of these pull requests, A and B, with the same settings as above: high effort, one review pass and verification off. A has 7 known issues and B has 5, so each row is scored out of 12. Every model ran once, except LongCat 2.5 Preview, which ran A twice, between September 26 and October 8.
 
 Scroll horizontally to see every column.
 
@@ -145,7 +145,7 @@ Scroll horizontally to see every column.
 | Muse Spark 1.3 | OpenCode Zen, $0 | Sep 28 | 1 (0 + 1) | 3.5 min | 3.3 min |
 | LongCat 2.5 Preview | OpenCode Zen, $0 | Sep 26 to 28 | 0 to 1 on A, two runs | 18 to 27 min | Not run |
 
-One run per model, on J-Bot builds that changed between September 26 and October 8. Flash-class models swing by about two known issues between identical runs, so the top three rows are a tie, not a ranking. MiMo’s 3 on A includes one finding we judged a likely match. Runs before October 8 were scored against an earlier answer key with one more issue on B, which no model found, and every row here leaves it out.
+One run per model (two on A for LongCat 2.5 Preview), on J-Bot builds that changed between September 26 and October 8. Flash-class models swing by about two known issues between identical runs, so the top three rows are a tie, not a ranking. MiMo’s 3 on A includes one finding we judged a likely match. Runs before October 8 were scored against an earlier answer key with one more issue on B, which no model found, and every row here leaves it out.
 
 Scroll horizontally to see the whole chart.
 
@@ -170,7 +170,7 @@ J-Bot will not post a review that skips part of the diff. When a page fails afte
 
 Each pull request ran once. Flash-class models swing by about two known issues between identical runs, so a single row can mislead in either direction. Eight production pull requests from one repository are a screen, not a benchmark.
 
-The model comparisons are thin. The cross-model table rests on two pull requests with one run per model, on J-Bot builds from September 26 to October 8, and we did not run the other models on C through H. The public pull request ran at low effort and the production ones at high, so the two tables don’t combine.
+The model comparisons are thin. The cross-model table rests on two pull requests with one run per model (two on A for LongCat), on J-Bot builds from September 26 to October 8, and we did not run the other models on C through H. The public pull request ran at low effort and the production ones at high, so the two tables don’t combine.
 
 The production repository is private, so we can’t publish those diffs or findings. The public run can be checked against [\#286](https://github.com/pgup-ai/jbot-review/pull/286), [\#287](https://github.com/pgup-ai/jbot-review/pull/287) and [\#293](https://github.com/pgup-ai/jbot-review/pull/293), which fixed the telemetry bug.
 
