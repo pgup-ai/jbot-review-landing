@@ -1,8 +1,16 @@
-# Step 5 Preview code review: free, solid on small PRs, unreliable on big ones
+# Step 5 Preview code review benchmark: free, ties DeepSeek on small PRs, fails big ones
 
 Published October 8, 2026 · route and catalog checked October 8, 2026 · applies to pgup-ai/jbot-review-action v0
 
 **Step 5 Preview is a reasonable free reviewer for small and medium pull requests, and the wrong choice for large ones.** We ran it as J-Bot Review’s model on nine pull requests. On the six production changes it finished, 4 to 13 files each, it found 8 of 31 known issues and tied DeepSeek V4.1 Flash on the two where we could compare. Its median finished review took 16 minutes, and it was slower than DeepSeek on two of the three pull requests where we have a DeepSeek time. It failed both pull requests of 20 files and more.
+
+**Key results**
+
+- Step 5 Preview, a StepFun model with a 1M-token context, costs $0 on OpenCode Zen for a limited time.
+- On six production pull requests of 4 to 13 files, it found 8 of 31 known issues, with a median review time of 16 minutes.
+- On two production pull requests that six models reviewed, it found 4 of 12 known issues, tied with DeepSeek V4.1 Flash and MiMo V2.6 Flash.
+- It failed both pull requests of 20 and 32 files at J-Bot’s 30-minute budget, so no review posted.
+- On a public 9-file pull request it found the same real bug as DeepSeek V4.1 Flash, in 8.2 minutes against 4.4.
 
 > **StepFun · released Sep 16, 2026 · 1M context · free on OpenCode Zen**
 >
@@ -11,9 +19,10 @@ Published October 8, 2026 · route and catalog checked October 8, 2026 · applie
 **In this guide**
 
 - [Setup in three steps](https://www.pgupai.com/guides/step-5-preview-code-review-github-actions#setup)
-- [What OpenCode lists](https://www.pgupai.com/guides/step-5-preview-code-review-github-actions#model)
-- [A public pull request against DeepSeek V4.1 Flash](https://www.pgupai.com/guides/step-5-preview-code-review-github-actions#public-pr)
+- [Free on OpenCode Zen, 1M context](https://www.pgupai.com/guides/step-5-preview-code-review-github-actions#model)
+- [Step 5 Preview vs DeepSeek V4.1 Flash on a public pull request](https://www.pgupai.com/guides/step-5-preview-code-review-github-actions#public-pr)
 - [Eight production pull requests](https://www.pgupai.com/guides/step-5-preview-code-review-github-actions#production)
+- [Step 5 Preview vs DeepSeek, MiMo, GLM and other models](https://www.pgupai.com/guides/step-5-preview-code-review-github-actions#compare)
 - [Why the large pull requests failed](https://www.pgupai.com/guides/step-5-preview-code-review-github-actions#large-prs)
 - [When to use it](https://www.pgupai.com/guides/step-5-preview-code-review-github-actions#when)
 - [What this test can’t tell you](https://www.pgupai.com/guides/step-5-preview-code-review-github-actions#limits)
@@ -61,7 +70,7 @@ jobs:
 
 No J-Bot update is needed. The OpenCode build J-Bot pins, 2.0.24, ships without an entry for this model, but it reads the models.dev catalog when it starts, so the id resolved on our first run.
 
-## What OpenCode lists for Step 5 Preview
+## Step 5 Preview on OpenCode Zen: free, 1M context
 
 **Model id** (OpenCode Zen)
 
@@ -82,7 +91,7 @@ OpenCode says the provider follows a zero-retention policy and does not train on
 
 Sources: the [OpenCode Zen documentation](https://opencode.ai/docs/zen/) (model list, pricing and privacy) and the [models.dev](https://models.dev/) catalog entry, both checked October 8, 2026. Free windows end, so check the pricing table before you depend on it.
 
-## A public pull request against DeepSeek V4.1 Flash
+## Step 5 Preview vs DeepSeek V4.1 Flash on a public pull request
 
 We started with [pull request #286](https://github.com/pgup-ai/jbot-review/pull/286) in J-Bot Review’s own repository: 9 files on one review page. We ran it at low effort with verification off, the settings we had used for DeepSeek V4.1 Flash on the same change a day earlier. That DeepSeek run used an older J-Bot build (`e824bd4`, against `0906459` for Step 5).
 
@@ -95,7 +104,7 @@ Scroll horizontally to see every column.
 
 Both models found the same real bug. A telemetry helper had gained a workspace parameter that three backend call sites did not pass. Step 5’s write-up named all three call sites. Neither model found the two known issues, shell-parsing bugs fixed later in [\#287](https://github.com/pgup-ai/jbot-review/pull/287). Step 5 made fewer tool calls and still took 1.9 times as long on this pull request.
 
-## Eight production pull requests
+## Step 5 Preview benchmark on eight production pull requests
 
 Next we ran eight pull requests from a private TypeScript monorepo. An earlier audit had written an answer key for each one, 44 known issues in total. Each review ran once, at high effort, with one review pass, verification off and J-Bot’s default 30-minute budget. A script matched findings to the key by keyword, and we read every finding it did not match by hand. We label the pull requests A to H.
 
@@ -112,7 +121,7 @@ Scroll horizontally to see every column.
 | G | 20 | 3 | Failed at 29.5 min | No review (3 in key) |
 | H | 32 | 4 | Failed at 28.1 min | No review (10 in key) |
 
-J-Bot splits a diff into budgeted review pages and posts only when every page finishes. The [raw numbers (JSON)](https://www.pgupai.com/assets/data/step-5-preview-benchmark-20261008.json) include the DeepSeek reference runs.
+J-Bot splits a diff into budgeted review pages and posts only when every page finishes. The [raw numbers (JSON)](https://www.pgupai.com/assets/data/step-5-preview-benchmark-20261008.json) include the DeepSeek reference runs and the cross-model comparison.
 
 Scroll horizontally to see the whole chart.
 
@@ -120,7 +129,29 @@ Review time against files changed. Every pull request up to 13 files finished in
 
 On the six pull requests it finished, Step 5 found 8 of 31 known issues. The median review took 16 minutes.
 
-We have DeepSeek V4.1 Flash runs on two of them, A and B, from September 26. DeepSeek found 3 and 1, a total of 4, in 9.2 and 12.0 minutes. Step 5 also found 4, in 17.7 and 10.0 minutes. B is the one pull request where Step 5 was faster. Those DeepSeek runs used older J-Bot code, so read the tie as a rough match.
+## Step 5 Preview vs DeepSeek, MiMo, GLM and other models
+
+We also ran J-Bot with other models on two of these pull requests, A and B, with the same settings as above: high effort, one review pass and verification off. A has 7 known issues and B has 5, so each row is scored out of 12. Every model ran once, between September 26 and October 8.
+
+Scroll horizontally to see every column.
+
+| Model | Route | Date | Known issues found, A + B (of 12) | Time on A | Time on B |
+| --- | --- | --- | --- | --- | --- |
+| Step 5 Preview | OpenCode Zen, $0 | Oct 8 | 4 (3 + 1) | 17.7 min | 10.0 min |
+| DeepSeek V4.1 Flash | DeepSeek API | Sep 26 | 4 (3 + 1) | 9.2 min | 12.0 min |
+| MiMo V2.6 Flash | OpenCode Go | Sep 28 | 4 (3 + 1) | 22.8 min | 17.8 min |
+| GLM 5.3 Flash | OpenCode Go | Sep 28 | 2 (1 + 1) | 14.5 min | 8.5 min |
+| Qwen3.8-Flash | Qoder, $0 | Oct 1 | 1 (0 + 1) | 16.0 min | 8.3 min |
+| Muse Spark 1.3 | OpenCode Zen, $0 | Sep 28 | 1 (0 + 1) | 3.5 min | 3.3 min |
+| LongCat 2.5 Preview | OpenCode Zen, $0 | Sep 26 to 28 | 0 to 1 on A, two runs | 18 to 27 min | Not run |
+
+One run per model, on J-Bot builds that changed between September 26 and October 8. Flash-class models swing by about two known issues between identical runs, so the top three rows are a tie, not a ranking. MiMo’s 3 on A includes one finding we judged a likely match. Runs before October 8 were scored against an earlier answer key with one more issue on B, which no model found, and every row here leaves it out.
+
+Scroll horizontally to see the whole chart.
+
+Known issues found against total review time on A and B. Step 5 Preview, DeepSeek V4.1 Flash and MiMo V2.6 Flash each found 4 of 12. LongCat 2.5 Preview ran A only and is left out.
+
+Step 5 Preview matched the best results in this group, DeepSeek V4.1 Flash and MiMo V2.6 Flash, and it was the only one of the three on a free route. DeepSeek was the fastest of the three on A, and Step 5 was the fastest of the three on B. GLM 5.3 Flash found half as many. Muse Spark 1.3 finished both reviews in under four minutes and found almost nothing.
 
 ## Why the large pull requests failed
 
@@ -130,7 +161,7 @@ J-Bot will not post a review that skips part of the diff. When a page fails afte
 
 ## When to use Step 5 Preview
 
-- **Small and medium pull requests, while it’s free.** Up to about 13 files it finished every review and found roughly what DeepSeek V4.1 Flash found, at no cost.
+- **Small and medium pull requests, while it’s free.** Up to about 13 files it finished every review. On the two pull requests we ran across models, it found as many known issues as DeepSeek V4.1 Flash and MiMo V2.6 Flash, at no cost.
 - **Not for large pull requests.** Both of ours failed. If you try it on changes that size anyway, raise `time-budget-minutes` to 45 or more. We have not yet rerun G and H with a longer budget.
 - **Not as a default in a model pool.** A pool picks a model per pull request, so Step 5 would eventually draw a large change and fail it. Keep it as an explicit choice for repositories whose pull requests stay small.
 - **Not when review speed matters.** Only three pull requests have a DeepSeek V4.1 Flash time, all from older J-Bot code. Step 5 was 1.9 times slower on #286 and on A, and faster on B. For faster free reviews, see the [free model comparison](https://www.pgupai.com/guides/free-ai-models-code-review).
@@ -139,7 +170,7 @@ J-Bot will not post a review that skips part of the diff. When a page fails afte
 
 Each pull request ran once. Flash-class models swing by about two known issues between identical runs, so a single row can mislead in either direction. Eight production pull requests from one repository are a screen, not a benchmark.
 
-The DeepSeek comparison is thin. On A and B it crosses a J-Bot code change, and we did not run DeepSeek on C through H. The public pull request ran at low effort and the production ones at high, so the two tables don’t combine.
+The model comparisons are thin. The cross-model table rests on two pull requests with one run per model, on J-Bot builds from September 26 to October 8, and we did not run the other models on C through H. The public pull request ran at low effort and the production ones at high, so the two tables don’t combine.
 
 The production repository is private, so we can’t publish those diffs or findings. The public run can be checked against [\#286](https://github.com/pgup-ai/jbot-review/pull/286), [\#287](https://github.com/pgup-ai/jbot-review/pull/287) and [\#293](https://github.com/pgup-ai/jbot-review/pull/293), which fixed the telemetry bug.
 
@@ -151,17 +182,29 @@ The production repository is private, so we can’t publish those diffs or findi
 
 ## FAQ
 
+### What is Step 5 Preview?
+
+Step 5 Preview is a StepFun model that OpenCode Zen serves for free, for a limited time, as `opencode/step-5-preview-free`. Models.dev lists a 1,000,000-token context, 65,536 output tokens, text, image and video input, tool calling, and a release date of September 16, 2026.
+
 ### Is Step 5 Preview free?
 
 On OpenCode Zen, yes, for a limited time. OpenCode lists `opencode/step-5-preview-free` at $0 for input, output and cached reads. OpenCode’s announcement on 2026-10-08 said the free window lasts a week, so check the Zen pricing table before you rely on it.
 
 ### Is Step 5 Preview good for code review?
 
-On small and medium pull requests, yes. It found 8 of 31 known issues on six production pull requests of 4 to 13 files, and tied DeepSeek V4.1 Flash on the two where we have a DeepSeek run. It failed both pull requests of 20 and 32 files, so it is not a good default for repositories that open large changes.
+On small and medium pull requests, yes. It found 8 of 31 known issues on six production pull requests of 4 to 13 files, and tied DeepSeek V4.1 Flash and MiMo V2.6 Flash on the two pull requests all three reviewed. It failed both pull requests of 20 and 32 files, so it is not a good default for repositories that open large changes.
+
+### Step 5 Preview vs DeepSeek V4.1 Flash: which is better for code review?
+
+They tied on known issues in our runs, and DeepSeek was faster on two of the three pull requests we can compare. On two production pull requests both found 4 of 12 known issues. DeepSeek took 9.2 and 12.0 minutes, and Step 5 took 17.7 and 10.0. On a public 9-file pull request both found the same real bug, Step 5 in 8.2 minutes and DeepSeek in 4.4. Each comparison is one run per model on different J-Bot builds, and a swing of two issues between identical runs is normal, so treat the result as a tie.
+
+### What is the best free model for AI code review right now?
+
+No free model wins on every count in our data. On the same two production pull requests, Step 5 Preview found 4 of 12 known issues at $0, the same as DeepSeek V4.1 Flash and MiMo V2.6 Flash and ahead of GLM 5.3 Flash (2), Qwen3.8-Flash (1) and Muse Spark 1.3 (1). Step 5 was slower than DeepSeek on one of the two and failed both large pull requests we gave it. Our DeepSeek and MiMo runs used paid routes. For the free routes, quotas and data terms of each model, see the [free model guide](https://www.pgupai.com/guides/free-ai-models-code-review).
 
 ### How fast is Step 5 Preview at code review?
 
-The six production reviews it finished took 10.0 to 19.8 minutes, with a median of 16. Only three pull requests have a DeepSeek V4.1 Flash time, all on older J-Bot code: Step 5 took 8.2 minutes against 4.4 on a 9-file public pull request and 17.7 against 9.2 on A, and 10.0 against 12.0 on B. Both large pull requests ran into J-Bot’s 30-minute budget.
+Slower than DeepSeek V4.1 Flash on most pull requests we can compare, with a median of 16 minutes per finished review. The six production reviews it finished took 10.0 to 19.8 minutes. Only three pull requests have a DeepSeek time, all on older J-Bot code. Step 5 took 8.2 minutes against 4.4 on a 9-file public pull request, 17.7 against 9.2 on A, and 10.0 against 12.0 on B. Both large pull requests ran into J-Bot’s 30-minute budget.
 
 ### Do I need to update J-Bot Review to use Step 5 Preview?
 
@@ -169,7 +212,7 @@ No. The OpenCode build J-Bot pins, 2.0.24, reads the models.dev catalog when it 
 
 ### Does OpenCode keep my code when I use Step 5 Preview?
 
-OpenCode’s Zen documentation says Step 5 Preview Free’s provider follows a zero-retention policy and does not use your data for model training. That is OpenCode’s statement, not a J-Bot guarantee. Read the Zen privacy section before sending private code.
+Not according to OpenCode. Its Zen documentation says Step 5 Preview Free’s provider follows a zero-retention policy and does not use your data for model training. That is OpenCode’s statement, not a J-Bot guarantee. Read the Zen privacy section before sending private code.
 
 ## Related
 

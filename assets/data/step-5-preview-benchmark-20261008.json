@@ -56,24 +56,229 @@
     "time_budget_minutes": 30,
     "known_issues_total": 44,
     "runs": [
-      { "pr": "A", "files": 4, "pages": 2, "status": "completed", "wall_minutes": 17.7, "known_issues": 7, "found": 3 },
-      { "pr": "B", "files": 8, "pages": 1, "status": "completed", "wall_minutes": 10.0, "known_issues": 5, "found": 1 },
-      { "pr": "C", "files": 8, "pages": 1, "status": "completed", "wall_minutes": 14.6, "known_issues": 3, "found": 1 },
-      { "pr": "D", "files": 9, "pages": 3, "status": "completed", "wall_minutes": 13.5, "known_issues": 8, "found": 2 },
-      { "pr": "E", "files": 10, "pages": 2, "status": "completed", "wall_minutes": 19.8, "known_issues": 2, "found": 0 },
-      { "pr": "F", "files": 13, "pages": 2, "status": "completed", "wall_minutes": 19.8, "known_issues": 6, "found": 1 },
-      { "pr": "G", "files": 20, "pages": 3, "status": "failed", "wall_minutes": 29.5, "known_issues": 3, "found": null, "failure": "One page returned an empty response and its retry ran out the budget" },
-      { "pr": "H", "files": 32, "pages": 4, "status": "failed", "wall_minutes": 28.1, "known_issues": 10, "found": null, "failure": "One page ended with a partial result" }
+      {
+        "pr": "A",
+        "files": 4,
+        "pages": 2,
+        "status": "completed",
+        "wall_minutes": 17.7,
+        "known_issues": 7,
+        "found": 3
+      },
+      {
+        "pr": "B",
+        "files": 8,
+        "pages": 1,
+        "status": "completed",
+        "wall_minutes": 10.0,
+        "known_issues": 5,
+        "found": 1
+      },
+      {
+        "pr": "C",
+        "files": 8,
+        "pages": 1,
+        "status": "completed",
+        "wall_minutes": 14.6,
+        "known_issues": 3,
+        "found": 1
+      },
+      {
+        "pr": "D",
+        "files": 9,
+        "pages": 3,
+        "status": "completed",
+        "wall_minutes": 13.5,
+        "known_issues": 8,
+        "found": 2
+      },
+      {
+        "pr": "E",
+        "files": 10,
+        "pages": 2,
+        "status": "completed",
+        "wall_minutes": 19.8,
+        "known_issues": 2,
+        "found": 0
+      },
+      {
+        "pr": "F",
+        "files": 13,
+        "pages": 2,
+        "status": "completed",
+        "wall_minutes": 19.8,
+        "known_issues": 6,
+        "found": 1
+      },
+      {
+        "pr": "G",
+        "files": 20,
+        "pages": 3,
+        "status": "failed",
+        "wall_minutes": 29.5,
+        "known_issues": 3,
+        "found": null,
+        "failure": "One page returned an empty response and its retry ran out the budget"
+      },
+      {
+        "pr": "H",
+        "files": 32,
+        "pages": 4,
+        "status": "failed",
+        "wall_minutes": 28.1,
+        "known_issues": 10,
+        "found": null,
+        "failure": "One page ended with a partial result"
+      }
     ],
-    "completed_summary": { "prs": 6, "known_issues": 31, "found": 8, "median_wall_minutes": 16.15, "speed_note": "No general speed multiplier: only #286, A and B have a DeepSeek time, all from older J-Bot code. Step 5 was 1.9x slower on #286 and A and faster on B." },
+    "completed_summary": {
+      "prs": 6,
+      "known_issues": 31,
+      "found": 8,
+      "median_wall_minutes": 16.15,
+      "speed_note": "No general speed multiplier: only #286, A and B have a DeepSeek time, all from older J-Bot code. Step 5 was 1.9x slower on #286 and A and faster on B."
+    },
     "deepseek_reference": {
       "model": "DeepSeek V4.1 Flash",
       "date": "2026-09-26",
       "note": "Older J-Bot code, so a rough comparison. No DeepSeek run was paired on C to H.",
       "runs": [
-        { "pr": "A", "wall_minutes": 9.2, "found": 3 },
-        { "pr": "B", "wall_minutes": 12.0, "found": 1 }
+        {
+          "pr": "A",
+          "wall_minutes": 9.2,
+          "found": 3
+        },
+        {
+          "pr": "B",
+          "wall_minutes": 12.0,
+          "found": 1
+        }
       ]
     }
+  },
+  "model_comparison": {
+    "prs": [
+      "A",
+      "B"
+    ],
+    "settings": "High effort, one review pass, verification off. One run per model; J-Bot builds differ between September 26 and October 8.",
+    "known_issues": {
+      "A": 7,
+      "B": 5,
+      "total": 12
+    },
+    "scoring_note": "Runs before 2026-10-08 were scored against an earlier version of the answer key with one extra issue on B. No model found it, and it is left out here.",
+    "runs": [
+      {
+        "model": "Step 5 Preview",
+        "route": "OpenCode Zen (free)",
+        "cost_usd": 0,
+        "date": "2026-10-08",
+        "found": {
+          "A": 3,
+          "B": 1
+        },
+        "total_found": 4,
+        "minutes": {
+          "A": 17.7,
+          "B": 10.0
+        },
+        "total_minutes": 27.7
+      },
+      {
+        "model": "DeepSeek V4.1 Flash",
+        "route": "DeepSeek API",
+        "date": "2026-09-26",
+        "found": {
+          "A": 3,
+          "B": 1
+        },
+        "total_found": 4,
+        "minutes": {
+          "A": 9.2,
+          "B": 12.0
+        },
+        "total_minutes": 21.2
+      },
+      {
+        "model": "MiMo V2.6 Flash",
+        "route": "OpenCode Go",
+        "date": "2026-09-28",
+        "found": {
+          "A": 3,
+          "B": 1
+        },
+        "total_found": 4,
+        "minutes": {
+          "A": 22.8,
+          "B": 17.8
+        },
+        "total_minutes": 40.6,
+        "notes": "The count on A includes one finding judged a likely match."
+      },
+      {
+        "model": "GLM 5.3 Flash",
+        "route": "OpenCode Go",
+        "date": "2026-09-28",
+        "found": {
+          "A": 1,
+          "B": 1
+        },
+        "total_found": 2,
+        "minutes": {
+          "A": 14.5,
+          "B": 8.5
+        },
+        "total_minutes": 23.0
+      },
+      {
+        "model": "Qwen3.8-Flash",
+        "route": "Qoder (free)",
+        "cost_usd": 0,
+        "date": "2026-10-01",
+        "found": {
+          "A": 0,
+          "B": 1
+        },
+        "total_found": 1,
+        "minutes": {
+          "A": 16.0,
+          "B": 8.3
+        },
+        "total_minutes": 24.3
+      },
+      {
+        "model": "Muse Spark 1.3",
+        "route": "OpenCode Zen (free)",
+        "cost_usd": 0,
+        "date": "2026-09-28",
+        "found": {
+          "A": 0,
+          "B": 1
+        },
+        "total_found": 1,
+        "minutes": {
+          "A": 3.5,
+          "B": 3.3
+        },
+        "total_minutes": 6.8
+      },
+      {
+        "model": "LongCat 2.5 Preview",
+        "route": "OpenCode Zen (free)",
+        "cost_usd": 0,
+        "date": "2026-09-26 to 2026-09-28",
+        "runs_on_A": 2,
+        "found": {
+          "A": "0 to 1",
+          "B": null
+        },
+        "minutes": {
+          "A": "18 to 27",
+          "B": null
+        },
+        "notes": "Ran A only, twice. Left out of the chart."
+      }
+    ]
   }
 }

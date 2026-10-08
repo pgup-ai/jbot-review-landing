@@ -29,6 +29,8 @@ J-Bot Review is an open-source AI code reviewer that runs as a GitHub Action in 
 
 The $0 routes are the ones each provider’s catalog priced at zero on September 26, 2026. Known issues are problems developers had already accepted on real pull requests from a production TypeScript monorepo. The model rows don’t share one test set, so compare within a row more than across rows. Speed depends as much on the route as on the model. DeepSeek V4.1 Flash took about six minutes a review through one provider and 17 through another.
 
+Step 5 Preview joined OpenCode Zen’s free list after this comparison. On two production pull requests it found as many known issues as DeepSeek V4.1 Flash and MiMo V2.6 Flash, and it failed both large pull requests we gave it. See the [Step 5 Preview benchmark](https://www.pgupai.com/guides/step-5-preview-code-review-github-actions).
+
 ## Free isn’t unlimited
 
 Every free route has a cap, and most don’t publish it. Here’s what we measured or found documented:
