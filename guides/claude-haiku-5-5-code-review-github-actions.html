@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Claude Haiku 5.5 Code Review Benchmark and Pricing | J-Bot Review</title>
+<meta name="description" content="Claude Haiku 5.5 as an AI code reviewer at five reasoning effort levels: high found two real bugs for $0.046, max found three for $1.25. Setup, pricing, data." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/guides/claude-haiku-5-5-code-review-github-actions" />
+<link rel="alternate" type="text/markdown" href="/md/guides/claude-haiku-5-5-code-review-github-actions.md" title="Markdown representation" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/guides/claude-haiku-5-5-code-review-github-actions" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="Claude Haiku 5.5 code review: benchmark, pricing and reasoning effort" />
+<meta property="og:description" content="Five effort levels on one pull request. High effort found two real bugs for $0.046, about half the cost of DeepSeek V4.1 Flash. Max found three, at $1.25 a review." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-guide-claude-haiku-5-5-20261007.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-guide-claude-haiku-5-5-20261007.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Claude Haiku 5.5 code review benchmark: cost per review and bugs found at five reasoning effort levels." />
+<meta property="article:published_time" content="2026-10-07" />
+<meta property="article:modified_time" content="2026-10-07" />
+<meta property="article:section" content="Guides" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Claude Haiku 5.5 code review: benchmark, pricing and reasoning effort" />
+<meta name="twitter:description" content="Five effort levels on one pull request. High effort found two real bugs for $0.046, about half the cost of DeepSeek V4.1 Flash. Max found three, at $1.25 a review." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-guide-claude-haiku-5-5-20261007.png" />
+<meta name="twitter:image:alt" content="Claude Haiku 5.5 code review benchmark: cost per review and bugs found at five reasoning effort levels." />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/guides/claude-haiku-5-5-code-review-github-actions#article",
+      "headline": "Claude Haiku 5.5 code review: benchmark, pricing and reasoning effort",
+      "description": "Claude Haiku 5.5 as an AI code reviewer at five reasoning effort levels: high found two real bugs for $0.046, max found three for $1.25. Setup, pricing, data.",
+      "url": "https://www.pgupai.com/guides/claude-haiku-5-5-code-review-github-actions",
+      "mainEntityOfPage": "https://www.pgupai.com/guides/claude-haiku-5-5-code-review-github-actions",
+      "image": [
+        "https://www.pgupai.com/assets/og-guide-claude-haiku-5-5-20261007.png"
+      ],
+      "datePublished": "2026-10-07",
+      "dateModified": "2026-10-07",
+      "keywords": "Claude Haiku 5.5, Haiku 5.5, Haiku 5.5 benchmark, Claude Haiku 5.5 API pricing, Haiku 5.5 pricing, Anthropic Haiku 5.5, Claude Haiku 5.5 reasoning effort, Haiku 5.5 xhigh, Claude Haiku 5.5 code review, Haiku 5.5 vs DeepSeek V4.1 Flash, AI code review GitHub Actions, claude-haiku-5-5",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "AI code review"
+        },
+        {
+          "@type": "Thing",
+          "name": "Claude Haiku 5.5"
+        },
+        {
+          "@type": "Thing",
+          "name": "GitHub Actions"
+        }
+      ],
+      "author": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.pgupai.com/assets/icon-512.png"
+        }
+      }
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://www.pgupai.com/guides/claude-haiku-5-5-code-review-github-actions#data",
+      "name": "Claude Haiku 5.5 code review effort benchmark",
+      "description": "Cost, time, tool calls, reasoning tokens and bugs found for Claude Haiku 5.5 at five reasoning effort levels and DeepSeek V4.1 Flash, reviewing one 9-file pull request.",
+      "url": "https://www.pgupai.com/guides/claude-haiku-5-5-code-review-github-actions",
+      "datePublished": "2026-10-07",
+      "license": "https://opensource.org/licenses/MIT",
+      "creator": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/"
+      },
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://www.pgupai.com/assets/data/claude-haiku-5-5-effort-benchmark-20261007.json"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.pgupai.com/guides/claude-haiku-5-5-code-review-github-actions#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is Claude Haiku 5.5 good for code review?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, at high effort or above. On a 9-file pull request, Haiku 5.5 at high effort found two real bugs and one rule violation for $0.046 in 163 seconds. At low effort it made no tool calls in its main review and found one bug. At max it found three bugs, including one of the two known issues, for $1.25."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much does Claude Haiku 5.5 cost per code review?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "In our runs, between $0.015 at low effort and $1.25 at max, on a 9-file pull request. High effort cost $0.046 and xhigh $0.33. Anthropic lists Haiku 5.5 at $0.10 per million input tokens and $0.50 per million output tokens for prompts up to 100,000 tokens, and $0.50 and $2.50 above that."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which reasoning effort should I use for Claude Haiku 5.5?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use high if cost matters and xhigh or max for reviews where a missed bug is expensive. J-Bot Review defaults Haiku 5.5 to xhigh. In our test, high found the same two bugs as xhigh for about a seventh of the cost, and only max found a known issue."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is Claude Haiku 5.5’s default reasoning effort?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Medium. Anthropic’s effort documentation says Claude Haiku 5.5 defaults to medium, and that sending medium behaves exactly like omitting the effort parameter. The model also supports low, high, xhigh and max, with adaptive thinking on by default."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Claude Haiku 5.5 better than DeepSeek V4.1 Flash for code review?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "On our one-PR test, Haiku 5.5 at high effort found two bugs for $0.046 in 163 seconds, and DeepSeek V4.1 Flash at low effort found one for $0.082 in 265 seconds. Both found the same telemetry bug. One pull request is not enough to rank the models."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use a Claude Pro or Max subscription instead of an API key?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. J-Bot Review runs Claude through an Anthropic API key or an OpenCode gateway key. A Claude Pro or Max seat is not a supported CI credential today."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "J-Bot Review",
+          "item": "https://www.pgupai.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://www.pgupai.com/guides"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Claude Haiku 5.5",
+          "item": "https://www.pgupai.com/guides/claude-haiku-5-5-code-review-github-actions"
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Set up Claude Haiku 5.5 code review in GitHub Actions",
+      "description": "Add an Anthropic API key and a J-Bot Review workflow that reviews pull requests with Claude Haiku 5.5.",
+      "totalTime": "PT5M",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Create an Anthropic API key",
+          "text": "Save it as the repository secret ANTHROPIC_API_KEY under Settings, Secrets and variables, Actions."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Commit the workflow",
+          "text": "Add .github/workflows/jbot-review.yml with model: anthropic/claude-haiku-5-5. Optionally set model-options to choose the reasoning effort."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Open a pull request",
+          "text": "J-Bot Review reads the base…head diff and posts diff-anchored findings with a verdict."
+        }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0b0a; --surface: #0e100e; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5); --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b; --spark: #8f98a8;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08); --border-code: rgba(255,255,255,0.09);
+    --code-text: #dbe5dd; --code-comment: rgba(219,229,221,0.46); --blue: #87b7ff;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans); --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 740px; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .title-row { display: flex; align-items: flex-start; gap: 16px; }
+  .spark-mark { width: 44px; height: 44px; flex: none; color: var(--spark); margin-top: 1px; }
+  .spark-mark path { fill: currentColor; }
+  .note-line { color: var(--text-3); font-size: 14px; border-left: 2px solid rgba(143,152,168,0.35); padding-left: 13px; margin: 16px 0 0; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  .lede b, article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+  ol li::marker { font-family: var(--mono); color: var(--accent); }
+  code { font-family: var(--mono); font-size: 12.5px; color: var(--code-text); background: var(--surface); border: 1px solid var(--border-code); border-radius: 5px; padding: 1px 6px; }
+  .code-card { background: var(--surface); border: 1px solid var(--border-code); border-radius: 12px; overflow: hidden; margin: 18px 0; }
+  .code-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--hairline); }
+  .code-head .file { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+  .copybtn { display: inline-flex; background: rgba(94,227,154,0.08); border: 1px solid rgba(94,227,154,0.25); color: var(--accent); font-family: var(--mono); font-size: 12px; border-radius: 7px; padding: 5px 11px; cursor: pointer; }
+  .copybtn:hover { background: rgba(94,227,154,0.15); }
+  pre { margin: 0; padding: 16px 18px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.7; color: var(--code-text); }
+  .k { color: var(--blue); } .s { color: var(--accent); } .c { color: var(--code-comment); }
+  .callout { border: 1px solid rgba(143,152,168,0.35); background: rgba(143,152,168,0.07); border-radius: 12px; padding: 16px 18px; margin: 20px 0; }
+  .callout p { margin: 0; font-size: 14.5px; }
+  .callout .tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: #b8c0ce; display: block; margin-bottom: 6px; }
+  .routes { display: grid; gap: 12px; margin: 18px 0; }
+  .route { display: grid; grid-template-columns: 130px 1fr; gap: 16px; border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 16px 18px; }
+  .route b { font-family: var(--display); }
+  .route p { margin: 0; font-size: 14px; }
+  .route .verified { display: block; font-family: var(--mono); font-size: 10.5px; color: #b8c0ce; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 3px; }
+  .faq-item { border-bottom: 1px solid var(--hairline); }
+  .faq-item:first-of-type { border-top: 1px solid var(--hairline); }
+  .faq-item summary { display: flex; align-items: baseline; justify-content: space-between; gap: 22px; list-style: none; cursor: pointer; padding: 17px 2px; font-weight: 600; font-size: 15.5px; color: var(--text); line-height: 1.45; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-mark { font-family: var(--mono); font-size: 15px; color: var(--text-4); flex: none; transition: transform 0.2s var(--ease), color 0.2s var(--ease); }
+  .faq-item[open] .faq-mark { transform: rotate(45deg); color: var(--accent); }
+  .faq-a { padding: 0 2px 20px; font-size: 14.5px; color: var(--text-2); }
+  .faq-a p { margin: 0; }
+  .related { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0 0; }
+  .rel-card { display: block; border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 18px; color: var(--text); }
+  .rel-card:hover { border-color: rgba(94,227,154,0.35); color: var(--text); }
+  .rel-card .k2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 7px; }
+  .rel-card p { margin: 6px 0 0; font-size: 13px; color: var(--text-3); }
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  .table-hint { display: none; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tbody th[scope="row"] { font-family: var(--sans); font-size: 13.5px; letter-spacing: normal; text-transform: none; color: var(--text); font-weight: 600; background: transparent; }
+  tr:last-child td, tr:last-child th { border-bottom: none; }
+  .contents { border-block: 1px solid var(--hairline); padding: 18px 0; margin: 28px 0; }
+  .contents b { font-size: 14px; }
+  .contents ul { margin-bottom: 0; }
+  .fig { margin: 24px 0; border: 1px solid var(--border-card); border-radius: 12px; background: var(--surface-subtle); padding: 18px 14px 14px; }
+  .chart-wrap { overflow-x: auto; }
+  .chart { display: block; width: 100%; height: auto; }
+  .chart .grid { stroke: var(--hairline); stroke-width: 1; }
+  .chart .tick, .chart .leg { font-family: var(--mono); font-size: 12px; fill: var(--text-3); }
+  .chart .axis { font-family: var(--mono); font-size: 12px; fill: var(--text-4); letter-spacing: 0.04em; }
+  .chart .pt { font-family: var(--mono); font-size: 13px; fill: var(--text); }
+  .chart .frontier { fill: none; stroke: rgba(94,227,154,0.35); stroke-width: 2; stroke-dasharray: 5 5; }
+  .chart .haiku { fill: var(--accent); }
+  .chart .ds { fill: var(--blue); }
+  .chart .ds-l { fill: var(--blue); }
+  figcaption { margin-top: 10px; color: var(--text-3); font-size: 13px; line-height: 1.6; }
+  @media (max-width: 560px) { .tbl-wrap table { min-width: 640px; } .chart { min-width: 600px; } .table-hint { display: block; font-size: 13px; color: var(--text-2); margin-bottom: 8px; } }
+  @media (max-width: 560px) { .nav-links a:not(.btn) { display: none; } .title-row { gap: 12px; } .spark-mark { width: 36px; height: 36px; } .route { grid-template-columns: 1fr; gap: 5px; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .faq-mark { transition: none; } }
+</style>
+<link rel="stylesheet" href="/assets/analytics.css" />
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides">Guides</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<article>
+  <p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / Claude Haiku 5.5</p>
+  <h1>Claude Haiku 5.5 code review: benchmark, pricing and reasoning effort</h1>
+  <p class="updated">Published October 7, 2026, the day Haiku 5.5 launched · prices checked October 7, 2026 · applies to pgup-ai/jbot-review-action v0</p>
+  <p class="lede"><b>Claude Haiku 5.5 can review pull requests well, but only when it is allowed to think.</b> We ran it as J-Bot Review’s code reviewer at all five reasoning effort levels on the same 9-file pull request. At high effort it found two real bugs for $0.046 in under three minutes, about half what DeepSeek V4.1 Flash cost on the same change. At max it found three, including one of the two known issues a follow-up pull request fixed, for $1.25. At low effort it barely opened a file.</p>
+
+  <div class="callout">
+    <span class="tag">Released Oct 7, 2026 · 1M context · 128K output</span>
+    <p>Anthropic lists Haiku 5.5 at $0.10 per million input tokens and $0.50 per million output tokens for prompts up to 100,000 tokens. Longer prompts cost five times as much. It supports five effort levels, from <code>low</code> to <code>max</code>, and defaults to <code>medium</code>.</p>
+  </div>
+
+  <nav class="contents" aria-label="Article contents"><b>In this guide</b><ul><li><a href="#setup">Setup in three steps</a></li><li><a href="#routes">Three routes and model ids</a></li><li><a href="#pricing">Haiku 5.5 API pricing</a></li><li><a href="#benchmark">Benchmark: five effort levels on one pull request</a></li><li><a href="#findings">What each effort level found</a></li><li><a href="#effort-bug">The effort setting that never arrived</a></li><li><a href="#which-effort">Which effort to choose</a></li><li><a href="#limits">What this test can’t tell you</a></li><li><a href="#faq">FAQ</a></li></ul></nav>
+
+  <h2 id="setup">Set up Claude Haiku 5.5 code review in three steps</h2>
+  <ol>
+    <li><b>Create an Anthropic API key.</b> Save it as the repository secret <code>ANTHROPIC_API_KEY</code> (<em>Settings → Secrets and variables → Actions</em>).</li>
+    <li><b>Commit the workflow.</b> Add the file below as <code>.github/workflows/jbot-review.yml</code>. J-Bot reviews with Haiku 5.5 at <code>xhigh</code> unless you set <code>model-options</code>.</li>
+    <li><b>Open a pull request.</b> J-Bot reads the base…head diff and posts diff-anchored findings with a verdict. A second session checks blocking findings before they post.</li>
+  </ol>
+
+  <div class="code-card">
+    <div class="code-head"><span class="file">.github/workflows/jbot-review.yml</span><button type="button" class="copybtn" data-copy="haiku" aria-live="polite">Copy</button></div>
+<pre><span class="k">name</span>: J-Bot Code Review
+<span class="k">on</span>:
+  pull_request: { types: [opened, reopened, ready_for_review, synchronize] }
+
+<span class="k">concurrency</span>:
+  <span class="k">group</span>: jbot-review-${{ github.event.pull_request.number }}
+  <span class="k">cancel-in-progress</span>: true
+
+<span class="k">permissions</span>:
+  <span class="k">contents</span>: read
+  <span class="k">pull-requests</span>: write
+  <span class="k">issues</span>: write
+  <span class="k">checks</span>: read
+
+<span class="k">jobs</span>:
+  <span class="k">review</span>:
+    <span class="k">if</span>: github.event.pull_request.draft == false
+    <span class="k">runs-on</span>: ubuntu-latest
+    <span class="k">steps</span>:
+      - <span class="k">uses</span>: actions/checkout@v7
+        <span class="k">with</span>: { fetch-depth: 0 }
+      - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
+        <span class="k">with</span>:
+          <span class="k">model</span>: anthropic/claude-haiku-5-5
+<span class="c">          # Default effort is xhigh. Uncomment for high; J-Bot sends it to Claude as effort:</span>
+<span class="c">          # model-options: '{"reasoningEffort":"high"}'</span>
+          <span class="k">anthropic-api-key</span>: ${{ secrets.ANTHROPIC_API_KEY }}
+          <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
+  </div>
+
+  <h2 id="routes">Three routes, three exact model ids</h2>
+  <p>The first segment of the id selects the provider. All three routes send Haiku 5.5 the effort you choose.</p>
+  <div class="routes">
+    <div class="route"><div><b>Anthropic</b><span class="verified">Direct API · tested</span></div><p><code>model: anthropic/claude-haiku-5-5</code><br><code>anthropic-api-key</code></p></div>
+    <div class="route"><div><b>OpenCode Zen</b><span class="verified">Gateway · pay as you go</span></div><p><code>model: opencode/claude-haiku-5-5</code><br><code>opencode-api-key</code></p></div>
+    <div class="route"><div><b>OpenCode Go</b><span class="verified">Gateway · Go plan</span></div><p><code>model: opencode-go/claude-haiku-5-5</code><br><code>opencode-api-key</code></p></div>
+  </div>
+  <p class="note-line">We ran the benchmark on the direct Anthropic route. Haiku 5.5 is also sold through Amazon Bedrock, Google Cloud and Microsoft Foundry, which J-Bot does not call directly.</p>
+
+  <h2 id="pricing">Claude Haiku 5.5 API pricing</h2>
+  <p>Other Claude models from 4.6 on charge one rate across the whole 1M-token window. Haiku 5.5 charges by prompt length instead. Anthropic’s pricing page lists these rates, checked October 7, 2026:</p>
+  <p class="table-hint">Scroll horizontally to see every column.</p><div class="tbl-wrap" role="region" aria-label="Claude Haiku 5.5 API pricing per million tokens" tabindex="0"><table><thead><tr><th scope="col">Price per million tokens</th><th scope="col">Prompts up to 100K tokens</th><th scope="col">Prompts over 100K tokens</th></tr></thead><tbody><tr><th scope="row">Input</th><td>$0.10</td><td>$0.50</td></tr><tr><th scope="row">Output</th><td>$0.50</td><td>$2.50</td></tr><tr><th scope="row">5-minute cache write</th><td>$0.125</td><td>$0.625</td></tr><tr><th scope="row">1-hour cache write</th><td>$0.20</td><td>$1.00</td></tr><tr><th scope="row">Cache read</th><td>$0.01</td><td>$0.05</td></tr><tr><th scope="row">Batch input / output</th><td>$0.05 / $0.25</td><td>$0.25 / $1.25</td></tr></tbody></table></div>
+  <p>A code review resends the same growing conversation on every turn, so prompt caching carries most of the input. In our runs nearly all input tokens were cache reads or writes, which is why a review at high effort cost less than five cents.</p>
+
+  <h2 id="benchmark">Haiku 5.5 benchmark: five effort levels on one pull request</h2>
+  <p>We reviewed <a href="https://github.com/pgup-ai/jbot-review/pull/286" target="_blank" rel="noopener noreferrer">pull request #286</a> in J-Bot Review’s own public repository: 9 files that change how the reviewer tracks which files a model reads. Two of its bugs were fixed in a follow-up, <a href="https://github.com/pgup-ai/jbot-review/pull/287" target="_blank" rel="noopener noreferrer">#287</a>, so we used those two as known issues. Every run used the same reviewer build, ten concurrent sessions and no verification pass. Haiku ran on the direct Anthropic API. DeepSeek V4.1 Flash ran on DeepSeek’s own API at low effort, J-Bot’s default for that model, as the comparison.</p>
+  <p class="table-hint">Scroll horizontally to see every column.</p><div class="tbl-wrap" role="region" aria-label="Claude Haiku 5.5 and DeepSeek V4.1 Flash on one 9-file pull request" tabindex="0"><table><thead><tr><th scope="col">Setting</th><th scope="col">Runs</th><th scope="col">Time</th><th scope="col">Cost</th><th scope="col">Tool calls (main / rules)</th><th scope="col">Reasoning tokens</th><th scope="col">Bugs</th><th scope="col">Rule findings</th><th scope="col">Known issues</th></tr></thead><tbody><tr><th scope="row">Haiku 5.5 · low</th><td>1</td><td>29 s</td><td>$0.015</td><td>0 / 1</td><td>5K</td><td>1</td><td>0</td><td>0 / 2</td></tr><tr><th scope="row">Haiku 5.5 · medium (default)</th><td>2</td><td>79 s, 92 s</td><td>$0.022, $0.028</td><td>3 / 0, 8 / 1</td><td>15K, 17K</td><td>0, 1</td><td>0, 1</td><td>0 / 2</td></tr><tr><th scope="row">Haiku 5.5 · high</th><td>1</td><td>163 s</td><td>$0.046</td><td>7 / 6</td><td>33K</td><td>2</td><td>1</td><td>0 / 2</td></tr><tr><th scope="row">Haiku 5.5 · xhigh</th><td>1</td><td>438 s</td><td>$0.330</td><td>32 / 8</td><td>95K</td><td>2</td><td>1</td><td>0 / 2</td></tr><tr><th scope="row">Haiku 5.5 · max</th><td>1</td><td>751 s</td><td>$1.248</td><td>45 / 37</td><td>164K</td><td>3</td><td>1</td><td>1 / 2</td></tr><tr><th scope="row">DeepSeek V4.1 Flash · low</th><td>1</td><td>265 s</td><td>$0.082</td><td>49 / 20</td><td>50K</td><td>1</td><td>0</td><td>0 / 2</td></tr></tbody></table></div>
+  <p class="note-line">Tool calls are for the main review and the rule-compliance pass. Bugs are defects we reproduced against the code or that a later pull request fixed. Rule findings are valid violations of the repository’s written rules. The <a href="/assets/data/claude-haiku-5-5-effort-benchmark-20261007.json">raw numbers (JSON)</a> include the per-pass cost split.</p>
+
+  <p class="table-hint">Scroll horizontally to see the whole chart.</p>
+  <figure class="fig">
+    <div class="chart-wrap" role="region" aria-label="Cost against bugs chart" tabindex="0">
+<svg class="chart" viewBox="0 0 720 360" role="img" aria-labelledby="chart-title chart-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="chart-title">Cost per review against confirmed bugs, by reasoning effort</title>
+<desc id="chart-desc">Claude Haiku 5.5 found 1 bug at low for $0.015, 0 and 1 at medium for $0.022 and $0.028, 2 at high for $0.046, 2 at xhigh for $0.33 and 3 at max for $1.25. DeepSeek V4.1 Flash at low found 1 for $0.082.</desc>
+<line class="grid" x1="84" x2="700" y1="300.0" y2="300.0"/><text class="tick" x="72" y="304.0" text-anchor="end">0</text>
+<line class="grid" x1="84" x2="700" y1="235.0" y2="235.0"/><text class="tick" x="72" y="239.0" text-anchor="end">1</text>
+<line class="grid" x1="84" x2="700" y1="170.0" y2="170.0"/><text class="tick" x="72" y="174.0" text-anchor="end">2</text>
+<line class="grid" x1="84" x2="700" y1="105.0" y2="105.0"/><text class="tick" x="72" y="109.0" text-anchor="end">3</text>
+<line class="grid" x1="84" x2="700" y1="40.0" y2="40.0"/><text class="tick" x="72" y="44.0" text-anchor="end">4</text>
+<line class="grid" x1="84.0" x2="84.0" y1="40" y2="300"/><text class="tick" x="84.0" y="322" text-anchor="middle">$0.01</text>
+<line class="grid" x1="211.7" x2="211.7" y1="40" y2="300"/><text class="tick" x="211.7" y="322" text-anchor="middle">$0.03</text>
+<line class="grid" x1="351.7" x2="351.7" y1="40" y2="300"/><text class="tick" x="351.7" y="322" text-anchor="middle">$0.10</text>
+<line class="grid" x1="479.4" x2="479.4" y1="40" y2="300"/><text class="tick" x="479.4" y="322" text-anchor="middle">$0.30</text>
+<line class="grid" x1="619.4" x2="619.4" y1="40" y2="300"/><text class="tick" x="619.4" y="322" text-anchor="middle">$1.00</text>
+<text class="axis" x="392.0" y="350" text-anchor="middle">Cost per review (log scale)</text>
+<text class="axis" x="22" y="170.0" text-anchor="middle" transform="rotate(-90 22 170.0)">Confirmed bugs</text>
+<path class="frontier" d="M131.1,235.0 L261.4,170.0 L490.5,170.0 L645.2,105.0"/>
+<circle class="haiku" cx="131.1" cy="235.0" r="7"/>
+<text class="pt" x="143.1" y="229.0" text-anchor="start">low</text>
+<circle class="haiku" cx="175.7" cy="300.0" r="7"/>
+<text class="pt" x="187.7" y="294.0" text-anchor="start">medium</text>
+<circle class="haiku" cx="203.7" cy="235.0" r="7"/>
+<text class="pt" x="215.7" y="253.0" text-anchor="start">medium</text>
+<circle class="haiku" cx="261.4" cy="170.0" r="7"/>
+<text class="pt" x="273.4" y="164.0" text-anchor="start">high</text>
+<circle class="haiku" cx="490.5" cy="170.0" r="7"/>
+<text class="pt" x="502.5" y="164.0" text-anchor="start">xhigh</text>
+<circle class="haiku" cx="645.2" cy="105.0" r="7"/>
+<text class="pt" x="633.2" y="99.0" text-anchor="end">max</text>
+<rect class="ds" x="322.1" y="228.5" width="13" height="13" transform="rotate(45 328.6 235.0)"/>
+<text class="pt ds-l" x="340.6" y="253.0">DeepSeek V4.1 Flash, low</text>
+<circle class="haiku" cx="98" cy="22" r="6"/><text class="leg" x="110" y="26">Claude Haiku 5.5, by effort</text>
+<rect class="ds" x="316" y="16" width="11" height="11" transform="rotate(45 321.5 21.5)"/><text class="leg" x="334" y="26">DeepSeek V4.1 Flash</text>
+</svg>
+    </div>
+    <figcaption>Cost per review against confirmed bugs. High effort sits at the bend. Going from high to xhigh multiplied the cost by seven and found no new bug. Only max found a third.</figcaption>
+  </figure>
+
+  <h2 id="findings">What each effort level found</h2>
+  <ul>
+    <li><b>Low.</b> The main review made no tool calls and answered from the embedded diff. It still found the bug that every setting found. Three of J-Bot’s backends computed file identities without the workspace path, so one file read two ways counted twice.</li>
+    <li><b>Medium.</b> Two runs, three and eight tool calls. One found nothing real. The other found the same telemetry bug and a valid rule finding. A new helper duplicated an existing path resolver, which the repository’s “reuse before adding” rule forbids.</li>
+    <li><b>High.</b> Seven tool calls. It found the telemetry bug, a valid rule finding about a restated prompt rule, and a second bug nobody had reported: a single-quoted span inside double quotes, such as <code>cat "'$x'"</code>, hid a <code>$</code> from the parser’s expansion guard. We reproduced it on the current code.</li>
+    <li><b>Xhigh.</b> 32 tool calls and three times high’s reasoning. Same two bugs, the duplicated-resolver rule finding, and two low-value notes.</li>
+    <li><b>Max.</b> 45 tool calls in the main review and 37 in the rule pass. It found one of the two known issues with its exact trigger: <code>grep x a &amp;&amp; cat b; cat c</code> dropped the read of <code>c</code>. It also found that a quoted <code>||</code> in a grep pattern cut the pattern short. Both are now fixed in <a href="https://github.com/pgup-ai/jbot-review/pull/287" target="_blank" rel="noopener noreferrer">#287</a> and <a href="https://github.com/pgup-ai/jbot-review/pull/293" target="_blank" rel="noopener noreferrer">#293</a>.</li>
+  </ul>
+  <p>No setting found the second known issue, a wrapped <code>cd</code> that left later paths unknown. DeepSeek V4.1 Flash found the telemetry bug and nothing else.</p>
+
+  <h2 id="effort-bug">The effort setting that never arrived</h2>
+  <p>Our first two runs were meant to be low and high. They came back with nearly the same reasoning token counts, 15K and 17K. Low and high should be much further apart, so we read the requests.</p>
+  <p>J-Bot passed effort as <code>reasoningEffort</code>, the option name OpenAI-compatible providers use. OpenCode, the runtime J-Bot drives, sends Claude models to Anthropic’s Messages API, and its Anthropic adapter only reads an option named <code>effort</code>. The adapter drops anything else without an error. We pointed OpenCode at a local server that records request bodies. With <code>reasoningEffort</code> set to low, the request carried adaptive thinking and no effort at all. With <code>effort</code> set to max, it carried <code>output_config: {"effort": "max"}</code>.</p>
+  <p>So those two runs used Anthropic’s default, which its effort documentation names as medium for Haiku 5.5. They are the medium rows above. <a href="https://github.com/pgup-ai/jbot-review/pull/294" target="_blank" rel="noopener noreferrer">#294</a> fixed this in J-Bot. You still write <code>reasoningEffort</code>, and J-Bot now sends it to Claude as <code>effort</code> on all three Claude routes. Keep the J-Bot name: its effort rules, such as running the verifier one level lower, work on <code>reasoningEffort</code>. The published Action image includes the fix.</p>
+
+  <h2 id="which-effort">Which effort to choose for Claude Haiku 5.5</h2>
+  <ul>
+    <li><b>High, when cost matters.</b> It found as many bugs as xhigh for about a seventh of the cost, and finished faster than DeepSeek V4.1 Flash. Set <code>model-options: '{"reasoningEffort":"high"}'</code>.</li>
+    <li><b>Xhigh, the J-Bot default.</b> It made 32 tool calls to high’s 7, so it reads much more of the repository. On this pull request the extra reading found no extra bug. The verifier runs one step lower, at high, and the rule-compliance pass runs at low.</li>
+    <li><b>Max, for changes where a missed bug is expensive.</b> It was the only setting that found a known issue. At $1.25 and 12.5 minutes on 9 files, it is a release-branch setting, not an every-push one.</li>
+    <li><b>Not low.</b> It saves cents and skips the investigation that code review needs. Anthropic positions Haiku for fast, high-volume tasks like classification and routing. Code review is not one of them unless the effort goes up.</li>
+  </ul>
+
+  <h2 id="limits">What this test can’t tell you</h2>
+  <p>This is one pull request with one review per setting, two at medium. Recall varies between identical runs. In earlier tests DeepSeek V4.1 Flash found these same known issues in one of two repetitions. Read the table as a screen, not a ranking.</p>
+  <p>In these runs the rule-compliance pass ran at the same effort as the main review, because the J-Bot build predated <a href="https://github.com/pgup-ai/jbot-review/pull/294" target="_blank" rel="noopener noreferrer">#294</a>. Current J-Bot runs that pass at low, so its share of the cost, $0.58 of max’s $1.25, would be smaller today. Costs are what OpenCode reported at list prices. DeepSeek ran at its J-Bot default of low effort, not at a matched level.</p>
+  <p>The changed code is public, so you can check every finding against <a href="https://github.com/pgup-ai/jbot-review/pull/286" target="_blank" rel="noopener noreferrer">#286</a>, <a href="https://github.com/pgup-ai/jbot-review/pull/287" target="_blank" rel="noopener noreferrer">#287</a> and <a href="https://github.com/pgup-ai/jbot-review/pull/293" target="_blank" rel="noopener noreferrer">#293</a>. The one bug still open, the quote-handling gap, affects only how J-Bot records which files a model read. It never runs the command.</p>
+
+  <h2 id="privacy">Where the diff goes</h2>
+  <ul>
+    <li><b>Only to the provider you configure.</b> The review runs read-only on your GitHub Actions runner, and J-Bot sends the diff to Anthropic or to OpenCode, depending on the route.</li>
+    <li><b>The key stays in the server process.</b> Each review session’s shell gets an allowlisted environment, so a tool call inside the review can’t read <code>ANTHROPIC_API_KEY</code>.</li>
+    <li><b>Fork pull requests can’t read the key.</b> GitHub doesn’t pass repository secrets to <code>pull_request</code> workflows from forks.</li>
+  </ul>
+
+  <h2 id="faq">FAQ</h2>
+  <details class="faq-item" open>
+    <summary>Is Claude Haiku 5.5 good for code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Yes, at high effort or above. On a 9-file pull request, Haiku 5.5 at high effort found two real bugs and one rule violation for $0.046 in 163 seconds. At low effort it made no tool calls in its main review and found one bug. At max it found three bugs, including one of the two known issues, for $1.25.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>How much does Claude Haiku 5.5 cost per code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>In our runs, between $0.015 at low effort and $1.25 at max, on a 9-file pull request. High effort cost $0.046 and xhigh $0.33. Anthropic lists Haiku 5.5 at $0.10 per million input tokens and $0.50 per million output tokens for prompts up to 100,000 tokens, and $0.50 and $2.50 above that.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Which reasoning effort should I use for Claude Haiku 5.5?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Use high if cost matters and xhigh or max for reviews where a missed bug is expensive. J-Bot Review defaults Haiku 5.5 to xhigh. In our test, high found the same two bugs as xhigh for about a seventh of the cost, and only max found a known issue.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>What is Claude Haiku 5.5’s default reasoning effort?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Medium. Anthropic’s effort documentation says Claude Haiku 5.5 defaults to medium, and that sending medium behaves exactly like omitting the effort parameter. The model also supports low, high, xhigh and max, with adaptive thinking on by default.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Is Claude Haiku 5.5 better than DeepSeek V4.1 Flash for code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>On our one-PR test, Haiku 5.5 at high effort found two bugs for $0.046 in 163 seconds, and DeepSeek V4.1 Flash at low effort found one for $0.082 in 265 seconds. Both found the same telemetry bug. One pull request is not enough to rank the models.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Can I use a Claude Pro or Max subscription instead of an API key?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>No. J-Bot Review runs Claude through an Anthropic API key or an OpenCode gateway key. A Claude Pro or Max seat is not a supported CI credential today.</p></div>
+  </details>
+  <h2>Related</h2>
+  <div class="related">
+    <a class="rel-card" href="/guides/claude-code-review-github-actions"><span class="k2">Guide</span>Claude code review<p>Any Claude model with your Anthropic API key.</p></a>
+    <a class="rel-card" href="/guides/deepseek-v4-1-flash-code-review-github-actions"><span class="k2">Guide</span>DeepSeek V4.1 Flash<p>The comparison model, with review times by pull request size.</p></a>
+    <a class="rel-card" href="/guides/evaluate-ai-code-review"><span class="k2">Method</span>How we evaluate reviewers<p>Known issues, repetitions and what a small screen can show.</p></a>
+  </div>
+</article>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/privacy">Privacy</a> · <a href="https://github.com/pgup-ai/jbot-review" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var TEXTS = {
+    "haiku": "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, reopened, ready_for_review, synchronize] }\n\nconcurrency:\n  group: jbot-review-${{ github.event.pull_request.number }}\n  cancel-in-progress: true\n\npermissions:\n  contents: read\n  pull-requests: write\n  issues: write\n  checks: read\n\njobs:\n  review:\n    if: github.event.pull_request.draft == false\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v7\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          model: anthropic/claude-haiku-5-5\n          # Default effort is xhigh. Uncomment for high; J-Bot sends it to Claude as effort:\n          # model-options: '{\"reasoningEffort\":\"high\"}'\n          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}"
+  };
+  function legacyCopy(text) {
+    return new Promise(function (resolve, reject) {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+        document.body.appendChild(ta); ta.select(); var ok = document.execCommand('copy'); document.body.removeChild(ta);
+        ok ? resolve() : reject(new Error('execCommand copy failed'));
+      } catch (e) { reject(e); }
+    });
+  }
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text).catch(function () { return legacyCopy(text); });
+    return legacyCopy(text);
+  }
+  document.querySelectorAll('button[data-copy]').forEach(function (btn) {
+    var timer, label = btn.textContent;
+    btn.addEventListener('click', function () {
+      var text = TEXTS[btn.dataset.copy]; if (!text) return;
+      copyText(text).then(function () { btn.textContent = 'Copied ✓'; }).catch(function () { btn.textContent = 'Copy failed'; });
+      clearTimeout(timer); timer = setTimeout(function () { btn.textContent = label; }, 1600);
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -40,7 +40,7 @@
       "url": "https://www.pgupai.com/guides/claude-code-review-github-actions",
       "image": "https://www.pgupai.com/assets/og-guide-claude-20260704.png",
       "datePublished": "2026-07-04",
-      "dateModified": "2026-07-04",
+      "dateModified": "2026-10-07",
       "author": { "@type": "Organization", "name": "PGUP AI", "url": "https://www.pgupai.com/" },
       "publisher": { "@type": "Organization", "name": "PGUP AI", "url": "https://www.pgupai.com/" }
     },
@@ -86,7 +86,7 @@
         {
           "@type": "Question",
           "name": "What does Claude code review cost per PR?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Whatever your Anthropic API usage costs — J-Bot Review itself adds no charge and no per-seat fee. Defaults keep spend low: one review pass, verification on, doc-only PRs skipped without a model call. You can trim further with min-severity or route verification to a cheaper aux model." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Whatever your Anthropic API usage costs — J-Bot Review itself adds no charge and no per-seat fee. Defaults keep spend low: one review pass, verification on, doc-only PRs skipped without a model call. You can trim further with min-severity or a lower reasoning effort." }
         }
       ]
     }
@@ -211,7 +211,7 @@
 <article>
   <p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / Claude</p>
   <h1>Claude code review in GitHub Actions</h1>
-  <p class="updated">Updated July 4, 2026 · applies to pgup-ai/jbot-review-action v0</p>
+  <p class="updated">Updated October 7, 2026 · applies to pgup-ai/jbot-review-action v0</p>
 
   <p class="lede">To get <b>Claude reviewing your pull requests inside your own GitHub Actions</b>, add one workflow file and one repo secret (<code>ANTHROPIC_API_KEY</code>). J-Bot Review — an open-source (MIT) action — drives Claude on <b>your key and your runner</b>, and posts diff-anchored findings that a second session verifies before they land on the PR. No reviewer SaaS, <b>$0 per seat</b> added.</p>
 
@@ -269,7 +269,7 @@
   <h2 id="cost-privacy">Cost &amp; privacy</h2>
   <ul>
     <li><b>You pay Anthropic only.</b> J-Bot adds no per-seat or per-review charge. Defaults keep spend low: one review pass, doc-only PRs skipped without a model call, prompt caching on.</li>
-    <li><b>Trim further</b> with <code>min-severity</code>, or route verification to a cheaper backend via <code>aux-provider</code> / <code>aux-model</code> — including free OpenCode Zen models.</li>
+    <li><b>Effort is the biggest lever.</b> On Claude Haiku 5.5 one review cost $0.015 at low effort and $1.25 at max; <a href="/guides/claude-haiku-5-5-code-review-github-actions">the Haiku 5.5 benchmark</a> shows what each level found. Trim further with <code>min-severity</code>.</li>
     <li><b>Data path:</b> only the diff and the context the agent requests reach the Anthropic API, under your own account and its retention terms. No third-party reviewer sees your code.</li>
     <li><b>Fork PRs:</b> on <code>pull_request</code> events GitHub strips secrets from fork PRs, so outside contributors can't spend your key.</li>
   </ul>
@@ -289,11 +289,12 @@
   </details>
   <details class="faq-item">
     <summary>What does Claude code review cost per PR?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Whatever your Anthropic API usage costs — J-Bot Review itself adds no charge and no per-seat fee. Defaults keep spend low: one review pass, verification on, doc-only PRs skipped without a model call. You can trim further with <code>min-severity</code> or route verification to a cheaper aux model.</p></div>
+    <div class="faq-a"><p>Whatever your Anthropic API usage costs — J-Bot Review itself adds no charge and no per-seat fee. Defaults keep spend low: one review pass, verification on, doc-only PRs skipped without a model call. You can trim further with <code>min-severity</code> or a lower reasoning effort.</p></div>
   </details>
 
   <h2>Related</h2>
   <div class="related">
+    <a class="rel-card" href="/guides/claude-haiku-5-5-code-review-github-actions"><span class="k2">Benchmark</span>Claude Haiku 5.5 code review<p>Five effort levels on one pull request: cost, time and bugs found.</p></a>
     <a class="rel-card" href="/guides/cli-subscription-code-review"><span class="k2">Guide</span>Review PRs with a CLI subscription<p>Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder — reuse the seat you pay for.</p></a>
     <a class="rel-card" href="https://github.com/pgup-ai/jbot-review-action#readme" target="_blank" rel="noopener noreferrer"><span class="k2">Docs</span>Action reference<p>Every input, provider id, and tuning knob.</p></a>
     <a class="rel-card" href="/guides/codex-code-review-github-actions"><span class="k2">Guide</span>Codex code review in GitHub Actions<p>Prefer the seat-reuse path? Your ChatGPT Plus/Pro subscription works today.</p></a>
