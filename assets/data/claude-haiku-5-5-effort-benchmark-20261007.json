@@ -5,33 +5,177 @@
     "url": "https://github.com/pgup-ai/jbot-review/pull/286",
     "files": 9,
     "known_issues": 2,
-    "known_issues_source": "The two shell-parsing bugs fixed afterwards in https://github.com/pgup-ai/jbot-review/pull/287"
+    "known_issues_source": "The two shell-parsing bugs fixed afterwards in https://github.com/pgup-ai/jbot-review/pull/287: and-chain-break and wrapped-cd"
   },
   "setup": {
     "reviewer": "J-Bot Review local mode, OpenCode engine, context-pack preset, verification off, 10 concurrent sessions",
     "haiku_route": "anthropic/claude-haiku-5-5 (direct Anthropic API)",
     "comparison_route": "deepseek/deepseek-flash (direct DeepSeek API, DeepSeek V4.1 Flash) at low effort",
-    "cost_source": "Per-session cost reported by OpenCode at list prices",
+    "cost_source": "Per-session cost reported by OpenCode at list prices, to four decimals. The session costs and the run total are each rounded on their own, so a split can differ from its total by $0.0001.",
     "guideline_pass_note": "In these runs the guideline-compliance pass ran at the same effort as the main review. Current J-Bot runs it at low."
   },
   "definitions": {
     "confirmed_bug": "A defect we reproduced against the code, or one a later merged PR fixed.",
     "rule_finding": "A valid violation of the repository's written rules in AGENTS.md.",
-    "medium": "No effort sent. Anthropic documents medium as Haiku 5.5's default, identical to omitting the parameter."
+    "medium": "No effort sent. Anthropic documents medium as Haiku 5.5's default, identical to omitting the parameter.",
+    "found_by": "Run ids from the runs list."
   },
   "runs": [
-    { "model": "Claude Haiku 5.5", "effort": "low", "wall_seconds": 29, "cost_usd": 0.015, "main_cost_usd": 0.008, "guideline_cost_usd": 0.007, "tool_calls_main": 0, "tool_calls_guideline": 1, "reasoning_tokens_main": 5160, "confirmed_bugs": 1, "rule_findings": 0, "known_issues_found": 0 },
-    { "model": "Claude Haiku 5.5", "effort": "medium", "wall_seconds": 79, "cost_usd": 0.022, "main_cost_usd": 0.016, "guideline_cost_usd": 0.006, "tool_calls_main": 3, "tool_calls_guideline": 0, "reasoning_tokens_main": 15296, "confirmed_bugs": 0, "rule_findings": 0, "known_issues_found": 0 },
-    { "model": "Claude Haiku 5.5", "effort": "medium", "wall_seconds": 92, "cost_usd": 0.028, "main_cost_usd": 0.021, "guideline_cost_usd": 0.007, "tool_calls_main": 8, "tool_calls_guideline": 1, "reasoning_tokens_main": 17326, "confirmed_bugs": 1, "rule_findings": 1, "known_issues_found": 0 },
-    { "model": "Claude Haiku 5.5", "effort": "high", "wall_seconds": 163, "cost_usd": 0.046, "main_cost_usd": 0.029, "guideline_cost_usd": 0.017, "tool_calls_main": 7, "tool_calls_guideline": 6, "reasoning_tokens_main": 32628, "confirmed_bugs": 2, "rule_findings": 1, "known_issues_found": 0 },
-    { "model": "Claude Haiku 5.5", "effort": "xhigh", "wall_seconds": 438, "cost_usd": 0.330, "main_cost_usd": 0.281, "guideline_cost_usd": 0.050, "tool_calls_main": 32, "tool_calls_guideline": 8, "reasoning_tokens_main": 95222, "confirmed_bugs": 2, "rule_findings": 1, "known_issues_found": 0 },
-    { "model": "Claude Haiku 5.5", "effort": "max", "wall_seconds": 751, "cost_usd": 1.248, "main_cost_usd": 0.667, "guideline_cost_usd": 0.581, "tool_calls_main": 45, "tool_calls_guideline": 37, "reasoning_tokens_main": 163579, "confirmed_bugs": 3, "rule_findings": 1, "known_issues_found": 1 },
-    { "model": "DeepSeek V4.1 Flash", "effort": "low", "wall_seconds": 265, "cost_usd": 0.082, "main_cost_usd": 0.049, "guideline_cost_usd": 0.033, "tool_calls_main": 49, "tool_calls_guideline": 20, "reasoning_tokens_main": 49967, "confirmed_bugs": 1, "rule_findings": 0, "known_issues_found": 0 }
+    {
+      "id": "low",
+      "model": "Claude Haiku 5.5",
+      "effort": "low",
+      "wall_seconds": 29,
+      "cost_usd": 0.015,
+      "main_cost_usd": 0.008,
+      "guideline_cost_usd": 0.0071,
+      "tool_calls_main": 0,
+      "tool_calls_guideline": 1,
+      "reasoning_tokens_main": 5160,
+      "confirmed_bugs": 1,
+      "rule_findings": 0,
+      "known_issues_found": 0
+    },
+    {
+      "id": "medium-1",
+      "model": "Claude Haiku 5.5",
+      "effort": "medium",
+      "wall_seconds": 79,
+      "cost_usd": 0.022,
+      "main_cost_usd": 0.0164,
+      "guideline_cost_usd": 0.0056,
+      "tool_calls_main": 3,
+      "tool_calls_guideline": 0,
+      "reasoning_tokens_main": 15296,
+      "confirmed_bugs": 0,
+      "rule_findings": 0,
+      "known_issues_found": 0
+    },
+    {
+      "id": "medium-2",
+      "model": "Claude Haiku 5.5",
+      "effort": "medium",
+      "wall_seconds": 92,
+      "cost_usd": 0.028,
+      "main_cost_usd": 0.0207,
+      "guideline_cost_usd": 0.0073,
+      "tool_calls_main": 8,
+      "tool_calls_guideline": 1,
+      "reasoning_tokens_main": 17326,
+      "confirmed_bugs": 1,
+      "rule_findings": 1,
+      "known_issues_found": 0
+    },
+    {
+      "id": "high",
+      "model": "Claude Haiku 5.5",
+      "effort": "high",
+      "wall_seconds": 163,
+      "cost_usd": 0.0455,
+      "main_cost_usd": 0.029,
+      "guideline_cost_usd": 0.0165,
+      "tool_calls_main": 7,
+      "tool_calls_guideline": 6,
+      "reasoning_tokens_main": 32628,
+      "confirmed_bugs": 2,
+      "rule_findings": 1,
+      "known_issues_found": 0
+    },
+    {
+      "id": "xhigh",
+      "model": "Claude Haiku 5.5",
+      "effort": "xhigh",
+      "wall_seconds": 438,
+      "cost_usd": 0.3304,
+      "main_cost_usd": 0.2808,
+      "guideline_cost_usd": 0.0496,
+      "tool_calls_main": 32,
+      "tool_calls_guideline": 8,
+      "reasoning_tokens_main": 95222,
+      "confirmed_bugs": 2,
+      "rule_findings": 1,
+      "known_issues_found": 0
+    },
+    {
+      "id": "max",
+      "model": "Claude Haiku 5.5",
+      "effort": "max",
+      "wall_seconds": 751,
+      "cost_usd": 1.2476,
+      "main_cost_usd": 0.6667,
+      "guideline_cost_usd": 0.5809,
+      "tool_calls_main": 45,
+      "tool_calls_guideline": 37,
+      "reasoning_tokens_main": 163579,
+      "confirmed_bugs": 3,
+      "rule_findings": 1,
+      "known_issues_found": 1
+    },
+    {
+      "id": "deepseek-low",
+      "model": "DeepSeek V4.1 Flash",
+      "effort": "low",
+      "wall_seconds": 265,
+      "cost_usd": 0.0817,
+      "main_cost_usd": 0.0487,
+      "guideline_cost_usd": 0.033,
+      "tool_calls_main": 49,
+      "tool_calls_guideline": 20,
+      "reasoning_tokens_main": 49967,
+      "confirmed_bugs": 1,
+      "rule_findings": 0,
+      "known_issues_found": 0
+    }
   ],
   "bugs": [
-    { "id": "and-chain-break", "summary": "An unknown && segment stopped parsing the whole shell command, dropping reads after a later ;", "status": "fixed in #287", "found_by": ["max"] },
-    { "id": "telemetry-workspace", "summary": "Three backends computed tool path identities without the workspace, so one file counted twice", "status": "fixed in #293", "found_by": ["low", "medium", "high", "xhigh", "max", "deepseek-low"] },
-    { "id": "quoted-or-operator", "summary": "A quoted || in a grep pattern ended the search-pattern scan", "status": "fixed in #293", "found_by": ["max"] },
-    { "id": "quoted-dollar", "summary": "A single-quoted span inside double quotes hid a $ from the expansion guard", "status": "open", "found_by": ["high", "xhigh"] }
+    {
+      "id": "and-chain-break",
+      "summary": "An unknown && segment stopped parsing the whole shell command, dropping reads after a later ;",
+      "status": "fixed in #287",
+      "found_by": [
+        "max"
+      ],
+      "known_issue": true
+    },
+    {
+      "id": "wrapped-cd",
+      "summary": "A wrapped cd (command cd, builtin cd, pushd, popd) or a cd after the first segment left later read paths unknown",
+      "status": "fixed in #287",
+      "known_issue": true,
+      "found_by": []
+    },
+    {
+      "id": "telemetry-workspace",
+      "summary": "Three backends computed tool path identities without the workspace, so one file counted twice",
+      "status": "fixed in #293",
+      "found_by": [
+        "low",
+        "medium-2",
+        "high",
+        "xhigh",
+        "max",
+        "deepseek-low"
+      ],
+      "known_issue": false
+    },
+    {
+      "id": "quoted-or-operator",
+      "summary": "A quoted || in a grep pattern ended the search-pattern scan",
+      "status": "fixed in #293",
+      "found_by": [
+        "max"
+      ],
+      "known_issue": false
+    },
+    {
+      "id": "quoted-dollar",
+      "summary": "A single-quoted span inside double quotes hid a $ from the expansion guard",
+      "status": "open",
+      "found_by": [
+        "high",
+        "xhigh"
+      ],
+      "known_issue": false
+    }
   ]
 }
