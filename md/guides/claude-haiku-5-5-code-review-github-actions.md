@@ -2,7 +2,7 @@
 
 Published October 7, 2026, the day Haiku 5.5 launched · prices checked October 7, 2026 · applies to pgup-ai/jbot-review-action v0
 
-**Claude Haiku 5.5 can review pull requests well, but only when it is allowed to think.** We ran it as J-Bot Review’s code reviewer at all five reasoning effort levels on the same 9-file pull request. At high effort it found two real bugs for $0.046 in under three minutes, about half what DeepSeek V4.1 Flash cost on the same change. At max it found three, including one the maintainers fixed in a follow-up pull request, for $1.25. At low effort it barely opened a file.
+**Claude Haiku 5.5 can review pull requests well, but only when it is allowed to think.** We ran it as J-Bot Review’s code reviewer at all five reasoning effort levels on the same 9-file pull request. At high effort it found two real bugs for $0.046 in under three minutes, about half what DeepSeek V4.1 Flash cost on the same change. At max it found three, including one of the two known issues a follow-up pull request fixed, for $1.25. At low effort it barely opened a file.
 
 > **Released Oct 7, 2026 · 1M context · 128K output**
 >
@@ -161,7 +161,7 @@ The changed code is public, so you can check every finding against [\#286](https
 
 ### Is Claude Haiku 5.5 good for code review?
 
-Yes, at high effort or above. On a 9-file pull request, Haiku 5.5 at high effort found two real bugs and one rule violation for $0.046 in 163 seconds. At low effort it made no tool calls in its main review and found one bug. At max it found three bugs, including one the maintainers fixed later, for $1.25.
+Yes, at high effort or above. On a 9-file pull request, Haiku 5.5 at high effort found two real bugs and one rule violation for $0.046 in 163 seconds. At low effort it made no tool calls in its main review and found one bug. At max it found three bugs, including one of the two known issues, for $1.25.
 
 ### How much does Claude Haiku 5.5 cost per code review?
 
@@ -169,7 +169,7 @@ In our runs, between $0.015 at low effort and $1.25 at max, on a 9-file pull req
 
 ### Which reasoning effort should I use for Claude Haiku 5.5?
 
-Use high if cost matters and xhigh or max for reviews where a missed bug is expensive. J-Bot Review defaults Haiku 5.5 to xhigh. In our test, high found the same two bugs as xhigh for about a seventh of the cost, and only max found a bug that the project fixed afterwards.
+Use high if cost matters and xhigh or max for reviews where a missed bug is expensive. J-Bot Review defaults Haiku 5.5 to xhigh. In our test, high found the same two bugs as xhigh for about a seventh of the cost, and only max found a known issue.
 
 ### What is Claude Haiku 5.5’s default reasoning effort?
 

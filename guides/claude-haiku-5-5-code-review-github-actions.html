@@ -108,7 +108,7 @@
           "name": "Is Claude Haiku 5.5 good for code review?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes, at high effort or above. On a 9-file pull request, Haiku 5.5 at high effort found two real bugs and one rule violation for $0.046 in 163 seconds. At low effort it made no tool calls in its main review and found one bug. At max it found three bugs, including one the maintainers fixed later, for $1.25."
+            "text": "Yes, at high effort or above. On a 9-file pull request, Haiku 5.5 at high effort found two real bugs and one rule violation for $0.046 in 163 seconds. At low effort it made no tool calls in its main review and found one bug. At max it found three bugs, including one of the two known issues, for $1.25."
           }
         },
         {
@@ -124,7 +124,7 @@
           "name": "Which reasoning effort should I use for Claude Haiku 5.5?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Use high if cost matters and xhigh or max for reviews where a missed bug is expensive. J-Bot Review defaults Haiku 5.5 to xhigh. In our test, high found the same two bugs as xhigh for about a seventh of the cost, and only max found a bug that the project fixed afterwards."
+            "text": "Use high if cost matters and xhigh or max for reviews where a missed bug is expensive. J-Bot Review defaults Haiku 5.5 to xhigh. In our test, high found the same two bugs as xhigh for about a seventh of the cost, and only max found a known issue."
           }
         },
         {
@@ -332,7 +332,7 @@
   <p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / Claude Haiku 5.5</p>
   <h1>Claude Haiku 5.5 code review: benchmark, pricing and reasoning effort</h1>
   <p class="updated">Published October 7, 2026, the day Haiku 5.5 launched · prices checked October 7, 2026 · applies to pgup-ai/jbot-review-action v0</p>
-  <p class="lede"><b>Claude Haiku 5.5 can review pull requests well, but only when it is allowed to think.</b> We ran it as J-Bot Review’s code reviewer at all five reasoning effort levels on the same 9-file pull request. At high effort it found two real bugs for $0.046 in under three minutes, about half what DeepSeek V4.1 Flash cost on the same change. At max it found three, including one the maintainers fixed in a follow-up pull request, for $1.25. At low effort it barely opened a file.</p>
+  <p class="lede"><b>Claude Haiku 5.5 can review pull requests well, but only when it is allowed to think.</b> We ran it as J-Bot Review’s code reviewer at all five reasoning effort levels on the same 9-file pull request. At high effort it found two real bugs for $0.046 in under three minutes, about half what DeepSeek V4.1 Flash cost on the same change. At max it found three, including one of the two known issues a follow-up pull request fixed, for $1.25. At low effort it barely opened a file.</p>
 
   <div class="callout">
     <span class="tag">Released Oct 7, 2026 · 1M context · 128K output</span>
@@ -477,7 +477,7 @@
   <h2 id="faq">FAQ</h2>
   <details class="faq-item" open>
     <summary>Is Claude Haiku 5.5 good for code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Yes, at high effort or above. On a 9-file pull request, Haiku 5.5 at high effort found two real bugs and one rule violation for $0.046 in 163 seconds. At low effort it made no tool calls in its main review and found one bug. At max it found three bugs, including one the maintainers fixed later, for $1.25.</p></div>
+    <div class="faq-a"><p>Yes, at high effort or above. On a 9-file pull request, Haiku 5.5 at high effort found two real bugs and one rule violation for $0.046 in 163 seconds. At low effort it made no tool calls in its main review and found one bug. At max it found three bugs, including one of the two known issues, for $1.25.</p></div>
   </details>
   <details class="faq-item">
     <summary>How much does Claude Haiku 5.5 cost per code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
@@ -485,7 +485,7 @@
   </details>
   <details class="faq-item">
     <summary>Which reasoning effort should I use for Claude Haiku 5.5?<span class="faq-mark" aria-hidden="true">+</span></summary>
-    <div class="faq-a"><p>Use high if cost matters and xhigh or max for reviews where a missed bug is expensive. J-Bot Review defaults Haiku 5.5 to xhigh. In our test, high found the same two bugs as xhigh for about a seventh of the cost, and only max found a bug that the project fixed afterwards.</p></div>
+    <div class="faq-a"><p>Use high if cost matters and xhigh or max for reviews where a missed bug is expensive. J-Bot Review defaults Haiku 5.5 to xhigh. In our test, high found the same two bugs as xhigh for about a seventh of the cost, and only max found a known issue.</p></div>
   </details>
   <details class="faq-item">
     <summary>What is Claude Haiku 5.5’s default reasoning effort?<span class="faq-mark" aria-hidden="true">+</span></summary>
@@ -518,34 +518,7 @@
 <script>
 (function () {
   var TEXTS = {
-    "haiku": "name: J-Bot Code Review
-on:
-  pull_request: { types: [opened, reopened, ready_for_review, synchronize] }
-
-concurrency:
-  group: jbot-review-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
-
-permissions:
-  contents: read
-  pull-requests: write
-  issues: write
-  checks: read
-
-jobs:
-  review:
-    if: github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-        with: { fetch-depth: 0 }
-      - uses: pgup-ai/jbot-review-action@v0
-        with:
-          model: anthropic/claude-haiku-5-5
-          # Default effort is xhigh. Uncomment to trade some depth for cost:
-          # model-options: '{\"reasoningEffort\":\"high\"}'
-          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}"
+    "haiku": "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, reopened, ready_for_review, synchronize] }\n\nconcurrency:\n  group: jbot-review-${{ github.event.pull_request.number }}\n  cancel-in-progress: true\n\npermissions:\n  contents: read\n  pull-requests: write\n  issues: write\n  checks: read\n\njobs:\n  review:\n    if: github.event.pull_request.draft == false\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v7\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          model: anthropic/claude-haiku-5-5\n          # Default effort is xhigh. Uncomment to trade some depth for cost:\n          # model-options: '{\"reasoningEffort\":\"high\"}'\n          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}"
   };
   function legacyCopy(text) {
     return new Promise(function (resolve, reject) {

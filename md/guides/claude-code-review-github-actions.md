@@ -76,7 +76,7 @@ No. The action reads your checkout read-only on your own runner. What reaches th
 
 ### What does Claude code review cost per PR?
 
-Whatever your Anthropic API usage costs — J-Bot Review itself adds no charge and no per-seat fee. Defaults keep spend low: one review pass, verification on, doc-only PRs skipped without a model call. You can trim further with `min-severity` or route verification to a cheaper aux model.
+Whatever your Anthropic API usage costs — J-Bot Review itself adds no charge and no per-seat fee. Defaults keep spend low: one review pass, verification on, doc-only PRs skipped without a model call. You can trim further with `min-severity` or a lower reasoning effort.
 
 ## Related
 
