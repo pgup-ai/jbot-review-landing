@@ -9,7 +9,7 @@ Published October 8, 2026 · route and catalog checked October 8, 2026 · applie
 - Step 5 Preview, a StepFun model with a 1M-token context, costs $0 on OpenCode Zen for a limited time.
 - On six production pull requests of 4 to 13 files, it found 8 of 31 known issues, with a median review time of 16 minutes.
 - On two production pull requests that six models reviewed, it found 4 of 12 known issues, tied with DeepSeek V4.1 Flash and MiMo V2.6 Flash.
-- It failed both pull requests of 20 and 32 files at J-Bot’s 30-minute budget, so no review posted.
+- It failed both pull requests of 20 and 32 files because one page did not finish, so no review posted.
 - On a public 9-file pull request it found the same real bug as DeepSeek V4.1 Flash, in 8.2 minutes against 4.4.
 
 > **StepFun · released Sep 16, 2026 · 1M context · free on OpenCode Zen**
@@ -125,7 +125,7 @@ J-Bot splits a diff into budgeted review pages and posts only when every page fi
 
 Scroll horizontally to see the whole chart.
 
-Review time against files changed. Every pull request up to 13 files finished inside 20 minutes. Both larger ones ran into the 30-minute budget and posted nothing.
+Review time against files changed. Every pull request up to 13 files finished inside 20 minutes. Both larger ones failed with an unfinished page and posted nothing.
 
 On the six pull requests it finished, Step 5 found 8 of 31 known issues. The median review took 16 minutes.
 
@@ -204,7 +204,7 @@ No free model wins on every count in our data. On the same two production pull r
 
 ### How fast is Step 5 Preview at code review?
 
-Slower than DeepSeek V4.1 Flash on most pull requests we can compare, with a median of 16 minutes per finished review. The six production reviews it finished took 10.0 to 19.8 minutes. Only three pull requests have a DeepSeek time, all on older J-Bot code. Step 5 took 8.2 minutes against 4.4 on a 9-file public pull request, 17.7 against 9.2 on A, and 10.0 against 12.0 on B. Both large pull requests ran into J-Bot’s 30-minute budget.
+Slower than DeepSeek V4.1 Flash on most pull requests we can compare, with a median of 16 minutes per finished review. The six production reviews it finished took 10.0 to 19.8 minutes. Only three pull requests have a DeepSeek time, all on older J-Bot code. Step 5 took 8.2 minutes against 4.4 on a 9-file public pull request, 17.7 against 9.2 on A, and 10.0 against 12.0 on B. Both large pull requests failed with an unfinished page, after 29.5 and 28.1 minutes of J-Bot’s 30-minute budget.
 
 ### Do I need to update J-Bot Review to use Step 5 Preview?
 

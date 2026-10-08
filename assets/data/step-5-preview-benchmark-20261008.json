@@ -14,7 +14,7 @@
   "definitions": {
     "pages": "Review pages: J-Bot splits a diff into budgeted pages, and every page must finish before a review posts.",
     "known_issues": "Issues in an audit answer key written before these runs. Findings were matched to the key by keyword, and every unmatched finding was checked by hand.",
-    "failed": "The review hit its 30-minute budget without every page finishing, so J-Bot posted nothing."
+    "failed": "At least one review page did not finish (an empty, partial or timed-out result after its retry), so J-Bot posted nothing. Each run's failure field records the cause."
   },
   "public_pr": {
     "url": "https://github.com/pgup-ai/jbot-review/pull/286",
