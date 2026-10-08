@@ -161,6 +161,8 @@ Cline’s free tier costs nothing within its daily cap. Among metered routes, Op
 - **Guide** — [DeepSeek V4 Flash code review](https://www.pgupai.com/guides/deepseek-v4-flash-code-review-github-actions): Routes and benchmarks for the previous model.
 - **Guide** — [Cline code review](https://www.pgupai.com/guides/cline-code-review-github-actions): Save a Cline login for CI and pick a billing mode.
 
+Step 5 Preview, free on OpenCode Zen for a limited time, found the same number of known issues as DeepSeek V4.1 Flash on two production pull requests. It was slower on one and faster on the other. Read the [Step 5 Preview vs DeepSeek V4.1 Flash comparison](https://www.pgupai.com/guides/step-5-preview-code-review-github-actions).
+
 We later tested whether extra search context and slimmer compliance could improve this baseline. Read the [DeepSeek V4.1 Flash optimization results](https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization).
 
 ---

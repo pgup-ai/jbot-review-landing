@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Step 5 Preview Benchmark: Free AI Code Review vs DeepSeek | J-Bot Review</title>
+<meta name="description" content="StepFun’s Step 5 Preview is free on OpenCode Zen. In our code review benchmark it tied DeepSeek V4.1 Flash and MiMo on small PRs, ran slower, and failed large ones." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/guides/step-5-preview-code-review-github-actions" />
+<link rel="alternate" type="text/markdown" href="/md/guides/step-5-preview-code-review-github-actions.md" title="Markdown representation" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/guides/step-5-preview-code-review-github-actions" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="Step 5 Preview code review benchmark: free, ties DeepSeek on small PRs, fails big ones" />
+<meta property="og:description" content="Free on OpenCode Zen for a limited time. On two shared production PRs it found 4 of 12 known issues, tying DeepSeek V4.1 Flash and MiMo V2.6 Flash. It failed both PRs of 20+ files." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-guide-step-5-preview-20261008-v2.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-guide-step-5-preview-20261008-v2.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Step 5 Preview code review benchmark: free on OpenCode Zen, ties DeepSeek V4.1 Flash on small pull requests, failed both large ones." />
+<meta property="article:published_time" content="2026-10-08" />
+<meta property="article:modified_time" content="2026-10-08" />
+<meta property="article:section" content="Guides" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Step 5 Preview code review benchmark: free, ties DeepSeek on small PRs, fails big ones" />
+<meta name="twitter:description" content="Free on OpenCode Zen for a limited time. On two shared production PRs it found 4 of 12 known issues, tying DeepSeek V4.1 Flash and MiMo V2.6 Flash. It failed both PRs of 20+ files." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-guide-step-5-preview-20261008-v2.png" />
+<meta name="twitter:image:alt" content="Step 5 Preview code review benchmark: free on OpenCode Zen, ties DeepSeek V4.1 Flash on small pull requests, failed both large ones." />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/guides/step-5-preview-code-review-github-actions#article",
+      "headline": "Step 5 Preview code review benchmark: free, ties DeepSeek on small PRs, fails big ones",
+      "description": "StepFun’s Step 5 Preview is free on OpenCode Zen. In our code review benchmark it tied DeepSeek V4.1 Flash and MiMo on small PRs, ran slower, and failed large ones.",
+      "url": "https://www.pgupai.com/guides/step-5-preview-code-review-github-actions",
+      "mainEntityOfPage": "https://www.pgupai.com/guides/step-5-preview-code-review-github-actions",
+      "image": [
+        "https://www.pgupai.com/assets/og-guide-step-5-preview-20261008-v2.png"
+      ],
+      "datePublished": "2026-10-08",
+      "dateModified": "2026-10-08",
+      "keywords": "Step 5 Preview, StepFun Step 5, Step 5 Preview free, Step 5 Preview benchmark, Step 5 Preview code review, Step 5 Preview vs DeepSeek V4.1 Flash, StepFun Step 5 benchmark, best free AI model for code review, free 1M context model, OpenCode Zen free models, step-5-preview-free, AI code review GitHub Actions",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "AI code review"
+        },
+        {
+          "@type": "Thing",
+          "name": "Step 5 Preview",
+          "description": "StepFun model with a 1,000,000-token context, free on OpenCode Zen for a limited time"
+        },
+        {
+          "@type": "Thing",
+          "name": "DeepSeek V4.1 Flash"
+        },
+        {
+          "@type": "Thing",
+          "name": "OpenCode Zen"
+        },
+        {
+          "@type": "Thing",
+          "name": "GitHub Actions"
+        }
+      ],
+      "author": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.pgupai.com/assets/icon-512.png"
+        }
+      }
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://www.pgupai.com/guides/step-5-preview-code-review-github-actions#data",
+      "name": "Step 5 Preview code review benchmark vs DeepSeek V4.1 Flash and other models",
+      "description": "Review time, review pages, tool calls and known issues found for StepFun Step 5 Preview on one public and eight private pull requests, plus Step 5 Preview, DeepSeek V4.1 Flash, MiMo V2.6 Flash, GLM 5.3 Flash, Qwen3.8-Flash, Muse Spark 1.3 and LongCat 2.5 Preview on the same two production pull requests.",
+      "variableMeasured": [
+        "Review time in minutes",
+        "Known issues found",
+        "Files changed",
+        "Review pages",
+        "Tool calls"
+      ],
+      "url": "https://www.pgupai.com/guides/step-5-preview-code-review-github-actions",
+      "datePublished": "2026-10-08",
+      "license": "https://opensource.org/licenses/MIT",
+      "creator": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/"
+      },
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://www.pgupai.com/assets/data/step-5-preview-benchmark-20261008.json"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.pgupai.com/guides/step-5-preview-code-review-github-actions#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Step 5 Preview?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Step 5 Preview is a StepFun model that OpenCode Zen serves for free, for a limited time, as opencode/step-5-preview-free. Models.dev lists a 1,000,000-token context, 65,536 output tokens, text, image and video input, tool calling, and a release date of September 16, 2026."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Step 5 Preview free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "On OpenCode Zen, yes, for a limited time. OpenCode lists opencode/step-5-preview-free at $0 for input, output and cached reads. OpenCode’s announcement on 2026-10-08 said the free window lasts a week, so check the Zen pricing table before you rely on it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Step 5 Preview good for code review?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "On small and medium pull requests, yes. It found 8 of 31 known issues on six production pull requests of 4 to 13 files, and tied DeepSeek V4.1 Flash and MiMo V2.6 Flash on the two pull requests all three reviewed. It failed both pull requests of 20 and 32 files, so it is not a good default for repositories that open large changes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Step 5 Preview vs DeepSeek V4.1 Flash: which is better for code review?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "They tied on known issues in our runs, and DeepSeek was faster on two of the three pull requests we can compare. On two production pull requests both found 4 of 12 known issues. DeepSeek took 9.2 and 12.0 minutes, and Step 5 took 17.7 and 10.0. On a public 9-file pull request both found the same real bug, Step 5 in 8.2 minutes and DeepSeek in 4.4. Each comparison is one run per model on different J-Bot builds, and a swing of two issues between identical runs is normal, so treat the result as a tie."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the best free model for AI code review right now?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No free model wins on every count in our data. On the same two production pull requests, Step 5 Preview found 4 of 12 known issues at $0, the same as DeepSeek V4.1 Flash and MiMo V2.6 Flash and ahead of GLM 5.3 Flash (2), Qwen3.8-Flash (1) and Muse Spark 1.3 (1). Step 5 was slower than DeepSeek on one of the two and failed both large pull requests we gave it. Our DeepSeek and MiMo runs used paid routes. For the free routes, quotas and data terms of each model, see the free model guide."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How fast is Step 5 Preview at code review?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Slower than DeepSeek V4.1 Flash on most pull requests we can compare, with a median of 16 minutes per finished review. The six production reviews it finished took 10.0 to 19.8 minutes. Only three pull requests have a DeepSeek time, all on older J-Bot code. Step 5 took 8.2 minutes against 4.4 on a 9-file public pull request, 17.7 against 9.2 on A, and 10.0 against 12.0 on B. Both large pull requests failed with an unfinished page, after 29.5 and 28.1 minutes of J-Bot’s 30-minute budget."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need to update J-Bot Review to use Step 5 Preview?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The OpenCode build J-Bot pins, 2.0.24, reads the models.dev catalog when it starts, so the new model id resolved on the first run. Set model: opencode/step-5-preview-free and pass an OpenCode API key."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does OpenCode keep my code when I use Step 5 Preview?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not according to OpenCode. Its Zen documentation says Step 5 Preview Free’s provider follows a zero-retention policy and does not use your data for model training. That is OpenCode’s statement, not a J-Bot guarantee. Read the Zen privacy section before sending private code."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "J-Bot Review",
+          "item": "https://www.pgupai.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://www.pgupai.com/guides"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Step 5 Preview",
+          "item": "https://www.pgupai.com/guides/step-5-preview-code-review-github-actions"
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Set up Step 5 Preview code review in GitHub Actions",
+      "description": "Add an OpenCode API key and a J-Bot Review workflow that reviews pull requests with Step 5 Preview on OpenCode Zen.",
+      "totalTime": "PT5M",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Create an OpenCode API key",
+          "text": "Save it as the repository secret OPENCODE_API_KEY under Settings, Secrets and variables, Actions."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Commit the workflow",
+          "text": "Add .github/workflows/jbot-review.yml with model: opencode/step-5-preview-free and model-options set to high reasoning effort."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Open a pull request",
+          "text": "J-Bot Review reads the base…head diff and posts diff-anchored findings with a verdict."
+        }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0b0a; --surface: #0e100e; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5); --text-4: rgba(233,236,232,0.42);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b; --spark: #8f98a8;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08); --border-code: rgba(255,255,255,0.09);
+    --code-text: #dbe5dd; --code-comment: rgba(219,229,221,0.46); --blue: #87b7ff;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans); --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 740px; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .title-row { display: flex; align-items: flex-start; gap: 16px; }
+  .spark-mark { width: 44px; height: 44px; flex: none; color: var(--spark); margin-top: 1px; }
+  .spark-mark path { fill: currentColor; }
+  .note-line { color: var(--text-3); font-size: 14px; border-left: 2px solid rgba(143,152,168,0.35); padding-left: 13px; margin: 16px 0 0; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  .kr-title { margin: 22px 0 4px; }
+  .key-results li { font-size: 15px; }
+  .lede b, article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+  ol li::marker { font-family: var(--mono); color: var(--accent); }
+  code { font-family: var(--mono); font-size: 12.5px; color: var(--code-text); background: var(--surface); border: 1px solid var(--border-code); border-radius: 5px; padding: 1px 6px; }
+  .code-card { background: var(--surface); border: 1px solid var(--border-code); border-radius: 12px; overflow: hidden; margin: 18px 0; }
+  .code-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--hairline); }
+  .code-head .file { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+  .copybtn { display: inline-flex; background: rgba(94,227,154,0.08); border: 1px solid rgba(94,227,154,0.25); color: var(--accent); font-family: var(--mono); font-size: 12px; border-radius: 7px; padding: 5px 11px; cursor: pointer; }
+  .copybtn:hover { background: rgba(94,227,154,0.15); }
+  pre { margin: 0; padding: 16px 18px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.7; color: var(--code-text); }
+  .k { color: var(--blue); } .s { color: var(--accent); } .c { color: var(--code-comment); }
+  .callout { border: 1px solid rgba(143,152,168,0.35); background: rgba(143,152,168,0.07); border-radius: 12px; padding: 16px 18px; margin: 20px 0; }
+  .callout p { margin: 0; font-size: 14.5px; }
+  .callout .tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: #b8c0ce; display: block; margin-bottom: 6px; }
+  .routes { display: grid; gap: 12px; margin: 18px 0; }
+  .route { display: grid; grid-template-columns: 130px 1fr; gap: 16px; border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 16px 18px; }
+  .route b { font-family: var(--display); }
+  .route p { margin: 0; font-size: 14px; }
+  .route .verified { display: block; font-family: var(--mono); font-size: 10.5px; color: #b8c0ce; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 3px; }
+  .faq-item { border-bottom: 1px solid var(--hairline); }
+  .faq-item:first-of-type { border-top: 1px solid var(--hairline); }
+  .faq-item summary { display: flex; align-items: baseline; justify-content: space-between; gap: 22px; list-style: none; cursor: pointer; padding: 17px 2px; font-weight: 600; font-size: 15.5px; color: var(--text); line-height: 1.45; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-mark { font-family: var(--mono); font-size: 15px; color: var(--text-4); flex: none; transition: transform 0.2s var(--ease), color 0.2s var(--ease); }
+  .faq-item[open] .faq-mark { transform: rotate(45deg); color: var(--accent); }
+  .faq-a { padding: 0 2px 20px; font-size: 14.5px; color: var(--text-2); }
+  .faq-a p { margin: 0; }
+  .related { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0 0; }
+  .rel-card { display: block; border: 1px solid var(--border-card); background: var(--surface-subtle); border-radius: 12px; padding: 18px; color: var(--text); }
+  .rel-card:hover { border-color: rgba(94,227,154,0.35); color: var(--text); }
+  .rel-card .k2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 7px; }
+  .rel-card p { margin: 6px 0 0; font-size: 13px; color: var(--text-3); }
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  .table-hint { display: none; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tbody th[scope="row"] { font-family: var(--sans); font-size: 13.5px; letter-spacing: normal; text-transform: none; color: var(--text); font-weight: 600; background: transparent; }
+  tr:last-child td, tr:last-child th { border-bottom: none; }
+  .contents { border-block: 1px solid var(--hairline); padding: 18px 0; margin: 28px 0; }
+  .contents b { font-size: 14px; }
+  .contents ul { margin-bottom: 0; }
+  .fig { margin: 24px 0; border: 1px solid var(--border-card); border-radius: 12px; background: var(--surface-subtle); padding: 18px 14px 14px; }
+  .chart-wrap { overflow-x: auto; }
+  .chart { display: block; width: 100%; height: auto; }
+  .chart .grid { stroke: var(--hairline); stroke-width: 1; }
+  .chart .tick, .chart .leg { font-family: var(--mono); font-size: 12px; fill: var(--text-3); }
+  .chart .axis { font-family: var(--mono); font-size: 12px; fill: var(--text-4); letter-spacing: 0.04em; }
+  .chart .pt { font-family: var(--mono); font-size: 13px; fill: var(--text); }
+  .chart .budget { stroke: rgba(240,168,104,0.55); stroke-width: 2; stroke-dasharray: 5 5; }
+  .chart .done { fill: var(--accent); }
+  .chart .other { fill: var(--blue); }
+  .chart .ring { fill: none; stroke: rgba(94,227,154,0.45); stroke-width: 2; }
+  .chart .hl { fill: var(--accent); font-weight: 600; }
+  .chart .fail { fill: none; stroke: #f0a868; stroke-width: 3; stroke-linecap: round; }
+  figcaption { margin-top: 10px; color: var(--text-3); font-size: 13px; line-height: 1.6; }
+  @media (max-width: 560px) { .tbl-wrap table { min-width: 640px; } .chart { min-width: 600px; } .table-hint { display: block; font-size: 13px; color: var(--text-2); margin-bottom: 8px; } }
+  @media (max-width: 560px) { .nav-links a:not(.btn) { display: none; } .title-row { gap: 12px; } .spark-mark { width: 36px; height: 36px; } .route { grid-template-columns: 1fr; gap: 5px; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .faq-mark { transition: none; } }
+</style>
+<link rel="stylesheet" href="/assets/analytics.css" />
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides">Guides</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<article>
+  <p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / Step 5 Preview</p>
+  <h1>Step 5 Preview code review benchmark: free, ties DeepSeek on small PRs, fails big ones</h1>
+  <p class="updated">Published October 8, 2026 · route and catalog checked October 8, 2026 · applies to pgup-ai/jbot-review-action v0</p>
+  <p class="lede"><b>Step 5 Preview is a reasonable free reviewer for small and medium pull requests, and the wrong choice for large ones.</b> We ran it as J-Bot Review’s model on nine pull requests. On the six production changes it finished, 4 to 13 files each, it found 8 of 31 known issues and tied DeepSeek V4.1 Flash on the two where we could compare. Its median finished review took 16 minutes, and it was slower than DeepSeek on two of the three pull requests where we have a DeepSeek time. It failed both pull requests of 20 files and more.</p>
+  <p class="kr-title"><b>Key results</b></p>
+  <ul class="key-results">
+    <li>Step 5 Preview, a StepFun model with a 1M-token context, costs $0 on OpenCode Zen for a limited time.</li>
+    <li>On six production pull requests of 4 to 13 files, it found 8 of 31 known issues, with a median review time of 16 minutes.</li>
+    <li>On two production pull requests that six models reviewed, it found 4 of 12 known issues, tied with DeepSeek V4.1 Flash and MiMo V2.6 Flash.</li>
+    <li>It failed both pull requests of 20 and 32 files because one page did not finish, so no review posted.</li>
+    <li>On a public 9-file pull request it found the same real bug as DeepSeek V4.1 Flash, in 8.2 minutes against 4.4.</li>
+  </ul>
+
+  <div class="callout">
+    <span class="tag">StepFun · released Sep 16, 2026 · 1M context · free on OpenCode Zen</span>
+    <p>OpenCode Zen serves the model as <code>opencode/step-5-preview-free</code> at $0 per token, for a limited time. OpenCode’s announcement on October 8, 2026 put the free window at one week. Models.dev lists a 1,000,000-token context, 65,536 output tokens, and text, image and video input.</p>
+  </div>
+
+  <nav class="contents" aria-label="Article contents"><b>In this guide</b><ul><li><a href="#setup">Setup in three steps</a></li><li><a href="#model">Free on OpenCode Zen, 1M context</a></li><li><a href="#public-pr">Step 5 Preview vs DeepSeek V4.1 Flash on a public pull request</a></li><li><a href="#production">Eight production pull requests</a></li><li><a href="#compare">Step 5 Preview vs DeepSeek, MiMo, GLM and other models</a></li><li><a href="#large-prs">Why the large pull requests failed</a></li><li><a href="#when">When to use it</a></li><li><a href="#limits">What this test can’t tell you</a></li><li><a href="#faq">FAQ</a></li></ul></nav>
+
+  <h2 id="setup">Set up Step 5 Preview code review in three steps</h2>
+  <ol>
+    <li><b>Create an OpenCode API key.</b> Sign in at <a href="https://opencode.ai" target="_blank" rel="noopener noreferrer">opencode.ai</a>, then save the key as the repository secret <code>OPENCODE_API_KEY</code> (<em>Settings → Secrets and variables → Actions</em>).</li>
+    <li><b>Commit the workflow.</b> Add the file below as <code>.github/workflows/jbot-review.yml</code>. J-Bot sends new models <code>low</code> effort by default, so the workflow sets <code>high</code>, the level we tested on production code.</li>
+    <li><b>Open a pull request.</b> J-Bot reads the base…head diff and posts diff-anchored findings with a verdict. A second session checks blocking findings before they post.</li>
+  </ol>
+
+  <div class="code-card">
+    <div class="code-head"><span class="file">.github/workflows/jbot-review.yml</span><button type="button" class="copybtn" data-copy="step5" aria-live="polite">Copy</button></div>
+<pre><span class="k">name</span>: J-Bot Code Review
+<span class="k">on</span>:
+  pull_request: { types: [opened, reopened, ready_for_review, synchronize] }
+
+<span class="k">concurrency</span>:
+  <span class="k">group</span>: jbot-review-${{ github.event.pull_request.number }}
+  <span class="k">cancel-in-progress</span>: true
+
+<span class="k">permissions</span>:
+  <span class="k">contents</span>: read
+  <span class="k">pull-requests</span>: write
+  <span class="k">issues</span>: write
+  <span class="k">checks</span>: read
+
+<span class="k">jobs</span>:
+  <span class="k">review</span>:
+    <span class="k">if</span>: github.event.pull_request.draft == false
+    <span class="k">runs-on</span>: ubuntu-latest
+    <span class="k">steps</span>:
+      - <span class="k">uses</span>: actions/checkout@v7
+        <span class="k">with</span>: { fetch-depth: 0 }
+      - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
+        <span class="k">with</span>:
+          <span class="k">model</span>: opencode/step-5-preview-free
+          <span class="k">model-options</span>: '{"reasoningEffort":"high"}'
+<span class="c">          # Large pull requests: give each review more time than the 30-minute default.</span>
+<span class="c">          # time-budget-minutes: 45</span>
+          <span class="k">opencode-api-key</span>: ${{ secrets.OPENCODE_API_KEY }}
+          <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
+  </div>
+  <p>No J-Bot update is needed. The OpenCode build J-Bot pins, 2.0.24, ships without an entry for this model, but it reads the models.dev catalog when it starts, so the id resolved on our first run.</p>
+
+  <h2 id="model">Step 5 Preview on OpenCode Zen: free, 1M context</h2>
+  <div class="routes">
+    <div class="route"><div><b>Model id</b><span class="verified">OpenCode Zen</span></div><p><code>model: opencode/step-5-preview-free</code><br><code>opencode-api-key</code></p></div>
+    <div class="route"><div><b>Price</b><span class="verified">Limited time</span></div><p>Free input, output and cached reads in the Zen pricing table. OpenCode’s October 8 announcement said one week.</p></div>
+    <div class="route"><div><b>Limits</b><span class="verified">Models.dev</span></div><p>1,000,000-token context and 65,536 output tokens. Text, image and video in, text out. Tool calling and reasoning effort <code>low</code>, <code>medium</code> or <code>high</code>.</p></div>
+    <div class="route"><div><b>Data</b><span class="verified">Zen docs</span></div><p>OpenCode says the provider follows a zero-retention policy and does not train on your data.</p></div>
+  </div>
+  <p class="note-line">Sources: the <a href="https://opencode.ai/docs/zen/" target="_blank" rel="noopener noreferrer">OpenCode Zen documentation</a> (model list, pricing and privacy) and the <a href="https://models.dev/" target="_blank" rel="noopener noreferrer">models.dev</a> catalog entry, both checked October 8, 2026. Free windows end, so check the pricing table before you depend on it.</p>
+
+  <h2 id="public-pr">Step 5 Preview vs DeepSeek V4.1 Flash on a public pull request</h2>
+  <p>We started with <a href="https://github.com/pgup-ai/jbot-review/pull/286" target="_blank" rel="noopener noreferrer">pull request #286</a> in J-Bot Review’s own repository: 9 files on one review page. We ran it at low effort with verification off, the settings we had used for DeepSeek V4.1 Flash on the same change a day earlier. That DeepSeek run used an older J-Bot build (<code>e824bd4</code>, against <code>0906459</code> for Step 5).</p>
+  <p class="table-hint">Scroll horizontally to see every column.</p><div class="tbl-wrap" role="region" aria-label="Step 5 Preview and DeepSeek V4.1 Flash on one 9-file pull request" tabindex="0"><table><thead><tr><th scope="col">Model</th><th scope="col">Date</th><th scope="col">Time</th><th scope="col">Cost</th><th scope="col">Tool calls (main / rules)</th><th scope="col">Real bug found</th><th scope="col">Known issues</th></tr></thead><tbody><tr><th scope="row">Step 5 Preview · low</th><td>Oct 8</td><td>8.2 min</td><td>$0</td><td>37 / 17</td><td>Yes</td><td>0 / 2</td></tr><tr><th scope="row">DeepSeek V4.1 Flash · low</th><td>Oct 7</td><td>4.4 min</td><td>$0.082</td><td>49 / 20</td><td>Yes</td><td>0 / 2</td></tr></tbody></table></div>
+  <p>Both models found the same real bug. A telemetry helper had gained a workspace parameter that three backend call sites did not pass. Step 5’s write-up named all three call sites. Neither model found the two known issues, shell-parsing bugs fixed later in <a href="https://github.com/pgup-ai/jbot-review/pull/287" target="_blank" rel="noopener noreferrer">#287</a>. Step 5 made fewer tool calls and still took 1.9 times as long on this pull request.</p>
+
+  <h2 id="production">Step 5 Preview benchmark on eight production pull requests</h2>
+  <p>Next we ran eight pull requests from a private TypeScript monorepo. An earlier audit had written an answer key for each one, 44 known issues in total. Each review ran once, at high effort, with one review pass, verification off and J-Bot’s default 30-minute budget. A script matched findings to the key by keyword, and we read every finding it did not match by hand. We label the pull requests A to H.</p>
+  <p class="table-hint">Scroll horizontally to see every column.</p><div class="tbl-wrap" role="region" aria-label="Step 5 Preview on eight production pull requests" tabindex="0"><table><thead><tr><th scope="col">Pull request</th><th scope="col">Files</th><th scope="col">Review pages</th><th scope="col">Time</th><th scope="col">Known issues found</th></tr></thead><tbody><tr><th scope="row">A</th><td>4</td><td>2</td><td>17.7 min</td><td>3 of 7</td></tr><tr><th scope="row">B</th><td>8</td><td>1</td><td>10.0 min</td><td>1 of 5</td></tr><tr><th scope="row">C</th><td>8</td><td>1</td><td>14.6 min</td><td>1 of 3</td></tr><tr><th scope="row">D</th><td>9</td><td>3</td><td>13.5 min</td><td>2 of 8</td></tr><tr><th scope="row">E</th><td>10</td><td>2</td><td>19.8 min</td><td>0 of 2</td></tr><tr><th scope="row">F</th><td>13</td><td>2</td><td>19.8 min</td><td>1 of 6</td></tr><tr><th scope="row">G</th><td>20</td><td>3</td><td>Failed at 29.5 min</td><td>No review (3 in key)</td></tr><tr><th scope="row">H</th><td>32</td><td>4</td><td>Failed at 28.1 min</td><td>No review (10 in key)</td></tr></tbody></table></div>
+  <p class="note-line">J-Bot splits a diff into budgeted review pages and posts only when every page finishes. The <a href="/assets/data/step-5-preview-benchmark-20261008.json">raw numbers (JSON)</a> include the DeepSeek reference runs and the cross-model comparison.</p>
+
+  <p class="table-hint">Scroll horizontally to see the whole chart.</p>
+  <figure class="fig">
+    <div class="chart-wrap" role="region" aria-label="Review time against pull request size chart" tabindex="0">
+<svg class="chart" viewBox="0 0 720 360" role="img" aria-labelledby="chart-title chart-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="chart-title">Review time against files changed, eight production pull requests</title>
+<desc id="chart-desc">Step 5 Preview finished six pull requests of 4 to 13 files in 10.0 to 19.8 minutes. It failed a 20-file pull request at 29.5 minutes and a 32-file pull request at 28.1 minutes, against a 30-minute budget.</desc>
+<line class="grid" x1="84" x2="700" y1="300.0" y2="300.0"/><text class="tick" x="72" y="304.0" text-anchor="end">0</text>
+<line class="grid" x1="84" x2="700" y1="225.7" y2="225.7"/><text class="tick" x="72" y="229.7" text-anchor="end">10</text>
+<line class="grid" x1="84" x2="700" y1="151.4" y2="151.4"/><text class="tick" x="72" y="155.4" text-anchor="end">20</text>
+<line class="grid" x1="84.0" x2="84.0" y1="40" y2="300"/><text class="tick" x="84.0" y="322" text-anchor="middle">0</text>
+<line class="grid" x1="260.0" x2="260.0" y1="40" y2="300"/><text class="tick" x="260.0" y="322" text-anchor="middle">10</text>
+<line class="grid" x1="436.0" x2="436.0" y1="40" y2="300"/><text class="tick" x="436.0" y="322" text-anchor="middle">20</text>
+<line class="grid" x1="612.0" x2="612.0" y1="40" y2="300"/><text class="tick" x="612.0" y="322" text-anchor="middle">30</text>
+<line class="budget" x1="84" x2="700" y1="77.1" y2="77.1"/><text class="tick" x="72" y="81.1" text-anchor="end">30</text>
+<text class="leg" x="96" y="70">30-minute budget</text>
+<text class="axis" x="392.0" y="350" text-anchor="middle">Files changed</text>
+<text class="axis" x="22" y="170.0" text-anchor="middle" transform="rotate(-90 22 170.0)">Minutes</text>
+<circle class="done" cx="154.4" cy="168.5" r="7"/><text class="pt" x="142.4" y="162.5" text-anchor="end">A</text>
+<circle class="done" cx="224.8" cy="225.7" r="7"/><text class="pt" x="212.8" y="230.0" text-anchor="end">B</text>
+<circle class="done" cx="224.8" cy="191.5" r="7"/><text class="pt" x="212.8" y="190.0" text-anchor="end">C</text>
+<circle class="done" cx="242.4" cy="199.7" r="7"/><text class="pt" x="254.4" y="214.0" text-anchor="start">D</text>
+<circle class="done" cx="260.0" cy="152.9" r="7"/><text class="pt" x="260.0" y="140.0" text-anchor="middle">E</text>
+<circle class="done" cx="312.8" cy="152.9" r="7"/><text class="pt" x="312.8" y="140.0" text-anchor="middle">F</text>
+<path class="fail" d="M429,73.9 L443,87.9 M443,73.9 L429,87.9"/><text class="pt" x="436.0" y="110.0" text-anchor="middle">G, failed</text>
+<path class="fail" d="M640.2,84.3 L654.2,98.3 M654.2,84.3 L640.2,98.3"/><text class="pt" x="647.2" y="120.0" text-anchor="middle">H, failed</text>
+<circle class="done" cx="470" cy="22" r="6"/><text class="leg" x="482" y="26">Finished</text>
+<path class="fail" d="M570,16 L582,28 M582,16 L570,28"/><text class="leg" x="592" y="26">Failed</text>
+</svg>
+    </div>
+    <figcaption>Review time against files changed. Every pull request up to 13 files finished inside 20 minutes. Both larger ones failed with an unfinished page and posted nothing.</figcaption>
+  </figure>
+
+  <p>On the six pull requests it finished, Step 5 found 8 of 31 known issues. The median review took 16 minutes.</p>
+
+  <h2 id="compare">Step 5 Preview vs DeepSeek, MiMo, GLM and other models</h2>
+  <p>We also ran J-Bot with other models on two of these pull requests, A and B, with the same settings as above: high effort, one review pass and verification off. A has 7 known issues and B has 5, so each row is scored out of 12. Every model ran once, except LongCat 2.5 Preview, which ran A twice, between September 26 and October 8.</p>
+  <p class="table-hint">Scroll horizontally to see every column.</p><div class="tbl-wrap" role="region" aria-label="Seven models on the same two production pull requests" tabindex="0"><table><thead><tr><th scope="col">Model</th><th scope="col">Route</th><th scope="col">Date</th><th scope="col">Known issues found, A + B (of 12)</th><th scope="col">Time on A</th><th scope="col">Time on B</th></tr></thead><tbody><tr><th scope="row">Step 5 Preview</th><td>OpenCode Zen, $0</td><td>Oct 8</td><td>4 (3 + 1)</td><td>17.7 min</td><td>10.0 min</td></tr><tr><th scope="row">DeepSeek V4.1 Flash</th><td>DeepSeek API</td><td>Sep 26</td><td>4 (3 + 1)</td><td>9.2 min</td><td>12.0 min</td></tr><tr><th scope="row">MiMo V2.6 Flash</th><td>OpenCode Go</td><td>Sep 28</td><td>4 (3 + 1)</td><td>22.8 min</td><td>17.8 min</td></tr><tr><th scope="row">GLM 5.3 Flash</th><td>OpenCode Go</td><td>Sep 28</td><td>2 (1 + 1)</td><td>14.5 min</td><td>8.5 min</td></tr><tr><th scope="row">Qwen3.8-Flash</th><td>Qoder, $0</td><td>Oct 1</td><td>1 (0 + 1)</td><td>16.0 min</td><td>8.3 min</td></tr><tr><th scope="row">Muse Spark 1.3</th><td>OpenCode Zen, $0</td><td>Sep 28</td><td>1 (0 + 1)</td><td>3.5 min</td><td>3.3 min</td></tr><tr><th scope="row">LongCat 2.5 Preview</th><td>OpenCode Zen, $0</td><td>Sep 26 to 28</td><td>0 to 1 on A, two runs</td><td>18 to 27 min</td><td>Not run</td></tr></tbody></table></div>
+  <p class="note-line">One run per model (two on A for LongCat 2.5 Preview), on J-Bot builds that changed between September 26 and October 8. Flash-class models swing by about two known issues between identical runs, so the top three rows are a tie, not a ranking. MiMo’s 3 on A includes one finding we judged a likely match. Runs before October 8 were scored against an earlier answer key with one more issue on B, which no model found, and every row here leaves it out.</p>
+
+  <p class="table-hint">Scroll horizontally to see the whole chart.</p>
+  <figure class="fig">
+    <div class="chart-wrap" role="region" aria-label="Known issues found against review time chart, six models" tabindex="0">
+<svg class="chart" viewBox="0 0 720 360" role="img" aria-labelledby="cmp-title cmp-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="cmp-title">Known issues found against total review time on two production pull requests, six models</title>
+<desc id="cmp-desc">Out of 12 known issues, Step 5 Preview found 4 in 27.7 minutes, DeepSeek V4.1 Flash 4 in 21.2 minutes, MiMo V2.6 Flash 4 in 40.6 minutes, GLM 5.3 Flash 2 in 23.0 minutes, Qwen3.8-Flash 1 in 24.3 minutes and Muse Spark 1.3 1 in 6.8 minutes.</desc>
+<line class="grid" x1="84" x2="700" y1="300.0" y2="300.0"/><text class="tick" x="72" y="304.0" text-anchor="end">0</text>
+<line class="grid" x1="84" x2="700" y1="248.0" y2="248.0"/><text class="tick" x="72" y="252.0" text-anchor="end">1</text>
+<line class="grid" x1="84" x2="700" y1="196.0" y2="196.0"/><text class="tick" x="72" y="200.0" text-anchor="end">2</text>
+<line class="grid" x1="84" x2="700" y1="144.0" y2="144.0"/><text class="tick" x="72" y="148.0" text-anchor="end">3</text>
+<line class="grid" x1="84" x2="700" y1="92.0" y2="92.0"/><text class="tick" x="72" y="96.0" text-anchor="end">4</text>
+<line class="grid" x1="84" x2="700" y1="40.0" y2="40.0"/><text class="tick" x="72" y="44.0" text-anchor="end">5</text>
+<line class="grid" x1="84.0" x2="84.0" y1="40" y2="300"/><text class="tick" x="84.0" y="322" text-anchor="middle">0</text>
+<line class="grid" x1="220.9" x2="220.9" y1="40" y2="300"/><text class="tick" x="220.9" y="322" text-anchor="middle">10</text>
+<line class="grid" x1="357.8" x2="357.8" y1="40" y2="300"/><text class="tick" x="357.8" y="322" text-anchor="middle">20</text>
+<line class="grid" x1="494.7" x2="494.7" y1="40" y2="300"/><text class="tick" x="494.7" y="322" text-anchor="middle">30</text>
+<line class="grid" x1="631.6" x2="631.6" y1="40" y2="300"/><text class="tick" x="631.6" y="322" text-anchor="middle">40</text>
+<text class="axis" x="392.0" y="350" text-anchor="middle">Minutes on A + B</text>
+<text class="axis" x="22" y="170.0" text-anchor="middle" transform="rotate(-90 22 170.0)">Known issues found (of 12)</text>
+<circle class="other" cx="374.2" cy="92.0" r="7"/><text class="pt" x="374.2" y="118.0" text-anchor="middle">DeepSeek V4.1 Flash</text>
+<circle class="other" cx="639.8" cy="92.0" r="7"/><text class="pt" x="639.8" y="74.0" text-anchor="middle">MiMo V2.6 Flash</text>
+<circle class="other" cx="398.8" cy="196.0" r="7"/><text class="pt" x="411.8" y="192.0" text-anchor="start">GLM 5.3 Flash</text>
+<circle class="other" cx="416.6" cy="248.0" r="7"/><text class="pt" x="429.6" y="252.0" text-anchor="start">Qwen3.8-Flash</text>
+<circle class="other" cx="177.1" cy="248.0" r="7"/><text class="pt" x="190.1" y="252.0" text-anchor="start">Muse Spark 1.3</text>
+<circle class="ring" cx="463.2" cy="92.0" r="12"/><circle class="done" cx="463.2" cy="92.0" r="7"/><text class="pt hl" x="470.2" y="70.0" text-anchor="middle">Step 5 Preview, $0</text>
+</svg>
+    </div>
+    <figcaption>Known issues found against total review time on A and B. Step 5 Preview, DeepSeek V4.1 Flash and MiMo V2.6 Flash each found 4 of 12. LongCat 2.5 Preview ran A only and is left out.</figcaption>
+  </figure>
+  <p>Step 5 Preview matched the best results in this group, DeepSeek V4.1 Flash and MiMo V2.6 Flash, and it was the only one of the three on a free route. DeepSeek was the fastest of the three on A, and Step 5 was the fastest of the three on B. GLM 5.3 Flash found half as many. Muse Spark 1.3 finished both reviews in under four minutes and found almost nothing.</p>
+
+  <h2 id="large-prs">Why the large pull requests failed</h2>
+  <p>Each failure came from a single review page. On G, 20 files over three pages, one page returned an empty response, and its retry used up the rest of the budget. On H, 32 files over four pages, one page ended with a partial result.</p>
+  <p>J-Bot will not post a review that skips part of the diff. When a page fails after its retry, the whole run fails and nothing posts. That rule protects you from a review that looks complete and isn’t. With a slow model it also means one stuck page costs the entire review. This result decides how to use Step 5. A model that handles 13 files and stalls at 20 can’t be the default for a repository that opens large pull requests.</p>
+
+  <h2 id="when">When to use Step 5 Preview</h2>
+  <ul>
+    <li><b>Small and medium pull requests, while it’s free.</b> Up to about 13 files it finished every review. On the two pull requests we ran across models, it found as many known issues as DeepSeek V4.1 Flash and MiMo V2.6 Flash, at no cost.</li>
+    <li><b>Not for large pull requests.</b> Both of ours failed. If you try it on changes that size anyway, raise <code>time-budget-minutes</code> to 45 or more. We have not yet rerun G and H with a longer budget.</li>
+    <li><b>Not as a default in a model pool.</b> A pool picks a model per pull request, so Step 5 would eventually draw a large change and fail it. Keep it as an explicit choice for repositories whose pull requests stay small.</li>
+    <li><b>Not when review speed matters.</b> Only three pull requests have a DeepSeek V4.1 Flash time, all from older J-Bot code. Step 5 was 1.9 times slower on #286 and on A, and faster on B. For faster free reviews, see the <a href="/guides/free-ai-models-code-review">free model comparison</a>.</li>
+  </ul>
+
+  <h2 id="limits">What this test can’t tell you</h2>
+  <p>Each pull request ran once. Flash-class models swing by about two known issues between identical runs, so a single row can mislead in either direction. Eight production pull requests from one repository are a screen, not a benchmark.</p>
+  <p>The model comparisons are thin. The cross-model table rests on two pull requests with one run per model (two on A for LongCat), on J-Bot builds from September 26 to October 8, and we did not run the other models on C through H. The public pull request ran at low effort and the production ones at high, so the two tables don’t combine.</p>
+  <p>The production repository is private, so we can’t publish those diffs or findings. The public run can be checked against <a href="https://github.com/pgup-ai/jbot-review/pull/286" target="_blank" rel="noopener noreferrer">#286</a>, <a href="https://github.com/pgup-ai/jbot-review/pull/287" target="_blank" rel="noopener noreferrer">#287</a> and <a href="https://github.com/pgup-ai/jbot-review/pull/293" target="_blank" rel="noopener noreferrer">#293</a>, which fixed the telemetry bug.</p>
+
+  <h2 id="privacy">Where the diff goes</h2>
+  <ul>
+    <li><b>To OpenCode and its model provider.</b> The review runs read-only on your GitHub Actions runner, and J-Bot sends the diff to OpenCode Zen. OpenCode’s Zen documentation says this model’s provider follows a zero-retention policy and does not use your data for training. That is OpenCode’s commitment, not J-Bot’s.</li>
+    <li><b>The key stays in the server process.</b> Each review session’s shell gets an allowlisted environment, so a tool call inside the review can’t read <code>OPENCODE_API_KEY</code>.</li>
+    <li><b>Fork pull requests can’t read the key.</b> GitHub doesn’t pass repository secrets to <code>pull_request</code> workflows from forks.</li>
+  </ul>
+
+  <h2 id="faq">FAQ</h2>
+  <details class="faq-item" open>
+    <summary>What is Step 5 Preview?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Step 5 Preview is a StepFun model that OpenCode Zen serves for free, for a limited time, as <code>opencode/step-5-preview-free</code>. Models.dev lists a 1,000,000-token context, 65,536 output tokens, text, image and video input, tool calling, and a release date of September 16, 2026.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Is Step 5 Preview free?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>On OpenCode Zen, yes, for a limited time. OpenCode lists <code>opencode/step-5-preview-free</code> at $0 for input, output and cached reads. OpenCode’s announcement on 2026-10-08 said the free window lasts a week, so check the Zen pricing table before you rely on it.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Is Step 5 Preview good for code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>On small and medium pull requests, yes. It found 8 of 31 known issues on six production pull requests of 4 to 13 files, and tied DeepSeek V4.1 Flash and MiMo V2.6 Flash on the two pull requests all three reviewed. It failed both pull requests of 20 and 32 files, so it is not a good default for repositories that open large changes.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Step 5 Preview vs DeepSeek V4.1 Flash: which is better for code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>They tied on known issues in our runs, and DeepSeek was faster on two of the three pull requests we can compare. On two production pull requests both found 4 of 12 known issues. DeepSeek took 9.2 and 12.0 minutes, and Step 5 took 17.7 and 10.0. On a public 9-file pull request both found the same real bug, Step 5 in 8.2 minutes and DeepSeek in 4.4. Each comparison is one run per model on different J-Bot builds, and a swing of two issues between identical runs is normal, so treat the result as a tie.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>What is the best free model for AI code review right now?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>No free model wins on every count in our data. On the same two production pull requests, Step 5 Preview found 4 of 12 known issues at $0, the same as DeepSeek V4.1 Flash and MiMo V2.6 Flash and ahead of GLM 5.3 Flash (2), Qwen3.8-Flash (1) and Muse Spark 1.3 (1). Step 5 was slower than DeepSeek on one of the two and failed both large pull requests we gave it. Our DeepSeek and MiMo runs used paid routes. For the free routes, quotas and data terms of each model, see the <a href="/guides/free-ai-models-code-review">free model guide</a>.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>How fast is Step 5 Preview at code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Slower than DeepSeek V4.1 Flash on most pull requests we can compare, with a median of 16 minutes per finished review. The six production reviews it finished took 10.0 to 19.8 minutes. Only three pull requests have a DeepSeek time, all on older J-Bot code. Step 5 took 8.2 minutes against 4.4 on a 9-file public pull request, 17.7 against 9.2 on A, and 10.0 against 12.0 on B. Both large pull requests failed with an unfinished page, after 29.5 and 28.1 minutes of J-Bot’s 30-minute budget.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Do I need to update J-Bot Review to use Step 5 Preview?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>No. The OpenCode build J-Bot pins, 2.0.24, reads the models.dev catalog when it starts, so the new model id resolved on the first run. Set <code>model: opencode/step-5-preview-free</code> and pass an OpenCode API key.</p></div>
+  </details>
+  <details class="faq-item">
+    <summary>Does OpenCode keep my code when I use Step 5 Preview?<span class="faq-mark" aria-hidden="true">+</span></summary>
+    <div class="faq-a"><p>Not according to OpenCode. Its Zen documentation says Step 5 Preview Free’s provider follows a zero-retention policy and does not use your data for model training. That is OpenCode’s statement, not a J-Bot guarantee. Read the Zen privacy section before sending private code.</p></div>
+  </details>
+  <h2>Related</h2>
+  <div class="related">
+    <a class="rel-card" href="/guides/deepseek-v4-1-flash-code-review-github-actions"><span class="k2">Guide</span>DeepSeek V4.1 Flash<p>The comparison model, with review times by pull request size.</p></a>
+    <a class="rel-card" href="/guides/free-ai-models-code-review"><span class="k2">Guide</span>Which free model to use<p>The other $0 routes, with measured speed and quotas.</p></a>
+    <a class="rel-card" href="/guides/evaluate-ai-code-review"><span class="k2">Method</span>How we evaluate reviewers<p>Known issues, repetitions and what a small screen can show.</p></a>
+  </div>
+</article>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/privacy">Privacy</a> · <a href="https://github.com/pgup-ai/jbot-review" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var TEXTS = {
+    "step5": "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, reopened, ready_for_review, synchronize] }\n\nconcurrency:\n  group: jbot-review-${{ github.event.pull_request.number }}\n  cancel-in-progress: true\n\npermissions:\n  contents: read\n  pull-requests: write\n  issues: write\n  checks: read\n\njobs:\n  review:\n    if: github.event.pull_request.draft == false\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v7\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          model: opencode/step-5-preview-free\n          model-options: '{\"reasoningEffort\":\"high\"}'\n          # Large pull requests: give each review more time than the 30-minute default.\n          # time-budget-minutes: 45\n          opencode-api-key: ${{ secrets.OPENCODE_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}"
+  };
+  function legacyCopy(text) {
+    return new Promise(function (resolve, reject) {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+        document.body.appendChild(ta); ta.select(); var ok = document.execCommand('copy'); document.body.removeChild(ta);
+        ok ? resolve() : reject(new Error('execCommand copy failed'));
+      } catch (e) { reject(e); }
+    });
+  }
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text).catch(function () { return legacyCopy(text); });
+    return legacyCopy(text);
+  }
+  document.querySelectorAll('button[data-copy]').forEach(function (btn) {
+    var timer, label = btn.textContent;
+    btn.addEventListener('click', function () {
+      var text = TEXTS[btn.dataset.copy]; if (!text) return;
+      copyText(text).then(function () { btn.textContent = 'Copied ✓'; }).catch(function () { btn.textContent = 'Copy failed'; });
+      clearTimeout(timer); timer = setTimeout(function () { btn.textContent = label; }, 1600);
+    });
+  });
+})();
+</script>
+</body>
+</html>
