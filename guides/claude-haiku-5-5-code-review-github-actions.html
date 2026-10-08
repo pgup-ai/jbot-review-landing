@@ -374,7 +374,7 @@
       - <span class="k">uses</span>: <span class="s">pgup-ai/jbot-review-action@v0</span>
         <span class="k">with</span>:
           <span class="k">model</span>: anthropic/claude-haiku-5-5
-<span class="c">          # Default effort is xhigh. Uncomment to trade some depth for cost:</span>
+<span class="c">          # Default effort is xhigh. Uncomment for high; J-Bot sends it to Claude as effort:</span>
 <span class="c">          # model-options: '{"reasoningEffort":"high"}'</span>
           <span class="k">anthropic-api-key</span>: ${{ secrets.ANTHROPIC_API_KEY }}
           <span class="k">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</pre>
@@ -452,7 +452,7 @@
   <h2 id="effort-bug">The effort setting that never arrived</h2>
   <p>Our first two runs were meant to be low and high. They came back with nearly the same reasoning token counts, 15K and 17K. Low and high should be much further apart, so we read the requests.</p>
   <p>J-Bot passed effort as <code>reasoningEffort</code>, the option name OpenAI-compatible providers use. OpenCode, the runtime J-Bot drives, sends Claude models to Anthropic’s Messages API, and its Anthropic adapter only reads an option named <code>effort</code>. The adapter drops anything else without an error. We pointed OpenCode at a local server that records request bodies. With <code>reasoningEffort</code> set to low, the request carried adaptive thinking and no effort at all. With <code>effort</code> set to max, it carried <code>output_config: {"effort": "max"}</code>.</p>
-  <p>So those two runs used Anthropic’s default, which its effort documentation names as medium for Haiku 5.5. They are the medium rows above. <a href="https://github.com/pgup-ai/jbot-review/pull/294" target="_blank" rel="noopener noreferrer">#294</a> now renames the option on all three Claude routes, so Claude reviews get the effort you configure. If you run J-Bot with a Claude model, use a build that includes it.</p>
+  <p>So those two runs used Anthropic’s default, which its effort documentation names as medium for Haiku 5.5. They are the medium rows above. <a href="https://github.com/pgup-ai/jbot-review/pull/294" target="_blank" rel="noopener noreferrer">#294</a> fixed this in J-Bot. You still write <code>reasoningEffort</code>, and J-Bot now sends it to Claude as <code>effort</code> on all three Claude routes. Keep the J-Bot name: its effort rules, such as running the verifier one level lower, work on <code>reasoningEffort</code>. The published Action image includes the fix.</p>
 
   <h2 id="which-effort">Which effort to choose for Claude Haiku 5.5</h2>
   <ul>
@@ -518,7 +518,7 @@
 <script>
 (function () {
   var TEXTS = {
-    "haiku": "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, reopened, ready_for_review, synchronize] }\n\nconcurrency:\n  group: jbot-review-${{ github.event.pull_request.number }}\n  cancel-in-progress: true\n\npermissions:\n  contents: read\n  pull-requests: write\n  issues: write\n  checks: read\n\njobs:\n  review:\n    if: github.event.pull_request.draft == false\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v7\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          model: anthropic/claude-haiku-5-5\n          # Default effort is xhigh. Uncomment to trade some depth for cost:\n          # model-options: '{\"reasoningEffort\":\"high\"}'\n          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}"
+    "haiku": "name: J-Bot Code Review\non:\n  pull_request: { types: [opened, reopened, ready_for_review, synchronize] }\n\nconcurrency:\n  group: jbot-review-${{ github.event.pull_request.number }}\n  cancel-in-progress: true\n\npermissions:\n  contents: read\n  pull-requests: write\n  issues: write\n  checks: read\n\njobs:\n  review:\n    if: github.event.pull_request.draft == false\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v7\n        with: { fetch-depth: 0 }\n      - uses: pgup-ai/jbot-review-action@v0\n        with:\n          model: anthropic/claude-haiku-5-5\n          # Default effort is xhigh. Uncomment for high; J-Bot sends it to Claude as effort:\n          # model-options: '{\"reasoningEffort\":\"high\"}'\n          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}\n          github-token: ${{ secrets.GITHUB_TOKEN }}"
   };
   function legacyCopy(text) {
     return new Promise(function (resolve, reject) {

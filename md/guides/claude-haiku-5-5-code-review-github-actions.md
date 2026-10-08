@@ -53,7 +53,7 @@ jobs:
       - uses: pgup-ai/jbot-review-action@v0
         with:
           model: anthropic/claude-haiku-5-5
-          # Default effort is xhigh. Uncomment to trade some depth for cost:
+          # Default effort is xhigh. Uncomment for high; J-Bot sends it to Claude as effort:
           # model-options: '{"reasoningEffort":"high"}'
           anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -134,7 +134,7 @@ Our first two runs were meant to be low and high. They came back with nearly the
 
 J-Bot passed effort as `reasoningEffort`, the option name OpenAI-compatible providers use. OpenCode, the runtime J-Bot drives, sends Claude models to Anthropic’s Messages API, and its Anthropic adapter only reads an option named `effort`. The adapter drops anything else without an error. We pointed OpenCode at a local server that records request bodies. With `reasoningEffort` set to low, the request carried adaptive thinking and no effort at all. With `effort` set to max, it carried `output_config: {"effort": "max"}`.
 
-So those two runs used Anthropic’s default, which its effort documentation names as medium for Haiku 5.5. They are the medium rows above. [\#294](https://github.com/pgup-ai/jbot-review/pull/294) now renames the option on all three Claude routes, so Claude reviews get the effort you configure. If you run J-Bot with a Claude model, use a build that includes it.
+So those two runs used Anthropic’s default, which its effort documentation names as medium for Haiku 5.5. They are the medium rows above. [\#294](https://github.com/pgup-ai/jbot-review/pull/294) fixed this in J-Bot. You still write `reasoningEffort`, and J-Bot now sends it to Claude as `effort` on all three Claude routes. Keep the J-Bot name: its effort rules, such as running the verifier one level lower, work on `reasoningEffort`. The published Action image includes the fix.
 
 ## Which effort to choose for Claude Haiku 5.5
 
