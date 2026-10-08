@@ -1,6 +1,6 @@
 # Claude code review in GitHub Actions
 
-Updated July 4, 2026 · applies to pgup-ai/jbot-review-action v0
+Updated October 7, 2026 · applies to pgup-ai/jbot-review-action v0
 
 To get **Claude reviewing your pull requests inside your own GitHub Actions**, add one workflow file and one repo secret (`ANTHROPIC_API_KEY`). J-Bot Review — an open-source (MIT) action — drives Claude on **your key and your runner**, and posts diff-anchored findings that a second session verifies before they land on the PR. No reviewer SaaS, **$0 per seat** added.
 
@@ -56,7 +56,7 @@ jobs:
 ## Cost & privacy
 
 - **You pay Anthropic only.** J-Bot adds no per-seat or per-review charge. Defaults keep spend low: one review pass, doc-only PRs skipped without a model call, prompt caching on.
-- **Trim further** with `min-severity`, or route verification to a cheaper backend via `aux-provider` / `aux-model` — including free OpenCode Zen models.
+- **Effort is the biggest lever.** On Claude Haiku 5.5 one review cost $0.015 at low effort and $1.25 at max; [the Haiku 5.5 benchmark](https://www.pgupai.com/guides/claude-haiku-5-5-code-review-github-actions) shows what each level found. Trim further with `min-severity`.
 - **Data path:** only the diff and the context the agent requests reach the Anthropic API, under your own account and its retention terms. No third-party reviewer sees your code.
 - **Fork PRs:** on `pull_request` events GitHub strips secrets from fork PRs, so outside contributors can't spend your key.
 
@@ -80,6 +80,7 @@ Whatever your Anthropic API usage costs — J-Bot Review itself adds no charge a
 
 ## Related
 
+- **Benchmark** — [Claude Haiku 5.5 code review](https://www.pgupai.com/guides/claude-haiku-5-5-code-review-github-actions): Five effort levels on one pull request: cost, time and bugs found.
 - **Guide** — [Review PRs with a CLI subscription](https://www.pgupai.com/guides/cli-subscription-code-review): Codex, Cursor, Devin, Cline, Kilo, Command Code, Grok Build, Qoder — reuse the seat you pay for.
 - **Docs** — [Action reference](https://github.com/pgup-ai/jbot-review-action#readme): Every input, provider id, and tuning knob.
 - **Guide** — [Codex code review in GitHub Actions](https://www.pgupai.com/guides/codex-code-review-github-actions): Prefer the seat-reuse path? Your ChatGPT Plus/Pro subscription works today.
