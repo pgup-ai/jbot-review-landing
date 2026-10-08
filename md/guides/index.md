@@ -36,6 +36,7 @@ Setup, evaluation and engineering guides for an **agentic PR reviewer you contro
 - **Anonymous lab · free route** — [Space Bunny code review in GitHub Actions](https://www.pgupai.com/guides/space-bunny-code-review-github-actions): $0 on four gateways, included in OpenCode Go and Command Code plans, 6.5 of 27 known issues at high effort, and exact model ids. (Published Sep 26, 2026)
 - **Xiaomi · free route** — [MiMo V2.6 Flash code review in GitHub Actions](https://www.pgupai.com/guides/mimo-v2-6-flash-code-review-github-actions): Free on OpenCode Zen and Cline, open weights, and slow on big pull requests. Exact model ids for seven routes. (Published Sep 26, 2026)
 - **DeepSeek · free route** — [DeepSeek V4.1 Flash code review in GitHub Actions](https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-github-actions): Free through Cline, from $0.14 per million input tokens elsewhere, and review times by pull request size. (Published Sep 26, 2026)
+- **StepFun · free route · benchmark** — [Step 5 Preview code review: free, solid on small PRs](https://www.pgupai.com/guides/step-5-preview-code-review-github-actions): Free on OpenCode Zen for a limited time. 8 of 31 known issues on six production PRs, a tie with DeepSeek V4.1 Flash on two, and both large PRs failed. (Published Oct 8, 2026)
 
 ## More resources
 

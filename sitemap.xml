@@ -19,7 +19,7 @@
   </url>
   <url>
     <loc>https://www.pgupai.com/guides</loc>
-    <lastmod>2026-10-07</lastmod>
+    <lastmod>2026-10-08</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/cli-subscription-code-review</loc>
@@ -36,6 +36,10 @@
   <url>
     <loc>https://www.pgupai.com/guides/claude-haiku-5-5-code-review-github-actions</loc>
     <lastmod>2026-10-07</lastmod>
+  </url>
+  <url>
+    <loc>https://www.pgupai.com/guides/step-5-preview-code-review-github-actions</loc>
+    <lastmod>2026-10-08</lastmod>
   </url>
   <url>
     <loc>https://www.pgupai.com/guides/cursor-code-review-github-actions</loc>
