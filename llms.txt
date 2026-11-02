@@ -62,7 +62,7 @@ Every page on this site also serves Markdown to `Accept: text/markdown` at the s
 
 ## Docs
 
-- [opencode vs DeepSeek Harness (dsh) for AI code review](https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review): the same DeepSeek V4.1 Flash reviews on both harnesses at production effort. dsh found 5 or 6 of 12 known issues to opencode's 3 or 4 at similar cost. With PTC tool calls its main reviews took 15 to 29% longer; native tool mode took up to about twice as long. Its read-only sandbox blocks writes but not reads or network access
+- [opencode vs DeepSeek Harness (dsh) for AI code review](https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review): the same DeepSeek V4.1 Flash reviews on both harnesses at production effort. dsh found 5 or 6 of 12 known issues versus opencode's 3 or 4 at similar cost. With PTC tool calls its main reviews took 15 to 29% longer; native tool mode took up to about twice as long. Its read-only sandbox blocks writes but not reads or network access
 - [Where evidence gets lost in AI code review](https://www.pgupai.com/guides/evidence-handoffs-ai-code-review): Evidence handoff fixes, Jev ordering, grouped context and verifier-budget studies. Includes video, study limits, and merged versus experimental behavior.
 - [DeepSeek V4.1 Flash Code Review: Optimization Experiments](https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization): DeepSeek V4.1 Flash experiments on tool calls, context, parallel reviews and slim compliance. Compare review speed, cost and source-assessed finding quality.
 - [How to Evaluate AI Code Review: Accuracy, Speed, and Cost](https://www.pgupai.com/guides/evaluate-ai-code-review): A practical AI code review evaluation method: freeze PRs, assess false positives and missed bugs, repeat comparisons, and measure full-review time and cost.
@@ -115,4 +115,3 @@ Every page on this site also serves Markdown to `Accept: text/markdown` at the s
 ## Optional
 
 - [OpenCode](https://opencode.ai/): the open-source coding-agent runtime J-Bot Review builds on
-- [Pi SDK](https://pi.dev/docs/latest/sdk): the coding-agent SDK behind the opt-in `sdk-engine: auto` path; the OpenCode server is the default engine

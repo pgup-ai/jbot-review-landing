@@ -9,7 +9,7 @@ J-Bot Review runs its code review sessions on the opencode server. We swapped in
 ## Key results
 
 - dsh found 5 or 6 of 12 known issues per screen on two internal pull requests. opencode found 3 or 4. Both ran the same jbot code.
-- With PTC tool calling, dsh main review sessions took 15 to 29% longer than opencode. Native tool mode found one more issue but was slower, up to about twice opencode's time.
+- With PTC tool calling, dsh main review sessions took 15 to 29% longer than opencode. Native tool mode found one more issue than PTC but was slower, up to about twice opencode's time.
 - Cost per pull request was about the same, roughly $0.06 to $0.12. Both figures are estimates at DeepSeek V4.1 Flash list prices. The opencode runs used a version that still logged list-price cost, and jbot prices dsh sessions at the same rates. OpenCode Go itself bills by subscription.
 - Two other models, MiMo V2.6 Flash and Muse, found nothing extra on dsh. We only route DeepSeek models to it.
 - dsh's read-only mode blocks writes. Reads and network access stay open, so we only use it on repositories with trusted pull request authors.
@@ -35,7 +35,7 @@ We tested on two internal pull requests from one production repository, called A
 
 ## A first screen we didn't trust
 
-Our first try, in September, said dsh doubled recall and doubled review time.
+Our first try, in September, said dsh doubled recall and took about 1.7 times as long.
 
 Scroll the table horizontally to see every column.
 
@@ -61,7 +61,7 @@ Scroll the table horizontally to see every column.
 
 opencode found 3 of 12, the same as on newer code two weeks earlier. The gap comes from the harness. Over four screens dsh found 6, 6, 5 and 6 known issues. opencode found 3, 4, 3 and 3. The PTC run caught a priority-1 bug that opencode only finds at medium effort. The native run missed it and caught two other real bugs instead.
 
-The slowdown shrank too. At high effort dsh took 1.5 to 2 times as long. At low effort its PTC main sessions took 15 to 29% longer. Native mode took up to about twice as long on pull request B, 352 seconds against 172. Most of the original gap was the effort setting.
+The slowdown shrank too. At high effort dsh took about 1.7 times as long. At low effort its PTC main sessions took 15 to 29% longer. Native mode took up to about twice as long on pull request B, 352 seconds against 172. Most of the original gap was the effort setting.
 
 We also tried subagents. The model never called one in any session, so we turned them off.
 
