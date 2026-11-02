@@ -1,41 +1,41 @@
 Engineering notes · Experiment
 
-# We swapped opencode for DeepSeek Harness on DeepSeek models. Here’s what we measured.
+# We swapped opencode for DeepSeek Harness on DeepSeek models. Here's what we measured.
 
 By [PGUP AI](https://www.pgupai.com/about) · Published November 1, 2026
 
-J-Bot Review runs its AI code review sessions on the opencode server. We ran the same reviews on DeepSeek Harness (dsh), DeepSeek’s own agent runtime, with the same DeepSeek V4.1 Flash model. dsh found about twice as many known issues at about the same cost, but its main review sessions were slower, and its “read-only” sandbox turned out to leave secrets readable.
+J-Bot Review runs its code review sessions on the opencode server. We swapped in DeepSeek Harness (dsh), DeepSeek's own agent runtime, and kept everything else fixed, including the model. On DeepSeek V4.1 Flash, dsh found about twice as many known issues for the same money. It was also slower, and its read-only sandbox left more open than the name suggests.
 
 ## Key results
 
-- **Recall:** on two internal pull requests with 12 known issues, dsh found 5 to 6 per screen against opencode’s 3, with the same jbot code on both sides.
-- **Speed:** dsh main review sessions took 15 to 29% longer with PTC tool calling. Native tool mode was as slow or slower.
-- **Cost:** about the same per pull request, roughly $0.06 to $0.12.
-- **Model scope:** the gain showed up only on DeepSeek. MiMo V2.6 Flash and Muse found no more issues on dsh, so only opencode and opencode-go DeepSeek models run on it.
-- **Security:** dsh’s read-only mode blocks writes, not reads or network access. We accept that only for repositories whose pull request authors are trusted.
+- dsh found 5 or 6 of 12 known issues per screen on two internal pull requests. opencode found 3. Both ran the same jbot code.
+- Main review sessions on dsh took 15 to 29% longer with PTC tool calling. Native tool mode was no faster.
+- Cost per pull request was about the same, roughly $0.06 to $0.12.
+- Two other models, MiMo V2.6 Flash and Muse, found nothing extra on dsh. We only route DeepSeek models to it.
+- dsh's read-only mode blocks writes. Reads and network access stay open, so we only use it on repositories with trusted pull request authors.
 
 **In this article**
 
-- [What we compared](https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review#setup)
-- [The first screen, and what was wrong with it](https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review#first-screen)
-- [Rerunning it properly](https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review#rerun)
+- [The setup](https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review#setup)
+- [A first screen we didn't trust](https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review#first-screen)
+- [The rerun](https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review#rerun)
 - [PTC versus native tool calls](https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review#ptc)
-- [What the read-only sandbox doesn’t cover](https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review#sandbox)
+- [What read-only means in dsh](https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review#sandbox)
 - [What we shipped](https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review#shipping)
-- [Limits of this test](https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review#limits)
+- [Limits](https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review#limits)
 - [FAQ](https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review#faq)
 
-## What we compared
+## The setup
 
-An agent harness is the loop around the model: the tools it can call, how results come back, how sessions start and stop. J-Bot Review normally drives the [opencode](https://opencode.ai) server, which hands the model read, grep and a short allowlist of shell commands. [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) runs headless as one child process per review session, with its own tools and an OS sandbox (Landlock or bwrap on Linux, Seatbelt on macOS).
+An agent harness is the code that runs the model's loop. It decides which tools the model sees, how tool results come back, and when a session ends. J-Bot normally drives the [opencode](https://opencode.ai) server, which gives the model read, grep and a short allowlist of shell commands. [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) runs headless, one child process per review session, with its own tools and an OS sandbox. On Linux the sandbox is Landlock or bwrap. On macOS it is Seatbelt.
 
-Both harnesses called the same model through the same route: DeepSeek V4.1 Flash on OpenCode Go, at low reasoning effort, which is what our production reviews use. Prompts, the diff, guidelines and the finding pipeline were jbot’s in both cases. Only the harness changed.
+Both harnesses called DeepSeek V4.1 Flash through OpenCode Go at low reasoning effort, the setting our production reviews use. Prompts, the diff, the guidelines and the finding pipeline came from jbot in both cases. The harness was the only thing we changed.
 
-The test set is two internal pull requests from one production repository, labelled A and B here. Their developers and earlier reviews had identified 7 and 5 issues respectively, 12 in total. A finding counts when it names the right file and the same concern. We ran one review per pull request per arm, with verification off so the counts reflect what the reviewer raised.
+We tested on two internal pull requests from one production repository, called A and B here. Developers and earlier reviews had identified 7 issues in A and 5 in B. A finding counts if it names the right file and the same problem. Each arm got one review per pull request, with verification off so the counts show what the reviewer raised.
 
-## The first screen, and what was wrong with it
+## A first screen we didn't trust
 
-Our first attempt, in September, looked like a clear win for recall and a clear loss for speed.
+Our first try, in September, said dsh doubled recall and doubled review time.
 
 Scroll the table horizontally to see every column.
 
@@ -45,11 +45,11 @@ Scroll the table horizontally to see every column.
 | dsh | 6 of 12 | 10.5 / 11.8 |
 | dsh with subagents | 4 of 12 | 9.1 / 5.7 |
 
-Two things made it hard to trust. That screen ran at high reasoning effort, not the low effort production uses, and higher effort alone makes DeepSeek slower. dsh also used 2 to 2.7 times opencode’s tokens. On two other models, MiMo V2.6 Flash and Muse, dsh found nothing extra and wasn’t faster, so we dropped it.
+That screen had a problem. It ran at high reasoning effort, and production runs at low. Higher effort makes DeepSeek slower on its own, so we couldn't tell how much of the slowdown was dsh. dsh also used 2 to 2.7 times opencode's tokens. On MiMo V2.6 Flash and Muse it found nothing extra and wasn't faster. We dropped the idea.
 
-## Rerunning it properly
+## The rerun
 
-A month later DeepSeek Harness had shipped nine prereleases, so we ran it again with the confounders removed: production effort, a trimmed headless profile with web, skills, plan mode and other unused services turned off, and PTC tool calling. When dsh still won, we reran opencode on the exact same jbot code, so the harness was the only difference.
+A month later DeepSeek Harness had shipped nine prereleases, so we tried again. This time we used production effort. We turned off the dsh features a one-shot review never uses, including web access, skills and plan mode. We also turned on PTC tool calling. When dsh still came out ahead, we reran opencode on the exact same jbot commit to rule out code changes.
 
 Scroll the table horizontally to see every column.
 
@@ -59,69 +59,69 @@ Scroll the table horizontally to see every column.
 | dsh, PTC | 3 of 7 | 2 of 5 | 5 of 12 | 343 s / 221 s |
 | dsh, native tools | 4 of 7 | 2 of 5 | 6 of 12 | 344 s / 352 s |
 
-opencode scored the same 3 of 12 it had two weeks earlier on newer code, so the gain isn’t a code difference. Across four dsh screens it found 6, 6, 5 and 6 known issues against opencode’s 3, 4, 3 and 3. The PTC run caught a priority-1 bug that opencode found only at medium effort. The native run missed that one but caught two other real bugs.
+opencode found 3 of 12, the same as on newer code two weeks earlier. The gap comes from the harness. Over four screens dsh found 6, 6, 5 and 6 known issues. opencode found 3, 4, 3 and 3. The PTC run caught a priority-1 bug that opencode only finds at medium effort. The native run missed it and caught two other real bugs instead.
 
-The slowdown also shrank. At high effort dsh took 1.5 to 2 times as long; at low effort, main sessions took 15 to 29% longer. Most of the original gap was the effort setting, not the harness.
+The slowdown shrank too. At high effort dsh took 1.5 to 2 times as long. At low effort its main sessions took 15 to 29% longer. Most of the original gap was the effort setting.
 
-Subagents never helped. Across every session in the rerun, the model didn’t call one, so they’re off.
+We also tried subagents. The model never called one in any session, so we turned them off.
 
 ## PTC versus native tool calls
 
-In PTC mode the model sees one tool, `run_code`, and writes a short TypeScript program that calls the other tools through a generated SDK. The pitch is batching: several reads in one turn instead of one per turn.
+In PTC mode the model sees a single tool, `run_code`. It writes a short TypeScript program that calls the other tools through a generated SDK. The idea is that one program can do several reads in a single turn.
 
-DeepSeek mostly didn’t batch. Each program made about 1.0 to 1.6 tool calls on average, and usually a single shell command. Even so, PTC sessions made 2 to 3 times fewer tool calls than native mode. On pull request B the native main session ran 69 shell commands; the PTC one ran 25 programs. We expected native mode to be faster because each `run_code` starts a fresh sandboxed Node process. It wasn’t, so we kept PTC.
+DeepSeek mostly didn't do that. Programs averaged 1.0 to 1.6 tool calls, usually one shell command. PTC sessions still made 2 to 3 times fewer tool calls than native ones. On pull request B, the native main session ran 69 shell commands and the PTC session ran 25 programs. We expected native mode to win on speed, since every `run_code` starts a new sandboxed Node process. It didn't, so we kept PTC.
 
-## What the read-only sandbox doesn’t cover
+## What read-only means in dsh
 
-We checked the sandbox before trusting it. Writes are blocked: a test session’s attempts to create a file through Node and through bash both failed with “operation not permitted”. The environment inside `run_code` was empty, so the provider key wasn’t sitting in the tool’s own environment.
+We tested the sandbox before relying on it. A session tried to create a file through Node and through bash, and both attempts failed with "operation not permitted". The environment inside `run_code` was empty, so the provider key wasn't in the tool's own environment.
 
-An automated security review then pointed out what “read-only” leaves open. dsh’s sandbox modes govern file effects only. Reads outside the repository and network access are allowed. On Linux a process can read other same-user processes’ environments from `/proc`, and on macOS through `ps`. The jbot process above dsh holds the Action’s inputs, including the GitHub token and provider keys. A prompt injection in a reviewed pull request could therefore try to read those and send them out.
+An automated security review then found the gap. dsh's sandbox modes control file writes. They don't limit reads outside the repository, and they don't block the network. On Linux any process can read the environment of other processes owned by the same user through `/proc`. On macOS, `ps` shows the same thing. The jbot process that starts dsh holds the Action's inputs, including the GitHub token and provider keys. A prompt injection in a reviewed pull request could try to read them and send them out.
 
-We didn’t confirm this live. The model refused one probe as credential harvesting, and our own tooling blocked another as exfiltration. We couldn’t restrict reads or block the network from jbot’s side, and filtering shell commands doesn’t help when a `run_code` program can read files directly. opencode is safer here because jbot only allows a short list of shell commands.
+We didn't confirm this end to end. The model refused our first probe as credential harvesting, and our own tooling blocked the second as data exfiltration. From jbot's side we couldn't restrict reads or block the network. Filtering shell commands wouldn't help either, because a `run_code` program can read files directly. opencode avoids the problem because jbot lets its sessions run only a short list of shell commands.
 
-So the risk is documented and opt-out. Repositories that review pull requests from untrusted authors should set `sdk-engine: opencode`.
+We documented the risk and made it easy to opt out. Repositories that review pull requests from people they don't trust should set `sdk-engine: opencode`.
 
 ## What we shipped
 
 - **DeepSeek only.** Catalogued `opencode/` and `opencode-go/` DeepSeek models run on dsh, except `-free` ones. Every other model stays on opencode.
-- **PTC and a trimmed profile.** Web, skills, subagents, goals, plan mode, MCP and instruction files are off.
-- **Automatic fallback.** Without a dsh binary, a working sandbox or a passing startup check, the review runs on opencode and logs why. `sdk-engine: opencode` turns dsh off entirely.
-- **A smaller image.** The full dsh install is about 850 MB. Removing packages its headless profile never loads, and linking 49 identical copies of one dependency, brought it to about 140 MB. The image’s smoke test starts dsh under the real review profile, so a bad prune fails the build.
-- **Estimated cost.** dsh doesn’t report spend, so jbot prices each session from its model catalog’s list rates. That mattered more than expected: we bumped opencode to 2.2.5 in the same change, and since 2.2.0 opencode records the provider-reported cost, which is $0 for OpenCode Go’s subscription models.
+- **PTC with a trimmed profile.** Web access, skills, subagents, goals, plan mode, MCP and instruction files are off.
+- **Automatic fallback.** If the dsh binary is missing, the sandbox doesn't work or the startup check fails, the review runs on opencode and logs the reason. `sdk-engine: opencode` turns dsh off.
+- **A smaller image.** A full dsh install is about 850 MB. We removed packages the headless profile never loads and replaced 49 identical copies of one dependency with links, which brought it to about 140 MB. The image smoke test starts dsh under the real review profile, so a bad prune fails the build.
+- **Estimated cost.** dsh doesn't report spend, so jbot prices each session from the model catalog's list rates. We needed that sooner than expected. The same change moved opencode to 2.2.5, and since 2.2.0 opencode logs the cost the provider reports, which is $0 for OpenCode Go subscription models.
 
-We skipped our full review-quality benchmark for this change and said so in the pull request. The evidence is the screens above.
+We skipped our full review-quality benchmark for this change and said so in the pull request. The screens above are the evidence.
 
-## Limits of this test
+## Limits
 
-- Two pull requests from one repository, one run per arm per screen. Identical runs of the same configuration vary by about ±30% in time, and recall moves by a couple of issues.
-- Known issues come from developers and earlier reviews, so a finding outside that list isn’t counted even when it’s real.
-- One model route: DeepSeek V4.1 Flash on OpenCode Go. Two other models showed no gain, and others weren’t tested.
-- dsh has no stable release yet, so we pin an exact prerelease, 0.2.1-rc.5.
-- We confirmed the sandbox on macOS; on Linux, dsh passed its sandbox check on GitHub-hosted runners. Other CI providers are untested.
+- This is two pull requests from one repository, with one run per arm per screen. Repeat runs of one configuration vary by about 30% in time and by a couple of issues in recall.
+- Known issues come from developers and earlier reviews. A real finding outside that list doesn't count.
+- We tested one model route, DeepSeek V4.1 Flash on OpenCode Go. Two other models showed no gain, and we haven't tried the rest.
+- dsh has no stable release yet. We pin the prerelease 0.2.1-rc.5.
+- We confirmed the sandbox on macOS. On Linux, dsh passed its sandbox check on GitHub-hosted runners. We haven't tried other CI providers.
 
-For how we measure review quality, read [how to evaluate AI code review](https://www.pgupai.com/guides/evaluate-ai-code-review). For other DeepSeek experiments, read [the DeepSeek optimization case study](https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization).
+For how we measure review quality, see [how to evaluate AI code review](https://www.pgupai.com/guides/evaluate-ai-code-review). For our other DeepSeek experiments, see [the DeepSeek optimization case study](https://www.pgupai.com/guides/deepseek-v4-1-flash-code-review-optimization).
 
 ## FAQ
 
 ### What is DeepSeek Harness (dsh)?
 
-DeepSeek Harness is DeepSeek’s open-source agent runtime. It runs a model in a loop with tools such as shell, file search and subagents, under an OS sandbox, and has a headless mode for one-shot jobs. J-Bot Review uses that headless mode as an alternative to the opencode server for DeepSeek models.
+DeepSeek Harness is DeepSeek's open-source agent runtime. It runs a model in a tool-calling loop with shell, file search and subagent tools, inside an OS sandbox. Its headless mode runs one task per process. J-Bot Review uses that mode in place of the opencode server for DeepSeek models.
 
 ### Is DeepSeek Harness better than opencode for AI code review?
 
-For DeepSeek models in our tests, it found more known issues: 5 to 6 of 12 against opencode’s 3, across four screens on two pull requests with the same jbot code. Main review sessions were 15 to 29% slower at about the same cost. On MiMo V2.6 Flash and Muse it found no more issues, so we only route DeepSeek models to it.
+For DeepSeek V4.1 Flash in our tests, it found more known issues. Across four screens on two pull requests it found 5 or 6 of 12, and opencode found 3. Main review sessions took 15 to 29% longer at about the same cost. MiMo V2.6 Flash and Muse found nothing extra on it, so we only route DeepSeek models to dsh.
 
 ### What is PTC tool calling in DeepSeek Harness?
 
-PTC (programmatic tool calling) shows the model a single run_code tool. The model writes a short TypeScript program that calls the other tools through a generated SDK. In our runs, PTC sessions made 2 to 3 times fewer tool calls than native tool mode, even though each program usually made only one or two calls.
+PTC stands for programmatic tool calling. The model sees one tool, run_code, and writes a short TypeScript program that calls the other tools through a generated SDK. In our runs PTC sessions made 2 to 3 times fewer tool calls than native tool mode, even though most programs made only one or two calls.
 
-### Is DeepSeek Harness’s read-only sandbox safe for reviewing untrusted pull requests?
+### Is DeepSeek Harness's read-only sandbox safe for reviewing untrusted pull requests?
 
-Not on its own. Its read-only mode blocks file writes, but reads outside the repository and network access stay open. A prompt injection in a reviewed pull request could make a session read secrets visible to the runner’s user, such as process environments holding a GitHub token, and send them out. We accept that only for repositories whose pull request authors are trusted.
+Not by itself. Its read-only mode blocks file writes. It does not block reads outside the repository or network access. A prompt injection in a reviewed pull request could make a session read secrets the runner's user can see, such as a process environment holding a GitHub token, and send them somewhere. We accept that only for repositories whose pull request authors we trust.
 
 ### Why does OpenCode report $0 cost for OpenCode Go models?
 
-Since OpenCode 2.2.0, sessions record the cost the provider reports. OpenCode Go is a subscription, so it reports $0. OpenCode 2.1.4 and earlier logged a list-price estimate. J-Bot now estimates DeepSeek Harness costs from its model catalog’s list prices instead.
+Starting with OpenCode 2.2.0, sessions record the cost the provider reports. OpenCode Go is a subscription, so the provider reports $0. Version 2.1.4 and earlier logged an estimate at list price. J-Bot now estimates DeepSeek Harness costs from its own model catalog's list prices.
 
 ---
 
