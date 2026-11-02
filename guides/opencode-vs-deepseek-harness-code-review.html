@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>We Swapped opencode for DeepSeek Harness (dsh): What We Measured | J-Bot Review</title>
+<meta name="description" content="We ran the same AI code reviews on opencode and DeepSeek Harness (dsh) with DeepSeek V4.1 Flash. dsh found 5 or 6 of 12 known issues versus opencode's 3 or 4, at similar cost. With PTC tool calls, its main reviews took 15 to 29% longer." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0a0b0a" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+<link rel="canonical" href="https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review" />
+<link rel="alternate" type="text/markdown" href="/md/guides/opencode-vs-deepseek-harness-code-review.md" title="Markdown representation" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review" />
+<meta property="og:site_name" content="J-Bot Review" />
+<meta property="og:title" content="We swapped opencode for DeepSeek Harness on DeepSeek models. Here's what we measured." />
+<meta property="og:description" content="We ran the same AI code reviews on opencode and DeepSeek Harness (dsh) with DeepSeek V4.1 Flash. dsh found 5 or 6 of 12 known issues versus opencode's 3 or 4, at similar cost. With PTC tool calls, its main reviews took 15 to 29% longer." />
+<meta property="og:image" content="https://www.pgupai.com/assets/og-deepseek-review-optimization-20261003.png" />
+<meta property="og:image:secure_url" content="https://www.pgupai.com/assets/og-deepseek-review-optimization-20261003.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="We swapped opencode for DeepSeek Harness on DeepSeek models. Here's what we measured." />
+<meta property="article:published_time" content="2026-11-01" />
+<meta property="article:modified_time" content="2026-11-01" />
+<meta property="article:section" content="Engineering" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="We swapped opencode for DeepSeek Harness on DeepSeek models. Here's what we measured." />
+<meta name="twitter:description" content="We ran the same AI code reviews on opencode and DeepSeek Harness (dsh) with DeepSeek V4.1 Flash. dsh found 5 or 6 of 12 known issues versus opencode's 3 or 4, at similar cost. With PTC tool calls, its main reviews took 15 to 29% longer." />
+<meta name="twitter:image" content="https://www.pgupai.com/assets/og-deepseek-review-optimization-20261003.png" />
+<meta name="twitter:image:alt" content="We swapped opencode for DeepSeek Harness on DeepSeek models. Here's what we measured." />
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review#article",
+      "headline": "We swapped opencode for DeepSeek Harness on DeepSeek models. Here's what we measured.",
+      "description": "We ran the same AI code reviews on opencode and DeepSeek Harness (dsh) with DeepSeek V4.1 Flash. dsh found 5 or 6 of 12 known issues versus opencode's 3 or 4, at similar cost. With PTC tool calls, its main reviews took 15 to 29% longer.",
+      "url": "https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review",
+      "mainEntityOfPage": "https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review",
+      "image": [
+        "https://www.pgupai.com/assets/og-deepseek-review-optimization-20261003.png"
+      ],
+      "datePublished": "2026-11-01",
+      "dateModified": "2026-11-01",
+      "about": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "opencode",
+          "applicationCategory": "DeveloperApplication"
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "DeepSeek Harness",
+          "alternateName": "dsh",
+          "applicationCategory": "DeveloperApplication"
+        },
+        {
+          "@type": "Thing",
+          "name": "DeepSeek V4.1 Flash"
+        }
+      ],
+      "keywords": "opencode, DeepSeek Harness, dsh, DeepSeek V4.1 Flash, AI code review, agent harness, PTC, programmatic tool calling, sandbox",
+      "author": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/about"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PGUP AI",
+        "url": "https://www.pgupai.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.pgupai.com/assets/icon-512.png"
+        }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://www.pgupai.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://www.pgupai.com/guides"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "opencode vs DeepSeek Harness",
+          "item": "https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.pgupai.com/guides/opencode-vs-deepseek-harness-code-review#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is DeepSeek Harness (dsh)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "DeepSeek Harness is DeepSeek's open-source agent runtime. It runs a model in a tool-calling loop with shell, file search and subagent tools, inside an OS sandbox. Its headless mode runs one task per process. J-Bot Review uses that mode in place of the opencode server for DeepSeek models."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is DeepSeek Harness better than opencode for AI code review?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For DeepSeek V4.1 Flash in our tests, it found more known issues. Across four screens on two pull requests it found 5 or 6 of 12, and opencode found 3 or 4. Cost was about the same. With PTC tool calls, main review sessions took 15 to 29% longer. Native tool mode was slower, up to about twice opencode's time. MiMo V2.6 Flash and Muse found nothing extra on it, so we only route DeepSeek models to dsh."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is PTC tool calling in DeepSeek Harness?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "PTC stands for programmatic tool calling. The model sees one tool, run_code, and writes a short TypeScript program that calls the other tools through a generated SDK. In our runs PTC sessions made 2 to 3 times fewer tool calls than native tool mode, even though most programs made only one or two calls."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is DeepSeek Harness's read-only sandbox safe for reviewing untrusted pull requests?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not by itself. Its read-only mode blocks file writes. It does not block reads outside the repository or network access. A prompt injection in a reviewed pull request could make a session read secrets the runner's user can see, such as a process environment holding a GitHub token, and send them somewhere. We accept that only for repositories whose pull request authors we trust."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does OpenCode report $0 cost for OpenCode Go models?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Starting with OpenCode 2.2.0, sessions record the cost the provider reports. OpenCode Go is a subscription, so the provider reports $0. Version 2.1.4 and earlier logged an estimate at list price. J-Bot now estimates DeepSeek Harness costs from its own model catalog's list prices."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #0a0b0a; --surface-subtle: rgba(255,255,255,0.012);
+    --text: #e9ece8; --text-2: rgba(233,236,232,0.66); --text-3: rgba(233,236,232,0.5);
+    --text-4: rgba(233,236,232,0.55);
+    --accent: #5ee39a; --accent-hover: #7cebb0; --accent-ink: #07120b;
+    --blue: #7aa2ff;
+    --hairline: rgba(255,255,255,0.07); --border-card: rgba(255,255,255,0.08);
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', var(--sans);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(10,11,10,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+  .nav-inner { max-width: 880px; margin-inline: auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .brand img { width: 22px; height: 22px; }
+  .brand span span { color: var(--text-3); font-weight: 500; }
+  .nav-links { display: flex; align-items: center; gap: 18px; font-size: 13.5px; }
+  .nav-links a { color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .nav-links .btn:hover { background: var(--accent-hover); }
+
+  main { max-width: 880px; margin-inline: auto; padding: 48px 24px 24px; }
+  article { max-width: 740px; overflow-wrap: anywhere; }
+  article a { text-decoration: underline; text-underline-offset: 3px; }
+  h2[id] { scroll-margin-top: 90px; }
+  .crumbs { font-family: var(--mono); font-size: 12px; color: var(--text-4); letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 18px; }
+  .crumbs a { color: var(--text-3); }
+  .crumbs a:hover { color: var(--accent); }
+  .topic { font-family: var(--mono); font-size: 11px; color: var(--blue); letter-spacing: 0.07em; text-transform: uppercase; margin: 0 0 10px; }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 5vw, 40px); letter-spacing: -0.02em; line-height: 1.12; margin: 0 0 14px; }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-4); margin: 0 0 26px; }
+  .lede { font-size: 17.5px; color: var(--text-2); line-height: 1.6; }
+  article b { color: var(--text); font-weight: 600; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 23px; letter-spacing: -0.015em; line-height: 1.2; margin: 44px 0 14px; }
+  h3 { font-family: var(--display); font-weight: 600; font-size: 17px; letter-spacing: -0.01em; margin: 26px 0 8px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--text-4); }
+
+  .tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border-card); border-radius: 12px; }
+  .table-hint { display: none; }
+  table { border-collapse: collapse; width: 100%; min-width: 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hairline); color: var(--text-2); vertical-align: top; overflow-wrap: break-word; }
+  th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-4); background: var(--surface-subtle); }
+  tr:last-child td, tr:last-child th { border-bottom: none; }
+
+  footer { border-top: 1px solid var(--hairline); margin-top: 64px; }
+  .foot-inner { max-width: 880px; margin-inline: auto; padding: 26px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 13px; color: var(--text-4); }
+  .foot-inner a { color: var(--text-3); }
+  .foot-inner a:hover { color: var(--text); }
+
+  @media (max-width: 560px) {
+    .nav-links a:not(.btn) { display: none; }
+    main { padding-inline: 20px; }
+    .tbl-wrap table { min-width: 600px; }
+    .table-hint { display: block; font-size: 13px; color: var(--text-2); margin-bottom: 8px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+  tbody th[scope="row"] { font-family: var(--sans); font-size: 13.5px; letter-spacing: normal; text-transform: none; color: var(--text); font-weight: 600; background: transparent; }
+  .contents { border-block: 1px solid var(--hairline); padding: 18px 0; margin: 28px 0; }
+  .contents b { font-size: 14px; }
+  .contents ul { margin-bottom: 0; }
+  .faq-item { border-bottom: 1px solid var(--hairline); }
+  .faq-item:first-of-type { border-top: 1px solid var(--hairline); }
+  .faq-item summary { display: flex; align-items: baseline; justify-content: space-between; gap: 22px; list-style: none; cursor: pointer; padding: 17px 2px; font-weight: 600; font-size: 15.5px; color: var(--text); line-height: 1.45; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-mark { font-family: var(--mono); font-size: 15px; color: var(--text-4); flex: none; transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.2s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .faq-item[open] .faq-mark { transform: rotate(45deg); color: var(--accent); }
+  .faq-a { padding: 0 2px 20px; font-size: 14.5px; color: var(--text-2); }
+  .faq-a p { margin: 0; }
+  @media (prefers-reduced-motion: reduce) { .faq-mark { transition: none; } }
+</style>
+<link rel="stylesheet" href="/assets/analytics.css" />
+<script src="/assets/analytics.js" defer></script>
+</head><body>
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="" width="22" height="22" /><span>J-Bot <span>Review</span></span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/guides">Guides</a>
+      <a href="/#faq">FAQ</a>
+      <a class="btn" href="/#setup">Add to your repo</a>
+    </nav>
+  </div>
+</header>
+<main><article>
+<p class="crumbs"><a href="/">Home</a> / <a href="/guides">Guides</a> / opencode vs DeepSeek Harness</p>
+<p class="topic">Engineering notes · Experiment</p>
+<h1>We swapped opencode for DeepSeek Harness on DeepSeek models. Here's what we measured.</h1>
+<p class="updated">By <a href="/about">PGUP AI</a> · Published November 1, 2026</p>
+
+<p class="lede">J-Bot Review runs its code review sessions on the opencode server. We swapped in DeepSeek Harness (dsh), DeepSeek's own agent runtime, and kept everything else fixed, including the model. On DeepSeek V4.1 Flash, dsh found about twice as many known issues for the same money. It was also slower, and its read-only sandbox left more open than the name suggests.</p>
+
+<h2 id="key-results">Key results</h2>
+<ul>
+<li>dsh found 5 or 6 of 12 known issues per screen on two internal pull requests. opencode found 3 or 4. Both ran the same jbot code.</li>
+<li>With PTC tool calling, dsh main review sessions took 15 to 29% longer than opencode. Native tool mode found one more issue than PTC but was slower, up to about twice opencode's time.</li>
+<li>Cost per pull request was about the same, roughly $0.06 to $0.12. Both figures are estimates at DeepSeek V4.1 Flash list prices. The opencode runs used a version that still logged list-price cost, and jbot prices dsh sessions at the same rates. OpenCode Go itself bills by subscription.</li>
+<li>Two other models, MiMo V2.6 Flash and Muse, found nothing extra on dsh. We only route DeepSeek models to it.</li>
+<li>dsh's read-only mode blocks writes. Reads and network access stay open, so we only use it on repositories with trusted pull request authors.</li>
+</ul>
+
+<nav class="contents" aria-label="Article contents">
+<b>In this article</b>
+<ul>
+<li><a href="#setup">The setup</a></li>
+<li><a href="#first-screen">A first screen we didn't trust</a></li>
+<li><a href="#rerun">The rerun</a></li>
+<li><a href="#ptc">PTC versus native tool calls</a></li>
+<li><a href="#sandbox">What read-only means in dsh</a></li>
+<li><a href="#shipping">What we shipped</a></li>
+<li><a href="#limits">Limits</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ul>
+</nav>
+
+<h2 id="setup">The setup</h2>
+<p>An agent harness is the code that runs the model's loop. It decides which tools the model sees, how tool results come back, and when a session ends. J-Bot normally drives the <a href="https://opencode.ai">opencode</a> server, which gives the model read, grep and a short allowlist of shell commands. <a href="https://github.com/deepseek-ai/deepseek-harness">DeepSeek Harness</a> runs headless, one child process per review session, with its own tools and an OS sandbox. On Linux the sandbox is Landlock or bwrap. On macOS it is Seatbelt.</p>
+<p>Both harnesses called DeepSeek V4.1 Flash through OpenCode Go at low reasoning effort, the setting our production reviews use. Prompts, the diff, the guidelines and the finding pipeline came from jbot in both cases. The harness was the only thing we changed.</p>
+<p>We tested on two internal pull requests from one production repository, called A and B here. Developers and earlier reviews had identified 7 issues in A and 5 in B. A finding counts if it names the right file and the same problem. Each arm got one review per pull request, with verification off so the counts show what the reviewer raised.</p>
+
+<h2 id="first-screen">A first screen we didn't trust</h2>
+<p>Our first try, in September, said dsh doubled recall and took about 1.7 times as long.</p>
+<p class="table-hint">Scroll the table horizontally to see every column.</p>
+<div class="tbl-wrap" role="region" aria-label="First screen at high reasoning effort" tabindex="0"><table><thead><tr><th scope="col">Arm</th><th scope="col">Known issues found</th><th scope="col">Minutes, A / B</th></tr></thead><tbody><tr><th scope="row">opencode</th><td>3 of 12</td><td>6.3 / 6.9</td></tr><tr><th scope="row">dsh</th><td>6 of 12</td><td>10.5 / 11.8</td></tr><tr><th scope="row">dsh with subagents</th><td>4 of 12</td><td>9.1 / 5.7</td></tr></tbody></table></div>
+<p>That screen had a problem. It ran at high reasoning effort, and production runs at low. Higher effort makes DeepSeek slower on its own, so we couldn't tell how much of the slowdown was dsh. dsh also used 2 to 2.7 times opencode's tokens. On MiMo V2.6 Flash and Muse it found nothing extra and wasn't faster. We dropped the idea.</p>
+
+<h2 id="rerun">The rerun</h2>
+<p>A month later DeepSeek Harness had shipped nine prereleases, so we tried again. This time we used production effort. We turned off the dsh features a one-shot review never uses, including web access, skills and plan mode. We also turned on PTC tool calling. When dsh still came out ahead, we reran opencode on the exact same jbot commit to rule out code changes.</p>
+<p class="table-hint">Scroll the table horizontally to see every column.</p>
+<div class="tbl-wrap" role="region" aria-label="Rerun at production effort" tabindex="0"><table><thead><tr><th scope="col">Arm</th><th scope="col">A found</th><th scope="col">B found</th><th scope="col">Total</th><th scope="col">Main session, A / B</th></tr></thead><tbody><tr><th scope="row">opencode</th><td>2 of 7</td><td>1 of 5</td><td>3 of 12</td><td>298 s / 172 s</td></tr><tr><th scope="row">dsh, PTC</th><td>3 of 7</td><td>2 of 5</td><td>5 of 12</td><td>343 s / 221 s</td></tr><tr><th scope="row">dsh, native tools</th><td>4 of 7</td><td>2 of 5</td><td>6 of 12</td><td>344 s / 352 s</td></tr></tbody></table></div>
+<p>opencode found 3 of 12, the same as on newer code two weeks earlier. The gap comes from the harness. Over four screens dsh found 6, 6, 5 and 6 known issues. opencode found 3, 4, 3 and 3. The PTC run caught a priority-1 bug that opencode only finds at medium effort. The native run missed it and caught two other real bugs instead.</p>
+<p>The slowdown shrank too. At high effort dsh took about 1.7 times as long. At low effort its PTC main sessions took 15 to 29% longer. Native mode took up to about twice as long on pull request B, 352 seconds against 172. Most of the original gap was the effort setting.</p>
+<p>We also tried subagents. The model never called one in any session, so we turned them off.</p>
+
+<h2 id="ptc">PTC versus native tool calls</h2>
+<p>In PTC mode the model sees a single tool, <code>run_code</code>. It writes a short TypeScript program that calls the other tools through a generated SDK. The idea is that one program can do several reads in a single turn.</p>
+<p>DeepSeek mostly didn't do that. Programs averaged 1.0 to 1.6 tool calls, usually one shell command. PTC sessions still made 2 to 3 times fewer tool calls than native ones. On pull request B, the native main session ran 69 shell commands and the PTC session ran 25 programs. We expected native mode to win on speed, since every <code>run_code</code> starts a new sandboxed Node process. It didn't, so we kept PTC.</p>
+
+<h2 id="sandbox">What read-only means in dsh</h2>
+<p>We tested the sandbox before relying on it. A session tried to create a file through Node and through bash, and both attempts failed with "operation not permitted". The environment inside <code>run_code</code> was empty, so the provider key wasn't in the tool's own environment.</p>
+<p>An automated security review then found the gap. dsh's sandbox modes control file writes. They don't limit reads outside the repository, and they don't block the network. On Linux any process can read the environment of other processes owned by the same user through <code>/proc</code>. On macOS, <code>ps</code> shows the same thing. The jbot process that starts dsh holds the Action's inputs, including the GitHub token and provider keys. A prompt injection in a reviewed pull request could try to read them and send them out.</p>
+<p>We didn't confirm this end to end. The model refused our first probe as credential harvesting, and our own tooling blocked the second as data exfiltration. From jbot's side we couldn't restrict reads or block the network. Filtering shell commands wouldn't help either, because a <code>run_code</code> program can read files directly. opencode avoids the problem because jbot lets its sessions run only a short list of shell commands.</p>
+<p>We documented the risk and made it easy to opt out. Repositories that review pull requests from people they don't trust should set <code>sdk-engine: opencode</code>.</p>
+
+<h2 id="shipping">What we shipped</h2>
+<ul>
+<li><b>DeepSeek only.</b> Catalogued <code>opencode/</code> and <code>opencode-go/</code> DeepSeek models run on dsh by default, except <code>-free</code> ones. Every other model stays on opencode. The default suits repositories whose pull request authors you trust. If yours reviews pull requests from outside contributors, set <code>sdk-engine: opencode</code>.</li>
+<li><b>PTC with a trimmed profile.</b> Web access, skills, subagents, goals, plan mode, MCP and instruction files are off.</li>
+<li><b>Automatic fallback.</b> If the dsh binary is missing, the sandbox doesn't work or the startup check fails, the review runs on opencode and logs the reason. <code>sdk-engine: opencode</code> turns dsh off.</li>
+<li><b>A smaller image.</b> A full dsh install is about 850 MB. We removed packages the headless profile never loads and replaced 49 identical copies of one dependency with links, which brought it to about 140 MB. The image smoke test starts dsh under the real review profile, so a bad prune fails the build.</li>
+<li><b>Estimated cost.</b> dsh doesn't report spend, so jbot prices each session from the model catalog's list rates. We needed that sooner than expected. The same change moved opencode to 2.2.5, and since 2.2.0 opencode logs the cost the provider reports, which is $0 for OpenCode Go subscription models.</li>
+</ul>
+<p>We skipped our full review-quality benchmark for this change and said so in the pull request. The screens above are the evidence.</p>
+
+<h2 id="limits">Limits</h2>
+<ul>
+<li>This is two pull requests from one repository, with one run per arm per screen. Repeat runs of one configuration vary by about 30% in time and by a couple of issues in recall.</li>
+<li>Known issues come from developers and earlier reviews. A real finding outside that list doesn't count.</li>
+<li>We tested one model route, DeepSeek V4.1 Flash on OpenCode Go. Two other models showed no gain, and we haven't tried the rest.</li>
+<li>dsh has no stable release yet. We pin the prerelease 0.2.1-rc.5.</li>
+<li>We confirmed the sandbox on macOS. On Linux, dsh passed its sandbox check on GitHub-hosted runners. We haven't tried other CI providers.</li>
+</ul>
+<p>For how we measure review quality, see <a href="/guides/evaluate-ai-code-review">how to evaluate AI code review</a>. For our other DeepSeek experiments, see <a href="/guides/deepseek-v4-1-flash-code-review-optimization">the DeepSeek optimization case study</a>.</p>
+
+<h2 id="faq">FAQ</h2>
+<details class="faq-item" open>
+  <summary>What is DeepSeek Harness (dsh)?<span class="faq-mark" aria-hidden="true">+</span></summary>
+  <div class="faq-a"><p>DeepSeek Harness is DeepSeek's open-source agent runtime. It runs a model in a tool-calling loop with shell, file search and subagent tools, inside an OS sandbox. Its headless mode runs one task per process. J-Bot Review uses that mode in place of the opencode server for DeepSeek models.</p></div>
+</details>
+<details class="faq-item">
+  <summary>Is DeepSeek Harness better than opencode for AI code review?<span class="faq-mark" aria-hidden="true">+</span></summary>
+  <div class="faq-a"><p>For DeepSeek V4.1 Flash in our tests, it found more known issues. Across four screens on two pull requests it found 5 or 6 of 12, and opencode found 3 or 4. Cost was about the same. With PTC tool calls, main review sessions took 15 to 29% longer. Native tool mode was slower, up to about twice opencode's time. MiMo V2.6 Flash and Muse found nothing extra on it, so we only route DeepSeek models to dsh.</p></div>
+</details>
+<details class="faq-item">
+  <summary>What is PTC tool calling in DeepSeek Harness?<span class="faq-mark" aria-hidden="true">+</span></summary>
+  <div class="faq-a"><p>PTC stands for programmatic tool calling. The model sees one tool, run_code, and writes a short TypeScript program that calls the other tools through a generated SDK. In our runs PTC sessions made 2 to 3 times fewer tool calls than native tool mode, even though most programs made only one or two calls.</p></div>
+</details>
+<details class="faq-item">
+  <summary>Is DeepSeek Harness's read-only sandbox safe for reviewing untrusted pull requests?<span class="faq-mark" aria-hidden="true">+</span></summary>
+  <div class="faq-a"><p>Not by itself. Its read-only mode blocks file writes. It does not block reads outside the repository or network access. A prompt injection in a reviewed pull request could make a session read secrets the runner's user can see, such as a process environment holding a GitHub token, and send them somewhere. We accept that only for repositories whose pull request authors we trust.</p></div>
+</details>
+<details class="faq-item">
+  <summary>Why does OpenCode report $0 cost for OpenCode Go models?<span class="faq-mark" aria-hidden="true">+</span></summary>
+  <div class="faq-a"><p>Starting with OpenCode 2.2.0, sessions record the cost the provider reports. OpenCode Go is a subscription, so the provider reports $0. Version 2.1.4 and earlier logged an estimate at list price. J-Bot now estimates DeepSeek Harness costs from its own model catalog's list prices.</p></div>
+</details>
+
+</article></main>
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 PGUP AI · J-Bot Review · Open source</span>
+    <span><a href="/">Home</a> · <a href="/guides">Guides</a> · <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/privacy">Privacy</a> · <a href="https://github.com/pgup-ai/jbot-review" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+  </div>
+</footer>
+</body></html>
