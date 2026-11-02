@@ -10,7 +10,7 @@ J-Bot Review runs its code review sessions on the opencode server. We swapped in
 
 - dsh found 5 or 6 of 12 known issues per screen on two internal pull requests. opencode found 3 or 4. Both ran the same jbot code.
 - With PTC tool calling, dsh main review sessions took 15 to 29% longer than opencode. Native tool mode found one more issue but was slower, up to about twice opencode's time.
-- Cost per pull request was about the same, roughly $0.06 to $0.12.
+- Cost per pull request was about the same, roughly $0.06 to $0.12. Both figures are estimates at DeepSeek V4.1 Flash list prices. The opencode runs used a version that still logged list-price cost, and jbot prices dsh sessions at the same rates. OpenCode Go itself bills by subscription.
 - Two other models, MiMo V2.6 Flash and Muse, found nothing extra on dsh. We only route DeepSeek models to it.
 - dsh's read-only mode blocks writes. Reads and network access stay open, so we only use it on repositories with trusted pull request authors.
 
