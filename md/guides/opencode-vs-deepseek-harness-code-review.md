@@ -8,8 +8,8 @@ J-Bot Review runs its code review sessions on the opencode server. We swapped in
 
 ## Key results
 
-- dsh found 5 or 6 of 12 known issues per screen on two internal pull requests. opencode found 3. Both ran the same jbot code.
-- Main review sessions on dsh took 15 to 29% longer with PTC tool calling. Native tool mode was no faster.
+- dsh found 5 or 6 of 12 known issues per screen on two internal pull requests. opencode found 3 or 4. Both ran the same jbot code.
+- With PTC tool calling, dsh main review sessions took 15 to 29% longer than opencode. Native tool mode found one more issue but was slower, up to about twice opencode's time.
 - Cost per pull request was about the same, roughly $0.06 to $0.12.
 - Two other models, MiMo V2.6 Flash and Muse, found nothing extra on dsh. We only route DeepSeek models to it.
 - dsh's read-only mode blocks writes. Reads and network access stay open, so we only use it on repositories with trusted pull request authors.
@@ -61,7 +61,7 @@ Scroll the table horizontally to see every column.
 
 opencode found 3 of 12, the same as on newer code two weeks earlier. The gap comes from the harness. Over four screens dsh found 6, 6, 5 and 6 known issues. opencode found 3, 4, 3 and 3. The PTC run caught a priority-1 bug that opencode only finds at medium effort. The native run missed it and caught two other real bugs instead.
 
-The slowdown shrank too. At high effort dsh took 1.5 to 2 times as long. At low effort its main sessions took 15 to 29% longer. Most of the original gap was the effort setting.
+The slowdown shrank too. At high effort dsh took 1.5 to 2 times as long. At low effort its PTC main sessions took 15 to 29% longer. Native mode took up to about twice as long on pull request B, 352 seconds against 172. Most of the original gap was the effort setting.
 
 We also tried subagents. The model never called one in any session, so we turned them off.
 
@@ -109,7 +109,7 @@ DeepSeek Harness is DeepSeek's open-source agent runtime. It runs a model in a t
 
 ### Is DeepSeek Harness better than opencode for AI code review?
 
-For DeepSeek V4.1 Flash in our tests, it found more known issues. Across four screens on two pull requests it found 5 or 6 of 12, and opencode found 3. Main review sessions took 15 to 29% longer at about the same cost. MiMo V2.6 Flash and Muse found nothing extra on it, so we only route DeepSeek models to dsh.
+For DeepSeek V4.1 Flash in our tests, it found more known issues. Across four screens on two pull requests it found 5 or 6 of 12, and opencode found 3 or 4. Cost was about the same. With PTC tool calls, main review sessions took 15 to 29% longer. Native tool mode was slower, up to about twice opencode's time. MiMo V2.6 Flash and Muse found nothing extra on it, so we only route DeepSeek models to dsh.
 
 ### What is PTC tool calling in DeepSeek Harness?
 
