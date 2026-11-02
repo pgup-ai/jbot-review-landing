@@ -83,7 +83,7 @@ We documented the risk and made it easy to opt out. Repositories that review pul
 
 ## What we shipped
 
-- **DeepSeek only.** Catalogued `opencode/` and `opencode-go/` DeepSeek models run on dsh, except `-free` ones. Every other model stays on opencode.
+- **DeepSeek only.** Catalogued `opencode/` and `opencode-go/` DeepSeek models run on dsh by default, except `-free` ones. Every other model stays on opencode. The default suits repositories whose pull request authors you trust. If yours reviews pull requests from outside contributors, set `sdk-engine: opencode`.
 - **PTC with a trimmed profile.** Web access, skills, subagents, goals, plan mode, MCP and instruction files are off.
 - **Automatic fallback.** If the dsh binary is missing, the sandbox doesn't work or the startup check fails, the review runs on opencode and logs the reason. `sdk-engine: opencode` turns dsh off.
 - **A smaller image.** A full dsh install is about 850 MB. We removed packages the headless profile never loads and replaced 49 identical copies of one dependency with links, which brought it to about 140 MB. The image smoke test starts dsh under the real review profile, so a bad prune fails the build.
